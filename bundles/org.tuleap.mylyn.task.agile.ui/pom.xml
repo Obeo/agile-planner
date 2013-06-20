@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.eclipse.mylyn</groupId>
+    <artifactId>org.tuleap.mylyn.tasks.agile.releng</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <relativePath>../../releng/org.tuleap.mylyn.task.agile.releng/</relativePath>
+  </parent>
+  <groupId>org.eclipse.mylyn</groupId>
+  <artifactId>org.tuleap.mylyn.task.agile.ui</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <packaging>eclipse-plugin</packaging>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-source-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>findbugs-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-pmd-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+  <properties>
+  	<tycho.scmUrl>scm:git:git://github.com/sbegaudeau/mylyn.tasks.git;path="org.tuleap.mylyn.task.ui";tag=R1_0_0;branch=tuleap_master</tycho.scmUrl>
+  </properties>
+</project>

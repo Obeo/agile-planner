@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.tuleap.mylyn.task.agile_feature"
+      label="%Feature-Name"
+      version="1.0.0.qualifier"
+      provider-name="%Feature-Vendor">
+
+   <description url="">
+      %description
+   </description>
+
+   <copyright url="">
+      %copyright
+   </copyright>
+
+   <license url="">
+      %license
+   </license>
+
+   <plugin
+         id="org.tuleap.mylyn.task.agile.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.tuleap.mylyn.task.agile.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>
