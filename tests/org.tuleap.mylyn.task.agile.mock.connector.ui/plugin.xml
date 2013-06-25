@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.mylyn.tasks.ui.repositories">
+      <connectorCore
+            class="org.tuleap.mylyn.task.internal.agile.mock.connector.MylynMockConnector"
+            id="mockconnector"
+            name="%MylynMockConnector.Name">
+      </connectorCore>
+      <connectorUi
+            class="org.tuleap.mylyn.task.internal.agile.mock.connector.ui.MylynMockRepositoryConnectorUi"
+            name="%MylynMockConnectorUi.Name">
+      </connectorUi>
+   </extension>
+
+</plugin>
