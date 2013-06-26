@@ -150,6 +150,42 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 			String backlogItemTypeName) {
 		Section scopeSection = toolkit.createSection(parentComposite, ExpandableComposite.TITLE_BAR
 				| Section.DESCRIPTION | Section.TWISTIE | Section.EXPANDED);
+		scopeSection.setText(getScopeSectionHeaderText(scopeAtt));
+		scopeSection.setLayout(FormLayoutFactory.createClearTableWrapLayout(false, 1));
+		TableWrapData scopeLayoutData = new TableWrapData(TableWrapData.FILL_GRAB);
+		scopeSection.setLayoutData(scopeLayoutData);
+		ToolBarManager toolBarManager = new ToolBarManager(SWT.FLAT);
+		ToolBar toolbar = toolBarManager.createControl(scopeSection);
+		final Cursor handCursor = new Cursor(Display.getCurrent(), SWT.CURSOR_HAND);
+		toolbar.setCursor(handCursor);
+		// Cursor needs to be explicitly disposed
+		toolbar.addDisposeListener(new DisposeListener() {
+			@Override
+			public void widgetDisposed(DisposeEvent e) {
+				handCursor.dispose();
+			}
+		});
+		// Add sort action to the tool bar
+
+		Action a = new Action(
+				MylynAgileUIMessages.getString("PlanningTaskEditorPart.EditScopeActionLabel"), PlatformUI.getWorkbench() //$NON-NLS-1$
+						.getSharedImages().getImageDescriptor(ISharedImages.IMG_OBJ_FILE)) {
+			// TODO Implement action to open scope in its own editor
+		};
+		toolBarManager.add(a);
+		toolBarManager.update(true);
+		scopeSection.setTextClient(toolbar);
+		createBacklogItemsTable(toolkit, scopeSection, scopeAtt, backlogItemTypeName);
+	}
+
+	/**
+	 * Computes and returns the text to use as a header for a scope section.
+	 * 
+	 * @param scopeAtt
+	 *            The TaskAttribute that represents the scope.
+	 * @return The text to use as a header for a scope section.
+	 */
+	private String getScopeSectionHeaderText(TaskAttribute scopeAtt) {
 		TaskAttribute nameAtt = scopeAtt.getAttribute(IMylynAgileCoreConstants.SCOPE_NAME);
 		TaskAttribute startDateAtt = scopeAtt.getAttribute(IMylynAgileCoreConstants.START_DATE);
 		TaskAttribute endDateAtt = scopeAtt.getAttribute(IMylynAgileCoreConstants.END_DATE);
@@ -178,32 +214,8 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 			titleBuilder.append(endDate);
 		}
 		titleBuilder.append(")"); //$NON-NLS-1$
-		scopeSection.setText(titleBuilder.toString());
-		scopeSection.setLayout(FormLayoutFactory.createClearTableWrapLayout(false, 1));
-		TableWrapData scopeLayoutData = new TableWrapData(TableWrapData.FILL_GRAB);
-		scopeSection.setLayoutData(scopeLayoutData);
-		ToolBarManager toolBarManager = new ToolBarManager(SWT.FLAT);
-		ToolBar toolbar = toolBarManager.createControl(scopeSection);
-		final Cursor handCursor = new Cursor(Display.getCurrent(), SWT.CURSOR_HAND);
-		toolbar.setCursor(handCursor);
-		// Cursor needs to be explicitly disposed
-		toolbar.addDisposeListener(new DisposeListener() {
-			@Override
-			public void widgetDisposed(DisposeEvent e) {
-				handCursor.dispose();
-			}
-		});
-		// Add sort action to the tool bar
-
-		Action a = new Action(
-				MylynAgileUIMessages.getString("PlanningTaskEditorPart.EditScopeActionLabel"), PlatformUI.getWorkbench() //$NON-NLS-1$
-						.getSharedImages().getImageDescriptor(ISharedImages.IMG_OBJ_FILE)) {
-			// TODO Implement action to open scope in its own editor
-		};
-		toolBarManager.add(a);
-		toolBarManager.update(true);
-		scopeSection.setTextClient(toolbar);
-		createBacklogItemsTable(toolkit, scopeSection, scopeAtt, backlogItemTypeName);
+		String title = titleBuilder.toString();
+		return title;
 	}
 
 	/**
