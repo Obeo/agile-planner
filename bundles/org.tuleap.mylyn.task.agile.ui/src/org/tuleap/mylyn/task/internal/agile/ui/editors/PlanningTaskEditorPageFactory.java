@@ -10,15 +10,21 @@
  *******************************************************************************/
 package org.tuleap.mylyn.task.internal.agile.ui.editors;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.mylyn.commons.ui.CommonImages;
+import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.tasks.core.ITask;
+import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
+import org.eclipse.mylyn.tasks.core.data.TaskData;
+import org.eclipse.mylyn.tasks.ui.ITasksUiConstants;
 import org.eclipse.mylyn.tasks.ui.TasksUiImages;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPageFactory;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditor;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditorInput;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.forms.editor.IFormPage;
-import org.tuleap.mylyn.task.agile.core.util.IMylynAgileCoreContants;
+import org.tuleap.mylyn.task.agile.core.util.IMylynAgileCoreConstants;
+import org.tuleap.mylyn.task.internal.agile.ui.editors.planning.PlanningTaskEditorPage;
 import org.tuleap.mylyn.task.internal.agile.ui.util.MylynAgileUIMessages;
 
 /**
@@ -26,7 +32,7 @@ import org.tuleap.mylyn.task.internal.agile.ui.util.MylynAgileUIMessages;
  * 
  * @author <a href="mailto:stephane.begaudeau@obeo.fr">Stephane Begaudeau</a>
  */
-public class ReleasePlanningTaskEditorPageFactory extends AbstractTaskEditorPageFactory {
+public class PlanningTaskEditorPageFactory extends AbstractTaskEditorPageFactory {
 
 	/**
 	 * {@inheritDoc}
@@ -36,9 +42,18 @@ public class ReleasePlanningTaskEditorPageFactory extends AbstractTaskEditorPage
 	@Override
 	public boolean canCreatePageFor(TaskEditorInput input) {
 		ITask task = input.getTask();
-		String taskKind = task.getAttribute(IMylynAgileCoreContants.TASK_KIND_KEY);
-		if (IMylynAgileCoreContants.TASK_KIND_RELEASE.equals(taskKind)) {
-			return true;
+		try {
+			TaskData taskData = TasksUiPlugin.getTaskDataManager().getTaskData(task);
+			TaskAttribute backlogItemListAtt = taskData.getRoot().getAttribute(
+					IMylynAgileCoreConstants.BACKLOG_ITEM_LIST);
+			TaskAttribute planningScopeListAtt = taskData.getRoot().getAttribute(
+					IMylynAgileCoreConstants.SCOPE_LIST);
+
+			if (backlogItemListAtt != null && planningScopeListAtt != null) {
+				return true;
+			}
+		} catch (CoreException e) {
+			e.printStackTrace();
 		}
 		return false;
 	}
@@ -60,7 +75,7 @@ public class ReleasePlanningTaskEditorPageFactory extends AbstractTaskEditorPage
 	 */
 	@Override
 	public String getPageText() {
-		return MylynAgileUIMessages.getString("ReleasePlanningTaskEditorPageFactory.PageText"); //$NON-NLS-1$
+		return MylynAgileUIMessages.getString("PlanningTaskEditorPageFactory.PageText"); //$NON-NLS-1$
 	}
 
 	/**
@@ -70,8 +85,28 @@ public class ReleasePlanningTaskEditorPageFactory extends AbstractTaskEditorPage
 	 */
 	@Override
 	public IFormPage createPage(TaskEditor parentEditor) {
-		// TODO create the page!
-		return null;
+		TaskEditorInput taskEditorInput = parentEditor.getTaskEditorInput();
+		String connectorKind = taskEditorInput.getTask().getConnectorKind();
+		return new PlanningTaskEditorPage(parentEditor, connectorKind);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPageFactory#getConflictingIds(org.eclipse.mylyn.tasks.ui.editors.TaskEditorInput)
+	 */
+	@Override
+	public String[] getConflictingIds(TaskEditorInput input) {
+		return new String[] {ITasksUiConstants.ID_PAGE_PLANNING };
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPageFactory#getPriority()
+	 */
+	@Override
+	public int getPriority() {
+		return PRIORITY_PLANNING;
+	}
 }
