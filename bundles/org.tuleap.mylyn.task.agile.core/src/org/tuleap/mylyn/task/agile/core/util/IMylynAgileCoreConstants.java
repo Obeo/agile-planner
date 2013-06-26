@@ -82,9 +82,32 @@ public interface IMylynAgileCoreConstants {
 	String PREFIX_BACKLOG_ITEM = "mta_backlog_item-"; //$NON-NLS-1$
 
 	/**
+	 * The value used to indicate that a task data represents the Tuleap ID of a backlog item.
+	 */
+	String BACKLOG_ITEM_ID = "mta_backlog_item_id"; //$NON-NLS-1$
+
+	/**
 	 * The value used to indicate that a task data represents the name of a backlog item.
 	 */
 	String BACKLOG_ITEM_NAME = "mta_backlog_item_name"; //$NON-NLS-1$
+
+	/**
+	 * The value used to indicate that a task data represents the name of the type of a backlog. This name
+	 * will be usable for labels, for example "Release Backlog" if the backlog is a release backlog.
+	 */
+	String BACKLOG_TYPE_LABEL = "mta_backlog_type_label"; //$NON-NLS-1$
+
+	/**
+	 * The value used to indicate that a task data represents the name of the type of a backlog item. This
+	 * name will be usable for labels, for example "User Story" if the backlog item is a user story.
+	 */
+	String BACKLOG_ITEM_TYPE_LABEL = "mta_backlog_item_type_label"; //$NON-NLS-1$
+
+	/**
+	 * The value used to indicate that a task data represents the label to use for points ("Story Points" for
+	 * example).
+	 */
+	String BACKLOG_ITEM_POINTS_LABEL = "mta_backlog_item_points_label"; //$NON-NLS-1$
 
 	/**
 	 * The value used to indicate that a task data represents a number of points in a backlog item.

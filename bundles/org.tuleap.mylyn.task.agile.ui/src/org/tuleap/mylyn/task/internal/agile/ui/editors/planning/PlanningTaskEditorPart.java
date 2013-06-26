@@ -64,11 +64,6 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 		form.setLayout(FormLayoutFactory.createClearGridLayout(false, 1));
 		form.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-		// TaskAttribute summaryAtt = getTaskData().getRoot().getAttribute(TaskAttribute.SUMMARY);
-		// if (summaryAtt != null) {
-		// form.setText(summaryAtt.getValue());
-		// }
-
 		Composite body = form.getBody();
 		body.setLayout(FormLayoutFactory.createFormTableWrapLayout(true, 2));
 		body.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
@@ -79,35 +74,19 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 
 		Section backlogSection = toolkit.createSection(backlog, ExpandableComposite.TITLE_BAR
 				| Section.DESCRIPTION);
-		backlogSection.setText("Backlog");
+		TaskAttribute backlogTypeNameAtt = getTaskData().getRoot().getAttribute(
+				IMylynAgileCoreConstants.BACKLOG_TYPE_LABEL);
+		backlogSection.setText(backlogTypeNameAtt == null ? "Backlog" : backlogTypeNameAtt.getValue());
 		backlogSection.setLayout(FormLayoutFactory.createClearTableWrapLayout(false, 1));
 		TableWrapData data = new TableWrapData(TableWrapData.FILL_GRAB);
 		backlogSection.setLayoutData(data);
 		TaskAttribute backlogItemList = getTaskData().getRoot().getAttribute(
 				IMylynAgileCoreConstants.BACKLOG_ITEM_LIST);
-		Table btable = toolkit.createTable(backlogSection, SWT.NONE);
-		backlogSection.setClient(btable);
-		GridData bgd = new GridData(GridData.FILL_BOTH);
-		// gd.heightHint = 20;
-		// gd.widthHint = 400;
-		btable.setLayoutData(bgd);
-		TableViewer bviewer = new TableViewer(btable);
-		bviewer.setContentProvider(new BacklogItemListContentProvider());
-		TableViewerColumn bcol = new TableViewerColumn(bviewer, SWT.NONE);
-		bcol.getColumn().setText("Id");
-		bcol.setLabelProvider(new ColumnLabelProvider() {
-			@Override
-			public String getText(Object element) {
-				if (element instanceof TaskAttribute) {
-					return ((TaskAttribute)element).getAttribute(IMylynAgileCoreConstants.BACKLOG_ITEM_NAME)
-							.getValue();
-				}
-				return element == null ? "N/A" : element.toString();
-			}
-		});
-		bviewer.setInput(backlogItemList);
-		btable.setHeaderVisible(true);
-		btable.setLinesVisible(true);
+		TaskAttribute backlogItemTypeNameAtt = getTaskData().getRoot().getAttribute(
+				IMylynAgileCoreConstants.BACKLOG_ITEM_TYPE_LABEL);
+		String backlogItemTypeName = backlogItemTypeNameAtt == null ? "Label" : backlogItemTypeNameAtt
+				.getValue();
+		createBacklogItemsTable(toolkit, backlogSection, backlogItemList, backlogItemTypeName);
 
 		Composite scopeList = toolkit.createComposite(body);
 		scopeList.setLayout(FormLayoutFactory.createFormPaneTableWrapLayout(false, 1));
@@ -143,33 +122,95 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 				toolBarManager.add(a);
 				toolBarManager.update(true);
 				scopeSection.setTextClient(toolbar);
-				Table table = toolkit.createTable(scopeSection, SWT.MULTI | SWT.BORDER);
-				GridData gd = new GridData(GridData.FILL_BOTH);
-				// gd.heightHint = 20;
-				// gd.widthHint = 400;
-				table.setLayoutData(gd);
-				TableViewer viewer = new TableViewer(table);
-				viewer.setContentProvider(new BacklogItemListContentProvider());
-				TableViewerColumn col = new TableViewerColumn(viewer, SWT.NONE);
-				col.getColumn().setText("Name");
-				col.setLabelProvider(new ColumnLabelProvider() {
-					@Override
-					public String getText(Object element) {
-						if (element instanceof TaskAttribute) {
-							String label = ((TaskAttribute)element).getAttribute(
-									IMylynAgileCoreConstants.BACKLOG_ITEM_NAME).getValue();
-							return label;
-						}
-						return element == null ? "N/A" : element.toString();
-					}
-				});
-				col.getColumn().pack();
-				scopeSection.setClient(table);
-				viewer.setInput(scopeAtt);
-				table.setHeaderVisible(true);
-				table.setLinesVisible(true);
+				createBacklogItemsTable(toolkit, scopeSection, scopeAtt, backlogItemTypeName);
 			}
 		}
+	}
+
+	/**
+	 * @param toolkit
+	 * @param backlogSection
+	 * @param backlogItemList
+	 * @return
+	 */
+	private void createBacklogItemsTable(FormToolkit toolkit, Section backlogSection,
+			TaskAttribute backlogItemList, String backlogItemTypeName) {
+		Table btable = toolkit.createTable(backlogSection, SWT.BORDER | SWT.MULTI);
+		backlogSection.setClient(btable);
+		GridData bgd = new GridData(GridData.FILL_BOTH);
+		// gd.heightHint = 20;
+		// gd.widthHint = 400;
+		btable.setLayoutData(bgd);
+		TableViewer bviewer = new TableViewer(btable);
+		bviewer.setContentProvider(new BacklogItemListContentProvider());
+
+		// Column "id"
+		TableViewerColumn colId = new TableViewerColumn(bviewer, SWT.NONE);
+		colId.getColumn().setText("Id");
+		colId.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				if (element instanceof TaskAttribute) {
+					return ((TaskAttribute)element).getAttribute(IMylynAgileCoreConstants.BACKLOG_ITEM_ID)
+							.getValue();
+				}
+				return element == null ? "N/A" : element.toString();
+			}
+		});
+		colId.getColumn().setWidth(40);
+
+		// Column "label", whose label is dynamic ("User Story" if the BacklogItem represents a UserStory)
+		TableViewerColumn colLabel = new TableViewerColumn(bviewer, SWT.NONE);
+		colLabel.getColumn().setText(backlogItemTypeName);
+		colLabel.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				if (element instanceof TaskAttribute) {
+					return ((TaskAttribute)element).getAttribute(IMylynAgileCoreConstants.BACKLOG_ITEM_NAME)
+							.getValue();
+				}
+				return element == null ? "N/A" : element.toString();
+			}
+		});
+		colLabel.getColumn().setWidth(250);
+
+		// Column "points", whose label is dynamic ("Story Points" if the BacklogItem represents a UserStory)
+		TableViewerColumn colPoints = new TableViewerColumn(bviewer, SWT.NONE);
+		TaskAttribute backlogItemPointLabelAtt = getTaskData().getRoot().getAttribute(
+				IMylynAgileCoreConstants.BACKLOG_ITEM_POINTS_LABEL);
+		String backlogItemPointLabel = backlogItemPointLabelAtt == null ? "Points" : backlogItemPointLabelAtt
+				.getValue();
+		colPoints.getColumn().setText(backlogItemPointLabel);
+		colPoints.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				if (element instanceof TaskAttribute) {
+					return ((TaskAttribute)element)
+							.getAttribute(IMylynAgileCoreConstants.BACKLOG_ITEM_POINTS).getValue();
+				}
+				return element == null ? "0" : element.toString();
+			}
+		});
+		colPoints.getColumn().setWidth(80);
+
+		// Column "parent"
+		TableViewerColumn colParent = new TableViewerColumn(bviewer, SWT.NONE);
+		colParent.getColumn().setText("Parent");
+		colParent.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				if (element instanceof TaskAttribute) {
+					return ((TaskAttribute)element)
+							.getAttribute(IMylynAgileCoreConstants.BACKLOG_ITEM_PARENT).getValue();
+				}
+				return element == null ? "N/A" : element.toString();
+			}
+		});
+		colParent.getColumn().setWidth(80);
+
+		bviewer.setInput(backlogItemList);
+		btable.setHeaderVisible(true);
+		btable.setLinesVisible(true);
 	}
 
 	/**

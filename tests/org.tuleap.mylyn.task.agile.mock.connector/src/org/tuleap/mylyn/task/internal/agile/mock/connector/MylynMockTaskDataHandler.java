@@ -24,11 +24,14 @@ import org.eclipse.mylyn.tasks.core.data.TaskAttributeMapper;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.tuleap.mylyn.task.agile.core.util.IMylynAgileCoreConstants;
 
+// CHECKSTYLE:OFF
+
 /**
  * The task data handler.
  * 
  * @author <a href="mailto:stephane.begaudeau@obeo.fr">Stephane Begaudeau</a>
  */
+@SuppressWarnings("all")
 public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 
 	/**
@@ -62,7 +65,7 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 		summary.setValue("First Release");
 
 		TaskAttribute kindAttribute = root.createAttribute(TaskAttribute.TASK_KIND);
-		kindAttribute.setValue("Release Planning");
+		kindAttribute.setValue("Release");
 		TaskAttribute urlAttribute = root.createAttribute(TaskAttribute.TASK_URL);
 		urlAttribute.getMetaData().setType(TaskAttribute.TYPE_URL);
 		urlAttribute.setValue("http://google.com");
@@ -70,6 +73,21 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 		descAttribute.getMetaData().setType(TaskAttribute.TYPE_SHORT_RICH_TEXT);
 		descAttribute.setValue("Release Planning Description");
 
+		// The label of the types of the backlog
+		TaskAttribute backlogTypeAtt = root.createAttribute(IMylynAgileCoreConstants.BACKLOG_TYPE_LABEL);
+		backlogTypeAtt.setValue("Release Backlog");
+
+		// The label of the types of elements contained in backlog and scopes
+		TaskAttribute backlogItemTypeAtt = root
+				.createAttribute(IMylynAgileCoreConstants.BACKLOG_ITEM_TYPE_LABEL);
+		backlogItemTypeAtt.setValue("User Story");
+
+		// The label of the types of elements contained in backlog and scopes
+		TaskAttribute backlogItemPointsLabelAtt = root
+				.createAttribute(IMylynAgileCoreConstants.BACKLOG_ITEM_POINTS_LABEL);
+		backlogItemPointsLabelAtt.setValue("Story Points");
+
+		// The attribute containing the list of scopes
 		TaskAttribute scopeListAtt = root.createAttribute(IMylynAgileCoreConstants.SCOPE_LIST);
 
 		int scopeIndex = 0;
@@ -107,6 +125,11 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 		scopeItemAtt.getMetaData().setType(IMylynAgileCoreConstants.TYPE_BACKLOG_ITEM);
 		scopeItemAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
 
+		TaskAttribute idAtt = scopeItemAtt.createAttribute(IMylynAgileCoreConstants.BACKLOG_ITEM_ID);
+		idAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
+		idAtt.setValue(String.valueOf(100 + backlogItemIndex));
+		idAtt.getMetaData().setType(TaskAttribute.TYPE_SHORT_TEXT);
+
 		TaskAttribute nameAtt = scopeItemAtt.createAttribute(IMylynAgileCoreConstants.BACKLOG_ITEM_NAME);
 		nameAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
 		nameAtt.setValue("User Story " + backlogItemIndex);
@@ -126,10 +149,16 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 		parentAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
 		parentAtt.getMetaData().setLabel("Parent");
 		parentAtt.getMetaData().setType(TaskAttribute.TYPE_TASK_DEPENDENCY);
+		parentAtt.setValue("Epic 201");
 
 		scopeItemAtt = scopeAtt.createAttribute(scopeAtt.getId() + "-" + backlogItemIndex++);
 		scopeItemAtt.getMetaData().setType(IMylynAgileCoreConstants.TYPE_BACKLOG_ITEM);
 		scopeItemAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
+
+		idAtt = scopeItemAtt.createAttribute(IMylynAgileCoreConstants.BACKLOG_ITEM_ID);
+		idAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
+		idAtt.setValue(String.valueOf(100 + backlogItemIndex));
+		idAtt.getMetaData().setType(TaskAttribute.TYPE_SHORT_TEXT);
 
 		nameAtt = scopeItemAtt.createAttribute(IMylynAgileCoreConstants.BACKLOG_ITEM_NAME);
 		nameAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
@@ -150,6 +179,7 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 		parentAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
 		parentAtt.getMetaData().setLabel("Parent");
 		parentAtt.getMetaData().setType(TaskAttribute.TYPE_TASK_DEPENDENCY);
+		parentAtt.setValue("Epic 201");
 
 		// Second Sprint
 		scopeAtt = scopeListAtt.createAttribute(IMylynAgileCoreConstants.PREFIX_SCOPE + scopeIndex++);
@@ -186,6 +216,11 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 		backlogItemAtt.getMetaData().setType(IMylynAgileCoreConstants.TYPE_BACKLOG_ITEM);
 		backlogItemAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
 
+		idAtt = backlogItemAtt.createAttribute(IMylynAgileCoreConstants.BACKLOG_ITEM_ID);
+		idAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
+		idAtt.setValue(String.valueOf(100 + backlogItemIndex));
+		idAtt.getMetaData().setType(TaskAttribute.TYPE_SHORT_TEXT);
+
 		nameAtt = backlogItemAtt.createAttribute(IMylynAgileCoreConstants.BACKLOG_ITEM_NAME);
 		nameAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
 		nameAtt.setValue("User Story " + backlogItemIndex);
@@ -205,11 +240,17 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 		parentAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
 		parentAtt.getMetaData().setLabel("Parent");
 		parentAtt.getMetaData().setType(TaskAttribute.TYPE_TASK_DEPENDENCY);
+		parentAtt.setValue("Epic 201");
 
 		backlogItemAtt = backlogItemList.createAttribute(IMylynAgileCoreConstants.PREFIX_BACKLOG_ITEM
 				+ backlogItemIndex++);
 		backlogItemAtt.getMetaData().setType(IMylynAgileCoreConstants.TYPE_BACKLOG_ITEM);
 		backlogItemAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
+
+		idAtt = backlogItemAtt.createAttribute(IMylynAgileCoreConstants.BACKLOG_ITEM_ID);
+		idAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
+		idAtt.setValue(String.valueOf(100 + backlogItemIndex));
+		idAtt.getMetaData().setType(TaskAttribute.TYPE_SHORT_TEXT);
 
 		nameAtt = backlogItemAtt.createAttribute(IMylynAgileCoreConstants.BACKLOG_ITEM_NAME);
 		nameAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
@@ -230,6 +271,7 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 		parentAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
 		parentAtt.getMetaData().setLabel("Parent");
 		parentAtt.getMetaData().setType(TaskAttribute.TYPE_TASK_DEPENDENCY);
+		parentAtt.setValue("Epic 202");
 
 		return true;
 	}
