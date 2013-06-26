@@ -6,7 +6,8 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.tuleap.mylyn.task.internal.agile.mock.connector.MylynMockConnectorActivator
 Bundle-Vendor: %Bundle-Vendor
 Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.mylyn.tasks.core
+ org.eclipse.mylyn.tasks.core,
+ org.tuleap.mylyn.task.agile.core;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Bundle-Localization: plugin
