@@ -129,64 +129,81 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 				.getAttribute(IMylynAgileCoreConstants.SCOPE_LIST);
 		for (TaskAttribute scopeAtt : scopeListAtt.getAttributes().values()) {
 			if (IMylynAgileCoreConstants.TYPE_SCOPE.equals(scopeAtt.getMetaData().getType())) {
-				Section scopeSection = toolkit.createSection(scopeListComp, ExpandableComposite.TITLE_BAR
-						| Section.DESCRIPTION | Section.TWISTIE | Section.EXPANDED);
-				TaskAttribute nameAtt = scopeAtt.getAttribute(IMylynAgileCoreConstants.SCOPE_NAME);
-				TaskAttribute startDateAtt = scopeAtt.getAttribute(IMylynAgileCoreConstants.START_DATE);
-				TaskAttribute endDateAtt = scopeAtt.getAttribute(IMylynAgileCoreConstants.END_DATE);
-
-				// Compute the title of the section
-				StringBuilder titleBuilder = new StringBuilder();
-				if (nameAtt == null || nameAtt.getValue() == null) {
-					titleBuilder.append(strMissing);
-				} else {
-					titleBuilder.append(nameAtt.getValue());
-				}
-				titleBuilder.append(" ("); //$NON-NLS-1$
-				DateFormat dateFormat = new SimpleDateFormat(MylynAgileUIMessages
-						.getString("PlanningTaskEditorPageFactory.ScopeDateFormat")); //$NON-NLS-1$
-				if (startDateAtt == null || startDateAtt.getValue() == null) {
-					titleBuilder.append("?"); //$NON-NLS-1$
-				} else {
-					String startDate = dateFormat.format(new Date(Long.parseLong(startDateAtt.getValue())));
-					titleBuilder.append(startDate);
-				}
-				titleBuilder.append(" - "); //$NON-NLS-1$
-				if (endDateAtt == null || endDateAtt.getValue() == null) {
-					titleBuilder.append("?"); //$NON-NLS-1$
-				} else {
-					String endDate = dateFormat.format(new Date(Long.parseLong(endDateAtt.getValue())));
-					titleBuilder.append(endDate);
-				}
-				titleBuilder.append(")"); //$NON-NLS-1$
-				scopeSection.setText(titleBuilder.toString());
-				scopeSection.setLayout(FormLayoutFactory.createClearTableWrapLayout(false, 1));
-				TableWrapData scopeLayoutData = new TableWrapData(TableWrapData.FILL_GRAB);
-				scopeSection.setLayoutData(scopeLayoutData);
-				ToolBarManager toolBarManager = new ToolBarManager(SWT.FLAT);
-				ToolBar toolbar = toolBarManager.createControl(scopeSection);
-				final Cursor handCursor = new Cursor(Display.getCurrent(), SWT.CURSOR_HAND);
-				toolbar.setCursor(handCursor);
-				// Cursor needs to be explicitly disposed
-				toolbar.addDisposeListener(new DisposeListener() {
-					@Override
-					public void widgetDisposed(DisposeEvent e) {
-						handCursor.dispose();
-					}
-				});
-				// Add sort action to the tool bar
-
-				Action a = new Action(MylynAgileUIMessages
-						.getString("PlanningTaskEditorPart.EditScopeActionLabel"), PlatformUI.getWorkbench() //$NON-NLS-1$
-						.getSharedImages().getImageDescriptor(ISharedImages.IMG_OBJ_FILE)) {
-					// TODO Implement action to open scope in its own editor
-				};
-				toolBarManager.add(a);
-				toolBarManager.update(true);
-				scopeSection.setTextClient(toolbar);
-				createBacklogItemsTable(toolkit, scopeSection, scopeAtt, backlogItemTypeName);
+				createScopeSection(toolkit, scopeListComp, scopeAtt, backlogItemTypeName);
 			}
 		}
+	}
+
+	/**
+	 * Creates a section for a given Scope in a given parent composite.
+	 * 
+	 * @param toolkit
+	 *            The toolkit to use.
+	 * @param parentComposite
+	 *            The parent composite that will contain the created section.
+	 * @param scopeAtt
+	 *            The TaskAttribute that represents the scope.
+	 * @param backlogItemTypeName
+	 *            The label to use for the scope's backlog items type.
+	 */
+	private void createScopeSection(FormToolkit toolkit, Composite parentComposite, TaskAttribute scopeAtt,
+			String backlogItemTypeName) {
+		Section scopeSection = toolkit.createSection(parentComposite, ExpandableComposite.TITLE_BAR
+				| Section.DESCRIPTION | Section.TWISTIE | Section.EXPANDED);
+		TaskAttribute nameAtt = scopeAtt.getAttribute(IMylynAgileCoreConstants.SCOPE_NAME);
+		TaskAttribute startDateAtt = scopeAtt.getAttribute(IMylynAgileCoreConstants.START_DATE);
+		TaskAttribute endDateAtt = scopeAtt.getAttribute(IMylynAgileCoreConstants.END_DATE);
+
+		// Compute the title of the section
+		StringBuilder titleBuilder = new StringBuilder();
+		if (nameAtt == null || nameAtt.getValue() == null) {
+			titleBuilder.append(strMissing);
+		} else {
+			titleBuilder.append(nameAtt.getValue());
+		}
+		titleBuilder.append(" ("); //$NON-NLS-1$
+		DateFormat dateFormat = new SimpleDateFormat(MylynAgileUIMessages
+				.getString("PlanningTaskEditorPageFactory.ScopeDateFormat")); //$NON-NLS-1$
+		if (startDateAtt == null || startDateAtt.getValue() == null) {
+			titleBuilder.append("?"); //$NON-NLS-1$
+		} else {
+			String startDate = dateFormat.format(new Date(Long.parseLong(startDateAtt.getValue())));
+			titleBuilder.append(startDate);
+		}
+		titleBuilder.append(" - "); //$NON-NLS-1$
+		if (endDateAtt == null || endDateAtt.getValue() == null) {
+			titleBuilder.append("?"); //$NON-NLS-1$
+		} else {
+			String endDate = dateFormat.format(new Date(Long.parseLong(endDateAtt.getValue())));
+			titleBuilder.append(endDate);
+		}
+		titleBuilder.append(")"); //$NON-NLS-1$
+		scopeSection.setText(titleBuilder.toString());
+		scopeSection.setLayout(FormLayoutFactory.createClearTableWrapLayout(false, 1));
+		TableWrapData scopeLayoutData = new TableWrapData(TableWrapData.FILL_GRAB);
+		scopeSection.setLayoutData(scopeLayoutData);
+		ToolBarManager toolBarManager = new ToolBarManager(SWT.FLAT);
+		ToolBar toolbar = toolBarManager.createControl(scopeSection);
+		final Cursor handCursor = new Cursor(Display.getCurrent(), SWT.CURSOR_HAND);
+		toolbar.setCursor(handCursor);
+		// Cursor needs to be explicitly disposed
+		toolbar.addDisposeListener(new DisposeListener() {
+			@Override
+			public void widgetDisposed(DisposeEvent e) {
+				handCursor.dispose();
+			}
+		});
+		// Add sort action to the tool bar
+
+		Action a = new Action(
+				MylynAgileUIMessages.getString("PlanningTaskEditorPart.EditScopeActionLabel"), PlatformUI.getWorkbench() //$NON-NLS-1$
+						.getSharedImages().getImageDescriptor(ISharedImages.IMG_OBJ_FILE)) {
+			// TODO Implement action to open scope in its own editor
+		};
+		toolBarManager.add(a);
+		toolBarManager.update(true);
+		scopeSection.setTextClient(toolbar);
+		createBacklogItemsTable(toolkit, scopeSection, scopeAtt, backlogItemTypeName);
 	}
 
 	/**
