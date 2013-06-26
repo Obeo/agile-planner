@@ -22,4 +22,24 @@ public interface IMylynAgileUIConstants {
 	 * The PlanningTaskEditorPart identifier.
 	 */
 	String PLANNING_TASK_EDITOR_PART_DESC_ID = "MylynAgileUIPlanning"; //$NON-NLS-1$
+
+	/**
+	 * Default width of column "Points".
+	 */
+	int DEFAULT_POINTS_COL_WIDTH = 80;
+
+	/**
+	 * Default width of column "Id".
+	 */
+	int DEFAULT_ID_COL_WIDTH = 40;
+
+	/**
+	 * Default width of column "Label".
+	 */
+	int DEFAULT_LABEL_COL_WIDTH = 250;
+
+	/**
+	 * Default width of column "Parent".
+	 */
+	int DEFAULT_PARENT_COL_WIDTH = 80;
 }

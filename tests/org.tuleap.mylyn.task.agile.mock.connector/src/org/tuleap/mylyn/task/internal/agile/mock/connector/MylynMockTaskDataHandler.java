@@ -34,6 +34,8 @@ import org.tuleap.mylyn.task.agile.core.util.IMylynAgileCoreConstants;
 @SuppressWarnings("all")
 public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 
+	private static final long MILLISECOND_IN_WEEK = 7l * 24l * 3600l * 1000l;
+
 	/**
 	 * {@inheritDoc}
 	 * 
@@ -111,13 +113,13 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 		startDateAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
 		startDateAtt.getMetaData().setLabel("Creation Date");
 		startDateAtt.getMetaData().setType(TaskAttribute.TYPE_DATETIME);
-		startDateAtt.setValue(String.valueOf(new Date().getTime()));
+		startDateAtt.setValue(String.valueOf(new Date().getTime() - 4 * MILLISECOND_IN_WEEK));
 
 		TaskAttribute endDateAtt = scopeAtt.createAttribute(IMylynAgileCoreConstants.END_DATE);
 		endDateAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
 		endDateAtt.getMetaData().setLabel("End Date");
 		endDateAtt.getMetaData().setType(TaskAttribute.TYPE_DATE);
-		endDateAtt.setValue(String.valueOf(new Date().getTime()));
+		endDateAtt.setValue(String.valueOf(new Date().getTime() - 2 * MILLISECOND_IN_WEEK));
 
 		// Items in the first sprint
 		int backlogItemIndex = 0;
@@ -200,7 +202,7 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 		startDateAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
 		startDateAtt.getMetaData().setLabel("Creation Date");
 		startDateAtt.getMetaData().setType(TaskAttribute.TYPE_DATETIME);
-		startDateAtt.setValue(String.valueOf(new Date().getTime()));
+		startDateAtt.setValue(String.valueOf(new Date().getTime() - 2 * MILLISECOND_IN_WEEK));
 
 		endDateAtt = scopeAtt.createAttribute(IMylynAgileCoreConstants.END_DATE);
 		endDateAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
