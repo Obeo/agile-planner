@@ -151,6 +151,8 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 		Section scopeSection = toolkit.createSection(parentComposite, ExpandableComposite.TITLE_BAR
 				| Section.DESCRIPTION | Section.TWISTIE | Section.EXPANDED);
 		scopeSection.setText(getScopeSectionHeaderText(scopeAtt));
+		scopeSection.setDescription(getScopeSectionItemsCapacity(scopeAtt) + " / " //$NON-NLS-1$
+				+ getScopeSectionCapacity(scopeAtt));
 		scopeSection.setLayout(FormLayoutFactory.createClearTableWrapLayout(false, 1));
 		TableWrapData scopeLayoutData = new TableWrapData(TableWrapData.FILL_GRAB);
 		scopeSection.setLayoutData(scopeLayoutData);
@@ -176,6 +178,51 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 		toolBarManager.update(true);
 		scopeSection.setTextClient(toolbar);
 		createBacklogItemsTable(toolkit, scopeSection, scopeAtt, backlogItemTypeName);
+	}
+
+	/**
+	 * Computes the required scope capacity by adding the points of all the scope's items.
+	 * 
+	 * @param scopeAtt
+	 *            The scope TaskAttribute.
+	 * @return the sum of all backlog items in <code>scopeAtt</code>.
+	 */
+	private String getScopeSectionItemsCapacity(TaskAttribute scopeAtt) {
+		double sumOfPoints = 0.0;
+		for (TaskAttribute child : scopeAtt.getAttributes().values()) {
+			if (IMylynAgileCoreConstants.TYPE_BACKLOG_ITEM.equals(child.getMetaData().getType())) {
+				TaskAttribute pointsAtt = child.getAttribute(IMylynAgileCoreConstants.BACKLOG_ITEM_POINTS);
+				if (pointsAtt != null) {
+					String strPoints = pointsAtt.getValue();
+					if (strPoints != null) {
+						try {
+							sumOfPoints += Double.parseDouble(strPoints);
+						} catch (NumberFormatException e) {
+							// Nothing to do
+						}
+					}
+				}
+			}
+		}
+		return String.valueOf(sumOfPoints);
+	}
+
+	/**
+	 * Computes the estimated scope capacity by retrieving it from the relevant sub-attribute in the given
+	 * TaskAttribute.
+	 * 
+	 * @param scopeAtt
+	 *            The scope TaskAttribute.
+	 * @return the estimated scope capacity by retrieving it from the relevant sub-attribute in the given
+	 *         TaskAttribute
+	 */
+	private String getScopeSectionCapacity(TaskAttribute scopeAtt) {
+		String capacity = numMissing;
+		TaskAttribute capacityAtt = scopeAtt.getAttribute(IMylynAgileCoreConstants.SCOPE_CAPACITY);
+		if (capacityAtt != null && capacityAtt.getValue() != null) {
+			capacity = capacityAtt.getValue();
+		}
+		return capacity;
 	}
 
 	/**
