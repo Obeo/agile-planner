@@ -31,6 +31,7 @@ import org.tuleap.mylyn.task.internal.agile.ui.util.MylynAgileUIMessages;
  * The editor page factory will instantiate the editor page.
  * 
  * @author <a href="mailto:stephane.begaudeau@obeo.fr">Stephane Begaudeau</a>
+ * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
  */
 public class PlanningTaskEditorPageFactory extends AbstractTaskEditorPageFactory {
 
