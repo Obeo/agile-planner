@@ -279,17 +279,14 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 	 */
 	private void createBacklogItemsTable(FormToolkit toolkit, Section backlogSection,
 			TaskAttribute backlogItemList, String backlogItemTypeName) {
-		Table btable = toolkit.createTable(backlogSection, SWT.BORDER | SWT.MULTI);
-		backlogSection.setClient(btable);
-		GridData bgd = new GridData(GridData.FILL_BOTH);
-		// gd.heightHint = 20;
-		// gd.widthHint = 400;
-		btable.setLayoutData(bgd);
-		TableViewer bviewer = new TableViewer(btable);
-		bviewer.setContentProvider(new BacklogItemListContentProvider());
+		Table table = toolkit.createTable(backlogSection, SWT.BORDER | SWT.MULTI);
+		backlogSection.setClient(table);
+		table.setLayoutData(new GridData(GridData.FILL_BOTH));
+		TableViewer viewer = new TableViewer(table);
+		viewer.setContentProvider(new BacklogItemListContentProvider());
 
 		// Column "id"
-		TableViewerColumn colId = new TableViewerColumn(bviewer, SWT.NONE);
+		TableViewerColumn colId = new TableViewerColumn(viewer, SWT.NONE);
 		colId.getColumn().setText(
 				MylynAgileUIMessages.getString("PlanningTaskEditorPart.DefaultIdColumnHeader")); //$NON-NLS-1$
 		colId.setLabelProvider(new ColumnLabelProvider() {
@@ -310,7 +307,7 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 		colId.getColumn().setWidth(IMylynAgileUIConstants.DEFAULT_ID_COL_WIDTH);
 
 		// Column "label", whose label is dynamic ("User Story" if the BacklogItem represents a UserStory)
-		TableViewerColumn colLabel = new TableViewerColumn(bviewer, SWT.NONE);
+		TableViewerColumn colLabel = new TableViewerColumn(viewer, SWT.NONE);
 		colLabel.getColumn().setText(backlogItemTypeName);
 		colLabel.setLabelProvider(new ColumnLabelProvider() {
 			@Override
@@ -330,7 +327,7 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 		colLabel.getColumn().setWidth(IMylynAgileUIConstants.DEFAULT_LABEL_COL_WIDTH);
 
 		// Column "points", whose label is dynamic ("Story Points" if the BacklogItem represents a UserStory)
-		TableViewerColumn colPoints = new TableViewerColumn(bviewer, SWT.NONE);
+		TableViewerColumn colPoints = new TableViewerColumn(viewer, SWT.NONE);
 		TaskAttribute backlogItemPointLabelAtt = getTaskData().getRoot().getAttribute(
 				IMylynAgileCoreConstants.BACKLOG_ITEM_POINTS_LABEL);
 		String backlogItemPointLabel;
@@ -359,7 +356,7 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 		colPoints.getColumn().setWidth(IMylynAgileUIConstants.DEFAULT_POINTS_COL_WIDTH);
 
 		// Column "parent"
-		TableViewerColumn colParent = new TableViewerColumn(bviewer, SWT.NONE);
+		TableViewerColumn colParent = new TableViewerColumn(viewer, SWT.NONE);
 		colParent.getColumn().setText(
 				MylynAgileUIMessages.getString("PlanningTaskEditorPageFactory.ParentHeader")); //$NON-NLS-1$
 		colParent.setLabelProvider(new ColumnLabelProvider() {
@@ -379,9 +376,9 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 		});
 		colParent.getColumn().setWidth(IMylynAgileUIConstants.DEFAULT_PARENT_COL_WIDTH);
 
-		bviewer.setInput(backlogItemList);
-		btable.setHeaderVisible(true);
-		btable.setLinesVisible(true);
+		viewer.setInput(backlogItemList);
+		table.setHeaderVisible(true);
+		table.setLinesVisible(true);
 	}
 
 	/**
