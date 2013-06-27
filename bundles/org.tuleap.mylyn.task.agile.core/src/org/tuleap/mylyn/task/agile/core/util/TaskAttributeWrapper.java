@@ -43,11 +43,11 @@ public class TaskAttributeWrapper {
 
 	/**
 	 * Moves children elements of the wrapped attribute to a given position, restricting the reordering to
-	 * attributes of the given type if it is not null.
+	 * attributes of the given type.
 	 * 
 	 * @param attributes
 	 *            The set of attributes to move. Attributes must be direct children of the wrapped attribute,
-	 *            and they must match the given {@code type} if it is not {@code null}.
+	 *            and they must match the given {@code type}.
 	 *            <p>
 	 *            <b>Warning</b> Any attribute that does not respect these criteria will be silently ignored.
 	 *            </p>
@@ -61,20 +61,23 @@ public class TaskAttributeWrapper {
 	 *            {@code type.equals(att.getMetaData().getType())} must return {@code true}.)
 	 *            </p>
 	 *            <p>
+	 *            If the given type is {@code null}, only attributes with a null type will be treated.
+	 *            </p>
+	 *            <p>
 	 *            <b>Warning</b> Attributes that are not of this type will be silently ignored.
 	 *            </p>
 	 */
 	public void moveElementsSortedByValue(final List<TaskAttribute> attributes, final int position,
 			final String type) {
-		removeNonChildrenElementsFrom(attributes);
+		List<TaskAttribute> attributesToMove = removeNonChildrenElementsFrom(attributes, type);
 		// We sort the moved elements by their value to keep their order after the move operation
-		Collections.sort(attributes, new TaskAttributeComparator());
-		TaskAttributeList tal = new TaskAttributeList(attributes);
-		int nbMovedElements = attributes.size();
-		// int nbMovedElementsBeforeTarget = tal.getNumberHavingValueLessThan(position);
+		Collections.sort(attributesToMove, new TaskAttributeComparator());
+		TaskAttributeList tal = new TaskAttributeList(attributesToMove);
+		int nbMovedElements = attributesToMove.size();
 		for (TaskAttribute child : attribute.getAttributes().values()) {
-			if (type == null || type.equals(child.getMetaData().getType())) {
-				if (!attributes.contains(child)) {
+			String actualType = child.getMetaData().getType();
+			if (type == null && actualType == null || type != null && type.equals(actualType)) {
+				if (!attributesToMove.contains(child)) {
 					int attRank = Integer.parseInt(child.getValue());
 					if (attRank < position) {
 						child.setValue(String.valueOf(attRank - tal.getNumberHavingValueLessThan(attRank)));
@@ -87,7 +90,8 @@ public class TaskAttributeWrapper {
 		}
 		int i = 0;
 		int nbElementsBeforePosition = tal.getNumberHavingValueLessThan(position);
-		for (TaskAttribute movedAttribute : attributes) {
+		for (TaskAttribute movedAttribute : attributesToMove) {
+			// No need to check the type, the list has been filtered already
 			movedAttribute.setValue(String.valueOf(position - nbElementsBeforePosition + i++));
 		}
 	}
@@ -148,19 +152,27 @@ public class TaskAttributeWrapper {
 
 	/**
 	 * Removes from the given list all the {@code TaskAttribute}s that are not direct children of the wrapped
-	 * {@code TaskAttribute}.
+	 * {@code TaskAttribute} and are not of the right type.
 	 * 
 	 * @param attributes
 	 *            The list of {@link TaskAttribute}s to filter, whose content is modified during execution.
+	 * @param type
+	 *            The type of elements to keep, all elements not of this type will be removed from the list.
+	 * @return Returns a new mutable list containing the relevant elements in the same order as in the input
+	 *         list.
 	 */
-	private void removeNonChildrenElementsFrom(final List<TaskAttribute> attributes) {
-		List<TaskAttribute> uselessElements = new ArrayList<TaskAttribute>();
+	private List<TaskAttribute> removeNonChildrenElementsFrom(final List<TaskAttribute> attributes,
+			final String type) {
+		List<TaskAttribute> ret = new ArrayList<TaskAttribute>();
 		for (TaskAttribute att : attributes) {
-			if (att.getParentAttribute() != attribute) {
-				uselessElements.add(att);
+			if (att.getParentAttribute() == attribute) {
+				String actualType = att.getMetaData().getType();
+				if (type == null && actualType == null || type != null && type.equals(actualType)) {
+					ret.add(att);
+				}
 			}
 		}
-		attributes.removeAll(uselessElements);
+		return ret;
 	}
 
 	/**

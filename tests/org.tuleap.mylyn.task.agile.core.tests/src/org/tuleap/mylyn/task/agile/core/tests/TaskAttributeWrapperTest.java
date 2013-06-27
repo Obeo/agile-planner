@@ -13,6 +13,8 @@ package org.tuleap.mylyn.task.agile.core.tests;
 // CHECKSTYLE:OFF
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
@@ -54,9 +56,38 @@ public class TaskAttributeWrapperTest {
 
 	private TaskAttribute b1;
 
+	// Attributes c* have a null type
+	private TaskAttribute c0;
+
+	private TaskAttribute c1;
+
+	private TaskAttribute c2;
+
+	private TaskAttribute other1;
+
+	private TaskAttribute other2;
+
 	private String TYPE1 = "t1";
 
 	private String TYPE2 = "t2";
+
+	@Test
+	public void testContainsInstance() {
+		assertTrue(wrapper.containsInstance(a0));
+		assertTrue(wrapper.containsInstance(a1));
+		assertTrue(wrapper.containsInstance(a2));
+		assertTrue(wrapper.containsInstance(a3));
+		assertTrue(wrapper.containsInstance(a4));
+		assertTrue(wrapper.containsInstance(a5));
+		assertTrue(wrapper.containsInstance(a6));
+		assertTrue(wrapper.containsInstance(a7));
+		assertTrue(wrapper.containsInstance(b0));
+		assertTrue(wrapper.containsInstance(b1));
+
+		assertFalse(wrapper.containsInstance(a));
+		assertFalse(wrapper.containsInstance(other1));
+		assertFalse(wrapper.containsInstance(other2));
+	}
 
 	@Test
 	public void checkThatElementsOfTheWrongTypeAreNotMoved() {
@@ -164,6 +195,48 @@ public class TaskAttributeWrapperTest {
 	}
 
 	@Test
+	public void testMoveFirstAndLastElementsToBeginningWithWrongType() {
+		wrapper.moveElementsSortedByValue(Arrays.asList(a0, a7), 5, TYPE2);
+		// Nothing must move
+		assertEquals("0", a0.getValue());
+		assertEquals("1", a1.getValue());
+		assertEquals("2", a2.getValue());
+		assertEquals("3", a3.getValue());
+		assertEquals("4", a4.getValue());
+		assertEquals("5", a5.getValue());
+		assertEquals("6", a6.getValue());
+		assertEquals("7", a7.getValue());
+
+		assertEquals("0", b0.getValue());
+		assertEquals("1", b1.getValue());
+
+		assertEquals("0", c0.getValue());
+		assertEquals("1", c1.getValue());
+		assertEquals("2", c2.getValue());
+	}
+
+	@Test
+	public void testMoveFirstAndLastElementsToBeginningWithNullType() {
+		wrapper.moveElementsSortedByValue(Arrays.asList(a0, a7), 5, null);
+		// Nothing must move
+		assertEquals("0", a0.getValue());
+		assertEquals("1", a1.getValue());
+		assertEquals("2", a2.getValue());
+		assertEquals("3", a3.getValue());
+		assertEquals("4", a4.getValue());
+		assertEquals("5", a5.getValue());
+		assertEquals("6", a6.getValue());
+		assertEquals("7", a7.getValue());
+
+		assertEquals("0", b0.getValue());
+		assertEquals("1", b1.getValue());
+
+		assertEquals("0", c0.getValue());
+		assertEquals("1", c1.getValue());
+		assertEquals("2", c2.getValue());
+	}
+
+	@Test
 	public void testMoveLastAndFirstElementsToBeginning() {
 		// To check that the original ordering of the moved elements is stable
 		wrapper.moveElementsSortedByValue(Arrays.asList(a7, a0), 0, TYPE1);
@@ -257,6 +330,22 @@ public class TaskAttributeWrapperTest {
 		assertEquals("1", b1.getValue());
 	}
 
+	@Test
+	public void testMoveSeveralElementsPlusIrrelevantElements() {
+		// To check that the original ordering of the moved elements is stable
+		wrapper.moveElementsSortedByValue(Arrays.asList(a7, a0, other1, a3, a, other2), 5, TYPE1);
+		assertEquals("3", a0.getValue());
+		assertEquals("0", a1.getValue());
+		assertEquals("1", a2.getValue());
+		assertEquals("4", a3.getValue());
+		assertEquals("2", a4.getValue());
+		assertEquals("6", a5.getValue());
+		assertEquals("7", a6.getValue());
+		assertEquals("5", a7.getValue());
+		assertEquals("0", b0.getValue());
+		assertEquals("1", b1.getValue());
+	}
+
 	@Before
 	public void setup() {
 		TaskRepository taskRepository = new TaskRepository("kind", "repository");
@@ -300,6 +389,18 @@ public class TaskAttributeWrapperTest {
 		i = 0;
 		b0.setValue(String.valueOf(i++));
 		b1.setValue(String.valueOf(i++));
+
+		c0 = a.createAttribute("c-0");
+		c1 = a.createAttribute("c-1");
+		c2 = a.createAttribute("c-2");
+
+		i = 0;
+		c0.setValue(String.valueOf(i++));
+		c1.setValue(String.valueOf(i++));
+		c2.setValue(String.valueOf(i++));
+
+		other1 = new TaskAttribute(data.getRoot(), "other1");
+		other2 = new TaskAttribute(data.getRoot(), "other2");
 
 		wrapper = new TaskAttributeWrapper(a);
 	}
