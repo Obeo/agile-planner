@@ -59,6 +59,21 @@ public class TaskAttributeWrapperTest {
 	private String TYPE2 = "t2";
 
 	@Test
+	public void checkThatElementsOfTheWrongTypeAreNotMoved() {
+		wrapper.moveElementsSortedByValue(Arrays.asList(b0), 1, TYPE1);
+		assertEquals("0", b0.getValue());
+		assertEquals("1", b1.getValue());
+		assertEquals("0", a0.getValue());
+		assertEquals("1", a1.getValue());
+		assertEquals("2", a2.getValue());
+		assertEquals("3", a3.getValue());
+		assertEquals("4", a4.getValue());
+		assertEquals("5", a5.getValue());
+		assertEquals("6", a6.getValue());
+		assertEquals("7", a7.getValue());
+	}
+
+	@Test
 	public void testMoveOneElementFrom0To0() {
 		wrapper.moveElementsSortedByValue(Arrays.asList(a0), 0, TYPE1);
 		assertEquals("0", a0.getValue());
@@ -69,6 +84,8 @@ public class TaskAttributeWrapperTest {
 		assertEquals("5", a5.getValue());
 		assertEquals("6", a6.getValue());
 		assertEquals("7", a7.getValue());
+		assertEquals("0", b0.getValue());
+		assertEquals("1", b1.getValue());
 	}
 
 	@Test
@@ -82,6 +99,8 @@ public class TaskAttributeWrapperTest {
 		assertEquals("5", a5.getValue());
 		assertEquals("6", a6.getValue());
 		assertEquals("7", a7.getValue());
+		assertEquals("0", b0.getValue());
+		assertEquals("1", b1.getValue());
 	}
 
 	@Test
@@ -95,6 +114,8 @@ public class TaskAttributeWrapperTest {
 		assertEquals("5", a5.getValue());
 		assertEquals("6", a6.getValue());
 		assertEquals("7", a7.getValue());
+		assertEquals("0", b0.getValue());
+		assertEquals("1", b1.getValue());
 	}
 
 	@Test
@@ -108,6 +129,8 @@ public class TaskAttributeWrapperTest {
 		assertEquals("4", a5.getValue());
 		assertEquals("5", a6.getValue());
 		assertEquals("7", a7.getValue());
+		assertEquals("0", b0.getValue());
+		assertEquals("1", b1.getValue());
 	}
 
 	@Test
@@ -121,6 +144,8 @@ public class TaskAttributeWrapperTest {
 		assertEquals("4", a5.getValue());
 		assertEquals("5", a6.getValue());
 		assertEquals("6", a7.getValue());
+		assertEquals("0", b0.getValue());
+		assertEquals("1", b1.getValue());
 	}
 
 	@Test
@@ -134,6 +159,8 @@ public class TaskAttributeWrapperTest {
 		assertEquals("6", a5.getValue());
 		assertEquals("7", a6.getValue());
 		assertEquals("1", a7.getValue());
+		assertEquals("0", b0.getValue());
+		assertEquals("1", b1.getValue());
 	}
 
 	@Test
@@ -148,6 +175,8 @@ public class TaskAttributeWrapperTest {
 		assertEquals("6", a5.getValue());
 		assertEquals("7", a6.getValue());
 		assertEquals("1", a7.getValue());
+		assertEquals("0", b0.getValue());
+		assertEquals("1", b1.getValue());
 	}
 
 	@Test
@@ -161,6 +190,8 @@ public class TaskAttributeWrapperTest {
 		assertEquals("6", a5.getValue());
 		assertEquals("7", a6.getValue());
 		assertEquals("4", a7.getValue());
+		assertEquals("0", b0.getValue());
+		assertEquals("1", b1.getValue());
 	}
 
 	@Test
@@ -175,6 +206,8 @@ public class TaskAttributeWrapperTest {
 		assertEquals("6", a5.getValue());
 		assertEquals("7", a6.getValue());
 		assertEquals("4", a7.getValue());
+		assertEquals("0", b0.getValue());
+		assertEquals("1", b1.getValue());
 	}
 
 	@Test
@@ -188,6 +221,8 @@ public class TaskAttributeWrapperTest {
 		assertEquals("4", a5.getValue());
 		assertEquals("5", a6.getValue());
 		assertEquals("7", a7.getValue());
+		assertEquals("0", b0.getValue());
+		assertEquals("1", b1.getValue());
 	}
 
 	@Test
@@ -202,6 +237,8 @@ public class TaskAttributeWrapperTest {
 		assertEquals("4", a5.getValue());
 		assertEquals("5", a6.getValue());
 		assertEquals("7", a7.getValue());
+		assertEquals("0", b0.getValue());
+		assertEquals("1", b1.getValue());
 	}
 
 	@Test
@@ -216,6 +253,8 @@ public class TaskAttributeWrapperTest {
 		assertEquals("6", a5.getValue());
 		assertEquals("7", a6.getValue());
 		assertEquals("5", a7.getValue());
+		assertEquals("0", b0.getValue());
+		assertEquals("1", b1.getValue());
 	}
 
 	@Before
