@@ -179,7 +179,7 @@ public class TaskAttributeWrapper {
 		public int compare(TaskAttribute att1, TaskAttribute att2) {
 			int v1 = Integer.parseInt(att1.getValue());
 			int v2 = Integer.parseInt(att2.getValue());
-			return v2 - v1;
+			return v1 - v2;
 		}
 
 	}
