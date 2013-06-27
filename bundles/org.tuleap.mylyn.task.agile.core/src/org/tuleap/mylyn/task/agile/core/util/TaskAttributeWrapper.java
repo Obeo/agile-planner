@@ -43,7 +43,8 @@ public class TaskAttributeWrapper {
 
 	/**
 	 * Moves children elements of the wrapped attribute to a given position, restricting the reordering to
-	 * attributes of the given type.
+	 * attributes of the given type. The method assumes that the rank of the subattributes is materialized by
+	 * their value.
 	 * 
 	 * @param attributes
 	 *            The set of attributes to move. Attributes must be direct children of the wrapped attribute,
@@ -93,6 +94,52 @@ public class TaskAttributeWrapper {
 		for (TaskAttribute movedAttribute : attributesToMove) {
 			// No need to check the type, the list has been filtered already
 			movedAttribute.setValue(String.valueOf(position - nbElementsBeforePosition + i++));
+		}
+	}
+
+	/**
+	 * Inserts the given attributes in the wrapped attribute at the given position among its children of the
+	 * given type. The method assumes that the rank of the subattributes is materialized by their value.
+	 * 
+	 * @param attributes
+	 *            The list af attributes to insert.
+	 * @param position
+	 *            The insertion index for these elements.
+	 * @param type
+	 *            The type of elements to manipulate. Any element with a different type will be silently
+	 *            ignored.
+	 */
+	public void insertElementsSortedByValue(final List<TaskAttribute> attributes, final int position,
+			final String type) {
+		List<TaskAttribute> attributesToInsert = removeChildrenElementsFrom(attributes, type);
+		int nbAttributesToInsert = attributesToInsert.size();
+		// We sort the moved elements by their value to keep their order after the move operation
+		Collections.sort(attributesToInsert, new TaskAttributeComparator());
+		// First, update the values of inserted elements to insert them in the right place,
+		// since the insertion location is materialized by the value, used as an index.
+		int i = 0;
+		for (TaskAttribute att : attribute.getAttributes().values()) {
+			String actualType = att.getMetaData().getType();
+			if (type == null && actualType == null || type != null && type.equals(actualType)) {
+				int index = Integer.parseInt(att.getValue());
+				if (index >= position) {
+					att.setValue(String.valueOf(index + nbAttributesToInsert));
+				}
+			}
+		}
+		for (TaskAttribute movedAttribute : attributesToInsert) {
+			// No need to check the type, the list has been filtered already
+			movedAttribute.setValue(String.valueOf(position + i++));
+			if (attribute.getAttributes().containsKey(movedAttribute.getId())) {
+				// TODO Create a new id... is it really necessary?
+				// N.B. backlogItems should all be created in a backlog (with a unique id there)
+				// then moved to a given scope.
+				// Maybe the data model should be changed so that backlog items stay in the backlog
+				// and have an additional sub-attribute indicating their scope, if any...
+				// But then, we would need also to manage the rank in this scope.
+			} else {
+				attribute.deepAddCopy(movedAttribute);
+			}
 		}
 	}
 
@@ -166,6 +213,31 @@ public class TaskAttributeWrapper {
 		List<TaskAttribute> ret = new ArrayList<TaskAttribute>();
 		for (TaskAttribute att : attributes) {
 			if (att.getParentAttribute() == attribute) {
+				String actualType = att.getMetaData().getType();
+				if (type == null && actualType == null || type != null && type.equals(actualType)) {
+					ret.add(att);
+				}
+			}
+		}
+		return ret;
+	}
+
+	/**
+	 * Removes from the given list all the {@code TaskAttribute}s that are direct children of the wrapped
+	 * {@code TaskAttribute} and are not of the right type.
+	 * 
+	 * @param attributes
+	 *            The list of {@link TaskAttribute}s to filter, whose content is modified during execution.
+	 * @param type
+	 *            The type of elements to keep, all elements not of this type will be removed from the list.
+	 * @return Returns a new mutable list containing the relevant elements in the same order as in the input
+	 *         list.
+	 */
+	private List<TaskAttribute> removeChildrenElementsFrom(final List<TaskAttribute> attributes,
+			final String type) {
+		List<TaskAttribute> ret = new ArrayList<TaskAttribute>();
+		for (TaskAttribute att : attributes) {
+			if (att.getParentAttribute() != attribute) {
 				String actualType = att.getMetaData().getType();
 				if (type == null && actualType == null || type != null && type.equals(actualType)) {
 					ret.add(att);

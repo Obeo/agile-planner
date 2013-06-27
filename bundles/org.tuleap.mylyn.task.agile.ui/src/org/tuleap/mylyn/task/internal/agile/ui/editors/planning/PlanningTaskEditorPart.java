@@ -561,8 +561,7 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 					ret = false;
 				} else {
 					// Drag'n drop from one list to another
-					// We must compute new non-conflicting ids for the moved elements, unless we actually use
-					// unique ids
+					copySelectedElements(selection, listAtt, insertionIndex);
 					ret = true;
 				}
 				getViewer().refresh();
@@ -590,6 +589,29 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 				}
 			}
 			new TaskAttributeWrapper(listAtt).moveElementsSortedByValue(elementsToMove, insertionIndex,
+					IMylynAgileCoreConstants.TYPE_BACKLOG_ITEM);
+		}
+
+		/**
+		 * Performs the copy of the selected elements at the given index in the target attribute.
+		 * 
+		 * @param selection
+		 *            The selection of elements to move.
+		 * @param listAtt
+		 *            The parent attribute that receives the moved elements.
+		 * @param insertionIndex
+		 *            The insertion index of the moved elements
+		 */
+		private void copySelectedElements(IStructuredSelection selection, TaskAttribute listAtt,
+				int insertionIndex) {
+			List<TaskAttribute> elementsToMove = new ArrayList<TaskAttribute>();
+			for (Iterator<?> it = selection.iterator(); it.hasNext();) {
+				Object next = it.next();
+				if (next instanceof TaskAttribute) {
+					elementsToMove.add((TaskAttribute)next);
+				}
+			}
+			new TaskAttributeWrapper(listAtt).insertElementsSortedByValue(elementsToMove, insertionIndex,
 					IMylynAgileCoreConstants.TYPE_BACKLOG_ITEM);
 		}
 
