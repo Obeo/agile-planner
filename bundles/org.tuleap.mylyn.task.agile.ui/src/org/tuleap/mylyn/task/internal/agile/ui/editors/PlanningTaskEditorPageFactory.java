@@ -33,6 +33,7 @@ import org.tuleap.mylyn.task.internal.agile.ui.util.MylynAgileUIMessages;
  * @author <a href="mailto:stephane.begaudeau@obeo.fr">Stephane Begaudeau</a>
  * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
  */
+@SuppressWarnings("restriction")
 public class PlanningTaskEditorPageFactory extends AbstractTaskEditorPageFactory {
 
 	/**

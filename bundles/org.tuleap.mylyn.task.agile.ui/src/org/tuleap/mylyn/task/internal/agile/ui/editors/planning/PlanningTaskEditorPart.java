@@ -14,18 +14,28 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ToolBarManager;
+import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerDropAdapter;
+import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPart;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DragSourceEvent;
+import org.eclipse.swt.dnd.DragSourceListener;
+import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Cursor;
@@ -42,6 +52,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.tuleap.mylyn.task.agile.core.util.IMylynAgileCoreConstants;
+import org.tuleap.mylyn.task.agile.core.util.TaskAttributeWrapper;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.FormLayoutFactory;
 import org.tuleap.mylyn.task.internal.agile.ui.util.IMylynAgileUIConstants;
 import org.tuleap.mylyn.task.internal.agile.ui.util.MylynAgileUIMessages;
@@ -379,6 +390,29 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 		viewer.setInput(backlogItemList);
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
+		viewer.setSorter(new ViewerSorter() {
+			/**
+			 * {@inheritDoc}
+			 * 
+			 * @see org.eclipse.jface.viewers.ViewerComparator#compare(org.eclipse.jface.viewers.Viewer,
+			 *      java.lang.Object, java.lang.Object)
+			 */
+			@Override
+			public int compare(Viewer aViewer, Object e1, Object e2) {
+				if (e1 instanceof TaskAttribute && e2 instanceof TaskAttribute) {
+					int v1 = Integer.parseInt(((TaskAttribute)e1).getValue());
+					int v2 = Integer.parseInt(((TaskAttribute)e2).getValue());
+					return v1 - v2;
+				}
+				return super.compare(aViewer, e1, e2);
+			}
+		});
+
+		// Drag'n drop
+		viewer.addDragSupport(DND.DROP_MOVE, new Transfer[] {LocalSelectionTransfer.getTransfer() },
+				new BacklogItemDragListener(viewer));
+		viewer.addDropSupport(DND.DROP_MOVE, new Transfer[] {LocalSelectionTransfer.getTransfer() },
+				new BacklogItemListDropAdapter(viewer));
 	}
 
 	/**
@@ -409,6 +443,174 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 				return children.toArray();
 			}
 			return null;
+		}
+	}
+
+	/**
+	 * Drag listener for BacklogItem tables.
+	 * 
+	 * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
+	 */
+	private static final class BacklogItemDragListener implements DragSourceListener {
+
+		/**
+		 * The table viewer to listen to.
+		 */
+		private TableViewer viewer;
+
+		/**
+		 * Constructor, requires the table viewer to listen to.
+		 * 
+		 * @param pviewer
+		 *            the table viewer to listen to.
+		 */
+		private BacklogItemDragListener(TableViewer pviewer) {
+			this.viewer = pviewer;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 * 
+		 * @see org.eclipse.swt.dnd.DragSourceListener#dragStart(org.eclipse.swt.dnd.DragSourceEvent)
+		 */
+		@Override
+		public void dragStart(DragSourceEvent event) {
+			// NO-OP
+		}
+
+		/**
+		 * {@inheritDoc}
+		 * 
+		 * @see org.eclipse.swt.dnd.DragSourceListener#dragSetData(org.eclipse.swt.dnd.DragSourceEvent)
+		 */
+		@Override
+		public void dragSetData(DragSourceEvent event) {
+			LocalSelectionTransfer transfer = LocalSelectionTransfer.getTransfer();
+			if (transfer.isSupportedType(event.dataType)) {
+				IStructuredSelection selection = (IStructuredSelection)viewer.getSelection();
+				transfer.setSelection(selection);
+				event.data = selection;
+			}
+		}
+
+		/**
+		 * {@inheritDoc}
+		 * 
+		 * @see org.eclipse.swt.dnd.DragSourceListener#dragFinished(org.eclipse.swt.dnd.DragSourceEvent)
+		 */
+		@Override
+		public void dragFinished(DragSourceEvent event) {
+			if (event.detail == DND.DROP_MOVE) {
+				TaskAttribute itemListAtt = (TaskAttribute)viewer.getInput();
+				// remove the dragged element(s) from the source
+				IStructuredSelection selection = (IStructuredSelection)viewer.getSelection();
+				for (Iterator<?> it = selection.iterator(); it.hasNext();) {
+					TaskAttribute itemAtt = (TaskAttribute)it.next();
+					itemListAtt.removeAttribute(itemAtt.getId());
+				}
+			}
+			viewer.refresh();
+		}
+
+	}
+
+	/**
+	 * Drop Listener for BacklogItem tables.
+	 * 
+	 * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
+	 */
+	private static final class BacklogItemListDropAdapter extends ViewerDropAdapter {
+
+		/**
+		 * Constructor, requires a viewer. Delegates to the parent class.
+		 * 
+		 * @param viewer
+		 *            The viewer.
+		 */
+		private BacklogItemListDropAdapter(Viewer viewer) {
+			super(viewer);
+		}
+
+		/**
+		 * {@inheritDoc}
+		 * 
+		 * @see org.eclipse.jface.viewers.ViewerDropAdapter#performDrop(java.lang.Object)
+		 */
+		@Override
+		public boolean performDrop(Object data) {
+			boolean ret = false;
+			IStructuredSelection selection = (IStructuredSelection)LocalSelectionTransfer.getTransfer()
+					.getSelection();
+			Object target = getCurrentTarget();
+			if (target instanceof TaskAttribute) {
+				TaskAttribute targetAtt = (TaskAttribute)target;
+				TaskAttribute listAtt = targetAtt.getParentAttribute();
+				String id = targetAtt.getValue();
+				int insertionIndex = Integer.parseInt(id);
+				switch (getCurrentLocation()) {
+					case LOCATION_AFTER:
+						insertionIndex++;
+						break;
+					case LOCATION_NONE:
+						return false;
+					default:
+						break;
+				}
+				if (listAtt == ((TaskAttribute)selection.getFirstElement()).getParentAttribute()) {
+					moveSelectedElements(selection, listAtt, insertionIndex);
+					ret = false;
+				} else {
+					// Drag'n drop from one list to another
+					// We must compute new non-conflicting ids for the moved elements, unless we actually use
+					// unique ids
+					ret = true;
+				}
+				getViewer().refresh();
+			}
+			return ret;
+		}
+
+		/**
+		 * Performs the move of the selected elements at the given index.
+		 * 
+		 * @param selection
+		 *            The selection of elements to move.
+		 * @param listAtt
+		 *            The parent attribute that receives the moved elements.
+		 * @param insertionIndex
+		 *            The insertion index of the moved elements
+		 */
+		private void moveSelectedElements(IStructuredSelection selection, TaskAttribute listAtt,
+				int insertionIndex) {
+			List<TaskAttribute> elementsToMove = new ArrayList<TaskAttribute>();
+			for (Iterator<?> it = selection.iterator(); it.hasNext();) {
+				Object next = it.next();
+				if (next instanceof TaskAttribute) {
+					elementsToMove.add((TaskAttribute)next);
+				}
+			}
+			new TaskAttributeWrapper(listAtt).moveElementsSortedByValue(elementsToMove, insertionIndex,
+					IMylynAgileCoreConstants.TYPE_BACKLOG_ITEM);
+		}
+
+		/**
+		 * {@inheritDoc}
+		 * 
+		 * @see org.eclipse.jface.viewers.ViewerDropAdapter#validateDrop(java.lang.Object, int,
+		 *      org.eclipse.swt.dnd.TransferData)
+		 */
+		@Override
+		public boolean validateDrop(Object target, int operation, TransferData transferType) {
+			if (LocalSelectionTransfer.getTransfer().isSupportedType(transferType)) {
+				// Object target = getCurrentTarget();
+				if (target instanceof TaskAttribute) {
+					String taskType = ((TaskAttribute)target).getMetaData().getType();
+					if (IMylynAgileCoreConstants.TYPE_BACKLOG_ITEM.equals(taskType)) {
+						return true;
+					}
+				}
+			}
+			return false;
 		}
 	}
 }
