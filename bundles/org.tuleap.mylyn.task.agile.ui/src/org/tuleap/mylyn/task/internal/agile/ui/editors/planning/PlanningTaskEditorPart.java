@@ -72,13 +72,13 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 	 * String to use as a display value when a value is missing.
 	 */
 	private final String strMissing = MylynAgileUIMessages
-			.getString("PlanningTaskEditorPageFactory.MissingTextValue"); //$NON-NLS-1$
+			.getString("PlanningTaskEditorPart.MissingTextValue"); //$NON-NLS-1$
 
 	/**
 	 * String to use as a display value when a value is missing.
 	 */
 	private final String numMissing = MylynAgileUIMessages
-			.getString("PlanningTaskEditorPageFactory.MissingNumericValue"); //$NON-NLS-1$
+			.getString("PlanningTaskEditorPart.MissingNumericValue"); //$NON-NLS-1$
 
 	/**
 	 * {@inheritDoc}
@@ -106,7 +106,7 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 				IMylynAgileCoreConstants.BACKLOG_TYPE_LABEL);
 		if (backlogTypeNameAtt == null || backlogTypeNameAtt.getValue() == null) {
 			backlogSection.setText(MylynAgileUIMessages
-					.getString("PlanningTaskEditorPageFactory.DefaulBacklogLabel")); //$NON-NLS-1$
+					.getString("PlanningTaskEditorPart.DefaulBacklogLabel")); //$NON-NLS-1$
 		} else {
 			backlogSection.setText(backlogTypeNameAtt.getValue());
 		}
@@ -120,7 +120,7 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 		String backlogItemTypeName;
 		if (backlogItemTypeNameAtt == null || backlogItemTypeNameAtt.getValue() == null) {
 			backlogItemTypeName = MylynAgileUIMessages
-					.getString("PlanningTaskEditorPageFactory.DefaulLabelColumnHeader"); //$NON-NLS-1$
+					.getString("PlanningTaskEditorPart.DefaulLabelColumnHeader"); //$NON-NLS-1$
 		} else {
 			backlogItemTypeName = backlogItemTypeNameAtt.getValue();
 		}
@@ -257,7 +257,7 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 		}
 		titleBuilder.append(" ("); //$NON-NLS-1$
 		DateFormat dateFormat = new SimpleDateFormat(MylynAgileUIMessages
-				.getString("PlanningTaskEditorPageFactory.ScopeDateFormat")); //$NON-NLS-1$
+				.getString("PlanningTaskEditorPart.ScopeDateFormat")); //$NON-NLS-1$
 		if (startDateAtt == null || startDateAtt.getValue() == null) {
 			titleBuilder.append("?"); //$NON-NLS-1$
 		} else {
@@ -368,8 +368,7 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 
 		// Column "parent"
 		TableViewerColumn colParent = new TableViewerColumn(viewer, SWT.NONE);
-		colParent.getColumn().setText(
-				MylynAgileUIMessages.getString("PlanningTaskEditorPageFactory.ParentHeader")); //$NON-NLS-1$
+		colParent.getColumn().setText(MylynAgileUIMessages.getString("PlanningTaskEditorPart.ParentHeader")); //$NON-NLS-1$
 		colParent.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
