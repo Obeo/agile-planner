@@ -6,7 +6,8 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: %Bundle-Vendor
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Localization: plugin
-Export-Package: org.tuleap.mylyn.task.agile.core.tests
+Export-Package: org.tuleap.mylyn.task.agile.core.tests,
+ org.tuleap.mylyn.task.internal.agile.core.tests;x-internal:=true
 Require-Bundle: org.junit,
  org.eclipse.mylyn.commons.sdk.util,
  org.tuleap.mylyn.task.agile.core,
