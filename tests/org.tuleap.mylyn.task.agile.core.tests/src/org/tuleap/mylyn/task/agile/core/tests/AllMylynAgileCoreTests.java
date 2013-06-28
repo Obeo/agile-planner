@@ -28,7 +28,7 @@ public final class AllMylynAgileCoreTests {
 	 * The constructor.
 	 */
 	private AllMylynAgileCoreTests() {
-		// prevent instanciation
+		// prevent instantiation
 	}
 
 	/**
