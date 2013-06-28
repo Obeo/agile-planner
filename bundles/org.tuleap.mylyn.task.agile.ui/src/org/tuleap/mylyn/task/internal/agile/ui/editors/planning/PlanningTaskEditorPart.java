@@ -162,7 +162,7 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 		Section scopeSection = toolkit.createSection(parentComposite, ExpandableComposite.TITLE_BAR
 				| Section.DESCRIPTION | Section.TWISTIE | Section.EXPANDED);
 		scopeSection.setText(getScopeSectionHeaderText(scopeAtt));
-		scopeSection.setDescription(getScopeSectionItemsCapacity(scopeAtt) + " / " //$NON-NLS-1$
+		scopeSection.setDescription(getScopeSectionRequiredCapacity(scopeAtt) + " / " //$NON-NLS-1$
 				+ getScopeSectionCapacity(scopeAtt));
 		scopeSection.setLayout(FormLayoutFactory.createClearTableWrapLayout(false, 1));
 		TableWrapData scopeLayoutData = new TableWrapData(TableWrapData.FILL_GRAB);
@@ -198,7 +198,7 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 	 *            The scope TaskAttribute.
 	 * @return the sum of all backlog items in <code>scopeAtt</code>.
 	 */
-	private String getScopeSectionItemsCapacity(TaskAttribute scopeAtt) {
+	private double getScopeSectionRequiredCapacity(TaskAttribute scopeAtt) {
 		double sumOfPoints = 0.0;
 		for (TaskAttribute child : scopeAtt.getAttributes().values()) {
 			if (IMylynAgileCoreConstants.TYPE_BACKLOG_ITEM.equals(child.getMetaData().getType())) {
@@ -215,7 +215,7 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 				}
 			}
 		}
-		return String.valueOf(sumOfPoints);
+		return sumOfPoints;
 	}
 
 	/**
@@ -227,13 +227,13 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 	 * @return the estimated scope capacity by retrieving it from the relevant sub-attribute in the given
 	 *         TaskAttribute
 	 */
-	private String getScopeSectionCapacity(TaskAttribute scopeAtt) {
+	private double getScopeSectionCapacity(TaskAttribute scopeAtt) {
 		String capacity = numMissing;
 		TaskAttribute capacityAtt = scopeAtt.getAttribute(IMylynAgileCoreConstants.SCOPE_CAPACITY);
 		if (capacityAtt != null && capacityAtt.getValue() != null) {
 			capacity = capacityAtt.getValue();
 		}
-		return capacity;
+		return Double.parseDouble(capacity);
 	}
 
 	/**
@@ -290,7 +290,7 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 	 */
 	private void createBacklogItemsTable(FormToolkit toolkit, Section backlogSection,
 			TaskAttribute backlogItemList, String backlogItemTypeName) {
-		Table table = toolkit.createTable(backlogSection, SWT.BORDER | SWT.MULTI);
+		Table table = toolkit.createTable(backlogSection, SWT.BORDER | SWT.MULTI | SWT.FULL_SELECTION);
 		backlogSection.setClient(table);
 		table.setLayoutData(new GridData(GridData.FILL_BOTH));
 		TableViewer viewer = new TableViewer(table);
@@ -507,6 +507,11 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 				for (Iterator<?> it = selection.iterator(); it.hasNext();) {
 					TaskAttribute itemAtt = (TaskAttribute)it.next();
 					itemListAtt.removeAttribute(itemAtt.getId());
+				}
+				// Recompute the dragged elements indexes
+				int index = 0;
+				for (TaskAttribute att : itemListAtt.getAttributes().values()) {
+					att.setValue(String.valueOf(index++));
 				}
 			}
 			viewer.refresh();
