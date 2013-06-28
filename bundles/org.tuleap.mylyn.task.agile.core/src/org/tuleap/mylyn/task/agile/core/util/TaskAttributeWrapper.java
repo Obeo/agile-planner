@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.tuleap.mylyn.task.agile.core.util;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -252,7 +253,12 @@ public class TaskAttributeWrapper {
 	 * 
 	 * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
 	 */
-	public static class TaskAttributeComparator implements Comparator<TaskAttribute> {
+	public static class TaskAttributeComparator implements Comparator<TaskAttribute>, Serializable {
+
+		/**
+		 * For serialization.
+		 */
+		private static final long serialVersionUID = 1L;
 
 		/**
 		 * {@inheritDoc}
