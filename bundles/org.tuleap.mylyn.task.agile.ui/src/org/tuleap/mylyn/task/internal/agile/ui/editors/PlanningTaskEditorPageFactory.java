@@ -24,6 +24,7 @@ import org.eclipse.mylyn.tasks.ui.editors.TaskEditorInput;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.forms.editor.IFormPage;
 import org.tuleap.mylyn.task.agile.core.util.IMylynAgileCoreConstants;
+import org.tuleap.mylyn.task.internal.agile.ui.MylynAgileUIActivator;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.planning.PlanningTaskEditorPage;
 import org.tuleap.mylyn.task.internal.agile.ui.util.MylynAgileUIMessages;
 
@@ -55,7 +56,7 @@ public class PlanningTaskEditorPageFactory extends AbstractTaskEditorPageFactory
 				return true;
 			}
 		} catch (CoreException e) {
-			e.printStackTrace();
+			MylynAgileUIActivator.log(e, true);
 		}
 		return false;
 	}
