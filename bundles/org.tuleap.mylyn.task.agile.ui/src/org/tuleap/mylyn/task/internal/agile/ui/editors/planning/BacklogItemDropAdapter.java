@@ -30,8 +30,6 @@ import org.tuleap.mylyn.task.agile.core.util.TaskAttributeWrapper;
  */
 public class BacklogItemDropAdapter extends ViewerDropAdapter {
 
-	// private final Section fSection;
-
 	/**
 	 * Constructor, requires a viewer. Delegates to the parent class.
 	 * 
@@ -40,7 +38,6 @@ public class BacklogItemDropAdapter extends ViewerDropAdapter {
 	 */
 	public BacklogItemDropAdapter(Viewer viewer) {
 		super(viewer);
-		// fSection = section;
 	}
 
 	/**
