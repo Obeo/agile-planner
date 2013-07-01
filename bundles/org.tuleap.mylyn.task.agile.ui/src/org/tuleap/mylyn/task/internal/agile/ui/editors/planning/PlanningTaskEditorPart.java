@@ -272,8 +272,7 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 
 		// Column "parent"
 		TableViewerColumn colParent = new TableViewerColumn(viewer, SWT.NONE);
-		colParent.getColumn().setText(
-				MylynAgileUIMessages.getString("PlanningTaskEditorPageFactory.ParentHeader")); //$NON-NLS-1$
+		colParent.getColumn().setText(MylynAgileUIMessages.getString("PlanningTaskEditorPart.ParentHeader")); //$NON-NLS-1$
 		colParent.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
