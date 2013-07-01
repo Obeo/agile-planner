@@ -15,6 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
@@ -93,8 +94,15 @@ public class ScopeSectionViewer extends Viewer {
 	@Override
 	public void refresh() {
 		fSection.setText(getScopeSectionHeaderText());
-		fSection.setDescription(getScopeSectionRequiredCapacity() + " / " //$NON-NLS-1$
-				+ getScopeSectionCapacity());
+		double requiredCapacity = getScopeSectionRequiredCapacity();
+		double capacity = getScopeSectionCapacity();
+		fSection.setDescription(MylynAgileUIMessages.getString("ScopeSectionViewer.CapacityLabel", //$NON-NLS-1$
+				Double.valueOf(requiredCapacity), Double.valueOf(capacity)));
+		if (requiredCapacity > capacity) {
+			fSection.getDescriptionControl().setForeground(ColorConstants.red);
+		} else {
+			fSection.getDescriptionControl().setForeground(ColorConstants.black);
+		}
 	}
 
 	/**
