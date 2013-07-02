@@ -30,12 +30,6 @@ public interface IMylynAgileCoreConstants {
 	String TASK_KIND_RELEASE = "mta_kind_release"; //$NON-NLS-1$
 
 	/**
-	 * The value used to indicate that a task data represents a list of scopes in a planning (for instance, a
-	 * list of sprints in a release).
-	 */
-	String SCOPE_LIST = "mta_planning_scope_list"; //$NON-NLS-1$
-
-	/**
 	 * The value used to indicate that a task data represents a scope (for instance, a sprint).
 	 */
 	String TYPE_SCOPE = "mta_scope"; //$NON-NLS-1$

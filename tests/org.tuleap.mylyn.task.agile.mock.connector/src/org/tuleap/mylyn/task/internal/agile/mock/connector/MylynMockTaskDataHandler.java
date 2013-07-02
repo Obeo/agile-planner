@@ -93,13 +93,9 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 				.createAttribute(IMylynAgileCoreConstants.BACKLOG_ITEM_POINTS_LABEL);
 		backlogItemPointsLabelAtt.setValue("Story Points");
 
-		// The attribute containing the list of scopes
-		TaskAttribute scopeListAtt = root.createAttribute(IMylynAgileCoreConstants.SCOPE_LIST);
-
 		int scopeIndex = 0;
 		// First Sprint
-		TaskAttribute scopeAtt = scopeListAtt.createAttribute(IMylynAgileCoreConstants.PREFIX_SCOPE
-				+ scopeIndex++);
+		TaskAttribute scopeAtt = root.createAttribute(IMylynAgileCoreConstants.PREFIX_SCOPE + scopeIndex++);
 		scopeAtt.getMetaData().setType(IMylynAgileCoreConstants.TYPE_SCOPE);
 		scopeAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
 
@@ -138,7 +134,7 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 		addNewScopeItem(scopeAtt);
 
 		// Second Sprint
-		scopeAtt = scopeListAtt.createAttribute(IMylynAgileCoreConstants.PREFIX_SCOPE + scopeIndex++);
+		scopeAtt = root.createAttribute(IMylynAgileCoreConstants.PREFIX_SCOPE + scopeIndex++);
 		scopeAtt.getMetaData().setType(IMylynAgileCoreConstants.TYPE_SCOPE);
 		scopeAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
 

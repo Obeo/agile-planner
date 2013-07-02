@@ -17,27 +17,30 @@ import java.util.List;
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerDropAdapter;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
+import org.eclipse.mylyn.tasks.core.data.TaskDataModel;
 import org.eclipse.swt.dnd.TransferData;
 import org.tuleap.mylyn.task.agile.core.util.IMylynAgileCoreConstants;
 import org.tuleap.mylyn.task.agile.core.util.TaskAttributeWrapper;
+import org.tuleap.mylyn.task.internal.agile.ui.editors.AbstractTaskAttributeViewerDropAdapter;
 
 /**
  * Drop Listener for BacklogItem tables.
  * 
  * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
  */
-public class BacklogItemDropAdapter extends ViewerDropAdapter {
+public class BacklogItemDropAdapter extends AbstractTaskAttributeViewerDropAdapter {
 
 	/**
 	 * Constructor, requires a viewer. Delegates to the parent class.
 	 * 
 	 * @param viewer
 	 *            The viewer.
+	 * @param model
+	 *            The task data model to use.
 	 */
-	public BacklogItemDropAdapter(Viewer viewer) {
-		super(viewer);
+	public BacklogItemDropAdapter(Viewer viewer, TaskDataModel model) {
+		super(viewer, model);
 	}
 
 	/**
@@ -73,6 +76,7 @@ public class BacklogItemDropAdapter extends ViewerDropAdapter {
 				copySelectedElements(selection, listAtt, insertionIndex);
 				ret = true;
 			}
+			getModel().attributeChanged(listAtt);
 			getViewer().refresh();
 		}
 		return ret;

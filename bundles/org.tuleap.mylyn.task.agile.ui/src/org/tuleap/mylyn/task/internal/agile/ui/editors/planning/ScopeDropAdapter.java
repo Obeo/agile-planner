@@ -11,6 +11,7 @@
 package org.tuleap.mylyn.task.internal.agile.ui.editors.planning;
 
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.mylyn.tasks.core.data.TaskDataModel;
 import org.eclipse.ui.forms.widgets.Section;
 
 /**
@@ -30,11 +31,13 @@ public class ScopeDropAdapter extends BacklogItemDropAdapter {
 	 * 
 	 * @param viewer
 	 *            The viewer.
+	 * @param model
+	 *            The TaskdataModel to use.
 	 * @param scopeSectionViewer
 	 *            The scope section viewer, top use to update the section's UI after a drag or drop operation.
 	 */
-	public ScopeDropAdapter(Viewer viewer, ScopeSectionViewer scopeSectionViewer) {
-		super(viewer);
+	public ScopeDropAdapter(Viewer viewer, TaskDataModel model, ScopeSectionViewer scopeSectionViewer) {
+		super(viewer, model);
 		fScopeSectionViewer = scopeSectionViewer;
 	}
 

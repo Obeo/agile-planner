@@ -11,6 +11,7 @@
 package org.tuleap.mylyn.task.internal.agile.ui.editors.planning;
 
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.mylyn.tasks.core.data.TaskDataModel;
 import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.ui.forms.widgets.Section;
 
@@ -31,11 +32,13 @@ public class ScopeDragListener extends BacklogItemDragListener {
 	 * 
 	 * @param viewer
 	 *            the table fViewer to listen to.
+	 * @param model
+	 *            The task data model to use.
 	 * @param scopeSectionViewer
 	 *            The scope section viewer, top use to update the section's UI after a drag operation.
 	 */
-	ScopeDragListener(TableViewer viewer, ScopeSectionViewer scopeSectionViewer) {
-		super(viewer);
+	ScopeDragListener(TableViewer viewer, TaskDataModel model, ScopeSectionViewer scopeSectionViewer) {
+		super(viewer, model);
 		fScopeSectionViewer = scopeSectionViewer;
 	}
 

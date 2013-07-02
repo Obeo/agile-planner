@@ -49,10 +49,15 @@ public class PlanningTaskEditorPageFactory extends AbstractTaskEditorPageFactory
 			TaskData taskData = TasksUiPlugin.getTaskDataManager().getTaskData(task);
 			TaskAttribute backlogItemListAtt = taskData.getRoot().getAttribute(
 					IMylynAgileCoreConstants.BACKLOG_ITEM_LIST);
-			TaskAttribute planningScopeListAtt = taskData.getRoot().getAttribute(
-					IMylynAgileCoreConstants.SCOPE_LIST);
+			TaskAttribute backlogTypeAtt = taskData.getRoot().getAttribute(
+					IMylynAgileCoreConstants.BACKLOG_TYPE_LABEL);
+			TaskAttribute backlogItemTypeAtt = taskData.getRoot().getAttribute(
+					IMylynAgileCoreConstants.BACKLOG_ITEM_TYPE_LABEL);
+			TaskAttribute backlogItemPointLabelAtt = taskData.getRoot().getAttribute(
+					IMylynAgileCoreConstants.BACKLOG_ITEM_POINTS_LABEL);
 
-			if (backlogItemListAtt != null && planningScopeListAtt != null) {
+			if (backlogItemListAtt != null && backlogTypeAtt != null && backlogItemTypeAtt != null
+					&& backlogItemPointLabelAtt != null) {
 				return true;
 			}
 		} catch (CoreException e) {

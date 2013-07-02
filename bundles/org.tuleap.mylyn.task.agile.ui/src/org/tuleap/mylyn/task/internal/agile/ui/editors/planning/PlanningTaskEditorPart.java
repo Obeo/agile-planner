@@ -103,9 +103,9 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 
 		// Drag'n drop
 		viewer.addDragSupport(DND.DROP_MOVE, new Transfer[] {LocalSelectionTransfer.getTransfer() },
-				new BacklogItemDragListener(viewer));
+				new BacklogItemDragListener(viewer, getModel()));
 		viewer.addDropSupport(DND.DROP_MOVE, new Transfer[] {LocalSelectionTransfer.getTransfer() },
-				new BacklogItemDropAdapter(viewer));
+				new BacklogItemDropAdapter(viewer, getModel()));
 
 		Section scopeList = toolkit.createSection(body, ExpandableComposite.TITLE_BAR | Section.EXPANDED);
 		scopeList.setText("Sprints Planning"); // TODO Make this label dynamic, from the data model //$NON-NLS-1$
@@ -117,9 +117,7 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 		scopeListComp.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
 		scopeList.setClient(scopeListComp);
 
-		TaskAttribute scopeListAtt = getTaskData().getRoot()
-				.getAttribute(IMylynAgileCoreConstants.SCOPE_LIST);
-		for (TaskAttribute scopeAtt : scopeListAtt.getAttributes().values()) {
+		for (TaskAttribute scopeAtt : getTaskData().getRoot().getAttributes().values()) {
 			if (IMylynAgileCoreConstants.TYPE_SCOPE.equals(scopeAtt.getMetaData().getType())) {
 				createScopeSection(toolkit, scopeListComp, scopeAtt, backlogItemTypeName);
 			}
@@ -173,9 +171,9 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 
 		// Drag'n drop
 		viewer.addDragSupport(DND.DROP_MOVE, new Transfer[] {LocalSelectionTransfer.getTransfer() },
-				new ScopeDragListener(viewer, scopeViewer));
+				new ScopeDragListener(viewer, getModel(), scopeViewer));
 		viewer.addDropSupport(DND.DROP_MOVE, new Transfer[] {LocalSelectionTransfer.getTransfer() },
-				new ScopeDropAdapter(viewer, scopeViewer));
+				new ScopeDropAdapter(viewer, getModel(), scopeViewer));
 	}
 
 	/**

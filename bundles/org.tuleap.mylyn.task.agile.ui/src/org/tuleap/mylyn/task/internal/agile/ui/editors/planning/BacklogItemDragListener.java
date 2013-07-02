@@ -16,6 +16,7 @@ import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
+import org.eclipse.mylyn.tasks.core.data.TaskDataModel;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.DragSourceListener;
@@ -29,18 +30,26 @@ import org.tuleap.mylyn.task.agile.core.util.IMylynAgileCoreConstants;
 public class BacklogItemDragListener implements DragSourceListener {
 
 	/**
-	 * The table fViewer to listen to.
+	 * The table viewer to listen to.
 	 */
-	private TableViewer fViewer;
+	private final TableViewer fViewer;
 
 	/**
-	 * Constructor, requires the table fViewer to listen to.
+	 * The task data model to use for managing dirty state.
+	 */
+	private final TaskDataModel fModel;
+
+	/**
+	 * Constructor, requires the table viewer to listen to.
 	 * 
 	 * @param viewer
-	 *            the table fViewer to listen to.
+	 *            the table viewer to listen to.
+	 * @param model
+	 *            The task data model to use.
 	 */
-	BacklogItemDragListener(TableViewer viewer) {
+	BacklogItemDragListener(TableViewer viewer, TaskDataModel model) {
 		this.fViewer = viewer;
+		this.fModel = model;
 	}
 
 	/**
@@ -90,6 +99,7 @@ public class BacklogItemDragListener implements DragSourceListener {
 					att.setValue(String.valueOf(index++));
 				}
 			}
+			fModel.attributeChanged(itemListAtt);
 		}
 		fViewer.refresh();
 	}
