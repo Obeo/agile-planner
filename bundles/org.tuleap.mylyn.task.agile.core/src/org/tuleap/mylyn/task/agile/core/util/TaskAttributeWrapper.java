@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 
 /**
@@ -39,7 +40,29 @@ public class TaskAttributeWrapper {
 	 *            The attribute to wrap.
 	 */
 	public TaskAttributeWrapper(TaskAttribute anAttribute) {
-		this.attribute = anAttribute; // TODO Check not null
+		Assert.isNotNull(anAttribute);
+		this.attribute = anAttribute;
+	}
+
+	/**
+	 * Counts the number of children attributes of the given type. If the type is {@code null}, only children
+	 * with a type {@code null} are counted.
+	 * 
+	 * @param type
+	 *            The type to filter children attributes.
+	 * @return Returns the number of child attributes of the given type, or the number of children without
+	 *         type if the given type is {@code null}.
+	 */
+	public int countChildren(String type) {
+		// now, type is not null
+		int ret = 0;
+		for (TaskAttribute child : attribute.getAttributes().values()) {
+			if (type == null && child.getMetaData().getType() == null || type != null
+					&& type.equals(child.getMetaData().getType())) {
+				ret++;
+			}
+		}
+		return ret;
 	}
 
 	/**

@@ -90,6 +90,13 @@ public class TaskAttributeWrapperTest {
 	}
 
 	@Test
+	public void testCountChildren() {
+		assertEquals(8, wrapper.countChildren(TYPE1));
+		assertEquals(2, wrapper.countChildren(TYPE2));
+		assertEquals(3, wrapper.countChildren(null));
+	}
+
+	@Test
 	public void checkThatElementsOfTheWrongTypeAreNotMoved() {
 		wrapper.moveElementsSortedByValue(Arrays.asList(b0), 1, TYPE1);
 		assertEquals("0", b0.getValue());
