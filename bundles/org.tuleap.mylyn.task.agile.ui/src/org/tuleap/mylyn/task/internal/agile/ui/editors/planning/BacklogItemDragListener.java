@@ -47,7 +47,7 @@ public class BacklogItemDragListener implements DragSourceListener {
 	 * @param model
 	 *            The task data model to use.
 	 */
-	BacklogItemDragListener(TableViewer viewer, TaskDataModel model) {
+	public BacklogItemDragListener(TableViewer viewer, TaskDataModel model) {
 		this.fViewer = viewer;
 		this.fModel = model;
 	}

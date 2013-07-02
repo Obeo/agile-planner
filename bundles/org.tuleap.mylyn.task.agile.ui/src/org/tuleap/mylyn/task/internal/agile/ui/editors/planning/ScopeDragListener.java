@@ -37,7 +37,7 @@ public class ScopeDragListener extends BacklogItemDragListener {
 	 * @param scopeSectionViewer
 	 *            The scope section viewer, top use to update the section's UI after a drag operation.
 	 */
-	ScopeDragListener(TableViewer viewer, TaskDataModel model, ScopeSectionViewer scopeSectionViewer) {
+	public ScopeDragListener(TableViewer viewer, TaskDataModel model, ScopeSectionViewer scopeSectionViewer) {
 		super(viewer, model);
 		fScopeSectionViewer = scopeSectionViewer;
 	}
