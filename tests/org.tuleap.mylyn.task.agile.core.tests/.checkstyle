@@ -4,7 +4,10 @@
   <local-check-config name="Mylyn Task Agile Checkstyle" location="/org.tuleap.mylyn.task.agile-feature/codeStyle/CheckstyleConfiguration.xml" type="project" description="">
     <additional-data name="protect-config-file" value="false"/>
   </local-check-config>
-  <fileset name="all" enabled="true" check-config-name="Mylyn Task Agile Checkstyle" local="true">
+  <local-check-config name="Mylyn Task Agile Test Checkstyle" location="/org.tuleap.mylyn.task.agile-feature/codeStyle/CheckstyleTestConfiguration.xml" type="project" description="">
+    <additional-data name="protect-config-file" value="false"/>
+  </local-check-config>
+  <fileset name="all" enabled="true" check-config-name="Mylyn Task Agile Test Checkstyle" local="true">
     <file-match-pattern match-pattern="." include-pattern="true"/>
   </fileset>
 </fileset-config>
