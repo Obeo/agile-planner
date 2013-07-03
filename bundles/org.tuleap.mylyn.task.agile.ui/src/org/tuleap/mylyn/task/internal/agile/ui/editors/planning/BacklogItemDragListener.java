@@ -10,10 +10,7 @@
  *******************************************************************************/
 package org.tuleap.mylyn.task.internal.agile.ui.editors.planning;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
-import java.util.List;
 
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -86,28 +83,15 @@ public class BacklogItemDragListener implements DragSourceListener {
 	 * 
 	 * @see org.eclipse.swt.dnd.DragSourceListener#dragFinished(org.eclipse.swt.dnd.DragSourceEvent)
 	 */
+	@SuppressWarnings({"cast", "unchecked" })
 	@Override
 	public void dragFinished(DragSourceEvent event) {
 		if (event.detail == DND.DROP_MOVE) {
-			TaskAttribute itemListAtt = (TaskAttribute)fViewer.getInput();
-			// remove the dragged element(s) from the source
 			IStructuredSelection selection = (IStructuredSelection)fViewer.getSelection();
-			for (Iterator<?> it = selection.iterator(); it.hasNext();) {
-				TaskAttribute itemAtt = (TaskAttribute)it.next();
-				itemListAtt.removeAttribute(itemAtt.getId());
-			}
-			// Recompute the dragged elements indexes
-			int index = 0;
-			List<TaskAttribute> attributes = new ArrayList<TaskAttribute>();
-			for (TaskAttribute att : itemListAtt.getAttributes().values()) {
-				if (IMylynAgileCoreConstants.TYPE_BACKLOG_ITEM.equals(att.getMetaData().getType())) {
-					attributes.add(att);
-				}
-			}
-			Collections.sort(attributes, new TaskAttributeWrapper.TaskAttributeComparator());
-			for (TaskAttribute att : attributes) {
-				att.setValue(String.valueOf(index++));
-			}
+			TaskAttribute itemListAtt = (TaskAttribute)fViewer.getInput();
+			new TaskAttributeWrapper(itemListAtt)
+					.removeElementsSortedByValue((Iterator<TaskAttribute>)selection.iterator(),
+							IMylynAgileCoreConstants.TYPE_BACKLOG_ITEM);
 			fModel.attributeChanged(itemListAtt);
 		}
 		fViewer.refresh();
