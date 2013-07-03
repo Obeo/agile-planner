@@ -211,6 +211,48 @@ public class TaskAttributeWrapperTest {
 	 * but not those without a type or the container task attribute.
 	 */
 	@Test
+	public void testRemoveFirstElement() {
+		assertEquals(1, wrapper.removeElementsSortedByValue(Arrays.asList(a0).iterator(), TYPE1));
+		assertEquals("0", a1.getValue());
+		assertEquals("1", a2.getValue());
+		assertEquals("2", a3.getValue());
+		assertEquals("3", a4.getValue());
+		assertEquals("4", a5.getValue());
+		assertEquals("5", a6.getValue());
+		assertEquals("6", a7.getValue());
+		assertFalse(wrapper.containsInstance(a0));
+		// It is not legitimate to check that the parent attribute has changed, it can never change on an
+		// attribute.
+		// assertFalse(a == a0.getParentAttribute());
+	}
+
+	@Test
+	public void testRemoveLastElement() {
+		assertEquals(1, wrapper.removeElementsSortedByValue(Arrays.asList(a7).iterator(), TYPE1));
+		assertEquals("0", a0.getValue());
+		assertEquals("1", a1.getValue());
+		assertEquals("2", a2.getValue());
+		assertEquals("3", a3.getValue());
+		assertEquals("4", a4.getValue());
+		assertEquals("5", a5.getValue());
+		assertEquals("6", a6.getValue());
+		assertFalse(wrapper.containsInstance(a7));
+	}
+
+	@Test
+	public void testRemoveSeveralElements() {
+		assertEquals(3, wrapper.removeElementsSortedByValue(Arrays.asList(a7, a0, a4).iterator(), TYPE1));
+		assertEquals("0", a1.getValue());
+		assertEquals("1", a2.getValue());
+		assertEquals("2", a3.getValue());
+		assertEquals("3", a5.getValue());
+		assertEquals("4", a6.getValue());
+		assertFalse(wrapper.containsInstance(a0));
+		assertFalse(wrapper.containsInstance(a4));
+		assertFalse(wrapper.containsInstance(a7));
+	}
+
+	@Test
 	public void testContainsInstance() {
 		assertTrue(wrapper.containsInstance(type1TaskAttribute0));
 		assertTrue(wrapper.containsInstance(type1TaskAttribute1));

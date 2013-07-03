@@ -14,6 +14,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
@@ -165,6 +166,44 @@ public class TaskAttributeWrapper {
 				attribute.deepAddCopy(movedAttribute);
 			}
 		}
+	}
+
+	/**
+	 * Removes the given element from the wrapped attribute.
+	 * 
+	 * @param attributesToRemove
+	 *            Attributes to remove from the wrapped attribute.
+	 * @param type
+	 *            The type of removed attributes. Any attribute not of this type will be silently ignored.
+	 * @return Returns the number of attributes actually removed from the wrapped attribute.
+	 */
+	public int removeElementsSortedByValue(Iterator<TaskAttribute> attributesToRemove, String type) {
+		int nbAttributesRemoved = 0;
+		// remove the dragged element(s) from the source
+		while (attributesToRemove.hasNext()) {
+			TaskAttribute itemAtt = attributesToRemove.next();
+			if (itemAtt.getParentAttribute() == attribute) {
+				String itemType = itemAtt.getMetaData().getType();
+				if (type == null && itemType == null || type != null && type.equals(itemType)) {
+					attribute.removeAttribute(itemAtt.getId());
+					nbAttributesRemoved++;
+				}
+			}
+		}
+		// Recompute the remaining elements indexes
+		int index = 0;
+		List<TaskAttribute> attributes = new ArrayList<TaskAttribute>();
+		for (TaskAttribute att : attribute.getAttributes().values()) {
+			String attType = att.getMetaData().getType();
+			if (type == null && attType == null || type != null && type.equals(attType)) {
+				attributes.add(att);
+			}
+		}
+		Collections.sort(attributes, new TaskAttributeWrapper.TaskAttributeComparator());
+		for (TaskAttribute att : attributes) {
+			att.setValue(String.valueOf(index++));
+		}
+		return nbAttributesRemoved;
 	}
 
 	/**
