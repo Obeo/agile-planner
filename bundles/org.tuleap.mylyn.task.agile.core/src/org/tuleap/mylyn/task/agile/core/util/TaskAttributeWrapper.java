@@ -214,7 +214,6 @@ public class TaskAttributeWrapper {
 		 * @return the number of elements in the wrapped list that have a value less than the given
 		 *         attribute's value.
 		 */
-		@SuppressWarnings("unused")
 		public int getNumberHavingValueLessThan(TaskAttribute attribute) {
 			int attRank = Integer.parseInt(attribute.getValue());
 			return getNumberHavingValueLessThan(attRank);
