@@ -10,7 +10,10 @@
  *******************************************************************************/
 package org.tuleap.mylyn.task.internal.agile.ui.editors.planning;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -21,6 +24,7 @@ import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.DragSourceListener;
 import org.tuleap.mylyn.task.agile.core.util.IMylynAgileCoreConstants;
+import org.tuleap.mylyn.task.agile.core.util.TaskAttributeWrapper;
 
 /**
  * Drag listener for BacklogItem tables.
@@ -94,10 +98,15 @@ public class BacklogItemDragListener implements DragSourceListener {
 			}
 			// Recompute the dragged elements indexes
 			int index = 0;
+			List<TaskAttribute> attributes = new ArrayList<TaskAttribute>();
 			for (TaskAttribute att : itemListAtt.getAttributes().values()) {
 				if (IMylynAgileCoreConstants.TYPE_BACKLOG_ITEM.equals(att.getMetaData().getType())) {
-					att.setValue(String.valueOf(index++));
+					attributes.add(att);
 				}
+			}
+			Collections.sort(attributes, new TaskAttributeWrapper.TaskAttributeComparator());
+			for (TaskAttribute att : attributes) {
+				att.setValue(String.valueOf(index++));
 			}
 			fModel.attributeChanged(itemListAtt);
 		}
