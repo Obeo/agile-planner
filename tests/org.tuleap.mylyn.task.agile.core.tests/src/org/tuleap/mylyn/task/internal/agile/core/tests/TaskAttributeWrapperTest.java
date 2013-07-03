@@ -8,7 +8,7 @@
  * Contributors:
  *     Obeo - initial API and implementation
  *******************************************************************************/
-package org.tuleap.mylyn.task.agile.core.tests;
+package org.tuleap.mylyn.task.internal.agile.core.tests;
 
 // CHECKSTYLE:OFF
 

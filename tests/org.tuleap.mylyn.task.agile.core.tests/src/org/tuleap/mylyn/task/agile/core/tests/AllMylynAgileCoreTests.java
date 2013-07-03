@@ -10,11 +10,9 @@
  *******************************************************************************/
 package org.tuleap.mylyn.task.agile.core.tests;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
-import org.eclipse.mylyn.commons.sdk.util.ManagedTestSuite;
-import org.tuleap.mylyn.task.internal.agile.core.tests.SomeTest;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.tuleap.mylyn.task.internal.agile.core.tests.TaskAttributeWrapperTest;
 
 /**
  * This class should be used to launch all the unit tests.
@@ -22,23 +20,8 @@ import org.tuleap.mylyn.task.internal.agile.core.tests.SomeTest;
  * @author <a href="mailto:stephane.begaudeau@obeo.fr">Stephane Begaudeau</a>
  * @since 1.0
  */
-@SuppressWarnings("restriction")
+@RunWith(Suite.class)
+@Suite.SuiteClasses({TaskAttributeWrapperTest.class })
 public final class AllMylynAgileCoreTests {
-	/**
-	 * The constructor.
-	 */
-	private AllMylynAgileCoreTests() {
-		// prevent instantiation
-	}
-
-	/**
-	 * Returns the tests suite to run.
-	 * 
-	 * @return The tests suite to run
-	 */
-	public static Test suite() {
-		TestSuite suite = new ManagedTestSuite(AllMylynAgileCoreTests.class.getName());
-		suite.addTestSuite(SomeTest.class);
-		return suite;
-	}
+	// Nothing to add, JUnit 4 Test Suite
 }
