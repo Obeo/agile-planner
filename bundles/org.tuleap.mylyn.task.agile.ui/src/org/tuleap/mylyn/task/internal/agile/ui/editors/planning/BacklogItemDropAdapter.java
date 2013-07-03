@@ -79,29 +79,46 @@ public class BacklogItemDropAdapter extends AbstractTaskAttributeViewerDropAdapt
 	 *         drop has not been performed or has been performed but was only inside of the list.
 	 */
 	private boolean performDropOnBacklogItem(IStructuredSelection selection, TaskAttribute targetAtt) {
-		boolean ret;
+		boolean ret = false;
 		TaskAttribute listAtt = targetAtt.getParentAttribute();
 		String id = targetAtt.getValue();
 		int insertionIndex = Integer.parseInt(id);
+		boolean mustUpdate;
 		switch (getCurrentLocation()) {
 			case LOCATION_AFTER:
 				insertionIndex++;
+				mustUpdate = true;
 				break;
 			case LOCATION_NONE:
-				return false;
+				mustUpdate = false;
+				break;
 			default:
+				mustUpdate = true;
 				break;
 		}
-		if (listAtt == ((TaskAttribute)selection.getFirstElement()).getParentAttribute()) {
-			moveSelectedElements(selection, listAtt, insertionIndex);
-			ret = false;
-		} else {
-			// Drag'n drop from one list to another
-			copySelectedElements(selection, listAtt, insertionIndex);
-			ret = true;
+		if (mustUpdate) {
+			TaskAttribute firstSelectedAttribute = (TaskAttribute)selection.getFirstElement();
+			if (listAtt == firstSelectedAttribute.getParentAttribute()) {
+				// Move inside of the same list
+				int selectedIndex = Integer.parseInt(firstSelectedAttribute.getValue());
+				if (selection.size() == 1
+						&& (selectedIndex == insertionIndex || selectedIndex == insertionIndex - 1)) {
+					// Move of one element on itself => do not modify anything!
+					mustUpdate = false;
+				} else {
+					moveSelectedElements(selection, listAtt, insertionIndex);
+				}
+				ret = false;
+			} else {
+				// Drag'n drop from one list to another
+				copySelectedElements(selection, listAtt, insertionIndex);
+				ret = true;
+			}
 		}
-		getModel().attributeChanged(listAtt);
-		getViewer().refresh();
+		if (mustUpdate) {
+			getModel().attributeChanged(listAtt);
+			getViewer().refresh();
+		}
 		return ret;
 	}
 
