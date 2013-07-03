@@ -207,51 +207,111 @@ public class TaskAttributeWrapperTest {
 	}
 
 	/**
-	 * Test that the wrapper contains all the instances of the task attribute with the type TYPE1 and TYPE2
-	 * but not those without a type or the container task attribute.
+	 * Check that removing the first element works properly.
 	 */
 	@Test
 	public void testRemoveFirstElement() {
-		assertEquals(1, wrapper.removeElementsSortedByValue(Arrays.asList(a0).iterator(), TYPE1));
-		assertEquals("0", a1.getValue());
-		assertEquals("1", a2.getValue());
-		assertEquals("2", a3.getValue());
-		assertEquals("3", a4.getValue());
-		assertEquals("4", a5.getValue());
-		assertEquals("5", a6.getValue());
-		assertEquals("6", a7.getValue());
-		assertFalse(wrapper.containsInstance(a0));
+		assertEquals(1, wrapper.removeElementsSortedByValue(Arrays.asList(type1TaskAttribute0).iterator(),
+				TYPE1));
+		assertEquals("0", type1TaskAttribute1.getValue()); //$NON-NLS-1$
+		assertEquals("1", type1TaskAttribute2.getValue()); //$NON-NLS-1$
+		assertEquals("2", type1TaskAttribute3.getValue()); //$NON-NLS-1$
+		assertEquals("3", type1TaskAttribute4.getValue()); //$NON-NLS-1$
+		assertEquals("4", type1TaskAttribute5.getValue()); //$NON-NLS-1$
+		assertEquals("5", type1TaskAttribute6.getValue()); //$NON-NLS-1$
+		assertEquals("6", type1TaskAttribute7.getValue()); //$NON-NLS-1$
+		assertFalse(wrapper.containsInstance(type1TaskAttribute0));
 		// It is not legitimate to check that the parent attribute has changed, it can never change on an
 		// attribute.
-		// assertFalse(a == a0.getParentAttribute());
+		// assertFalse(a == type1TaskAttribute0.getParentAttribute());
+		assertTrue(wrapper.containsInstance(type2TaskAttribute0));
+		assertTrue(wrapper.containsInstance(type2TaskAttribute1));
 	}
 
+	/**
+	 * Check that removing the last child works properly.
+	 */
 	@Test
 	public void testRemoveLastElement() {
-		assertEquals(1, wrapper.removeElementsSortedByValue(Arrays.asList(a7).iterator(), TYPE1));
-		assertEquals("0", a0.getValue());
-		assertEquals("1", a1.getValue());
-		assertEquals("2", a2.getValue());
-		assertEquals("3", a3.getValue());
-		assertEquals("4", a4.getValue());
-		assertEquals("5", a5.getValue());
-		assertEquals("6", a6.getValue());
-		assertFalse(wrapper.containsInstance(a7));
+		assertEquals(1, wrapper.removeElementsSortedByValue(Arrays.asList(type1TaskAttribute7).iterator(),
+				TYPE1));
+		assertEquals("0", type1TaskAttribute0.getValue()); //$NON-NLS-1$
+		assertEquals("1", type1TaskAttribute1.getValue()); //$NON-NLS-1$
+		assertEquals("2", type1TaskAttribute2.getValue()); //$NON-NLS-1$
+		assertEquals("3", type1TaskAttribute3.getValue()); //$NON-NLS-1$
+		assertEquals("4", type1TaskAttribute4.getValue()); //$NON-NLS-1$
+		assertEquals("5", type1TaskAttribute5.getValue()); //$NON-NLS-1$
+		assertEquals("6", type1TaskAttribute6.getValue()); //$NON-NLS-1$
+		assertFalse(wrapper.containsInstance(type1TaskAttribute7));
+		assertTrue(wrapper.containsInstance(type2TaskAttribute0));
+		assertTrue(wrapper.containsInstance(type2TaskAttribute1));
 	}
 
+	/**
+	 * Check that removing several elements from the children works properly.
+	 */
 	@Test
 	public void testRemoveSeveralElements() {
-		assertEquals(3, wrapper.removeElementsSortedByValue(Arrays.asList(a7, a0, a4).iterator(), TYPE1));
-		assertEquals("0", a1.getValue());
-		assertEquals("1", a2.getValue());
-		assertEquals("2", a3.getValue());
-		assertEquals("3", a5.getValue());
-		assertEquals("4", a6.getValue());
-		assertFalse(wrapper.containsInstance(a0));
-		assertFalse(wrapper.containsInstance(a4));
-		assertFalse(wrapper.containsInstance(a7));
+		assertEquals(3, wrapper.removeElementsSortedByValue(Arrays.asList(type1TaskAttribute7,
+				type1TaskAttribute0, type1TaskAttribute4).iterator(), TYPE1));
+		assertEquals("0", type1TaskAttribute1.getValue()); //$NON-NLS-1$
+		assertEquals("1", type1TaskAttribute2.getValue()); //$NON-NLS-1$
+		assertEquals("2", type1TaskAttribute3.getValue()); //$NON-NLS-1$
+		assertEquals("3", type1TaskAttribute5.getValue()); //$NON-NLS-1$
+		assertEquals("4", type1TaskAttribute6.getValue()); //$NON-NLS-1$
+		assertFalse(wrapper.containsInstance(type1TaskAttribute0));
+		assertFalse(wrapper.containsInstance(type1TaskAttribute4));
+		assertFalse(wrapper.containsInstance(type1TaskAttribute7));
+		assertTrue(wrapper.containsInstance(type2TaskAttribute0));
+		assertTrue(wrapper.containsInstance(type2TaskAttribute1));
 	}
 
+	/**
+	 * Check that removing only elements of a type different of the given type does nothing.
+	 */
+	@Test
+	public void testRemoveElementsOfWrongTypeDoesNothing() {
+		assertEquals(0, wrapper.removeElementsSortedByValue(Arrays.asList(type1TaskAttribute7,
+				type1TaskAttribute0, type1TaskAttribute4).iterator(), TYPE2));
+		assertEquals("0", type1TaskAttribute0.getValue()); //$NON-NLS-1$
+		assertEquals("1", type1TaskAttribute1.getValue()); //$NON-NLS-1$
+		assertEquals("2", type1TaskAttribute2.getValue()); //$NON-NLS-1$
+		assertEquals("3", type1TaskAttribute3.getValue()); //$NON-NLS-1$
+		assertEquals("4", type1TaskAttribute4.getValue()); //$NON-NLS-1$
+		assertEquals("5", type1TaskAttribute5.getValue()); //$NON-NLS-1$
+		assertEquals("6", type1TaskAttribute6.getValue()); //$NON-NLS-1$
+		assertEquals("7", type1TaskAttribute7.getValue()); //$NON-NLS-1$
+		assertTrue(wrapper.containsInstance(type1TaskAttribute0));
+		assertTrue(wrapper.containsInstance(type1TaskAttribute4));
+		assertTrue(wrapper.containsInstance(type1TaskAttribute7));
+		assertTrue(wrapper.containsInstance(type2TaskAttribute0));
+		assertTrue(wrapper.containsInstance(type2TaskAttribute1));
+	}
+
+	/**
+	 * Check that all elements of the given type are removed from the children, and that elements of a
+	 * different type are left untouched.
+	 */
+	@Test
+	public void testRemoveElementsOfWrongTypeAndRightType() {
+		assertEquals(2, wrapper.removeElementsSortedByValue(Arrays.asList(type1TaskAttribute7,
+				type1TaskAttribute0, type2TaskAttribute0).iterator(), TYPE1));
+		assertEquals("0", type1TaskAttribute1.getValue()); //$NON-NLS-1$
+		assertEquals("1", type1TaskAttribute2.getValue()); //$NON-NLS-1$
+		assertEquals("2", type1TaskAttribute3.getValue()); //$NON-NLS-1$
+		assertEquals("3", type1TaskAttribute4.getValue()); //$NON-NLS-1$
+		assertEquals("4", type1TaskAttribute5.getValue()); //$NON-NLS-1$
+		assertEquals("5", type1TaskAttribute6.getValue()); //$NON-NLS-1$
+		assertFalse(wrapper.containsInstance(type1TaskAttribute0));
+		assertFalse(wrapper.containsInstance(type1TaskAttribute7));
+		assertTrue(wrapper.containsInstance(type2TaskAttribute0));
+		assertTrue(wrapper.containsInstance(type2TaskAttribute1));
+	}
+
+	/**
+	 * Test that the wrapper contains all the instances of the task attribute with the type TYPE1 and TYPE2
+	 * but not those without a type or the container task attribute.
+	 */
 	@Test
 	public void testContainsInstance() {
 		assertTrue(wrapper.containsInstance(type1TaskAttribute0));
