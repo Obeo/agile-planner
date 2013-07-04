@@ -13,7 +13,7 @@ package org.tuleap.mylyn.task.internal.agile.ui.editors.planning;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.mylyn.tasks.core.data.TaskDataModel;
 import org.eclipse.swt.dnd.DragSourceEvent;
-import org.eclipse.ui.forms.widgets.Section;
+import org.eclipse.swt.widgets.Control;
 
 /**
  * Drag listener for Milestone section tables.
@@ -51,7 +51,7 @@ public class MilestoneDragListener extends BacklogItemDragListener {
 	@Override
 	public void dragFinished(DragSourceEvent event) {
 		super.dragFinished(event);
-		Section section = (Section)fMilestoneSectionViewer.getControl();
+		Control section = fMilestoneSectionViewer.getControl();
 		// We need to layout the whole right part
 		section.getParent().getParent().getParent().layout();
 		fMilestoneSectionViewer.refresh();

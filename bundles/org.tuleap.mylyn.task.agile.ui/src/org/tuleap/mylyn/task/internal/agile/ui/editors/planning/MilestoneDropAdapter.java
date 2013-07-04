@@ -12,7 +12,7 @@ package org.tuleap.mylyn.task.internal.agile.ui.editors.planning;
 
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.mylyn.tasks.core.data.TaskDataModel;
-import org.eclipse.ui.forms.widgets.Section;
+import org.eclipse.swt.widgets.Control;
 
 /**
  * Drop Listener for BacklogItem tables.
@@ -52,7 +52,7 @@ public class MilestoneDropAdapter extends BacklogItemDropAdapter {
 	public boolean performDrop(Object data) {
 		boolean ret = super.performDrop(data);
 		if (ret) {
-			Section section = (Section)fMilestoneSectionViewer.getControl();
+			Control section = fMilestoneSectionViewer.getControl();
 			// We need to layout the whole right part
 			section.getParent().getParent().getParent().layout();
 			fMilestoneSectionViewer.refresh();
