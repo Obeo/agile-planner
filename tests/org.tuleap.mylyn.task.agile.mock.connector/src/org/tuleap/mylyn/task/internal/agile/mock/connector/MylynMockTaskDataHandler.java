@@ -89,37 +89,38 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 		TaskAttribute backlogTypeAtt = root.createAttribute(IMylynAgileCoreConstants.BACKLOG_TYPE_LABEL);
 		backlogTypeAtt.setValue("Release Backlog"); //$NON-NLS-1$
 
-		// The label of the types of elements contained in backlog and scopes
+		// The label of the types of elements contained in backlog and milestones
 		TaskAttribute backlogItemTypeAtt = root
 				.createAttribute(IMylynAgileCoreConstants.BACKLOG_ITEM_TYPE_LABEL);
 		backlogItemTypeAtt.setValue("User Story"); //$NON-NLS-1$
 
-		// The label of the types of elements contained in backlog and scopes
+		// The label of the types of elements contained in backlog and milestones
 		TaskAttribute backlogItemPointsLabelAtt = root
 				.createAttribute(IMylynAgileCoreConstants.BACKLOG_ITEM_POINTS_LABEL);
 		backlogItemPointsLabelAtt.setValue("Story Points"); //$NON-NLS-1$
 
-		int scopeIndex = 0;
+		int milestoneIndex = 0;
 		// First Sprint
 		String startDate = String.valueOf(new Date().getTime() - 4 * MILLISECOND_IN_WEEK);
 		String endDate = String.valueOf(new Date().getTime() - 2 * MILLISECOND_IN_WEEK);
 
-		TaskAttribute scopeAtt = this.createSprint(root, scopeIndex++, "Sprint 1", "20", startDate, endDate); //$NON-NLS-1$ //$NON-NLS-2$
-		addNewScopeItem(scopeAtt);
-		addNewScopeItem(scopeAtt);
-		addNewScopeItem(scopeAtt);
-		addNewScopeItem(scopeAtt);
+		TaskAttribute milestoneAtt = this.createSprint(root, milestoneIndex++,
+				"Sprint 1", "20", startDate, endDate); //$NON-NLS-1$ //$NON-NLS-2$
+		addNewMilestoneItem(milestoneAtt);
+		addNewMilestoneItem(milestoneAtt);
+		addNewMilestoneItem(milestoneAtt);
+		addNewMilestoneItem(milestoneAtt);
 
 		// Second Sprint
 		startDate = String.valueOf(new Date().getTime() - 2 * MILLISECOND_IN_WEEK);
 		endDate = String.valueOf(new Date().getTime());
-		scopeAtt = this.createSprint(root, scopeIndex++, "Sprint 2", "18", startDate, endDate); //$NON-NLS-1$ //$NON-NLS-2$
+		milestoneAtt = this.createSprint(root, milestoneIndex++, "Sprint 2", "18", startDate, endDate); //$NON-NLS-1$ //$NON-NLS-2$
 
 		// Re-initialization of the rank, to start from 0 in each list.
 		rank = 0;
-		addNewScopeItem(scopeAtt);
-		addNewScopeItem(scopeAtt);
-		addNewScopeItem(scopeAtt);
+		addNewMilestoneItem(milestoneAtt);
+		addNewMilestoneItem(milestoneAtt);
+		addNewMilestoneItem(milestoneAtt);
 
 		// Backlog items (left)
 		TaskAttribute backlogItemList = root.createAttribute(IMylynAgileCoreConstants.BACKLOG_ITEM_LIST);
@@ -140,7 +141,7 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 	 * 
 	 * @param root
 	 *            The root of the task data
-	 * @param scopeIndex
+	 * @param milestoneIndex
 	 *            The index of the sprint
 	 * @param name
 	 *            The name
@@ -152,35 +153,37 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 	 *            The end date of the sprint
 	 * @return The task attribute representing the sprint under the task data's root
 	 */
-	private TaskAttribute createSprint(TaskAttribute root, int scopeIndex, String name, String capacity,
+	private TaskAttribute createSprint(TaskAttribute root, int milestoneIndex, String name, String capacity,
 			String startDate, String endDate) {
-		TaskAttribute scopeAtt = root.createAttribute(IMylynAgileCoreConstants.PREFIX_SCOPE + scopeIndex);
-		scopeAtt.getMetaData().setType(IMylynAgileCoreConstants.TYPE_SCOPE);
-		scopeAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
+		TaskAttribute milestoneAtt = root.createAttribute(IMylynAgileCoreConstants.PREFIX_MILESTONE
+				+ milestoneIndex);
+		milestoneAtt.getMetaData().setType(IMylynAgileCoreConstants.TYPE_MILESTONE);
+		milestoneAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
 
-		TaskAttribute scopeNameAtt = scopeAtt.createAttribute(IMylynAgileCoreConstants.SCOPE_NAME);
-		scopeNameAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
-		scopeNameAtt.getMetaData().setType(TaskAttribute.TYPE_SHORT_RICH_TEXT);
-		scopeNameAtt.setValue(name);
+		TaskAttribute milestoneNameAtt = milestoneAtt
+				.createAttribute(IMylynAgileCoreConstants.MILESTONE_NAME);
+		milestoneNameAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
+		milestoneNameAtt.getMetaData().setType(TaskAttribute.TYPE_SHORT_RICH_TEXT);
+		milestoneNameAtt.setValue(name);
 
-		TaskAttribute capacityAtt = scopeAtt.createAttribute(IMylynAgileCoreConstants.SCOPE_CAPACITY);
+		TaskAttribute capacityAtt = milestoneAtt.createAttribute(IMylynAgileCoreConstants.MILESTONE_CAPACITY);
 		capacityAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
 		capacityAtt.getMetaData().setType(TaskAttribute.TYPE_DOUBLE);
 		capacityAtt.setValue(capacity);
 
-		TaskAttribute startDateAtt = scopeAtt.createAttribute(IMylynAgileCoreConstants.START_DATE);
+		TaskAttribute startDateAtt = milestoneAtt.createAttribute(IMylynAgileCoreConstants.START_DATE);
 		startDateAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
 		startDateAtt.getMetaData().setLabel("Creation Date"); //$NON-NLS-1$
 		startDateAtt.getMetaData().setType(TaskAttribute.TYPE_DATETIME);
 		startDateAtt.setValue(startDate);
 
-		TaskAttribute endDateAtt = scopeAtt.createAttribute(IMylynAgileCoreConstants.END_DATE);
+		TaskAttribute endDateAtt = milestoneAtt.createAttribute(IMylynAgileCoreConstants.END_DATE);
 		endDateAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
 		endDateAtt.getMetaData().setLabel("End Date"); //$NON-NLS-1$
 		endDateAtt.getMetaData().setType(TaskAttribute.TYPE_DATE);
 		endDateAtt.setValue(endDate);
 
-		return scopeAtt;
+		return milestoneAtt;
 	}
 
 	/**
@@ -229,38 +232,41 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 	}
 
 	/**
-	 * Adds a new scope attribute.
+	 * Adds a new milestone attribute.
 	 * 
-	 * @param scopeAtt
-	 *            The scope attribute
+	 * @param milestoneAtt
+	 *            The milestone attribute
 	 */
-	private void addNewScopeItem(TaskAttribute scopeAtt) {
-		TaskAttribute scopeItemAtt = scopeAtt.createAttribute(scopeAtt.getId() + "-" + backlogItemIndex++); //$NON-NLS-1$
-		scopeItemAtt.getMetaData().setType(IMylynAgileCoreConstants.TYPE_BACKLOG_ITEM);
-		scopeItemAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
-		scopeItemAtt.setValue(String.valueOf(rank++));
+	private void addNewMilestoneItem(TaskAttribute milestoneAtt) {
+		TaskAttribute milestoneItemAtt = milestoneAtt.createAttribute(milestoneAtt.getId()
+				+ "-" + backlogItemIndex++); //$NON-NLS-1$
+		milestoneItemAtt.getMetaData().setType(IMylynAgileCoreConstants.TYPE_BACKLOG_ITEM);
+		milestoneItemAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
+		milestoneItemAtt.setValue(String.valueOf(rank++));
 
-		TaskAttribute idAtt = scopeItemAtt.createAttribute(IMylynAgileCoreConstants.BACKLOG_ITEM_ID);
+		TaskAttribute idAtt = milestoneItemAtt.createAttribute(IMylynAgileCoreConstants.BACKLOG_ITEM_ID);
 		idAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
 		idAtt.setValue(String.valueOf(100 + backlogItemIndex));
 		idAtt.getMetaData().setType(TaskAttribute.TYPE_SHORT_TEXT);
 
-		TaskAttribute nameAtt = scopeItemAtt.createAttribute(IMylynAgileCoreConstants.BACKLOG_ITEM_NAME);
+		TaskAttribute nameAtt = milestoneItemAtt.createAttribute(IMylynAgileCoreConstants.BACKLOG_ITEM_NAME);
 		nameAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
 		nameAtt.setValue("User Story " + backlogItemIndex); //$NON-NLS-1$
 		nameAtt.getMetaData().setType(TaskAttribute.TYPE_SHORT_RICH_TEXT);
 
-		TaskAttribute pointsAtt = scopeItemAtt.createAttribute(IMylynAgileCoreConstants.BACKLOG_ITEM_POINTS);
+		TaskAttribute pointsAtt = milestoneItemAtt
+				.createAttribute(IMylynAgileCoreConstants.BACKLOG_ITEM_POINTS);
 		pointsAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
 		pointsAtt.setValue("4"); //$NON-NLS-1$
 		pointsAtt.getMetaData().setType(TaskAttribute.TYPE_DOUBLE);
 
-		TaskAttribute summaryAtt = scopeItemAtt.createAttribute(TaskAttribute.SUMMARY);
+		TaskAttribute summaryAtt = milestoneItemAtt.createAttribute(TaskAttribute.SUMMARY);
 		summaryAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
 		summaryAtt.getMetaData().setLabel("Summary"); //$NON-NLS-1$
 		summaryAtt.getMetaData().setType(TaskAttribute.TYPE_LONG_RICH_TEXT);
 
-		TaskAttribute parentAtt = scopeItemAtt.createAttribute(IMylynAgileCoreConstants.BACKLOG_ITEM_PARENT);
+		TaskAttribute parentAtt = milestoneItemAtt
+				.createAttribute(IMylynAgileCoreConstants.BACKLOG_ITEM_PARENT);
 		parentAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
 		parentAtt.getMetaData().setLabel("Parent"); //$NON-NLS-1$
 		parentAtt.getMetaData().setType(TaskAttribute.TYPE_TASK_DEPENDENCY);

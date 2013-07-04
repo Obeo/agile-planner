@@ -19,7 +19,7 @@ import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.tuleap.mylyn.task.agile.core.util.IMylynAgileCoreConstants;
 
 /**
- * Content Provider for Scopes.
+ * Content Provider for Milestones and Backlogs.
  * 
  * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
  */

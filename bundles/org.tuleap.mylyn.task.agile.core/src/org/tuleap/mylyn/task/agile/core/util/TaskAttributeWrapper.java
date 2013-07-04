@@ -158,10 +158,10 @@ public class TaskAttributeWrapper {
 			if (attribute.getAttributes().containsKey(movedAttribute.getId())) {
 				// TODO Create a new id... is it really necessary?
 				// N.B. backlogItems should all be created in a backlog (with a unique id there)
-				// then moved to a given scope.
+				// then moved to a given milestone.
 				// Maybe the data model should be changed so that backlog items stay in the backlog
-				// and have an additional sub-attribute indicating their scope, if any...
-				// But then, we would need also to manage the rank in this scope.
+				// and have an additional sub-attribute indicating their milestone, if any...
+				// But then, we would need also to manage the rank in this milestone.
 			} else {
 				attribute.deepAddCopy(movedAttribute);
 			}

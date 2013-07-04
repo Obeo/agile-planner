@@ -44,7 +44,7 @@ import org.tuleap.mylyn.task.internal.agile.ui.util.IMylynAgileUIConstants;
 import org.tuleap.mylyn.task.internal.agile.ui.util.MylynAgileUIMessages;
 
 /**
- * Editor part containing the backlog on the left and the list of scopes on the right. This editor manages
+ * Editor part containing the backlog on the left and the list of milestones on the right. This editor manages
  * Sprints Planning for a release (Release Backlog + Sprints, both containing user stories), but also Releases
  * Planning for a product (Product backlog + Releases, both containing epics), depending on what is being
  * manipulated.
@@ -107,44 +107,44 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 		viewer.addDropSupport(DND.DROP_MOVE, new Transfer[] {LocalSelectionTransfer.getTransfer() },
 				new BacklogItemDropAdapter(viewer, getModel()));
 
-		Section scopeList = toolkit.createSection(body, ExpandableComposite.TITLE_BAR | Section.EXPANDED);
-		scopeList.setText("Sprints Planning"); // TODO Make this label dynamic, from the data model //$NON-NLS-1$
-		scopeList.setLayout(FormLayoutFactory.createFormPaneTableWrapLayout(false, 1));
-		scopeList.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
+		Section milestoneList = toolkit.createSection(body, ExpandableComposite.TITLE_BAR | Section.EXPANDED);
+		milestoneList.setText("Sprints Planning"); // TODO Make this label dynamic, from the data model //$NON-NLS-1$
+		milestoneList.setLayout(FormLayoutFactory.createFormPaneTableWrapLayout(false, 1));
+		milestoneList.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
 
-		Composite scopeListComp = toolkit.createComposite(scopeList);
-		scopeListComp.setLayout(FormLayoutFactory.createFormPaneTableWrapLayout(false, 1));
-		scopeListComp.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
-		scopeList.setClient(scopeListComp);
+		Composite milestoneListComp = toolkit.createComposite(milestoneList);
+		milestoneListComp.setLayout(FormLayoutFactory.createFormPaneTableWrapLayout(false, 1));
+		milestoneListComp.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
+		milestoneList.setClient(milestoneListComp);
 
-		for (TaskAttribute scopeAtt : getTaskData().getRoot().getAttributes().values()) {
-			if (IMylynAgileCoreConstants.TYPE_SCOPE.equals(scopeAtt.getMetaData().getType())) {
-				createScopeSection(toolkit, scopeListComp, scopeAtt, backlogItemTypeName);
+		for (TaskAttribute milestoneAtt : getTaskData().getRoot().getAttributes().values()) {
+			if (IMylynAgileCoreConstants.TYPE_MILESTONE.equals(milestoneAtt.getMetaData().getType())) {
+				createMilestoneSection(toolkit, milestoneListComp, milestoneAtt, backlogItemTypeName);
 			}
 		}
 	}
 
 	/**
-	 * Creates a section for a given Scope in a given parent composite.
+	 * Creates a section for a given Milestone in a given parent composite.
 	 * 
 	 * @param toolkit
 	 *            The toolkit to use.
 	 * @param parentComposite
 	 *            The parent composite that will contain the created section.
-	 * @param scopeAtt
-	 *            The TaskAttribute that represents the scope.
+	 * @param milestoneAtt
+	 *            The TaskAttribute that represents the milestone.
 	 * @param backlogItemTypeName
-	 *            The label to use for the scope's backlog items type.
+	 *            The label to use for the milestone's backlog items type.
 	 */
-	private void createScopeSection(FormToolkit toolkit, Composite parentComposite, TaskAttribute scopeAtt,
-			String backlogItemTypeName) {
-		Section scopeSection = toolkit.createSection(parentComposite, ExpandableComposite.TITLE_BAR
+	private void createMilestoneSection(FormToolkit toolkit, Composite parentComposite,
+			TaskAttribute milestoneAtt, String backlogItemTypeName) {
+		Section milestoneSection = toolkit.createSection(parentComposite, ExpandableComposite.TITLE_BAR
 				| Section.DESCRIPTION | Section.TWISTIE | Section.EXPANDED);
-		scopeSection.setLayout(FormLayoutFactory.createClearTableWrapLayout(false, 1));
-		TableWrapData scopeLayoutData = new TableWrapData(TableWrapData.FILL_GRAB);
-		scopeSection.setLayoutData(scopeLayoutData);
+		milestoneSection.setLayout(FormLayoutFactory.createClearTableWrapLayout(false, 1));
+		TableWrapData milestoneLayoutData = new TableWrapData(TableWrapData.FILL_GRAB);
+		milestoneSection.setLayoutData(milestoneLayoutData);
 		ToolBarManager toolBarManager = new ToolBarManager(SWT.FLAT);
-		ToolBar toolbar = toolBarManager.createControl(scopeSection);
+		ToolBar toolbar = toolBarManager.createControl(milestoneSection);
 		final Cursor handCursor = new Cursor(Display.getCurrent(), SWT.CURSOR_HAND);
 		toolbar.setCursor(handCursor);
 		// Cursor needs to be explicitly disposed
@@ -156,24 +156,25 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 		});
 		// Add sort action to the tool bar
 
-		Action a = new Action(
-				MylynAgileUIMessages.getString("PlanningTaskEditorPart.EditScopeActionLabel"), PlatformUI.getWorkbench() //$NON-NLS-1$
-						.getSharedImages().getImageDescriptor(ISharedImages.IMG_OBJ_FILE)) {
-			// TODO Implement action to open scope in its own editor
+		Action a = new Action(MylynAgileUIMessages
+				.getString("PlanningTaskEditorPart.EditMilestoneActionLabel"), PlatformUI.getWorkbench() //$NON-NLS-1$
+				.getSharedImages().getImageDescriptor(ISharedImages.IMG_OBJ_FILE)) {
+			// TODO Implement action to open milestone in its own editor
 		};
 		toolBarManager.add(a);
 		toolBarManager.update(true);
-		scopeSection.setTextClient(toolbar);
-		ScopeSectionViewer scopeViewer = new ScopeSectionViewer(scopeSection);
-		scopeViewer.setInput(scopeAtt);
-		scopeViewer.refresh();
-		TableViewer viewer = createBacklogItemsTable(toolkit, scopeSection, scopeAtt, backlogItemTypeName);
+		milestoneSection.setTextClient(toolbar);
+		MilestoneSectionViewer milestoneViewer = new MilestoneSectionViewer(milestoneSection);
+		milestoneViewer.setInput(milestoneAtt);
+		milestoneViewer.refresh();
+		TableViewer viewer = createBacklogItemsTable(toolkit, milestoneSection, milestoneAtt,
+				backlogItemTypeName);
 
 		// Drag'n drop
 		viewer.addDragSupport(DND.DROP_MOVE, new Transfer[] {LocalSelectionTransfer.getTransfer() },
-				new ScopeDragListener(viewer, getModel(), scopeViewer));
+				new MilestoneDragListener(viewer, getModel(), milestoneViewer));
 		viewer.addDropSupport(DND.DROP_MOVE, new Transfer[] {LocalSelectionTransfer.getTransfer() },
-				new ScopeDropAdapter(viewer, getModel(), scopeViewer));
+				new MilestoneDropAdapter(viewer, getModel(), milestoneViewer));
 	}
 
 	/**
@@ -183,14 +184,14 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 	 *            The form toolkit to use
 	 * @param section
 	 *            The parent section which will contain the table and use it as its client
-	 * @param scopeAtt
+	 * @param milestoneAtt
 	 *            The <code>TaskAttribute</code> that contains the backlog item <code>TaskAttribute</code>s
 	 * @param backlogItemTypeName
 	 *            The label to use for the type of the backlog items (used as header for one of the columns
-	 * @return The TableViewer that displays the scope's bakclog items.
+	 * @return The TableViewer that displays the milestone's bakclog items.
 	 */
 	private TableViewer createBacklogItemsTable(final FormToolkit toolkit, final Section section,
-			final TaskAttribute scopeAtt, final String backlogItemTypeName) {
+			final TaskAttribute milestoneAtt, final String backlogItemTypeName) {
 		final String strMissing = MylynAgileUIMessages.getString("PlanningTaskEditorPart.MissingTextValue"); //$NON-NLS-1$
 		Table table = toolkit.createTable(section, SWT.BORDER | SWT.MULTI | SWT.FULL_SELECTION);
 		section.setClient(table);
@@ -288,7 +289,7 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 		});
 		colParent.getColumn().setWidth(IMylynAgileUIConstants.DEFAULT_PARENT_COL_WIDTH);
 
-		viewer.setInput(scopeAtt);
+		viewer.setInput(milestoneAtt);
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
 		viewer.setSorter(new ViewerSorter() {

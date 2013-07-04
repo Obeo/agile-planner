@@ -25,11 +25,11 @@ import org.tuleap.mylyn.task.agile.core.util.IMylynAgileCoreConstants;
 import org.tuleap.mylyn.task.internal.agile.ui.util.MylynAgileUIMessages;
 
 /**
- * A viewer for scope sections, which manages the refresh of the section's dynamic parts on demand.
+ * A viewer for milestone sections, which manages the refresh of the section's dynamic parts on demand.
  * 
  * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
  */
-public class ScopeSectionViewer extends Viewer {
+public class MilestoneSectionViewer extends Viewer {
 
 	/**
 	 * The wrapped section.
@@ -47,7 +47,7 @@ public class ScopeSectionViewer extends Viewer {
 	 * @param section
 	 *            The section to wrap in this Viewer.
 	 */
-	public ScopeSectionViewer(final Section section) {
+	public MilestoneSectionViewer(final Section section) {
 		Assert.isNotNull(section);
 		fSection = section;
 	}
@@ -82,7 +82,7 @@ public class ScopeSectionViewer extends Viewer {
 		Assert.isNotNull(input);
 		Assert.isTrue(input instanceof TaskAttribute);
 		TaskAttribute ta = (TaskAttribute)input;
-		Assert.isTrue(IMylynAgileCoreConstants.TYPE_SCOPE.equals(ta.getMetaData().getType()));
+		Assert.isTrue(IMylynAgileCoreConstants.TYPE_MILESTONE.equals(ta.getMetaData().getType()));
 		this.fInput = ta;
 	}
 
@@ -93,10 +93,10 @@ public class ScopeSectionViewer extends Viewer {
 	 */
 	@Override
 	public void refresh() {
-		fSection.setText(getScopeSectionHeaderText());
-		double requiredCapacity = getScopeSectionRequiredCapacity();
-		double capacity = getScopeSectionCapacity();
-		fSection.setDescription(MylynAgileUIMessages.getString("ScopeSectionViewer.CapacityLabel", //$NON-NLS-1$
+		fSection.setText(getMilestoneSectionHeaderText());
+		double requiredCapacity = getMilestoneSectionRequiredCapacity();
+		double capacity = getMilestoneSectionCapacity();
+		fSection.setDescription(MylynAgileUIMessages.getString("MilestoneSectionViewer.CapacityLabel", //$NON-NLS-1$
 				Double.valueOf(requiredCapacity), Double.valueOf(capacity)));
 		if (requiredCapacity > capacity) {
 			fSection.getDescriptionControl().setForeground(ColorConstants.red);
@@ -126,11 +126,11 @@ public class ScopeSectionViewer extends Viewer {
 	}
 
 	/**
-	 * Computes the required scope capacity by adding the points of all the scope's items.
+	 * Computes the required milestone capacity by adding the points of all the milestone's items.
 	 * 
-	 * @return the sum of all backlog items in <code>scopeAtt</code>.
+	 * @return the sum of all backlog items in <code>milestoneAtt</code>.
 	 */
-	private double getScopeSectionRequiredCapacity() {
+	private double getMilestoneSectionRequiredCapacity() {
 		double sumOfPoints = 0.0;
 		for (TaskAttribute child : fInput.getAttributes().values()) {
 			if (IMylynAgileCoreConstants.TYPE_BACKLOG_ITEM.equals(child.getMetaData().getType())) {
@@ -151,15 +151,15 @@ public class ScopeSectionViewer extends Viewer {
 	}
 
 	/**
-	 * Computes the estimated scope capacity by retrieving it from the relevant sub-attribute in the given
+	 * Computes the estimated milestone capacity by retrieving it from the relevant sub-attribute in the given
 	 * TaskAttribute.
 	 * 
-	 * @return the estimated scope capacity by retrieving it from the relevant sub-attribute in the given
+	 * @return the estimated milestone capacity by retrieving it from the relevant sub-attribute in the given
 	 *         TaskAttribute
 	 */
-	private double getScopeSectionCapacity() {
+	private double getMilestoneSectionCapacity() {
 		String capacity = MylynAgileUIMessages.getString("PlanningTaskEditorPart.MissingNumericValue"); //$NON-NLS-1$;
-		TaskAttribute capacityAtt = fInput.getAttribute(IMylynAgileCoreConstants.SCOPE_CAPACITY);
+		TaskAttribute capacityAtt = fInput.getAttribute(IMylynAgileCoreConstants.MILESTONE_CAPACITY);
 		if (capacityAtt != null && capacityAtt.getValue() != null) {
 			capacity = capacityAtt.getValue();
 		}
@@ -167,12 +167,12 @@ public class ScopeSectionViewer extends Viewer {
 	}
 
 	/**
-	 * Computes and returns the text to use as a header for a scope section.
+	 * Computes and returns the text to use as a header for a milestone section.
 	 * 
-	 * @return The text to use as a header for a scope section.
+	 * @return The text to use as a header for a milestone section.
 	 */
-	private String getScopeSectionHeaderText() {
-		TaskAttribute nameAtt = fInput.getAttribute(IMylynAgileCoreConstants.SCOPE_NAME);
+	private String getMilestoneSectionHeaderText() {
+		TaskAttribute nameAtt = fInput.getAttribute(IMylynAgileCoreConstants.MILESTONE_NAME);
 		TaskAttribute startDateAtt = fInput.getAttribute(IMylynAgileCoreConstants.START_DATE);
 		TaskAttribute endDateAtt = fInput.getAttribute(IMylynAgileCoreConstants.END_DATE);
 
@@ -185,7 +185,7 @@ public class ScopeSectionViewer extends Viewer {
 		}
 		titleBuilder.append(" ("); //$NON-NLS-1$
 		DateFormat dateFormat = new SimpleDateFormat(MylynAgileUIMessages
-				.getString("PlanningTaskEditorPart.ScopeDateFormat")); //$NON-NLS-1$
+				.getString("PlanningTaskEditorPart.MilestoneDateFormat")); //$NON-NLS-1$
 		if (startDateAtt == null || startDateAtt.getValue() == null) {
 			titleBuilder.append("?"); //$NON-NLS-1$
 		} else {

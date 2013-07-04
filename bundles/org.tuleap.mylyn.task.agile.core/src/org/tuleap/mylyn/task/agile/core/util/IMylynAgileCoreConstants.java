@@ -30,24 +30,24 @@ public interface IMylynAgileCoreConstants {
 	String TASK_KIND_RELEASE = "mta_kind_release"; //$NON-NLS-1$
 
 	/**
-	 * The value used to indicate that a task data represents a scope (for instance, a sprint).
+	 * The value used to indicate that a task data represents a milestone (for instance, a sprint).
 	 */
-	String TYPE_SCOPE = "mta_scope"; //$NON-NLS-1$
+	String TYPE_MILESTONE = "mta_milestone"; //$NON-NLS-1$
 
 	/**
-	 * Prefix used to generate ids of scopes (there are several scopes in a parent Planning).
+	 * Prefix used to generate ids of milestones (there are several milestones in a parent Planning).
 	 */
-	String PREFIX_SCOPE = "mta_scope-"; //$NON-NLS-1$
+	String PREFIX_MILESTONE = "mta_milestone-"; //$NON-NLS-1$
 
 	/**
-	 * The value used to indicate that a task data represents the name of a scope.
+	 * The value used to indicate that a task data represents the name of a milestone.
 	 */
-	String SCOPE_NAME = "mta_scope_name"; //$NON-NLS-1$
+	String MILESTONE_NAME = "mta_milestone_name"; //$NON-NLS-1$
 
 	/**
-	 * The value used to indicate that a task data represents a scope capacity.
+	 * The value used to indicate that a task data represents a milestone capacity.
 	 */
-	String SCOPE_CAPACITY = "mta_scope_capacity"; //$NON-NLS-1$
+	String MILESTONE_CAPACITY = "mta_milestone_capacity"; //$NON-NLS-1$
 
 	/**
 	 * The value used to indicate that a task data represents a planned start date.
@@ -66,12 +66,12 @@ public interface IMylynAgileCoreConstants {
 	String BACKLOG_ITEM_LIST = "mta_backlog_item_list"; //$NON-NLS-1$
 
 	/**
-	 * The value used to indicate that a task data represents a scope (for instance, a sprint).
+	 * The value used to indicate that a task data represents a milestone (for instance, a sprint).
 	 */
 	String TYPE_BACKLOG_ITEM = "mta_backlog_item"; //$NON-NLS-1$
 
 	/**
-	 * Prefix used to generate ids of scopes (there are several scopes in a parent Planning).
+	 * Prefix used to generate ids of milestones (there are several milestones in a parent Planning).
 	 */
 	String PREFIX_BACKLOG_ITEM = "mta_backlog_item-"; //$NON-NLS-1$
 

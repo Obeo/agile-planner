@@ -19,12 +19,12 @@ import org.eclipse.ui.forms.widgets.Section;
  * 
  * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
  */
-public class ScopeDropAdapter extends BacklogItemDropAdapter {
+public class MilestoneDropAdapter extends BacklogItemDropAdapter {
 
 	/**
-	 * The scope section viewer, use to update after a drop operation.
+	 * The milestone section viewer, use to update after a drop operation.
 	 */
-	private final ScopeSectionViewer fScopeSectionViewer;
+	private final MilestoneSectionViewer fMilestoneSectionViewer;
 
 	/**
 	 * Constructor, requires a viewer. Delegates to the parent class.
@@ -33,12 +33,14 @@ public class ScopeDropAdapter extends BacklogItemDropAdapter {
 	 *            The viewer.
 	 * @param model
 	 *            The TaskdataModel to use.
-	 * @param scopeSectionViewer
-	 *            The scope section viewer, top use to update the section's UI after a drag or drop operation.
+	 * @param milestoneSectionViewer
+	 *            The milestone section viewer, top use to update the section's UI after a drag or drop
+	 *            operation.
 	 */
-	public ScopeDropAdapter(Viewer viewer, TaskDataModel model, ScopeSectionViewer scopeSectionViewer) {
+	public MilestoneDropAdapter(Viewer viewer, TaskDataModel model,
+			MilestoneSectionViewer milestoneSectionViewer) {
 		super(viewer, model);
-		fScopeSectionViewer = scopeSectionViewer;
+		fMilestoneSectionViewer = milestoneSectionViewer;
 	}
 
 	/**
@@ -50,10 +52,10 @@ public class ScopeDropAdapter extends BacklogItemDropAdapter {
 	public boolean performDrop(Object data) {
 		boolean ret = super.performDrop(data);
 		if (ret) {
-			Section section = (Section)fScopeSectionViewer.getControl();
+			Section section = (Section)fMilestoneSectionViewer.getControl();
 			// We need to layout the whole right part
 			section.getParent().getParent().getParent().layout();
-			fScopeSectionViewer.refresh();
+			fMilestoneSectionViewer.refresh();
 		}
 		return ret;
 	}

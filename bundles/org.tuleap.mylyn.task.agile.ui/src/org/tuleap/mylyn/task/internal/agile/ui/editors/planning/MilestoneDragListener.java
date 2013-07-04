@@ -16,16 +16,16 @@ import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.ui.forms.widgets.Section;
 
 /**
- * Drag listener for Scope section tables.
+ * Drag listener for Milestone section tables.
  * 
  * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
  */
-public class ScopeDragListener extends BacklogItemDragListener {
+public class MilestoneDragListener extends BacklogItemDragListener {
 
 	/**
-	 * The scope section fViewer to refresh after drag operations.
+	 * The milestone section fViewer to refresh after drag operations.
 	 */
-	private ScopeSectionViewer fScopeSectionViewer;
+	private MilestoneSectionViewer fMilestoneSectionViewer;
 
 	/**
 	 * Constructor, requires the table fViewer to listen to.
@@ -34,12 +34,13 @@ public class ScopeDragListener extends BacklogItemDragListener {
 	 *            the table fViewer to listen to.
 	 * @param model
 	 *            The task data model to use.
-	 * @param scopeSectionViewer
-	 *            The scope section viewer, top use to update the section's UI after a drag operation.
+	 * @param milestoneSectionViewer
+	 *            The milestone section viewer, top use to update the section's UI after a drag operation.
 	 */
-	public ScopeDragListener(TableViewer viewer, TaskDataModel model, ScopeSectionViewer scopeSectionViewer) {
+	public MilestoneDragListener(TableViewer viewer, TaskDataModel model,
+			MilestoneSectionViewer milestoneSectionViewer) {
 		super(viewer, model);
-		fScopeSectionViewer = scopeSectionViewer;
+		fMilestoneSectionViewer = milestoneSectionViewer;
 	}
 
 	/**
@@ -50,10 +51,10 @@ public class ScopeDragListener extends BacklogItemDragListener {
 	@Override
 	public void dragFinished(DragSourceEvent event) {
 		super.dragFinished(event);
-		Section section = (Section)fScopeSectionViewer.getControl();
+		Section section = (Section)fMilestoneSectionViewer.getControl();
 		// We need to layout the whole right part
 		section.getParent().getParent().getParent().layout();
-		fScopeSectionViewer.refresh();
+		fMilestoneSectionViewer.refresh();
 	}
 
 }
