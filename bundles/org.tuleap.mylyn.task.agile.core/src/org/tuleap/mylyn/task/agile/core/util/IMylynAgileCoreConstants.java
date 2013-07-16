@@ -117,4 +117,40 @@ public interface IMylynAgileCoreConstants {
 	 * The value used to indicate that a task data represents the parent of a backlog item.
 	 */
 	String BACKLOG_ITEM_PARENT = "mta_backlog_item_parent"; //$NON-NLS-1$
+
+	/**
+	 * The value used to describe the kind of the backlog items contained in the milestone.
+	 */
+	String MILESTONE_BACKLOG_ITEMS_KIND = "mta_milestone_backlog_items_kind"; //$NON-NLS-1$
+
+	/**
+	 * The prefix used for the identifier of the milestone state.
+	 */
+	String PREFIX_MILESTONE_STATE = "mta_milestone_state_prefix-"; //$NON-NLS-1$
+
+	/**
+	 * The value used to specify the type of a milestone state.
+	 */
+	String TYPE_MILESTONE_STATE = "mta_type_milestone_state"; //$NON-NLS-1$
+
+	/**
+	 * The value used as a prefix for all the state mapping of a milestone.
+	 */
+	String PREFIX_MILESTONE_STATE_MAPPING = "mta_milestone_state_mapping_prefix-"; //$NON-NLS-1$
+
+	/**
+	 * The value used to specify the type of a milestones state mapping.
+	 */
+	String TYPE_MILESTONE_STATE_MAPPING = "mta_type_milestone_state_mapping"; //$NON-NLS-1$
+
+	/**
+	 * The value used to indicate that the task attribute represents a tracker id.
+	 */
+	String TRACKER_ID = "mta_tracker_id"; //$NON-NLS-1$
+
+	/**
+	 * The value used to indicate that the task attribute represents the ids of the values of the states used
+	 * in the mapping.
+	 */
+	String MILESTONE_STATE_MAPPING_STATE_VALUES_IDS = "mta_milestone_state_mapping_state_values_ids"; //$NON-NLS-1$
 }
