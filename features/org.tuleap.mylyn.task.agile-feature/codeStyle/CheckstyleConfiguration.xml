@@ -5,9 +5,8 @@
     This configuration file was written by the eclipse-cs plugin configuration editor
 -->
 <!--
-    Checkstyle-Configuration: Tuleap Checkstyle
-    Description: 
-Tuleap Checkstyle Configuration
+    Checkstyle-Configuration: Mylyn Task Agile Checkstyle
+    Description: none
 -->
 <module name="Checker">
   <property name="severity" value="warning"/>
@@ -170,9 +169,6 @@ Tuleap Checkstyle Configuration
       <property name="severity" value="ignore"/>
       <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
     </module>
-    <!--module name="DoubleCheckedLocking">
-      <property name="severity" value="error"/>
-    </module-->
     <module name="EmptyStatement">
       <property name="severity" value="error"/>
     </module>
