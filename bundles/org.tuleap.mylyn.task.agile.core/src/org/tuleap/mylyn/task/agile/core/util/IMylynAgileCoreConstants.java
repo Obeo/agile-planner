@@ -50,6 +50,11 @@ public interface IMylynAgileCoreConstants {
 	String MILESTONE_CAPACITY = "mta_milestone_capacity"; //$NON-NLS-1$
 
 	/**
+	 * The value used to indicate that a task data represents the milestone's index.
+	 */
+	String MILESTONE_INDEX = "mta_milestone_index"; //$NON-NLS-1$
+
+	/**
 	 * The value used to indicate that a task data represents a planned start date.
 	 */
 	String START_DATE = "mta_start_date"; //$NON-NLS-1$

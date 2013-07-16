@@ -17,6 +17,7 @@ import junit.textui.TestRunner;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.tuleap.mylyn.task.internal.agile.core.tests.TaskAttributeWrapperTest;
+import org.tuleap.mylyn.task.internal.agile.core.tests.data.PlanningTaskMapperTests;
 
 /**
  * This class should be used to launch all the unit tests.
@@ -25,7 +26,7 @@ import org.tuleap.mylyn.task.internal.agile.core.tests.TaskAttributeWrapperTest;
  * @since 1.0
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({TaskAttributeWrapperTest.class })
+@Suite.SuiteClasses({TaskAttributeWrapperTest.class, PlanningTaskMapperTests.class })
 public final class AllMylynAgileCoreTests {
 
 	/**
