@@ -107,10 +107,40 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 		viewer.addDropSupport(DND.DROP_MOVE, new Transfer[] {LocalSelectionTransfer.getTransfer() },
 				new BacklogItemDropAdapter(viewer, getModel()));
 
-		Section milestoneList = toolkit.createSection(body, ExpandableComposite.TITLE_BAR | Section.EXPANDED);
+		final Section milestoneList = toolkit.createSection(body, ExpandableComposite.TITLE_BAR
+				| Section.EXPANDED);
 		milestoneList.setText("Sprints Planning"); // TODO Make this label dynamic, from the data model //$NON-NLS-1$
 		milestoneList.setLayout(FormLayoutFactory.createFormPaneTableWrapLayout(false, 1));
 		milestoneList.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
+
+		ToolBarManager toolBarManager = new ToolBarManager(SWT.FLAT);
+		ToolBar toolbar = toolBarManager.createControl(milestoneList);
+
+		// The collapse all action
+		Action collapseAll = new Action(
+				MylynAgileUIMessages.getString("PlanningTaskEditorPart.CollapseAll"), PlatformUI.getWorkbench() //$NON-NLS-1$
+						.getSharedImages().getImageDescriptor(ISharedImages.IMG_ELCL_COLLAPSEALL)) {
+			@Override
+			public void run() {
+				milestoneList.setExpanded(false);
+			}
+		};
+
+		// The expand all action
+		Action expandAll = new Action(
+				MylynAgileUIMessages.getString("PlanningTaskEditorPart.ExpandAll"), PlatformUI.getWorkbench() //$NON-NLS-1$
+						.getSharedImages().getImageDescriptor(ISharedImages.IMG_OBJ_ADD)) {
+
+			@Override
+			public void run() {
+				milestoneList.setExpanded(true);
+			}
+		};
+
+		toolBarManager.add(collapseAll);
+		toolBarManager.add(expandAll);
+		toolBarManager.update(true);
+		milestoneList.setTextClient(toolbar);
 
 		Composite milestoneListComp = toolkit.createComposite(milestoneList);
 		milestoneListComp.setLayout(FormLayoutFactory.createFormPaneTableWrapLayout(false, 1));
