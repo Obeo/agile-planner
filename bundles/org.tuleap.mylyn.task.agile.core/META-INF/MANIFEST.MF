@@ -6,8 +6,7 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.tuleap.mylyn.task.internal.agile.core.MylynAgileCoreActivator
 Bundle-Vendor: %Bundle-Vendor
 Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.mylyn.tasks.core,
- org.junit
+ org.eclipse.mylyn.tasks.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Bundle-Localization: plugin
