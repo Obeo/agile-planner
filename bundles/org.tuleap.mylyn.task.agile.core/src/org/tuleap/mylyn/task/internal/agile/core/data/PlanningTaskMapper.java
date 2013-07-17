@@ -13,7 +13,6 @@ package org.tuleap.mylyn.task.internal.agile.core.data;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
@@ -70,7 +69,7 @@ public class PlanningTaskMapper extends TaskMapper {
 		// Create the new milestone under the task data root
 
 		TaskAttribute milestoneAtt = this.taskData.getRoot().createAttribute(
-				IMylynAgileCoreConstants.PREFIX_MILESTONE + UUID.randomUUID().toString());
+				IMylynAgileCoreConstants.PREFIX_MILESTONE + String.valueOf(0));
 		milestoneAtt.getMetaData().setType(IMylynAgileCoreConstants.TYPE_MILESTONE);
 		milestoneAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
 
