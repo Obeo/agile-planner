@@ -12,5 +12,5 @@ Bundle-ActivationPolicy: lazy
 Bundle-Localization: plugin
 Export-Package: org.tuleap.mylyn.task.agile.core.util,
  org.tuleap.mylyn.task.internal.agile.core;x-internal:=true,
- org.tuleap.mylyn.task.internal.agile.core.data;x-internal:=true,
+ org.tuleap.mylyn.task.internal.agile.core.data;x-friends:="org.tuleap.mylyn.task.agile.core.tests",
  org.tuleap.mylyn.task.internal.agile.core.util;x-internal:=true
