@@ -122,15 +122,17 @@ public class PlanningTaskMapper extends TaskMapper {
 					artifact = taskAttribute;
 				}
 			}
-			// The start and the target positions are the same
-			if (from == to) {
-				return;
+			if (artifact != null) {
+				// The start and the target positions are the same
+				if (from == to) {
+					return;
+				}
+				// The start and the target positions are different
+				List<TaskAttribute> list = new ArrayList<TaskAttribute>();
+				list.add(artifact);
+				new TaskAttributeWrapper(milestone).moveElementsSortedByValue(list, to + 1, artifact
+						.getMetaData().getType());
 			}
-			// The start and the target positions are different
-			List<TaskAttribute> list = new ArrayList<TaskAttribute>();
-			list.add(artifact);
-			new TaskAttributeWrapper(milestone).moveElementsSortedByValue(list, to + 1, artifact
-					.getMetaData().getType());
 		}
 	}
 
@@ -152,15 +154,17 @@ public class PlanningTaskMapper extends TaskMapper {
 					artifact = taskAttribute;
 				}
 			}
-			// The start and the target positions are the same
-			if (from == to) {
-				return;
+			if (artifact != null) {
+				// The start and the target positions are the same
+				if (from == to) {
+					return;
+				}
+				// The start and the target positions are different
+				List<TaskAttribute> list = new ArrayList<TaskAttribute>();
+				list.add(artifact);
+				new TaskAttributeWrapper(backlog).moveElementsSortedByValue(list, to + 1, artifact
+						.getMetaData().getType());
 			}
-			// The start and the target positions are different
-			List<TaskAttribute> list = new ArrayList<TaskAttribute>();
-			list.add(artifact);
-			new TaskAttributeWrapper(backlog).moveElementsSortedByValue(list, to + 1, artifact.getMetaData()
-					.getType());
 		}
 	}
 
@@ -186,15 +190,17 @@ public class PlanningTaskMapper extends TaskMapper {
 					artifact = taskAttribute;
 				}
 			}
-			List<TaskAttribute> addList = new ArrayList<TaskAttribute>();
-			addList.add(artifact);
-			new TaskAttributeWrapper(milestone).insertElementsSortedByValue(addList, to, artifact
-					.getMetaData().getType());
+			if (artifact != null) {
+				List<TaskAttribute> addList = new ArrayList<TaskAttribute>();
+				addList.add(artifact);
+				new TaskAttributeWrapper(milestone).insertElementsSortedByValue(addList, to, artifact
+						.getMetaData().getType());
 
-			List<TaskAttribute> removeList = new ArrayList<TaskAttribute>();
-			removeList.add(artifact);
-			new TaskAttributeWrapper(backlog).removeElementsSortedByValue(removeList.iterator(), artifact
-					.getMetaData().getType());
+				List<TaskAttribute> removeList = new ArrayList<TaskAttribute>();
+				removeList.add(artifact);
+				new TaskAttributeWrapper(backlog).removeElementsSortedByValue(removeList.iterator(), artifact
+						.getMetaData().getType());
+			}
 		}
 	}
 }
