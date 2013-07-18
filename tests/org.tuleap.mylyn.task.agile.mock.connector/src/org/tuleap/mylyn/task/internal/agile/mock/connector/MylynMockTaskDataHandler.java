@@ -77,10 +77,13 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 		summary.setValue("First Release"); //$NON-NLS-1$
 
 		TaskAttribute kindAttribute = root.createAttribute(TaskAttribute.TASK_KIND);
+		kindAttribute.getMetaData().setType(TaskAttribute.TYPE_SHORT_TEXT);
 		kindAttribute.setValue("Release"); //$NON-NLS-1$
+
 		TaskAttribute urlAttribute = root.createAttribute(TaskAttribute.TASK_URL);
 		urlAttribute.getMetaData().setType(TaskAttribute.TYPE_URL);
 		urlAttribute.setValue("http://google.com"); //$NON-NLS-1$
+
 		TaskAttribute descAttribute = root.createAttribute(TaskAttribute.DESCRIPTION);
 		descAttribute.getMetaData().setType(TaskAttribute.TYPE_SHORT_RICH_TEXT);
 		descAttribute.setValue("Release Planning Description"); //$NON-NLS-1$

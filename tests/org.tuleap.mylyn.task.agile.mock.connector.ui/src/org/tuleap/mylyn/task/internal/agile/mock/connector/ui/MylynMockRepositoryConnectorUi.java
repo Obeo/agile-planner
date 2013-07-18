@@ -12,6 +12,7 @@ package org.tuleap.mylyn.task.internal.agile.mock.connector.ui;
 
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
+import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.ITaskMapping;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.AbstractRepositoryConnectorUi;
@@ -35,6 +36,19 @@ public class MylynMockRepositoryConnectorUi extends AbstractRepositoryConnectorU
 	@Override
 	public String getConnectorKind() {
 		return IMylynMockConnectorConstants.CONNECTOR_KIND;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see org.eclipse.mylyn.tasks.ui.AbstractRepositoryConnectorUi#getTaskKindLabel(org.eclipse.mylyn.tasks.core.ITask)
+	 */
+	@Override
+	public String getTaskKindLabel(ITask task) {
+		if (task.getTaskKind() != null) {
+			return task.getTaskKind();
+		}
+		return super.getTaskKindLabel(task);
 	}
 
 	/**
