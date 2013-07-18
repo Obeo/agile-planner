@@ -28,6 +28,7 @@ import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.ToolBar;
@@ -113,6 +114,17 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 		milestoneList.setLayout(FormLayoutFactory.createFormPaneTableWrapLayout(false, 1));
 		milestoneList.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
 
+		final Composite milestoneListComp = toolkit.createComposite(milestoneList);
+		milestoneListComp.setLayout(FormLayoutFactory.createFormPaneTableWrapLayout(false, 1));
+		milestoneListComp.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
+		milestoneList.setClient(milestoneListComp);
+
+		for (TaskAttribute milestoneAtt : getTaskData().getRoot().getAttributes().values()) {
+			if (IMylynAgileCoreConstants.TYPE_MILESTONE.equals(milestoneAtt.getMetaData().getType())) {
+				createMilestoneSection(toolkit, milestoneListComp, milestoneAtt, backlogItemTypeName);
+			}
+		}
+
 		ToolBarManager toolBarManager = new ToolBarManager(SWT.FLAT);
 		ToolBar toolbar = toolBarManager.createControl(milestoneList);
 
@@ -122,7 +134,11 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 						.getSharedImages().getImageDescriptor(ISharedImages.IMG_ELCL_COLLAPSEALL)) {
 			@Override
 			public void run() {
-				milestoneList.setExpanded(false);
+				for (Control control : milestoneListComp.getChildren()) {
+					if (control instanceof Section) {
+						((ExpandableComposite)control).setExpanded(false);
+					}
+				}
 			}
 		};
 
@@ -133,7 +149,11 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 
 			@Override
 			public void run() {
-				milestoneList.setExpanded(true);
+				for (Control control : milestoneListComp.getChildren()) {
+					if (control instanceof Section) {
+						((ExpandableComposite)control).setExpanded(true);
+					}
+				}
 			}
 		};
 
@@ -141,17 +161,6 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 		toolBarManager.add(expandAll);
 		toolBarManager.update(true);
 		milestoneList.setTextClient(toolbar);
-
-		Composite milestoneListComp = toolkit.createComposite(milestoneList);
-		milestoneListComp.setLayout(FormLayoutFactory.createFormPaneTableWrapLayout(false, 1));
-		milestoneListComp.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
-		milestoneList.setClient(milestoneListComp);
-
-		for (TaskAttribute milestoneAtt : getTaskData().getRoot().getAttributes().values()) {
-			if (IMylynAgileCoreConstants.TYPE_MILESTONE.equals(milestoneAtt.getMetaData().getType())) {
-				createMilestoneSection(toolkit, milestoneListComp, milestoneAtt, backlogItemTypeName);
-			}
-		}
 	}
 
 	/**
