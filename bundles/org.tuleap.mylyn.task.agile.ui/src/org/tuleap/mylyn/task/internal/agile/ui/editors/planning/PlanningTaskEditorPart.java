@@ -40,7 +40,9 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.tuleap.mylyn.task.agile.core.util.IMylynAgileCoreConstants;
+import org.tuleap.mylyn.task.internal.agile.ui.MylynAgileUIActivator;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.FormLayoutFactory;
+import org.tuleap.mylyn.task.internal.agile.ui.util.IMylynAgileIcons;
 import org.tuleap.mylyn.task.internal.agile.ui.util.IMylynAgileUIConstants;
 import org.tuleap.mylyn.task.internal.agile.ui.util.MylynAgileUIMessages;
 
@@ -129,9 +131,8 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 		ToolBar toolbar = toolBarManager.createControl(milestoneList);
 
 		// The collapse all action
-		Action collapseAll = new Action(
-				MylynAgileUIMessages.getString("PlanningTaskEditorPart.CollapseAll"), PlatformUI.getWorkbench() //$NON-NLS-1$
-						.getSharedImages().getImageDescriptor(ISharedImages.IMG_ELCL_COLLAPSEALL)) {
+		Action collapseAll = new Action(MylynAgileUIMessages.getString("PlanningTaskEditorPart.CollapseAll"), //$NON-NLS-1$
+				MylynAgileUIActivator.getImageDescriptor(IMylynAgileIcons.COLLAPSE_ALL)) {
 			@Override
 			public void run() {
 				for (Control control : milestoneListComp.getChildren()) {
@@ -143,9 +144,8 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 		};
 
 		// The expand all action
-		Action expandAll = new Action(
-				MylynAgileUIMessages.getString("PlanningTaskEditorPart.ExpandAll"), PlatformUI.getWorkbench() //$NON-NLS-1$
-						.getSharedImages().getImageDescriptor(ISharedImages.IMG_OBJ_ADD)) {
+		Action expandAll = new Action(MylynAgileUIMessages.getString("PlanningTaskEditorPart.ExpandAll"), //$NON-NLS-1$
+				MylynAgileUIActivator.getImageDescriptor(IMylynAgileIcons.EXPAND_ALL)) {
 
 			@Override
 			public void run() {
