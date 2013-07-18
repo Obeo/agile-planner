@@ -62,14 +62,15 @@ public class PlanningTaskMapper extends TaskMapper {
 			if (attribute.getMetaData().getType() == IMylynAgileCoreConstants.TYPE_MILESTONE) {
 				String oldIndex = attribute.getAttribute(IMylynAgileCoreConstants.MILESTONE_INDEX).getValue();
 				int index = Integer.parseInt(oldIndex);
-				attribute.setValue(String.valueOf(index++));
+				attribute.getAttribute(IMylynAgileCoreConstants.MILESTONE_INDEX).setValue(
+						String.valueOf(index + 1));
 			}
 		}
 
 		// Create the new milestone under the task data root
 
 		TaskAttribute milestoneAtt = this.taskData.getRoot().createAttribute(
-				IMylynAgileCoreConstants.PREFIX_MILESTONE + String.valueOf(0));
+				IMylynAgileCoreConstants.PREFIX_MILESTONE + name);
 		milestoneAtt.getMetaData().setType(IMylynAgileCoreConstants.TYPE_MILESTONE);
 		milestoneAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
 
