@@ -8,7 +8,7 @@
  * Contributors:
  *     Obeo - initial API and implementation
  *******************************************************************************/
-package org.tuleap.mylyn.task.internal.agile.core.data;
+package org.tuleap.mylyn.task.agile.core.data.planning;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -16,7 +16,7 @@ import java.util.List;
 
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
-import org.eclipse.mylyn.tasks.core.data.TaskMapper;
+import org.tuleap.mylyn.task.agile.core.data.AbstractTaskMapper;
 import org.tuleap.mylyn.task.agile.core.util.IMylynAgileCoreConstants;
 import org.tuleap.mylyn.task.agile.core.util.TaskAttributeWrapper;
 
@@ -25,21 +25,16 @@ import org.tuleap.mylyn.task.agile.core.util.TaskAttributeWrapper;
  * 
  * @author <a href="mailto:firas.bacha@obeo.fr">Firas Bacha</a>
  */
-public class PlanningTaskMapper extends TaskMapper {
-	/**
-	 * The mapper task data.
-	 */
-	private TaskData taskData;
+public class PlanningTaskMapper extends AbstractTaskMapper {
 
 	/**
 	 * The constructor requires a task data.
 	 * 
-	 * @param data
+	 * @param taskData
 	 *            The task
 	 */
-	public PlanningTaskMapper(TaskData data) {
-		super(data);
-		this.taskData = data;
+	public PlanningTaskMapper(TaskData taskData) {
+		super(taskData, false);
 	}
 
 	/**

@@ -18,8 +18,8 @@ import org.eclipse.mylyn.tasks.core.data.TaskAttributeMapper;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.junit.Before;
 import org.junit.Test;
+import org.tuleap.mylyn.task.agile.core.data.planning.PlanningTaskMapper;
 import org.tuleap.mylyn.task.agile.core.util.IMylynAgileCoreConstants;
-import org.tuleap.mylyn.task.internal.agile.core.data.PlanningTaskMapper;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
