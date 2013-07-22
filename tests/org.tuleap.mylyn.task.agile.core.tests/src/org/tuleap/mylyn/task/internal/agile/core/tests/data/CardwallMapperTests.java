@@ -24,7 +24,7 @@ import static org.junit.Assert.fail;
  * 
  * @author <a href="mailto:stephane.begaudeau@obeo.fr">Stephane Begaudeau</a>
  */
-public class MylynCardwallMapperTests {
+public class CardwallMapperTests {
 	/**
 	 * The task data used for the unit tests.
 	 */
