@@ -14,7 +14,6 @@ import org.eclipse.mylyn.tasks.core.data.AbstractTaskSchema.Field;
 import org.eclipse.mylyn.tasks.core.data.DefaultTaskSchema;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
-import org.eclipse.mylyn.tasks.core.data.TaskMapper;
 
 /**
  * Common superclass of all the task mappers used by the agile editors. This utility class has been created
@@ -24,7 +23,12 @@ import org.eclipse.mylyn.tasks.core.data.TaskMapper;
  * @author <a href="mailto:stephane.begaudeau@obeo.fr">Stephane Begaudeau</a>
  * @since 1.0
  */
-public abstract class AbstractTaskMapper extends TaskMapper {
+public abstract class AbstractTaskMapper {
+
+	/**
+	 * The task data.
+	 */
+	protected TaskData taskData;
 
 	/**
 	 * Indicates if we can create non existing attributes in the task data if they do not exist.
@@ -40,7 +44,7 @@ public abstract class AbstractTaskMapper extends TaskMapper {
 	 *            Indicates if we should create new task data attributes if they do not exists.
 	 */
 	public AbstractTaskMapper(TaskData taskData, boolean createNonExistingAttributes) {
-		super(taskData, createNonExistingAttributes);
+		this.taskData = taskData;
 		this.canCreateNonExistingAttributes = createNonExistingAttributes;
 	}
 
@@ -58,7 +62,7 @@ public abstract class AbstractTaskMapper extends TaskMapper {
 	 * @return The writeable attribute with the given key and the given type
 	 */
 	protected TaskAttribute getWriteableAttribute(String attributeKey, String type) {
-		TaskAttribute attribute = this.getTaskData().getRoot().getMappedAttribute(attributeKey);
+		TaskAttribute attribute = this.taskData.getRoot().getMappedAttribute(attributeKey);
 		if (this.canCreateNonExistingAttributes) {
 			if (attribute == null) {
 				attribute = createAttribute(attributeKey, type);
@@ -82,14 +86,23 @@ public abstract class AbstractTaskMapper extends TaskMapper {
 		TaskAttribute attribute;
 		Field field = DefaultTaskSchema.getField(attributeKey);
 		if (field != null) {
-			attribute = field.createAttribute(this.getTaskData().getRoot());
+			attribute = field.createAttribute(this.taskData.getRoot());
 		} else {
-			attribute = this.getTaskData().getRoot().createMappedAttribute(attributeKey);
+			attribute = this.taskData.getRoot().createMappedAttribute(attributeKey);
 			if (type != null) {
 				attribute.getMetaData().defaults().setType(type);
 			}
 		}
 		return attribute;
+	}
+
+	/**
+	 * Returns the task data used by the mapper.
+	 * 
+	 * @return The task data used by the mapper
+	 */
+	public TaskData getTaskData() {
+		return this.taskData;
 	}
 
 }
