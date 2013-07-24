@@ -16,7 +16,8 @@ Require-Bundle: org.eclipse.core.runtime,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Bundle-Localization: plugin
-Export-Package: org.tuleap.mylyn.task.internal.agile.ui;x-internal:=true,
+Export-Package: org.tuleap.mylyn.task.agile.ui,
+ org.tuleap.mylyn.task.internal.agile.ui;x-internal:=true,
  org.tuleap.mylyn.task.internal.agile.ui.editors;x-internal:=true,
  org.tuleap.mylyn.task.internal.agile.ui.editors.planning;x-internal:=true,
  org.tuleap.mylyn.task.internal.agile.ui.util;x-internal:=true

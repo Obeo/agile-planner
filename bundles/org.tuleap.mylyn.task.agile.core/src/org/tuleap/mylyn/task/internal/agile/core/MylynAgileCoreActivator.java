@@ -15,6 +15,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
 import org.osgi.framework.BundleContext;
+import org.osgi.util.tracker.ServiceTracker;
+import org.tuleap.mylyn.task.agile.core.AbstractAgileRepositoryConnector;
 import org.tuleap.mylyn.task.internal.agile.core.util.MylynAgileCoreMessages;
 
 /**
@@ -35,6 +37,16 @@ public class MylynAgileCoreActivator extends Plugin {
 	private static MylynAgileCoreActivator plugin;
 
 	/**
+	 * The OSGI service tracker.
+	 */
+	private ServiceTracker<Object, AbstractAgileRepositoryConnector> serviceTracker;
+
+	/**
+	 * The service tracker customizer which will hold all the registered Agile Repository Connectors.
+	 */
+	private AgileRepositoryConnectorServiceTrackerCustomizer customizer;
+
+	/**
 	 * Returns the sole instance of the activator.
 	 * 
 	 * @return The sole instance of the activator.
@@ -52,6 +64,11 @@ public class MylynAgileCoreActivator extends Plugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
+
+		this.customizer = new AgileRepositoryConnectorServiceTrackerCustomizer(context);
+		this.serviceTracker = new ServiceTracker<Object, AbstractAgileRepositoryConnector>(context,
+				AbstractAgileRepositoryConnector.class.getName(), customizer);
+		this.serviceTracker.open();
 	}
 
 	/**
@@ -61,8 +78,19 @@ public class MylynAgileCoreActivator extends Plugin {
 	 */
 	@Override
 	public void stop(BundleContext context) throws Exception {
+		this.serviceTracker.close();
+		this.customizer = null;
 		plugin = null;
 		super.stop(context);
+	}
+
+	/**
+	 * Returns the service tracker customizer.
+	 * 
+	 * @return The service tracker customizer.
+	 */
+	public AgileRepositoryConnectorServiceTrackerCustomizer getServiceTrackerCustomizer() {
+		return this.customizer;
 	}
 
 	/**
