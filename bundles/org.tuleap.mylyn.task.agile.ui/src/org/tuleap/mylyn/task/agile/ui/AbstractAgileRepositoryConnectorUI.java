@@ -40,13 +40,7 @@ public abstract class AbstractAgileRepositoryConnectorUI {
 	 *            The progress monitor to use for monitoring progress...
 	 * @return The wizard to create the task that represents the milestone.
 	 */
-	public IWizard getNewMilestoneWizard(TaskData planningTaskData, TaskRepository taskRepository,
-			IProgressMonitor monitor) {
-		// AbstractRepositoryConnector de tuleap
-		// repositoryConnector.getTaskDataHandler().initializeTaskData(TaskRepository, TaskData, ITaskMapping,
-		// IProgressMonitor);
-		// create task from task data
-		return null; // FIXME
-	}
+	public abstract IWizard getNewMilestoneWizard(TaskData planningTaskData, TaskRepository taskRepository,
+			IProgressMonitor monitor);
 
 }
