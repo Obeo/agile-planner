@@ -21,6 +21,8 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
+import org.osgi.util.tracker.ServiceTracker;
+import org.tuleap.mylyn.task.agile.ui.AbstractAgileRepositoryConnectorUI;
 import org.tuleap.mylyn.task.internal.agile.ui.util.MylynAgileUIMessages;
 
 /**
@@ -39,6 +41,16 @@ public class MylynAgileUIActivator extends AbstractUIPlugin {
 	 * The sole instance of the activator.
 	 */
 	private static MylynAgileUIActivator plugin;
+
+	/**
+	 * The OSGI service tracker.
+	 */
+	private ServiceTracker<Object, AbstractAgileRepositoryConnectorUI> serviceTracker;
+
+	/**
+	 * The service tracker customizer which will hold all the registered Agile Repository Connectors.
+	 */
+	private AgileRepositoryConnectorUiServiceTrackerCustomizer customizer;
 
 	/**
 	 * The images.
@@ -63,6 +75,11 @@ public class MylynAgileUIActivator extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
+
+		this.customizer = new AgileRepositoryConnectorUiServiceTrackerCustomizer(context);
+		this.serviceTracker = new ServiceTracker<Object, AbstractAgileRepositoryConnectorUI>(context,
+				AbstractAgileRepositoryConnectorUI.class.getName(), customizer);
+		this.serviceTracker.open();
 	}
 
 	/**
@@ -72,6 +89,8 @@ public class MylynAgileUIActivator extends AbstractUIPlugin {
 	 */
 	@Override
 	public void stop(BundleContext context) throws Exception {
+		this.serviceTracker.close();
+		this.customizer = null;
 		plugin = null;
 
 		Iterator<Image> imageIterator = imageMap.values().iterator();
@@ -82,6 +101,15 @@ public class MylynAgileUIActivator extends AbstractUIPlugin {
 		imageMap.clear();
 
 		super.stop(context);
+	}
+
+	/**
+	 * Returns the service tracker customizer.
+	 * 
+	 * @return The service tracker customizer.
+	 */
+	public AgileRepositoryConnectorUiServiceTrackerCustomizer getServiceTrackerCustomizer() {
+		return this.customizer;
 	}
 
 	/**
