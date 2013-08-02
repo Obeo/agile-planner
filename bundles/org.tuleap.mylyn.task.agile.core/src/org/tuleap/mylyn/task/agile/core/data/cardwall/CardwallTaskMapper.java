@@ -324,7 +324,7 @@ public class CardwallTaskMapper extends AbstractTaskMapper {
 			for (CardwallStateMapping cardwallStateMapping : cardwallState.getMappings()) {
 				if (cardwallStateMapping.getTrackerId() == cardwallArtifact.getTrackerId()
 						&& cardwallStateMapping.getStateValuesId().contains(
-								new Integer(cardwallArtifact.getCardwallStateValue().getFieldId()))) {
+								Integer.valueOf(cardwallArtifact.getCardwallStateValue().getFieldId()))) {
 					state = cardwallState;
 				}
 
@@ -355,7 +355,7 @@ public class CardwallTaskMapper extends AbstractTaskMapper {
 				for (CardwallStateMapping cardwallStateMapping : cardwallState.getMappings()) {
 					if (cardwallStateMapping.getTrackerId() == cardwallArtifact.getTrackerId()
 							&& cardwallStateMapping.getStateValuesId().contains(
-									new Integer(cardwallArtifact.getCardwallStateValue().getFieldId()))) {
+									Integer.valueOf(cardwallArtifact.getCardwallStateValue().getFieldId()))) {
 						cardwallArtifactsList.add(cardwallArtifact);
 					}
 				}
