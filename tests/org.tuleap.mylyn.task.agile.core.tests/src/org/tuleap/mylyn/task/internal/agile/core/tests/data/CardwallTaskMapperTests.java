@@ -36,7 +36,7 @@ import static org.junit.Assert.assertEquals;
  * 
  * @author <a href="mailto:stephane.begaudeau@obeo.fr">Stephane Begaudeau</a>
  */
-public class CardwallMapperTests {
+public class CardwallTaskMapperTests {
 	/**
 	 * The task data used for the unit tests.
 	 */
