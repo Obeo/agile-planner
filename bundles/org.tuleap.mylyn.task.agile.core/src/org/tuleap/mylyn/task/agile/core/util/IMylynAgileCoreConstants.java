@@ -153,4 +153,34 @@ public interface IMylynAgileCoreConstants {
 	 * in the mapping.
 	 */
 	String MILESTONE_STATE_MAPPING_STATE_VALUES_IDS = "mta_milestone_state_mapping_state_values_ids"; //$NON-NLS-1$
+
+	/**
+	 * The value used to indicate the backlog item kind.
+	 */
+	String BACKLOG_ITEM_KIND = "mta_backlog_item_kind"; //$NON-NLS-1$
+
+	/**
+	 * The value used to indicate the backlog item artifact prefix.
+	 */
+	String PREFIX_BACKLOG_ITEM_ARTIFACT = "mta_backlog_item_artifact_prefix"; //$NON-NLS-1$
+
+	/**
+	 * The value used to indicate the backlog item artifact type.
+	 */
+	String TYPE_BACKLOG_ITEM_ARTIFACT = "mta_backlog_item_artifact_type"; //$NON-NLS-1$
+
+	/**
+	 * The value used to indicate the backlog item artifact title.
+	 */
+	String TITLE_BACKLOG_ITEM_ARTIFACT = "mta_backlog_item_artifact_title"; //$NON-NLS-1$
+
+	/**
+	 * The value used to indicate the backlog item artifact kind.
+	 */
+	String KIND_BACKLOG_ITEM_ARTIFACT = "mta_backlog_item_artifact_kind"; //$NON-NLS-1$
+
+	/**
+	 * The value used to indicate the backlog item artifact state value.
+	 */
+	String BACKLOG_ITEM_ARTIFACT_STATE_VALUE = "mta_backlog_item_artifact_state_value"; //$NON-NLS-1$
 }

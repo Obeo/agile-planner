@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.tuleap.mylyn.task.agile.core.data.cardwall;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 /**
  * Utility class used to represent a backlog item of the cardwall.
  * 
@@ -19,9 +22,48 @@ package org.tuleap.mylyn.task.agile.core.data.cardwall;
 public final class CardwallBacklogItem {
 
 	/**
-	 * The constructor.
+	 * The list that contains all the CardwallBacklogItem instances.
 	 */
-	public CardwallBacklogItem() {
+	private static Collection<CardwallBacklogItem> objectsList = new ArrayList<CardwallBacklogItem>();
+
+	/**
+	 * The identifier of the backlog item.
+	 */
+	private int id;
+
+	/**
+	 * The title of the backlog item.
+	 */
+	private String title;
+
+	/**
+	 * The kind of the backlog item.
+	 */
+	private String kind;
+
+	/**
+	 * The collection of artifacts.
+	 */
+	private Collection<CardwallArtifact> artifacts;
+
+	/**
+	 * The cardwall backlog item constructor.
+	 * 
+	 * @param id
+	 *            The cardwall backlog item identifier.
+	 * @param title
+	 *            The cardwall backlog item title.
+	 * @param kind
+	 *            The cardwall backlog item kind.
+	 * @param artifacts
+	 *            The cardwall backlog item artifacts.
+	 */
+	public CardwallBacklogItem(int id, String title, String kind, Collection<CardwallArtifact> artifacts) {
+		this.id = id;
+		this.title = title;
+		this.kind = kind;
+		this.artifacts = artifacts;
+		CardwallBacklogItem.objectsList.add(this);
 	}
 
 	/**
@@ -30,7 +72,17 @@ public final class CardwallBacklogItem {
 	 * @return The identifier of the cardwall backlog item.
 	 */
 	public int getId() {
-		throw new UnsupportedOperationException();
+		return this.id;
+	}
+
+	/**
+	 * Changes the identifier of the cardwall backlog item.
+	 * 
+	 * @param id
+	 *            the identifier of the cardwall backlog item to set
+	 */
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	/**
@@ -39,7 +91,18 @@ public final class CardwallBacklogItem {
 	 * @return The title of the cardwall backlog item.
 	 */
 	public String getTitle() {
-		throw new UnsupportedOperationException();
+		return this.title;
+	}
+
+	/**
+	 * Changes the title of the cardwall backlog item.
+	 * 
+	 * @param title
+	 *            the title of the cardwall backlog item to set
+	 */
+
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
 	/**
@@ -48,6 +111,51 @@ public final class CardwallBacklogItem {
 	 * @return The kind of the cardwall backlog item.
 	 */
 	public String getKind() {
-		throw new UnsupportedOperationException();
+		return this.kind;
 	}
+
+	/**
+	 * Changes the kind of the cardwall backlog item.
+	 * 
+	 * @param kind
+	 *            the kind of the cardwall backlog item to set
+	 */
+	public void setKind(String kind) {
+		this.kind = kind;
+	}
+
+	/**
+	 * Returns the collection of the cardwall backlog item artifacts.
+	 * 
+	 * @return the collection of the cardwall backlog item artifacts
+	 */
+	public Collection<CardwallArtifact> getArtifacts() {
+		return this.artifacts;
+	}
+
+	/**
+	 * Adds an artifact to the cardwall backlog item.
+	 * 
+	 * @param artifact
+	 *            the artifact to add
+	 */
+	public void addArtifact(CardwallArtifact artifact) {
+		if (this.artifacts != null) {
+			this.artifacts.add(artifact);
+		} else {
+			Collection<CardwallArtifact> artifactslist = new ArrayList<CardwallArtifact>();
+			artifactslist.add(artifact);
+			this.artifacts = artifactslist;
+		}
+	}
+
+	/**
+	 * Returns the list of the cardwall backlog items.
+	 * 
+	 * @return the list of the cardwall backlog items
+	 */
+	public static Collection<CardwallBacklogItem> getObjectsList() {
+		return objectsList;
+	}
+
 }
