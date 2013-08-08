@@ -39,7 +39,7 @@ public class CardwallTaskMapper extends AbstractTaskMapper {
 	 *            Indicates if we should create new task data attributes if they do not exist.
 	 */
 	public CardwallTaskMapper(TaskData taskData, boolean createNonExistingAttributes) {
-		super(taskData, createNonExistingAttributes);
+		super(taskData);
 	}
 
 	/**
@@ -48,13 +48,13 @@ public class CardwallTaskMapper extends AbstractTaskMapper {
 	 */
 	public void initializeEmptyTaskData() {
 		// Summary
-		this.getWriteableAttribute(TaskAttribute.STATUS, TaskAttribute.TYPE_LONG_RICH_TEXT);
+		this.createAttribute(TaskAttribute.STATUS, TaskAttribute.TYPE_LONG_RICH_TEXT);
 
 		// Kind
-		this.getWriteableAttribute(TaskAttribute.TASK_KIND, TaskAttribute.TYPE_LONG_RICH_TEXT);
+		this.createAttribute(TaskAttribute.TASK_KIND, TaskAttribute.TYPE_LONG_RICH_TEXT);
 
 		// Backlog Items Kind
-		this.getWriteableAttribute(IMylynAgileCoreConstants.MILESTONE_BACKLOG_ITEMS_KIND, null);
+		this.createAttribute(IMylynAgileCoreConstants.MILESTONE_BACKLOG_ITEMS_KIND, null);
 	}
 
 	/**
@@ -64,8 +64,8 @@ public class CardwallTaskMapper extends AbstractTaskMapper {
 	 *            The kind of the backlog items
 	 */
 	public void setBacklogItemsKind(String backlogItemsKind) {
-		TaskAttribute taskAttribute = this.getWriteableAttribute(
-				IMylynAgileCoreConstants.MILESTONE_BACKLOG_ITEMS_KIND, null);
+		TaskAttribute taskAttribute = this
+				.getMappedAttribute(IMylynAgileCoreConstants.MILESTONE_BACKLOG_ITEMS_KIND);
 		if (taskAttribute != null) {
 			taskAttribute.setValue(backlogItemsKind);
 		}
@@ -78,9 +78,8 @@ public class CardwallTaskMapper extends AbstractTaskMapper {
 	 *            The cardwall state to add
 	 */
 	public void addCardwallState(CardwallState cardwallState) {
-		TaskAttribute taskAttribute = this.getWriteableAttribute(
-				IMylynAgileCoreConstants.PREFIX_MILESTONE_STATE + String.valueOf(cardwallState.getId()),
-				IMylynAgileCoreConstants.TYPE_MILESTONE_STATE);
+		TaskAttribute taskAttribute = this.createAttribute(IMylynAgileCoreConstants.PREFIX_MILESTONE_STATE
+				+ String.valueOf(cardwallState.getId()), IMylynAgileCoreConstants.TYPE_MILESTONE_STATE);
 		if (taskAttribute != null) {
 			// Label
 			TaskAttribute labelTaskAttribute = taskAttribute
@@ -122,7 +121,7 @@ public class CardwallTaskMapper extends AbstractTaskMapper {
 	 *            The backlog item to add
 	 */
 	public void addCardwallBacklogItem(CardwallBacklogItem cardwallBacklogItem) {
-		TaskAttribute taskAttribute = this.getWriteableAttribute(IMylynAgileCoreConstants.PREFIX_BACKLOG_ITEM
+		TaskAttribute taskAttribute = this.createAttribute(IMylynAgileCoreConstants.PREFIX_BACKLOG_ITEM
 				+ String.valueOf(cardwallBacklogItem.getId()), IMylynAgileCoreConstants.TYPE_BACKLOG_ITEM);
 
 		if (taskAttribute != null) {
@@ -186,7 +185,7 @@ public class CardwallTaskMapper extends AbstractTaskMapper {
 	public void addCardwallBacklogArtifact(CardwallBacklogItem cardwallBacklogItem,
 			CardwallArtifact cardwallArtifact) {
 
-		TaskAttribute backLogtaskAttribute = this.getWriteableAttribute(
+		TaskAttribute backLogtaskAttribute = this.createAttribute(
 				IMylynAgileCoreConstants.PREFIX_BACKLOG_ITEM + String.valueOf(cardwallBacklogItem.getId()),
 				IMylynAgileCoreConstants.TYPE_BACKLOG_ITEM);
 
@@ -226,8 +225,8 @@ public class CardwallTaskMapper extends AbstractTaskMapper {
 	 * @return The kind of the backlog items
 	 */
 	public String getBacklogItemsKind() {
-		TaskAttribute taskAttribute = this.getWriteableAttribute(
-				IMylynAgileCoreConstants.MILESTONE_BACKLOG_ITEMS_KIND, null);
+		TaskAttribute taskAttribute = this
+				.getMappedAttribute(IMylynAgileCoreConstants.MILESTONE_BACKLOG_ITEMS_KIND);
 		if (taskAttribute != null) {
 			return taskAttribute.getValue();
 		}
@@ -290,8 +289,8 @@ public class CardwallTaskMapper extends AbstractTaskMapper {
 	public Collection<CardwallArtifact> getAllCardwallArtifacts(CardwallBacklogItem cardwallBacklogItem) {
 
 		Collection<CardwallArtifact> cardwallArtifactsList = new ArrayList<CardwallArtifact>();
-		TaskAttribute taskAttribute = this.getWriteableAttribute(IMylynAgileCoreConstants.PREFIX_BACKLOG_ITEM
-				+ String.valueOf(cardwallBacklogItem.getId()), IMylynAgileCoreConstants.TYPE_BACKLOG_ITEM);
+		TaskAttribute taskAttribute = this.getMappedAttribute(IMylynAgileCoreConstants.PREFIX_BACKLOG_ITEM
+				+ String.valueOf(cardwallBacklogItem.getId()));
 
 		for (CardwallArtifact cardwallArtifact : CardwallArtifact.getObjectsList()) {
 			for (TaskAttribute attribute : taskAttribute.getAttributes().values()) {

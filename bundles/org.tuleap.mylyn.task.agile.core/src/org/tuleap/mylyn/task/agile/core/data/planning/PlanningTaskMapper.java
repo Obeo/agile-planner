@@ -34,7 +34,7 @@ public class PlanningTaskMapper extends AbstractTaskMapper {
 	 *            The task
 	 */
 	public PlanningTaskMapper(TaskData taskData) {
-		super(taskData, false);
+		super(taskData);
 	}
 
 	/**

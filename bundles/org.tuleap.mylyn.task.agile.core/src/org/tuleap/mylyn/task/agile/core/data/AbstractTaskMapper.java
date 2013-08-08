@@ -28,49 +28,40 @@ public abstract class AbstractTaskMapper {
 	/**
 	 * The task data.
 	 */
-	protected TaskData taskData;
-
-	/**
-	 * Indicates if we can create non existing attributes in the task data if they do not exist.
-	 */
-	protected final boolean canCreateNonExistingAttributes;
+	protected final TaskData taskData;
 
 	/**
 	 * The constructor.
 	 * 
 	 * @param taskData
 	 *            The task data
-	 * @param createNonExistingAttributes
-	 *            Indicates if we should create new task data attributes if they do not exists.
 	 */
-	public AbstractTaskMapper(TaskData taskData, boolean createNonExistingAttributes) {
+	public AbstractTaskMapper(TaskData taskData) {
 		this.taskData = taskData;
-		this.canCreateNonExistingAttributes = createNonExistingAttributes;
 	}
 
 	/**
-	 * Returns the writeable attribute with the given key and the given type.
-	 * <p>
-	 * If we can create non existing attribute (see constructor) and if an attribute with the given key does
-	 * not exists, a new one will be created.
-	 * </p>
+	 * Returns the existing mapped attribute with the given id, or {@code null} if an attribute with this id
+	 * doesn't exist.
 	 * 
 	 * @param attributeKey
-	 *            The key of the attribute
-	 * @param type
-	 *            The type of the attribute
-	 * @return The writeable attribute with the given key and the given type
+	 *            The task attribute id
+	 * @return The existing mapped attribute, or null if it doesn't exist (or is not mapped)
 	 */
-	protected TaskAttribute getWriteableAttribute(String attributeKey, String type) {
-		TaskAttribute attribute = this.taskData.getRoot().getMappedAttribute(attributeKey);
-		if (this.canCreateNonExistingAttributes) {
-			if (attribute == null) {
-				attribute = createAttribute(attributeKey, type);
-			}
-		} else if (attribute != null && attribute.getMetaData().isReadOnly()) {
-			return null;
-		}
-		return attribute;
+	protected TaskAttribute getMappedAttribute(String attributeKey) {
+		return taskData.getRoot().getMappedAttribute(attributeKey);
+	}
+
+	/**
+	 * Returns the existing mapped attribute with the given id, or {@code null} if an attribute with this id
+	 * doesn't exist.
+	 * 
+	 * @param attributeKey
+	 *            The task attribute id
+	 * @return The existing mapped attribute, or null if it doesn't exist (or is not mapped)
+	 */
+	protected TaskAttribute getMappedAttribute(int attributeKey) {
+		return taskData.getRoot().getMappedAttribute(String.valueOf(attributeKey));
 	}
 
 	/**
