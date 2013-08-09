@@ -22,11 +22,6 @@ import java.util.Collection;
 public final class CardwallBacklogItem {
 
 	/**
-	 * The list that contains all the CardwallBacklogItem instances.
-	 */
-	private static Collection<CardwallBacklogItem> objectsList = new ArrayList<CardwallBacklogItem>();
-
-	/**
 	 * The identifier of the backlog item.
 	 */
 	private int id;
@@ -63,7 +58,6 @@ public final class CardwallBacklogItem {
 		this.title = title;
 		this.kind = kind;
 		this.artifacts = artifacts;
-		CardwallBacklogItem.objectsList.add(this);
 	}
 
 	/**
@@ -125,11 +119,15 @@ public final class CardwallBacklogItem {
 	}
 
 	/**
-	 * Returns the collection of the cardwall backlog item artifacts.
+	 * Returns the collection of the cardwall backlog item artifacts, which is never null but can be empty.
+	 * Not thread safe.
 	 * 
-	 * @return the collection of the cardwall backlog item artifacts
+	 * @return the collection of the cardwall backlog item artifacts, never null but possibly empty.
 	 */
 	public Collection<CardwallArtifact> getArtifacts() {
+		if (this.artifacts == null) {
+			this.artifacts = new ArrayList<CardwallArtifact>();
+		}
 		return this.artifacts;
 	}
 
@@ -140,22 +138,7 @@ public final class CardwallBacklogItem {
 	 *            the artifact to add
 	 */
 	public void addArtifact(CardwallArtifact artifact) {
-		if (this.artifacts != null) {
-			this.artifacts.add(artifact);
-		} else {
-			Collection<CardwallArtifact> artifactslist = new ArrayList<CardwallArtifact>();
-			artifactslist.add(artifact);
-			this.artifacts = artifactslist;
-		}
-	}
-
-	/**
-	 * Returns the list of the cardwall backlog items.
-	 * 
-	 * @return the list of the cardwall backlog items
-	 */
-	public static Collection<CardwallBacklogItem> getObjectsList() {
-		return objectsList;
+		getArtifacts().add(artifact);
 	}
 
 }

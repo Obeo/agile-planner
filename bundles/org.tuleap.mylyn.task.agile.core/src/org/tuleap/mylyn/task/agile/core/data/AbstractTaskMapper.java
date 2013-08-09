@@ -88,6 +88,26 @@ public abstract class AbstractTaskMapper {
 	}
 
 	/**
+	 * Returns the writeable attribute with the given key and the given type.
+	 * <p>
+	 * If an attribute with the given key does not exists, a new one will be created.
+	 * </p>
+	 * 
+	 * @param attributeKey
+	 *            The key of the attribute
+	 * @param type
+	 *            The type of the attribute
+	 * @return The writeable attribute with the given key and the given type
+	 */
+	protected TaskAttribute getWriteableAttribute(String attributeKey, String type) {
+		TaskAttribute attribute = this.taskData.getRoot().getMappedAttribute(attributeKey);
+		if (attribute == null) {
+			attribute = createAttribute(attributeKey, type);
+		}
+		return attribute;
+	}
+
+	/**
 	 * Returns the task data used by the mapper.
 	 * 
 	 * @return The task data used by the mapper

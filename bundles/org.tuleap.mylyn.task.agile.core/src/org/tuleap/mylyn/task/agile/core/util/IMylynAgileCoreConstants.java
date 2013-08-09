@@ -180,7 +180,17 @@ public interface IMylynAgileCoreConstants {
 	String KIND_BACKLOG_ITEM_ARTIFACT = "mta_backlog_item_artifact_kind"; //$NON-NLS-1$
 
 	/**
-	 * The value used to indicate the backlog item artifact state value.
+	 * The value used to indicate the backlog item artifact state value id.
 	 */
 	String BACKLOG_ITEM_ARTIFACT_STATE_VALUE = "mta_backlog_item_artifact_state_value"; //$NON-NLS-1$
+
+	/**
+	 * The value used to indicate the backlog item artifact state value field id.
+	 */
+	String BACKLOG_ITEM_ARTIFACT_STATE_VALUE_FIELD_ID = "mta_backlog_item_artifact_state_value_field_id"; //$NON-NLS-1$
+
+	/**
+	 * The value used to indicate the backlog item artifact state value field label.
+	 */
+	String BACKLOG_ITEM_ARTIFACT_STATE_VALUE_FIELD_LABEL = "mta_backlog_item_artifact_state_value_field_label"; //$NON-NLS-1$
 }

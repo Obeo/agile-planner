@@ -12,7 +12,6 @@ package org.tuleap.mylyn.task.agile.core.data.cardwall;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * Utility class used to represent a state of the card wall.
@@ -21,11 +20,6 @@ import java.util.List;
  * @since 1.0
  */
 public final class CardwallState {
-
-	/**
-	 * The list that contains all the CardwallState instances.
-	 */
-	private static List<CardwallState> objectsList = new ArrayList<CardwallState>();
 
 	/**
 	 * The identifier of the card wall state.
@@ -55,8 +49,8 @@ public final class CardwallState {
 	public CardwallState(int id, String label, Collection<CardwallStateMapping> mappings) {
 		this.id = id;
 		this.label = label;
-		this.mappings = mappings;
-		CardwallState.objectsList.add(this);
+		this.mappings = new ArrayList<CardwallStateMapping>();
+		this.mappings.addAll(mappings);
 	}
 
 	/**
@@ -104,14 +98,5 @@ public final class CardwallState {
 	 */
 	public Collection<CardwallStateMapping> getMappings() {
 		return this.mappings;
-	}
-
-	/**
-	 * Returns the list of the CardwallState instances.
-	 * 
-	 * @return the list of the CardwallState instances
-	 */
-	public static Collection<CardwallState> getObjectsList() {
-		return objectsList;
 	}
 }

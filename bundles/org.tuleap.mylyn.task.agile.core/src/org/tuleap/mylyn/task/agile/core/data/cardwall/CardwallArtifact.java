@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.tuleap.mylyn.task.agile.core.data.cardwall;
 
-import java.util.ArrayList;
-import java.util.Collection;
 
 /**
  * Utility class used to represent an artifact of a backlog item in the cardwall.
@@ -20,11 +18,6 @@ import java.util.Collection;
  * @since 1.0
  */
 public final class CardwallArtifact {
-
-	/**
-	 * The list that contains all the CardwallBacklogItem instances.
-	 */
-	private static Collection<CardwallArtifact> objectsList = new ArrayList<CardwallArtifact>();
 
 	/**
 	 * The identifier of the card wall artifact.
@@ -72,9 +65,6 @@ public final class CardwallArtifact {
 		this.kind = kind;
 		this.trackerId = trackerId;
 		this.cardwallStateValue = cardwallStateValue;
-
-		CardwallArtifact.objectsList.add(this);
-
 	}
 
 	/**
@@ -160,14 +150,5 @@ public final class CardwallArtifact {
 	 */
 	public CardwallStateValue getCardwallStateValue() {
 		return this.cardwallStateValue;
-	}
-
-	/**
-	 * Returns the list of the CardwallArtifact instances.
-	 * 
-	 * @return the list of the CardwallArtifact instances
-	 */
-	public static Collection<CardwallArtifact> getObjectsList() {
-		return objectsList;
 	}
 }
