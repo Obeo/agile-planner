@@ -14,6 +14,7 @@ package org.tuleap.mylyn.task.agile.core;
  * Connector to an Agile repository.
  * 
  * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
+ * @since 1.0
  */
 public abstract class AbstractAgileRepositoryConnector {
 

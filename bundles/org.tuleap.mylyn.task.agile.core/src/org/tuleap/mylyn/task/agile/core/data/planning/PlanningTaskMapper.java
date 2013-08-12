@@ -21,9 +21,10 @@ import org.tuleap.mylyn.task.agile.core.util.IMylynAgileCoreConstants;
 import org.tuleap.mylyn.task.agile.core.util.TaskAttributeWrapper;
 
 /**
- * The plannig task mapper.
+ * The planning task mapper.
  * 
  * @author <a href="mailto:firas.bacha@obeo.fr">Firas Bacha</a>
+ * @since 1.0
  */
 public class PlanningTaskMapper extends AbstractTaskMapper {
 

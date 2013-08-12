@@ -26,6 +26,7 @@ import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
  * LinkedHashMap.
  * 
  * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
+ * @since 1.0
  */
 public class TaskAttributeWrapper {
 
