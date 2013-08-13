@@ -68,16 +68,6 @@ public final class CardwallStateValue {
 	}
 
 	/**
-	 * Changes the value of the the the identifier of the card wall artifact value's field.
-	 * 
-	 * @param fieldValueId
-	 *            the fieldValueId to set
-	 */
-	public void setFieldValueId(int fieldValueId) {
-		this.fieldValueId = fieldValueId;
-	}
-
-	/**
 	 * Returns the label of the card wall artifact value.
 	 * 
 	 * @return the fieldLabel
