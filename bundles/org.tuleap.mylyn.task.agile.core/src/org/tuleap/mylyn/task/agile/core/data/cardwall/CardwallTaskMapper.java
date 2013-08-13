@@ -330,7 +330,7 @@ public class CardwallTaskMapper extends AbstractTaskMapper {
 					CardwallBacklogItem cardwallBacklogItem = new CardwallBacklogItem(Integer
 							.parseInt(backlogItemsTaskAttribute.getId().replace(
 									IMylynAgileCoreConstants.PREFIX_BACKLOG_ITEM, "")), labelTaskAttribute //$NON-NLS-1$
-							.getValue(), kindTaskAttribute.getValue(), null);
+							.getValue(), kindTaskAttribute.getValue());
 					backlogItems.add(cardwallBacklogItem);
 				}
 			}
@@ -371,14 +371,6 @@ public class CardwallTaskMapper extends AbstractTaskMapper {
 	 *            The cardwall state
 	 */
 	public void changeState(CardwallArtifact cardwallArtifact, CardwallState cardwallState) {
-		for (CardwallStateMapping cardwallStateMapping : cardwallState.getMappings()) {
-			if (cardwallStateMapping.getTrackerId() == cardwallArtifact.getTrackerId()) {
-
-				// we take the first element of the collection
-				cardwallArtifact.getCardwallStateValue().setFieldId(
-						cardwallStateMapping.getStateValuesId().iterator().next().intValue());
-			}
-		}
-
+		// TODO change the state in the task data!!!
 	}
 }

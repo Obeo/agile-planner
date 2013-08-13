@@ -34,7 +34,7 @@ public final class CardwallState {
 	/**
 	 * The collection of mappings.
 	 */
-	private Collection<CardwallStateMapping> mappings;
+	private Collection<CardwallStateMapping> mappings = new ArrayList<CardwallStateMapping>();
 
 	/**
 	 * The constructor.
@@ -49,7 +49,6 @@ public final class CardwallState {
 	public CardwallState(int id, String label, Collection<CardwallStateMapping> mappings) {
 		this.id = id;
 		this.label = label;
-		this.mappings = new ArrayList<CardwallStateMapping>();
 		this.mappings.addAll(mappings);
 	}
 
@@ -63,32 +62,12 @@ public final class CardwallState {
 	}
 
 	/**
-	 * Changes the value of the the identifier of the card wall state.
-	 * 
-	 * @param id
-	 *            the identifier of the card wall state to set
-	 */
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	/**
 	 * Returns the label of the card wall state.
 	 * 
 	 * @return The label of the card wall state.
 	 */
 	public String getLabel() {
 		return this.label;
-	}
-
-	/**
-	 * Changes the value of the the label of the card wall state.
-	 * 
-	 * @param label
-	 *            the label of the card wall state to set
-	 */
-	public void setLabel(String label) {
-		this.label = label;
 	}
 
 	/**

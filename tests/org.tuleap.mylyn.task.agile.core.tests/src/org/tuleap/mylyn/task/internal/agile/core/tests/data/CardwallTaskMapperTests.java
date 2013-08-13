@@ -76,7 +76,6 @@ public class CardwallTaskMapperTests {
 	 */
 	@Test
 	public void testInitializeEmptyTaskData() {
-
 		CardwallTaskMapper mylynCardwallMapper = new CardwallTaskMapper(taskData);
 		mylynCardwallMapper.initializeEmptyTaskData();
 
@@ -114,7 +113,6 @@ public class CardwallTaskMapperTests {
 	 */
 	@Test
 	public void testAddCardwallState() {
-
 		this.taskData.getRoot().clearAttributes();
 
 		// Create the first state
@@ -182,12 +180,11 @@ public class CardwallTaskMapperTests {
 	 */
 	@Test
 	public void testAddCardwallBacklogItem() {
-
 		// Create the cardwall backlog items
 		CardwallBacklogItem cardwallBacklogItem1 = new CardwallBacklogItem(1000, "First backlog item", //$NON-NLS-1$
-				"First backlog item kind", null); //$NON-NLS-1$
+				"First backlog item kind"); //$NON-NLS-1$
 		CardwallBacklogItem cardwallBacklogItem2 = new CardwallBacklogItem(2000, "Second backlog item", //$NON-NLS-1$
-				"Second backlog item kind", null); //$NON-NLS-1$
+				"Second backlog item kind"); //$NON-NLS-1$
 
 		CardwallTaskMapper mylynCardwallMapper = new CardwallTaskMapper(taskData);
 		mylynCardwallMapper.addCardwallBacklogItem(cardwallBacklogItem1);
@@ -215,7 +212,6 @@ public class CardwallTaskMapperTests {
 	 */
 	@Test
 	public void testGetAllCardwallStates() {
-
 		this.taskData.getRoot().clearAttributes();
 
 		// Create the first state
@@ -295,14 +291,13 @@ public class CardwallTaskMapperTests {
 	 */
 	@Test
 	public void testGetAllCardwallBacklogItems() {
-
 		this.taskData.getRoot().clearAttributes();
 
 		CardwallBacklogItem cardwallBacklogItem1 = new CardwallBacklogItem(1000, "First backlog item", //$NON-NLS-1$
-				"First backlog item kind", null); //$NON-NLS-1$
+				"First backlog item kind"); //$NON-NLS-1$
 
 		CardwallBacklogItem cardwallBacklogItem2 = new CardwallBacklogItem(2000, "Second backlog item", //$NON-NLS-1$
-				"Second backlog item kind", null); //$NON-NLS-1$
+				"Second backlog item kind"); //$NON-NLS-1$
 
 		CardwallTaskMapper mylynCardwallMapper = new CardwallTaskMapper(taskData);
 
@@ -328,7 +323,6 @@ public class CardwallTaskMapperTests {
 	 */
 	@Test
 	public void testGetAllCardwallArtifacts() {
-
 		this.taskData.getRoot().clearAttributes();
 
 		// Create the cardwall state values
@@ -347,9 +341,9 @@ public class CardwallTaskMapperTests {
 
 		// Create the cardwall backlog items
 		CardwallBacklogItem cardwallBacklogItem1 = new CardwallBacklogItem(1000, "First backlog item", //$NON-NLS-1$
-				"First backlog item kind", null); //$NON-NLS-1$
+				"First backlog item kind"); //$NON-NLS-1$
 		CardwallBacklogItem cardwallBacklogItem2 = new CardwallBacklogItem(2000, "Second backlog item", //$NON-NLS-1$
-				"Second backlog item kind", null); //$NON-NLS-1$
+				"Second backlog item kind"); //$NON-NLS-1$
 
 		cardwallBacklogItem1.addArtifact(artifact1);
 		cardwallBacklogItem1.addArtifact(artifact2);
@@ -408,7 +402,6 @@ public class CardwallTaskMapperTests {
 	 */
 	@Test
 	public void testGetCardwallState() {
-
 		this.taskData.getRoot().clearAttributes();
 
 		// Create the first state
@@ -462,7 +455,7 @@ public class CardwallTaskMapperTests {
 				"The first artifact", "The first artifact kind", 2, cardwallStateValue1); //$NON-NLS-1$ //$NON-NLS-2$
 
 		CardwallBacklogItem cardwallBacklogItem1 = new CardwallBacklogItem(1000, "First backlog item", //$NON-NLS-1$
-				"First backlog item kind", null); //$NON-NLS-1$
+				"First backlog item kind"); //$NON-NLS-1$
 
 		cardwallBacklogItem1.addArtifact(artifact);
 
@@ -477,7 +470,6 @@ public class CardwallTaskMapperTests {
 	 */
 	@Test
 	public void testGetCardwallArtifacts() {
-
 		this.taskData.getRoot().clearAttributes();
 
 		// Create the first state
@@ -529,7 +521,7 @@ public class CardwallTaskMapperTests {
 
 		// Create the cardwall backlog item
 		CardwallBacklogItem cardwallBacklogItem1 = new CardwallBacklogItem(1000, "First backlog item", //$NON-NLS-1$
-				"First backlog item kind", null); //$NON-NLS-1$
+				"First backlog item kind"); //$NON-NLS-1$
 
 		cardwallBacklogItem1.addArtifact(artifact1);
 		cardwallBacklogItem1.addArtifact(artifact2);
@@ -541,15 +533,6 @@ public class CardwallTaskMapperTests {
 		mylynCardwallMapper.addCardwallBacklogItem(cardwallBacklogItem1);
 
 		mylynCardwallMapper.addCardwallState(cardwallState);
-
-		// Collection<CardwallArtifact> resultArtifactCollection = mylynCardwallMapper.getCardwallArtifacts(
-		// cardwallBacklogItem1, cardwallState);
-		//
-		// Iterator<CardwallArtifact> iterator = resultArtifactCollection.iterator();
-		// CardwallArtifact firstCardwallartifact = iterator.next();
-		//
-		// assertEquals(20, firstCardwallartifact.getId());
-		// assertEquals(1, resultArtifactCollection.size());
 	}
 
 	/**

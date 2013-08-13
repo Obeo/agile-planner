@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.tuleap.mylyn.task.agile.core.data.cardwall;
 
-
 /**
  * Utility class used to represent an artifact of a backlog item in the cardwall.
  * 
@@ -77,32 +76,12 @@ public final class CardwallArtifact {
 	}
 
 	/**
-	 * Changes the value of the card wall artifact identifier.
-	 * 
-	 * @param id
-	 *            the new card wall artifact identifier.
-	 */
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	/**
 	 * Returns the title of the card wall artifact.
 	 * 
 	 * @return The title of the card wall artifact.
 	 */
 	public String getTitle() {
 		return this.title;
-	}
-
-	/**
-	 * Changes the value of the card wall artifact title.
-	 * 
-	 * @param title
-	 *            The title of the card wall artifact to set.
-	 */
-	public void setTitle(String title) {
-		this.title = title;
 	}
 
 	/**
@@ -115,32 +94,12 @@ public final class CardwallArtifact {
 	}
 
 	/**
-	 * Changes the value of the card wall artifact kind.
-	 * 
-	 * @param kind
-	 *            the kind to set
-	 */
-	public void setKind(String kind) {
-		this.kind = kind;
-	}
-
-	/**
 	 * Returns the identifier of the tracker.
 	 * 
 	 * @return the identifier of the tracker
 	 */
 	public int getTrackerId() {
 		return this.trackerId;
-	}
-
-	/**
-	 * Changes the value of the tracker's identifier.
-	 * 
-	 * @param trackerId
-	 *            the trackerId to set
-	 */
-	public void setTrackerId(int trackerId) {
-		this.trackerId = trackerId;
 	}
 
 	/**

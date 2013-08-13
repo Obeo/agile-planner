@@ -39,7 +39,7 @@ public final class CardwallBacklogItem {
 	/**
 	 * The collection of artifacts.
 	 */
-	private Collection<CardwallArtifact> artifacts;
+	private Collection<CardwallArtifact> artifacts = new ArrayList<CardwallArtifact>();
 
 	/**
 	 * The cardwall backlog item constructor.
@@ -50,14 +50,11 @@ public final class CardwallBacklogItem {
 	 *            The cardwall backlog item title.
 	 * @param kind
 	 *            The cardwall backlog item kind.
-	 * @param artifacts
-	 *            The cardwall backlog item artifacts.
 	 */
-	public CardwallBacklogItem(int id, String title, String kind, Collection<CardwallArtifact> artifacts) {
+	public CardwallBacklogItem(int id, String title, String kind) {
 		this.id = id;
 		this.title = title;
 		this.kind = kind;
-		this.artifacts = artifacts;
 	}
 
 	/**
@@ -70,33 +67,12 @@ public final class CardwallBacklogItem {
 	}
 
 	/**
-	 * Changes the identifier of the cardwall backlog item.
-	 * 
-	 * @param id
-	 *            the identifier of the cardwall backlog item to set
-	 */
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	/**
 	 * Returns the title of the cardwall backlog item.
 	 * 
 	 * @return The title of the cardwall backlog item.
 	 */
 	public String getTitle() {
 		return this.title;
-	}
-
-	/**
-	 * Changes the title of the cardwall backlog item.
-	 * 
-	 * @param title
-	 *            the title of the cardwall backlog item to set
-	 */
-
-	public void setTitle(String title) {
-		this.title = title;
 	}
 
 	/**
@@ -109,25 +85,12 @@ public final class CardwallBacklogItem {
 	}
 
 	/**
-	 * Changes the kind of the cardwall backlog item.
-	 * 
-	 * @param kind
-	 *            the kind of the cardwall backlog item to set
-	 */
-	public void setKind(String kind) {
-		this.kind = kind;
-	}
-
-	/**
 	 * Returns the collection of the cardwall backlog item artifacts, which is never null but can be empty.
 	 * Not thread safe.
 	 * 
 	 * @return the collection of the cardwall backlog item artifacts, never null but possibly empty.
 	 */
 	public Collection<CardwallArtifact> getArtifacts() {
-		if (this.artifacts == null) {
-			this.artifacts = new ArrayList<CardwallArtifact>();
-		}
 		return this.artifacts;
 	}
 
@@ -138,7 +101,7 @@ public final class CardwallBacklogItem {
 	 *            the artifact to add
 	 */
 	public void addArtifact(CardwallArtifact artifact) {
-		getArtifacts().add(artifact);
+		this.artifacts.add(artifact);
 	}
 
 }
