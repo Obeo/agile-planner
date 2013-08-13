@@ -202,7 +202,6 @@ public class CardwallTaskMapper extends AbstractTaskMapper {
 	 * @return The collection of all the title of the states of the card wall
 	 */
 	public Collection<CardwallState> getAllCardwallStates() {
-
 		Collection<CardwallState> cardwallStateList = new ArrayList<CardwallState>();
 
 		for (TaskAttribute stateTaskAttribute : this.taskData.getRoot().getAttributes().values()) {
@@ -268,7 +267,6 @@ public class CardwallTaskMapper extends AbstractTaskMapper {
 	 * @return The collection of all the backlog items of the card wall
 	 */
 	public Collection<CardwallBacklogItem> getAllCardwallBacklogItems() {
-
 		Collection<CardwallBacklogItem> backlogItems = new ArrayList<CardwallBacklogItem>();
 
 		for (TaskAttribute backlogItemsTaskAttribute : this.taskData.getRoot().getAttributes().values()) {
@@ -342,67 +340,6 @@ public class CardwallTaskMapper extends AbstractTaskMapper {
 	}
 
 	/**
-	 * Returns the collection of all the cardwall artifacts from the given cardwall backlog item.
-	 * 
-	 * @param cardwallBacklogItem
-	 *            The cardwall backlog item
-	 * @return The collection of all the cardwall artifacts from the given cardwall backlog item
-	 */
-	// public Collection<CardwallArtifact> getAllCardwallArtifacts(CardwallBacklogItem cardwallBacklogItem) {
-	//
-	// TaskAttribute taskAttribute = this.getWriteableAttribute(IMylynAgileCoreConstants.PREFIX_BACKLOG_ITEM
-	// + String.valueOf(cardwallBacklogItem.getId()), IMylynAgileCoreConstants.TYPE_BACKLOG_ITEM);
-	//
-	// Collection<CardwallArtifact> artifacts = new ArrayList<CardwallArtifact>();
-	// if (taskAttribute.getAttributes().values() != null) {
-	//
-	// for (TaskAttribute artifactAttribute : taskAttribute.getAttributes().values()) {
-	//
-	// if (artifactAttribute.getMetaData().getType() != null
-	// && IMylynAgileCoreConstants.TYPE_BACKLOG_ITEM_ARTIFACT.equals(artifactAttribute
-	// .getMetaData().getType())) {
-	//
-	// // tracker id
-	// TaskAttribute trackerIdTaskAttribute = artifactAttribute
-	// .getMappedAttribute(IMylynAgileCoreConstants.TRACKER_ID);
-	//
-	// // the name
-	// TaskAttribute titleTaskAttribute = artifactAttribute
-	// .getMappedAttribute(IMylynAgileCoreConstants.TITLE_BACKLOG_ITEM_ARTIFACT);
-	//
-	// // the kind
-	// TaskAttribute artifactKindTaskAttribute = artifactAttribute
-	// .getMappedAttribute(IMylynAgileCoreConstants.KIND_BACKLOG_ITEM_ARTIFACT);
-	//
-	// // the values
-	// TaskAttribute artifactStateValueTaskAttribute = artifactAttribute
-	// .getMappedAttribute(IMylynAgileCoreConstants.BACKLOG_ITEM_ARTIFACT_STATE_VALUE);
-	//
-	// TaskAttribute artifactStateValueTaskAttributeFieldId = artifactStateValueTaskAttribute
-	// .getMappedAttribute(IMylynAgileCoreConstants.BACKLOG_ITEM_ARTIFACT_STATE_VALUE_FIELD_ID);
-	//
-	// TaskAttribute artifactStateValueTaskAttributeFieldLabel = artifactStateValueTaskAttribute
-	// .getMappedAttribute(IMylynAgileCoreConstants.BACKLOG_ITEM_ARTIFACT_STATE_VALUE_FIELD_LABEL);
-	//
-	// CardwallStateValue cardwallStateValue = new CardwallStateValue(Integer
-	// .parseInt(artifactStateValueTaskAttribute.getValue()), Integer
-	// .parseInt(artifactStateValueTaskAttributeFieldId.getValue()),
-	// artifactStateValueTaskAttributeFieldLabel.getValue());
-	//
-	// CardwallArtifact cardwallArtifact = new CardwallArtifact(Integer
-	// .parseInt(artifactAttribute.getId().replace(
-	//									IMylynAgileCoreConstants.PREFIX_BACKLOG_ITEM_ARTIFACT, "")), //$NON-NLS-1$
-	// titleTaskAttribute.getValue(), artifactKindTaskAttribute.getValue(), Integer
-	// .parseInt(trackerIdTaskAttribute.getValue()), cardwallStateValue);
-	//
-	// artifacts.add(cardwallArtifact);
-	// }
-	// }
-	// }
-	// return artifacts;
-	// }
-
-	/**
 	 * Returns the cardwall state from the given cardwall artifact.
 	 * 
 	 * @param cardwallArtifact
@@ -410,7 +347,6 @@ public class CardwallTaskMapper extends AbstractTaskMapper {
 	 * @return The cardwall state from the given cardwall artifact
 	 */
 	public CardwallState getCardwallState(CardwallArtifact cardwallArtifact) {
-
 		CardwallState state = null;
 
 		for (CardwallState cardwallState : this.getAllCardwallStates()) {
@@ -427,34 +363,6 @@ public class CardwallTaskMapper extends AbstractTaskMapper {
 	}
 
 	/**
-	 * Returns all the cardwall artifacts from the given cardwall backlog item that matches the given cardwall
-	 * state.
-	 * 
-	 * @param cardwallBacklogItem
-	 *            The cardwall backlog item
-	 * @param cardwallState
-	 *            The cardwall state
-	 * @return All the cardwall artifacts from the given cardwall backlog item that matches the given cardwall
-	 *         state
-	 */
-	// public Collection<CardwallArtifact> getCardwallArtifacts(CardwallBacklogItem cardwallBacklogItem,
-	// CardwallState cardwallState) {
-	//
-	// Collection<CardwallArtifact> cardwallArtifactsList = new ArrayList<CardwallArtifact>();
-	//
-	// for (CardwallArtifact cardwallArtifact : this.getAllCardwallArtifacts(cardwallBacklogItem)) {
-	// for (CardwallStateMapping cardwallStateMapping : cardwallState.getMappings()) {
-	// if (cardwallStateMapping.getTrackerId() == cardwallArtifact.getTrackerId()
-	// && cardwallStateMapping.getStateValuesId().contains(
-	// Integer.valueOf(cardwallArtifact.getCardwallStateValue().getFieldId()))) {
-	// cardwallArtifactsList.add(cardwallArtifact);
-	// }
-	// }
-	// }
-	// return cardwallArtifactsList;
-	// }
-
-	/**
 	 * Change the state of the given cardwall artifact to the given cardwall state.
 	 * 
 	 * @param cardwallArtifact
@@ -463,7 +371,6 @@ public class CardwallTaskMapper extends AbstractTaskMapper {
 	 *            The cardwall state
 	 */
 	public void changeState(CardwallArtifact cardwallArtifact, CardwallState cardwallState) {
-
 		for (CardwallStateMapping cardwallStateMapping : cardwallState.getMappings()) {
 			if (cardwallStateMapping.getTrackerId() == cardwallArtifact.getTrackerId()) {
 
