@@ -13,7 +13,7 @@ package org.tuleap.mylyn.task.agile.core.data.cardwall;
 import java.util.Collection;
 
 /**
- * Utility class used to represent a cardwall state mapping.
+ * Utility class used to represent a card wall state mapping.
  * 
  * @author <a href="mailto:stephane.begaudeau@obeo.fr">Stephane Begaudeau</a>
  * @since 1.0

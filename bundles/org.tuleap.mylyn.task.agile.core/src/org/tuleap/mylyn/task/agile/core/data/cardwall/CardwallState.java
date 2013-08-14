@@ -10,8 +10,12 @@
  *******************************************************************************/
 package org.tuleap.mylyn.task.agile.core.data.cardwall;
 
-import java.util.ArrayList;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Lists;
+
 import java.util.Collection;
+import java.util.Map.Entry;
 
 /**
  * Utility class used to represent a state of the card wall.
@@ -24,17 +28,17 @@ public final class CardwallState {
 	/**
 	 * The identifier of the card wall state.
 	 */
-	private int id;
+	private final int id;
 
 	/**
 	 * The label of the card wall state.
 	 */
-	private String label;
+	private final String label;
 
 	/**
-	 * The collection of mappings.
+	 * state value Ids mapped to this CardwallState, indexed by trackerId.
 	 */
-	private Collection<CardwallStateMapping> mappings = new ArrayList<CardwallStateMapping>();
+	private final ListMultimap<Integer, Integer> stateValueIdsByTrackerId = ArrayListMultimap.create();
 
 	/**
 	 * The constructor.
@@ -46,10 +50,13 @@ public final class CardwallState {
 	 * @param mappings
 	 *            The mappings
 	 */
-	public CardwallState(int id, String label, Collection<CardwallStateMapping> mappings) {
+	public CardwallState(int id, String label, Iterable<CardwallStateMapping> mappings) {
 		this.id = id;
 		this.label = label;
-		this.mappings.addAll(mappings);
+		for (CardwallStateMapping mapping : mappings) {
+			stateValueIdsByTrackerId.putAll(Integer.valueOf(mapping.getTrackerId()), mapping
+					.getStateValuesId());
+		}
 	}
 
 	/**
@@ -71,11 +78,41 @@ public final class CardwallState {
 	}
 
 	/**
-	 * Returns the mappings of the card wall state.
+	 * Returns the first stateValueId mapped to this card wall state for the given tracker.
 	 * 
-	 * @return The mappings of the card wall state
+	 * @param trackerId
+	 *            id of the tracker
+	 * @return the first stateValueId mapped to this card wall state for the given tracker
+	 */
+	public int getFirstStateValueIdForTracker(int trackerId) {
+		return stateValueIdsByTrackerId.get(Integer.valueOf(trackerId)).get(0).intValue();
+	}
+
+	/**
+	 * Indicates whether the given stateValueId of the given tracker is mapped to this card wall state.
+	 * 
+	 * @param trackerId
+	 *            the tracker id
+	 * @param stateValueId
+	 *            the state value id
+	 * @return {@code true} if and only if the given arguments are mapped to this card wall state.
+	 */
+	public boolean containsStateValue(int trackerId, int stateValueId) {
+		return stateValueIdsByTrackerId.containsEntry(Integer.valueOf(trackerId), Integer
+				.valueOf(stateValueId));
+	}
+
+	/**
+	 * Returns the collection of actual (trackerId, stateValueIds) mappings mapped to this card wall state.
+	 * 
+	 * @return the collection of actual (trackerId, stateValueIds) mappings mapped to this card wall state,
+	 *         which is recomputed each time this method is invoked.
 	 */
 	public Collection<CardwallStateMapping> getMappings() {
-		return this.mappings;
+		Collection<CardwallStateMapping> result = Lists.newArrayList();
+		for (Entry<Integer, Collection<Integer>> entry : stateValueIdsByTrackerId.asMap().entrySet()) {
+			result.add(new CardwallStateMapping(entry.getKey().intValue(), entry.getValue()));
+		}
+		return result;
 	}
 }

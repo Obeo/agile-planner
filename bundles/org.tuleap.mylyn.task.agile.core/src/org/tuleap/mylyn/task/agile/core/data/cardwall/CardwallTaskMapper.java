@@ -20,9 +20,9 @@ import org.tuleap.mylyn.task.agile.core.data.AbstractTaskMapper;
 import org.tuleap.mylyn.task.agile.core.util.IMylynAgileCoreConstants;
 
 /**
- * This task attribute mapper will be used in order to manipulate a task data objects as a cardwall at a
+ * This task attribute mapper will be used in order to manipulate a task data object as a card wall at a
  * higher level of abstraction. With the use of this mapper, clients should not have to manipulate most of the
- * task attributes of the task data to create, modify or query the task data object on its cardwall
+ * task attributes of the task data to create, modify or query the task data object on its card wall
  * information.
  * 
  * @author <a href="mailto:stephane.begaudeau@obeo.fr">Stephane Begaudeau</a>
@@ -34,7 +34,9 @@ public class CardwallTaskMapper extends AbstractTaskMapper {
 	 * The constructor.
 	 * 
 	 * @param taskData
-	 *            The task data
+	 *            The task data, which probably also contains information that is not relevant to the card
+	 *            wall mixed with information that is useful to the card wall, since the same task is used to
+	 *            display the "classical" mylyn tab plus other tabs such as planning and card wall.
 	 */
 	public CardwallTaskMapper(TaskData taskData) {
 		super(taskData);
@@ -56,10 +58,10 @@ public class CardwallTaskMapper extends AbstractTaskMapper {
 	}
 
 	/**
-	 * Sets the kind of the backlog items.
+	 * Sets the kind of the backlog items contained in the left column of the card wall.
 	 * 
 	 * @param backlogItemsKind
-	 *            The kind of the backlog items
+	 *            The kind of the backlog items this card wall displays.
 	 */
 	public void setBacklogItemsKind(String backlogItemsKind) {
 		TaskAttribute taskAttribute = this.getWriteableAttribute(
@@ -70,10 +72,10 @@ public class CardwallTaskMapper extends AbstractTaskMapper {
 	}
 
 	/**
-	 * Creates a state in the cardwall with its mappings.
+	 * Creates a state in the card wall with its mappings.
 	 * 
 	 * @param cardwallState
-	 *            The cardwall state to add
+	 *            The card wall state to add
 	 */
 	public void addCardwallState(CardwallState cardwallState) {
 		TaskAttribute taskAttribute = this.createAttribute(IMylynAgileCoreConstants.PREFIX_MILESTONE_STATE
@@ -165,17 +167,7 @@ public class CardwallTaskMapper extends AbstractTaskMapper {
 					TaskAttribute artifactStateValueTaskAttribute = artifactAttribute
 							.createAttribute(IMylynAgileCoreConstants.BACKLOG_ITEM_ARTIFACT_STATE_VALUE);
 					artifactStateValueTaskAttribute.setValue(String.valueOf(cardwallArtifact
-							.getCardwallStateValue().getFieldValueId()));
-
-					TaskAttribute artifactStateValueTaskAttributeFieldId = artifactStateValueTaskAttribute
-							.createAttribute(IMylynAgileCoreConstants.BACKLOG_ITEM_ARTIFACT_STATE_VALUE_FIELD_ID);
-					artifactStateValueTaskAttributeFieldId.setValue(String.valueOf(cardwallArtifact
-							.getCardwallStateValue().getFieldId()));
-
-					TaskAttribute artifactStateValueTaskAttributeFieldLabel = artifactStateValueTaskAttribute
-							.createAttribute(IMylynAgileCoreConstants.BACKLOG_ITEM_ARTIFACT_STATE_VALUE_FIELD_LABEL);
-					artifactStateValueTaskAttributeFieldLabel.setValue(String.valueOf(cardwallArtifact
-							.getCardwallStateValue().getFieldLabel()));
+							.getStateValueId()));
 
 				}
 			}
@@ -306,22 +298,12 @@ public class CardwallTaskMapper extends AbstractTaskMapper {
 							TaskAttribute artifactStateValueTaskAttribute = artifactAttribute
 									.getMappedAttribute(IMylynAgileCoreConstants.BACKLOG_ITEM_ARTIFACT_STATE_VALUE);
 
-							TaskAttribute artifactStateValueTaskAttributeFieldId = artifactStateValueTaskAttribute
-									.getMappedAttribute(IMylynAgileCoreConstants.BACKLOG_ITEM_ARTIFACT_STATE_VALUE_FIELD_ID);
-
-							TaskAttribute artifactStateValueTaskAttributeFieldLabel = artifactStateValueTaskAttribute
-									.getMappedAttribute(IMylynAgileCoreConstants.BACKLOG_ITEM_ARTIFACT_STATE_VALUE_FIELD_LABEL);
-
-							CardwallStateValue cardwallStateValue = new CardwallStateValue(Integer
-									.parseInt(artifactStateValueTaskAttribute.getValue()), Integer
-									.parseInt(artifactStateValueTaskAttributeFieldId.getValue()),
-									artifactStateValueTaskAttributeFieldLabel.getValue());
-
 							CardwallArtifact cardwallArtifact = new CardwallArtifact(
 									Integer.parseInt(artifactAttribute.getId().replace(
 											IMylynAgileCoreConstants.PREFIX_BACKLOG_ITEM_ARTIFACT, "")), //$NON-NLS-1$
 									titleTaskAttribute.getValue(), artifactKindTaskAttribute.getValue(),
-									Integer.parseInt(trackerIdTaskAttribute.getValue()), cardwallStateValue);
+									Integer.parseInt(trackerIdTaskAttribute.getValue()), Integer
+											.parseInt(artifactStateValueTaskAttribute.getValue()));
 
 							artifacts.add(cardwallArtifact);
 						}
@@ -340,11 +322,11 @@ public class CardwallTaskMapper extends AbstractTaskMapper {
 	}
 
 	/**
-	 * Returns the cardwall state from the given cardwall artifact.
+	 * Returns the card wall state from the given card wall artifact.
 	 * 
 	 * @param cardwallArtifact
-	 *            The cardwall artifact
-	 * @return The cardwall state from the given cardwall artifact
+	 *            The card wall artifact
+	 * @return The card wall state from the given card wall artifact
 	 */
 	public CardwallState getCardwallState(CardwallArtifact cardwallArtifact) {
 		CardwallState state = null;
@@ -353,7 +335,7 @@ public class CardwallTaskMapper extends AbstractTaskMapper {
 			for (CardwallStateMapping cardwallStateMapping : cardwallState.getMappings()) {
 				if (cardwallStateMapping.getTrackerId() == cardwallArtifact.getTrackerId()
 						&& cardwallStateMapping.getStateValuesId().contains(
-								Integer.valueOf(cardwallArtifact.getCardwallStateValue().getFieldId()))) {
+								Integer.valueOf(cardwallArtifact.getStateValueId()))) {
 					state = cardwallState;
 				}
 
@@ -363,14 +345,15 @@ public class CardwallTaskMapper extends AbstractTaskMapper {
 	}
 
 	/**
-	 * Change the state of the given cardwall artifact to the given cardwall state.
+	 * Change the state of the given card wall artifact to the given card wall state.
 	 * 
 	 * @param cardwallArtifact
-	 *            The cardwall artifact
+	 *            The card wall artifact
 	 * @param cardwallState
-	 *            The cardwall state
+	 *            The card wall state in which the given artifact must be placed
 	 */
 	public void changeState(CardwallArtifact cardwallArtifact, CardwallState cardwallState) {
-		// TODO change the state in the task data!!!
+		int trackerId = cardwallArtifact.getTrackerId();
+		cardwallArtifact.setStateValueId(cardwallState.getFirstStateValueIdForTracker(trackerId));
 	}
 }

@@ -5,25 +5,14 @@
     project="org.tuleap.mylyn.task.agile.core" 
     file="/org.tuleap.mylyn.task.agile.core/src/org/tuleap/mylyn/task/agile/core/data/cardwall/CardwallStateMapping.java" 
     binary="false" corner="BOTTOM_RIGHT">    
-    <position height="153" width="247" x="810" y="391"/>    
+    <position height="-1" width="-1" x="762" y="427"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="2" language="java" name="org.tuleap.mylyn.task.agile.core.data.cardwall.CardwallStateValue" 
-    project="org.tuleap.mylyn.task.agile.core" 
-    file="/org.tuleap.mylyn.task.agile.core/src/org/tuleap/mylyn/task/agile/core/data/cardwall/CardwallStateValue.java" 
-    binary="false" corner="BOTTOM_RIGHT">    
-    <position height="243" width="202" x="413" y="774"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
-      visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="true"/>    
-    </display>  
-  </class>  
-  <class id="3" language="java" name="org.tuleap.mylyn.task.agile.core.data.cardwall.CardwallTaskMapper" 
+  <class id="2" language="java" name="org.tuleap.mylyn.task.agile.core.data.cardwall.CardwallTaskMapper" 
     project="org.tuleap.mylyn.task.agile.core" 
     file="/org.tuleap.mylyn.task.agile.core/src/org/tuleap/mylyn/task/agile/core/data/cardwall/CardwallTaskMapper.java" 
     binary="false" corner="BOTTOM_RIGHT">    
@@ -34,63 +23,55 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="4" language="java" name="org.tuleap.mylyn.task.agile.core.data.cardwall.CardwallBacklogItem" 
+  <class id="3" language="java" name="org.tuleap.mylyn.task.agile.core.data.cardwall.CardwallBacklogItem" 
     project="org.tuleap.mylyn.task.agile.core" 
     file="/org.tuleap.mylyn.task.agile.core/src/org/tuleap/mylyn/task/agile/core/data/cardwall/CardwallBacklogItem.java" 
     binary="false" corner="BOTTOM_RIGHT">    
-    <position height="297" width="347" x="413" y="36"/>    
+    <position height="-1" width="-1" x="172" y="491"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="5" language="java" name="org.tuleap.mylyn.task.agile.core.data.cardwall.CardwallArtifact" 
+  <class id="4" language="java" name="org.tuleap.mylyn.task.agile.core.data.cardwall.CardwallArtifact" 
     project="org.tuleap.mylyn.task.agile.core" 
     file="/org.tuleap.mylyn.task.agile.core/src/org/tuleap/mylyn/task/agile/core/data/cardwall/CardwallArtifact.java" 
     binary="false" corner="BOTTOM_RIGHT">    
-    <position height="333" width="298" x="413" y="391"/>    
+    <position height="-1" width="-1" x="485" y="493"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="6" language="java" name="org.tuleap.mylyn.task.agile.core.data.cardwall.CardwallState" 
+  <class id="5" language="java" name="org.tuleap.mylyn.task.agile.core.data.cardwall.CardwallState" 
     project="org.tuleap.mylyn.task.agile.core" 
     file="/org.tuleap.mylyn.task.agile.core/src/org/tuleap/mylyn/task/agile/core/data/cardwall/CardwallState.java" 
     binary="false" corner="BOTTOM_RIGHT">    
-    <position height="225" width="313" x="810" y="36"/>    
+    <position height="-1" width="-1" x="534" y="196"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
+  <dependency id="6">    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="1"/>  
+  </dependency>  
   <association id="7">    
-    <end type="SOURCE" refId="6" navigable="false">      
-      <attribute id="8" name="mappings"/>      
+    <end type="SOURCE" refId="3" navigable="false">      
+      <attribute id="8" name="artifacts"/>      
       <multiplicity id="9" minimum="0" maximum="2147483647"/>    
     </end>    
-    <end type="TARGET" refId="1" navigable="true"/>    
+    <end type="TARGET" refId="4" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <association id="10">    
-    <end type="SOURCE" refId="5" navigable="false">      
-      <attribute id="11" name="cardwallStateValue"/>      
-      <multiplicity id="12" minimum="0" maximum="1"/>    
-    </end>    
-    <end type="TARGET" refId="2" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="13">    
-    <end type="SOURCE" refId="4" navigable="false">      
-      <attribute id="14" name="artifacts"/>      
-      <multiplicity id="15" minimum="0" maximum="2147483647"/>    
-    </end>    
-    <end type="TARGET" refId="5" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
+  <dependency id="10">    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="5"/>  
+  </dependency>  
   <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
     accessors="true" visibility="true">    
     <attributes public="true" package="true" protected="true" private="true" static="true"/>    

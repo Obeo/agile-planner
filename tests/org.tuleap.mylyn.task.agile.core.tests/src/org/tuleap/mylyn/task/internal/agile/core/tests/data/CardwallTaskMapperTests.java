@@ -25,7 +25,6 @@ import org.tuleap.mylyn.task.agile.core.data.cardwall.CardwallArtifact;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.CardwallBacklogItem;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.CardwallState;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.CardwallStateMapping;
-import org.tuleap.mylyn.task.agile.core.data.cardwall.CardwallStateValue;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.CardwallTaskMapper;
 import org.tuleap.mylyn.task.agile.core.util.IMylynAgileCoreConstants;
 
@@ -325,19 +324,18 @@ public class CardwallTaskMapperTests {
 	public void testGetAllCardwallArtifacts() {
 		this.taskData.getRoot().clearAttributes();
 
-		// Create the cardwall state values
-		CardwallStateValue cardwallStateValue1 = new CardwallStateValue(1, 20, "The first state value"); //$NON-NLS-1$
-		CardwallStateValue cardwallStateValue2 = new CardwallStateValue(2, 20, "The second state value"); //$NON-NLS-1$
+		int stateValue1 = 111;
+		int stateValue2 = 222;
 
 		// Create the cardwall artifacts
 		CardwallArtifact artifact1 = new CardwallArtifact(10,
-				"The first artifact", "The first artifact kind", 15, cardwallStateValue1); //$NON-NLS-1$ //$NON-NLS-2$
+				"The first artifact", "The first artifact kind", 15, stateValue1); //$NON-NLS-1$ //$NON-NLS-2$
 		CardwallArtifact artifact2 = new CardwallArtifact(20,
-				"The second artifact", "The second artifact", 16, cardwallStateValue1); //$NON-NLS-1$ //$NON-NLS-2$
+				"The second artifact", "The second artifact", 16, stateValue1); //$NON-NLS-1$ //$NON-NLS-2$
 		CardwallArtifact artifact3 = new CardwallArtifact(30,
-				"The third artifact", "The third artifact kind", 17, cardwallStateValue2); //$NON-NLS-1$ //$NON-NLS-2$
+				"The third artifact", "The third artifact kind", 17, stateValue2); //$NON-NLS-1$ //$NON-NLS-2$
 		CardwallArtifact artifact4 = new CardwallArtifact(40,
-				"The fourth artifact", "The fourth artifact", 18, cardwallStateValue2); //$NON-NLS-1$ //$NON-NLS-2$
+				"The fourth artifact", "The fourth artifact", 18, stateValue2); //$NON-NLS-1$ //$NON-NLS-2$
 
 		// Create the cardwall backlog items
 		CardwallBacklogItem cardwallBacklogItem1 = new CardwallBacklogItem(1000, "First backlog item", //$NON-NLS-1$
@@ -388,12 +386,7 @@ public class CardwallTaskMapperTests {
 			assertEquals(refArtifact.getKind(), artifact.getKind());
 			assertEquals(refArtifact.getTitle(), artifact.getTitle());
 			assertEquals(refArtifact.getTrackerId(), artifact.getTrackerId());
-			assertEquals(refArtifact.getCardwallStateValue().getFieldId(), artifact.getCardwallStateValue()
-					.getFieldId());
-			assertEquals(refArtifact.getCardwallStateValue().getFieldValueId(), artifact
-					.getCardwallStateValue().getFieldValueId());
-			assertEquals(refArtifact.getCardwallStateValue().getFieldLabel(), artifact
-					.getCardwallStateValue().getFieldLabel());
+			assertEquals(refArtifact.getStateValueId(), artifact.getStateValueId());
 		}
 	}
 
@@ -404,16 +397,30 @@ public class CardwallTaskMapperTests {
 	public void testGetCardwallState() {
 		this.taskData.getRoot().clearAttributes();
 
+		int index = 123;
+		int stateValueId11 = index++;
+		int stateValueId12 = index++;
+		int stateValueId13 = index++;
+		int stateValueId21 = index++;
+		int stateValueId22 = index++;
+		int stateValueId23 = index++;
+		int stateValueId31 = index++;
+		int stateValueId32 = index++;
+		int stateValueId33 = index++;
+		int stateValueId41 = index++;
+		int stateValueId42 = index++;
+		int stateValueId43 = index++;
+
 		// Create the first state
 		List<Integer> list = new ArrayList<Integer>();
-		list.add(new Integer(11));
-		list.add(new Integer(12));
-		list.add(new Integer(13));
+		list.add(new Integer(stateValueId11));
+		list.add(new Integer(stateValueId12));
+		list.add(new Integer(stateValueId13));
 
 		List<Integer> list2 = new ArrayList<Integer>();
-		list2.add(new Integer(21));
-		list2.add(new Integer(22));
-		list2.add(new Integer(23));
+		list2.add(new Integer(stateValueId21));
+		list2.add(new Integer(stateValueId22));
+		list2.add(new Integer(stateValueId23));
 
 		CardwallStateMapping cardwallStateMapping1 = new CardwallStateMapping(1, list);
 		CardwallStateMapping cardwallStateMapping2 = new CardwallStateMapping(2, list2);
@@ -424,14 +431,14 @@ public class CardwallTaskMapperTests {
 
 		// Create the second state
 		List<Integer> list3 = new ArrayList<Integer>();
-		list3.add(new Integer(31));
-		list3.add(new Integer(32));
-		list3.add(new Integer(33));
+		list3.add(new Integer(stateValueId31));
+		list3.add(new Integer(stateValueId32));
+		list3.add(new Integer(stateValueId33));
 
 		List<Integer> list4 = new ArrayList<Integer>();
-		list4.add(new Integer(41));
-		list4.add(new Integer(42));
-		list4.add(new Integer(43));
+		list4.add(new Integer(stateValueId41));
+		list4.add(new Integer(stateValueId42));
+		list4.add(new Integer(stateValueId43));
 
 		CardwallStateMapping cardwallStateMapping3 = new CardwallStateMapping(3, list3);
 		CardwallStateMapping cardwallStateMapping4 = new CardwallStateMapping(4, list4);
@@ -440,29 +447,31 @@ public class CardwallTaskMapperTests {
 		mappingsList2.add(cardwallStateMapping3);
 		mappingsList2.add(cardwallStateMapping4);
 
-		CardwallState cardwallState = new CardwallState(100, "First State", mappingsList); //$NON-NLS-1$
-		CardwallState cardwallState2 = new CardwallState(200, "Second State", mappingsList2); //$NON-NLS-1$
+		int cardwallState100Id = 100;
+		int cardwallState200Id = 200;
+		CardwallState cardwallState100 = new CardwallState(cardwallState100Id, "First State", mappingsList); //$NON-NLS-1$
+		CardwallState cardwallState200 = new CardwallState(cardwallState200Id, "Second State", mappingsList2); //$NON-NLS-1$
 
-		CardwallTaskMapper mylynCardwallMapper = new CardwallTaskMapper(taskData);
+		CardwallTaskMapper mapper = new CardwallTaskMapper(taskData);
 
-		mylynCardwallMapper.addCardwallState(cardwallState);
+		mapper.addCardwallState(cardwallState100);
 
-		mylynCardwallMapper.addCardwallState(cardwallState2);
-
-		CardwallStateValue cardwallStateValue1 = new CardwallStateValue(22, 20, "The first state value"); //$NON-NLS-1$
+		mapper.addCardwallState(cardwallState200);
 
 		CardwallArtifact artifact = new CardwallArtifact(10,
-				"The first artifact", "The first artifact kind", 2, cardwallStateValue1); //$NON-NLS-1$ //$NON-NLS-2$
+				"The first artifact", "The first artifact kind", 2, stateValueId21); //$NON-NLS-1$ //$NON-NLS-2$
 
 		CardwallBacklogItem cardwallBacklogItem1 = new CardwallBacklogItem(1000, "First backlog item", //$NON-NLS-1$
 				"First backlog item kind"); //$NON-NLS-1$
 
 		cardwallBacklogItem1.addArtifact(artifact);
 
-		mylynCardwallMapper.addCardwallBacklogItem(cardwallBacklogItem1);
+		mapper.addCardwallBacklogItem(cardwallBacklogItem1);
 
-		CardwallState resultCardwallState = mylynCardwallMapper.getCardwallState(artifact);
-		assertEquals(100, resultCardwallState.getId());
+		CardwallState resultCardwallState = mapper.getCardwallState(artifact);
+		// Cannot compare objects since they are not stored in te mapper for the time being.
+		// TODO See if the mapper should cache objects and not only use task attributes
+		assertEquals(cardwallState100Id, resultCardwallState.getId());
 	}
 
 	/**
@@ -505,19 +514,19 @@ public class CardwallTaskMapperTests {
 
 		// Create the cardwall state values
 
-		CardwallStateValue cardwallStateValue1 = new CardwallStateValue(20, 12, "The first state value"); //$NON-NLS-1$
+		int stateValue1 = 12;
 
-		CardwallStateValue cardwallStateValue2 = new CardwallStateValue(21, 20, "The second state value"); //$NON-NLS-1$
+		int stateValue2 = 20;
 
 		// Create the cardwall artifacts
 		CardwallArtifact artifact1 = new CardwallArtifact(10,
-				"The first artifact", "The first artifact kind", 15, cardwallStateValue1); //$NON-NLS-1$ //$NON-NLS-2$
+				"The first artifact", "The first artifact kind", 15, stateValue1); //$NON-NLS-1$ //$NON-NLS-2$
 		CardwallArtifact artifact2 = new CardwallArtifact(20,
-				"The second artifact", "The second artifact", 2, cardwallStateValue1); //$NON-NLS-1$ //$NON-NLS-2$
+				"The second artifact", "The second artifact", 2, stateValue1); //$NON-NLS-1$ //$NON-NLS-2$
 		CardwallArtifact artifact3 = new CardwallArtifact(30,
-				"The third artifact", "The third artifact kind", 17, cardwallStateValue2); //$NON-NLS-1$ //$NON-NLS-2$
+				"The third artifact", "The third artifact kind", 17, stateValue2); //$NON-NLS-1$ //$NON-NLS-2$
 		CardwallArtifact artifact4 = new CardwallArtifact(40,
-				"The fourth artifact", "The fourth artifact", 18, cardwallStateValue2); //$NON-NLS-1$ //$NON-NLS-2$
+				"The fourth artifact", "The fourth artifact", 18, stateValue2); //$NON-NLS-1$ //$NON-NLS-2$
 
 		// Create the cardwall backlog item
 		CardwallBacklogItem cardwallBacklogItem1 = new CardwallBacklogItem(1000, "First backlog item", //$NON-NLS-1$
@@ -559,14 +568,14 @@ public class CardwallTaskMapperTests {
 		mappingsList.add(cardwallStateMapping2);
 
 		List<Integer> list3 = new ArrayList<Integer>();
-		list3.add(new Integer(11));
-		list3.add(new Integer(12));
-		list3.add(new Integer(13));
+		list3.add(new Integer(31));
+		list3.add(new Integer(32));
+		list3.add(new Integer(33));
 
 		List<Integer> list4 = new ArrayList<Integer>();
-		list4.add(new Integer(21));
-		list4.add(new Integer(22));
-		list4.add(new Integer(23));
+		list4.add(new Integer(41));
+		list4.add(new Integer(42));
+		list4.add(new Integer(43));
 
 		CardwallStateMapping cardwallStateMapping3 = new CardwallStateMapping(3, list3);
 		CardwallStateMapping cardwallStateMapping4 = new CardwallStateMapping(4, list4);
@@ -576,18 +585,18 @@ public class CardwallTaskMapperTests {
 		CardwallState cardwallState = new CardwallState(100, "First State", mappingsList); //$NON-NLS-1$
 
 		// the artifact
-		CardwallStateValue cardwallStateValue1 = new CardwallStateValue(1, 20, "The first state value"); //$NON-NLS-1$
+		int cardwallStateValue1 = 20;
 		CardwallArtifact artifact = new CardwallArtifact(10,
 				"The first artifact", "The first artifact kind", 1, cardwallStateValue1); //$NON-NLS-1$ //$NON-NLS-2$
 		CardwallTaskMapper mylynCardwallMapper = new CardwallTaskMapper(taskData);
 
 		// Before changing the artifact state
-		assertEquals(1, artifact.getCardwallStateValue().getFieldId());
+		assertEquals(cardwallStateValue1, artifact.getStateValueId());
 
 		mylynCardwallMapper.changeState(artifact, cardwallState);
 
 		// After changing the artifact state
-		assertEquals(11, artifact.getCardwallStateValue().getFieldId());
+		assertEquals(11, artifact.getStateValueId());
 	}
 
 }

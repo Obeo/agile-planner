@@ -39,9 +39,9 @@ public final class CardwallArtifact {
 	private int trackerId;
 
 	/**
-	 * The state value of the card wall artifact.
+	 * The id of the state value of the card wall artifact.
 	 */
-	private CardwallStateValue cardwallStateValue;
+	private int stateValueId;
 
 	/**
 	 * The constructor.
@@ -54,16 +54,15 @@ public final class CardwallArtifact {
 	 *            The kind of the cardwall artifact
 	 * @param trackerId
 	 *            The identifier of the card wall tracker
-	 * @param cardwallStateValue
-	 *            The state value of the cardwall artifact
+	 * @param stateValueId
+	 *            The state value id of the cardwall artifact
 	 */
-	public CardwallArtifact(int id, String title, String kind, int trackerId,
-			CardwallStateValue cardwallStateValue) {
+	public CardwallArtifact(int id, String title, String kind, int trackerId, int stateValueId) {
 		this.id = id;
 		this.title = title;
 		this.kind = kind;
 		this.trackerId = trackerId;
-		this.cardwallStateValue = cardwallStateValue;
+		this.stateValueId = stateValueId;
 	}
 
 	/**
@@ -107,7 +106,18 @@ public final class CardwallArtifact {
 	 * 
 	 * @return the cardwallStateValue
 	 */
-	public CardwallStateValue getCardwallStateValue() {
-		return this.cardwallStateValue;
+	public int getStateValueId() {
+		return this.stateValueId;
 	}
+
+	/**
+	 * Sets the state value id.
+	 * 
+	 * @param stateValueId
+	 *            the state value id.
+	 */
+	public void setStateValueId(int stateValueId) {
+		this.stateValueId = stateValueId;
+	}
+
 }
