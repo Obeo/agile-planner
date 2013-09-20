@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.tuleap.mylyn.task.agile.core.data.planning;
 
-import com.google.common.base.Function;
-
 import java.util.Date;
 
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
@@ -54,21 +52,6 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 	 * The value used to indicate that a task data represents a planned end date.
 	 */
 	public static final String END_DATE = "mta_end_date"; //$NON-NLS-1$
-
-	/**
-	 * Function that wraps a milestone task attribute into a SubMilestoneWrapper.
-	 */
-	private static final Function<TaskAttribute, SubMilestoneWrapper> WRAPPER_FUNCTION = new Function<TaskAttribute, SubMilestoneWrapper>() {
-		/**
-		 * {@inheritDoc}
-		 * 
-		 * @see com.google.common.base.Function#apply(java.lang.Object)
-		 */
-		@Override
-		public SubMilestoneWrapper apply(TaskAttribute arg0) {
-			return new SubMilestoneWrapper(arg0);
-		}
-	};
 
 	/**
 	 * Constructor to use to wrap an existing instance.
@@ -253,14 +236,5 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 	 */
 	public static SubMilestoneWrapper wrapSubMilestone(TaskAttribute root) {
 		return new SubMilestoneWrapper(root);
-	}
-
-	/**
-	 * Function that wraps a milestone task attribute into a SubMilestoneWrapper.
-	 * 
-	 * @return a guava function that wraps a milestone task attribute into a SubMilestoneWrapper.
-	 */
-	public static Function<TaskAttribute, SubMilestoneWrapper> wrap() {
-		return WRAPPER_FUNCTION;
 	}
 }

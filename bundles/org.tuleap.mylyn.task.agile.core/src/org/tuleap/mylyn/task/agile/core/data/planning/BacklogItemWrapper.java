@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.tuleap.mylyn.task.agile.core.data.planning;
 
-import com.google.common.base.Function;
-
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.tuleap.mylyn.task.agile.core.data.AbstractTaskAttributeWrapper;
 import org.tuleap.mylyn.task.agile.core.util.IMylynAgileCoreConstants;
@@ -81,21 +79,6 @@ public class BacklogItemWrapper extends AbstractTaskAttributeWrapper {
 	 * The value used to describe the kind of the backlog items contained in the milestone.
 	 */
 	public static final String MILESTONE_BACKLOG_ITEMS_KIND = "mta_milestone_bi_kind"; //$NON-NLS-1$
-
-	/**
-	 * Function that wraps a milestone task attribute into a SubMilestoneWrapper.
-	 */
-	private static final Function<TaskAttribute, BacklogItemWrapper> WRAPPER_FUNCTION = new Function<TaskAttribute, BacklogItemWrapper>() {
-		/**
-		 * {@inheritDoc}
-		 * 
-		 * @see com.google.common.base.Function#apply(java.lang.Object)
-		 */
-		@Override
-		public BacklogItemWrapper apply(TaskAttribute arg0) {
-			return new BacklogItemWrapper(arg0);
-		}
-	};
 
 	/**
 	 * Constructor to use to wrap an existing instance.
@@ -257,14 +240,5 @@ public class BacklogItemWrapper extends AbstractTaskAttributeWrapper {
 	 */
 	public static BacklogItemWrapper wrapBacklogItem(TaskAttribute root) {
 		return new BacklogItemWrapper(root);
-	}
-
-	/**
-	 * Function that wraps a backlog items task attribute into a BacklogItemWrapper.
-	 * 
-	 * @return a guava function that wraps a backlog item task attribute into a BacklogItemWrapper.
-	 */
-	public static Function<TaskAttribute, BacklogItemWrapper> wrap() {
-		return WRAPPER_FUNCTION;
 	}
 }

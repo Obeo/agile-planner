@@ -18,7 +18,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.tuleap.mylyn.task.internal.agile.core.tests.TaskAttributeWrapperTest;
 import org.tuleap.mylyn.task.internal.agile.core.tests.data.CardwallTaskMapperTests;
-import org.tuleap.mylyn.task.internal.agile.core.tests.data.MilestonePlanningTaskMapperTest;
+import org.tuleap.mylyn.task.internal.agile.core.tests.data.MilestonePlanningWrapperTest;
 
 /**
  * This class should be used to launch all the unit tests.
@@ -28,7 +28,7 @@ import org.tuleap.mylyn.task.internal.agile.core.tests.data.MilestonePlanningTas
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({TaskAttributeWrapperTest.class, CardwallTaskMapperTests.class,
-		MilestonePlanningTaskMapperTest.class })
+		MilestonePlanningWrapperTest.class })
 public final class AllMylynAgileCoreTests {
 
 	/**

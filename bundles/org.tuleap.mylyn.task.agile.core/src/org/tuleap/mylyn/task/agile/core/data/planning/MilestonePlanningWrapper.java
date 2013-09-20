@@ -60,13 +60,23 @@ public final class MilestonePlanningWrapper extends AbstractTaskAttributeWrapper
 	private final TaskAttribute planning;
 
 	/**
+	 * Function to transform a task attribute into a wrapper.
+	 */
+	private final TaskAttributeToMilestone toMilestone;
+
+	/**
+	 * Function to transform a task attribute into a wrapper.
+	 */
+	private final TaskAttributeToBacklogItem toBacklogItem;
+
+	/**
 	 * Constructor.
 	 * 
 	 * @param root
 	 *            The parent task attribute that contains every piece of data related to the wrapped
 	 *            milestone.
 	 */
-	protected MilestonePlanningWrapper(final TaskAttribute root) {
+	public MilestonePlanningWrapper(final TaskAttribute root) {
 		super(root);
 		TaskAttribute milestoneAtt = root.getAttribute(MILESTONE_PLANNING);
 		if (milestoneAtt == null) {
@@ -86,6 +96,8 @@ public final class MilestonePlanningWrapper extends AbstractTaskAttributeWrapper
 		}
 		backlog = backlogAtt;
 		submilestoneList = milestonesAtt;
+		toMilestone = new TaskAttributeToMilestone();
+		toBacklogItem = new TaskAttributeToBacklogItem();
 	}
 
 	/**
@@ -103,7 +115,7 @@ public final class MilestonePlanningWrapper extends AbstractTaskAttributeWrapper
 	 * @return a never null iterable of sub-milestone wrappers.
 	 */
 	public Iterable<SubMilestoneWrapper> getSubMilestones() {
-		return Iterables.transform(submilestoneList.getAttributes().values(), SubMilestoneWrapper.wrap());
+		return Iterables.transform(submilestoneList.getAttributes().values(), toMilestone);
 	}
 
 	/**
@@ -137,10 +149,10 @@ public final class MilestonePlanningWrapper extends AbstractTaskAttributeWrapper
 	/**
 	 * Returns the backlog items.
 	 * 
-	 * @return an never null iterable of backlog item wrappers.
+	 * @return a never null iterable of backlog item wrappers.
 	 */
 	public Iterable<BacklogItemWrapper> getBacklogItems() {
-		return Iterables.transform(backlog.getAttributes().values(), BacklogItemWrapper.wrap());
+		return Iterables.transform(backlog.getAttributes().values(), toBacklogItem);
 	}
 
 }

@@ -20,7 +20,6 @@ import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.junit.Before;
 import org.junit.Test;
 import org.tuleap.mylyn.task.agile.core.data.planning.BacklogItemWrapper;
-import org.tuleap.mylyn.task.agile.core.data.planning.MilestonePlanningTaskMapper;
 import org.tuleap.mylyn.task.agile.core.data.planning.MilestonePlanningWrapper;
 import org.tuleap.mylyn.task.agile.core.data.planning.SubMilestoneWrapper;
 import org.tuleap.mylyn.task.agile.core.util.IMylynAgileCoreConstants;
@@ -29,7 +28,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -37,7 +35,7 @@ import static org.junit.Assert.assertTrue;
  * 
  * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
  */
-public class MilestonePlanningTaskMapperTest {
+public class MilestonePlanningWrapperTest {
 
 	/**
 	 * The wrapped task data.
@@ -50,8 +48,7 @@ public class MilestonePlanningTaskMapperTest {
 	 */
 	@Test
 	public void testMilestoneCreation() {
-		MilestonePlanningTaskMapper mapper = new MilestonePlanningTaskMapper(taskData);
-		MilestonePlanningWrapper wrapper = mapper.getMilestonePlanningWrapper();
+		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(taskData.getRoot());
 		Date testDate = new Date();
 		SubMilestoneWrapper subMilestone = wrapper.addSubMilestone();
 		subMilestone.setCapacity(20);
@@ -112,8 +109,7 @@ public class MilestonePlanningTaskMapperTest {
 	 */
 	@Test
 	public void testReadAndWrite() {
-		MilestonePlanningTaskMapper mapper = new MilestonePlanningTaskMapper(taskData);
-		MilestonePlanningWrapper wrapper = mapper.getMilestonePlanningWrapper();
+		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(taskData.getRoot());
 		Date testDate = new Date();
 		SubMilestoneWrapper subMilestone = wrapper.addSubMilestone();
 		subMilestone.setCapacity(20);
@@ -128,8 +124,7 @@ public class MilestonePlanningTaskMapperTest {
 		backlogItem.setAssignedMilestoneId(200);
 		// System.out.println(taskData.getRoot());
 
-		mapper = new MilestonePlanningTaskMapper(taskData);
-		wrapper = mapper.getMilestonePlanningWrapper();
+		wrapper = new MilestonePlanningWrapper(taskData.getRoot());
 
 		Iterator<SubMilestoneWrapper> subMilestones = wrapper.getSubMilestones().iterator();
 		subMilestone = subMilestones.next();
@@ -156,15 +151,13 @@ public class MilestonePlanningTaskMapperTest {
 	 */
 	@Test
 	public void testMilestoneWithoutOptionalFields() {
-		MilestonePlanningTaskMapper mapper = new MilestonePlanningTaskMapper(taskData);
-		MilestonePlanningWrapper wrapper = mapper.getMilestonePlanningWrapper();
+		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(taskData.getRoot());
 		// Date testDate = new Date();
 		SubMilestoneWrapper subMilestone = wrapper.addSubMilestone();
 		BacklogItemWrapper backlogItem = wrapper.addBacklogItem();
 		// System.out.println(taskData.getRoot());
 
-		mapper = new MilestonePlanningTaskMapper(taskData);
-		wrapper = mapper.getMilestonePlanningWrapper();
+		wrapper = new MilestonePlanningWrapper(taskData.getRoot());
 
 		assertEquals(1, wrapper.submilestonesCount());
 		Iterator<SubMilestoneWrapper> subMilestones = wrapper.getSubMilestones().iterator();
@@ -193,8 +186,7 @@ public class MilestonePlanningTaskMapperTest {
 	 */
 	@Test
 	public void testBacklogItemAssignedIdRemoval() {
-		MilestonePlanningTaskMapper mapper = new MilestonePlanningTaskMapper(taskData);
-		MilestonePlanningWrapper wrapper = mapper.getMilestonePlanningWrapper();
+		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(taskData.getRoot());
 		// Date testDate = new Date();
 		SubMilestoneWrapper subMilestone = wrapper.addSubMilestone();
 		subMilestone.setId(123);
@@ -211,8 +203,7 @@ public class MilestonePlanningTaskMapperTest {
 	 */
 	@Test
 	public void testMultipleAssignments() {
-		MilestonePlanningTaskMapper mapper = new MilestonePlanningTaskMapper(taskData);
-		MilestonePlanningWrapper wrapper = mapper.getMilestonePlanningWrapper();
+		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(taskData.getRoot());
 		// Date testDate = new Date();
 		SubMilestoneWrapper subMilestone = wrapper.addSubMilestone();
 		subMilestone.setId(123);
@@ -268,37 +259,16 @@ public class MilestonePlanningTaskMapperTest {
 	}
 
 	/**
-	 * Check that method getXxxWrapper() always returns the same instance on a given instance.
-	 */
-	@Test
-	public void testGetWrapperAlwaysReturnsTheSameInstance() {
-		MilestonePlanningTaskMapper mapper = new MilestonePlanningTaskMapper(taskData);
-		MilestonePlanningWrapper wrapper = mapper.getMilestonePlanningWrapper();
-		Date testDate = new Date();
-		SubMilestoneWrapper subMilestone = wrapper.addSubMilestone();
-		subMilestone.setCapacity(20);
-		subMilestone.setDuration(11);
-		subMilestone.setId(200);
-		subMilestone.setLabel("Milestone 1"); //$NON-NLS-1$
-		subMilestone.setStartDate(testDate);
-		BacklogItemWrapper backlogItem = wrapper.addBacklogItem();
-		backlogItem.setId(300);
-		backlogItem.setLabel("label of backlog item 300"); //$NON-NLS-1$
-		backlogItem.setInitialEffort(5);
-		backlogItem.setAssignedMilestoneId(200);
-
-		MilestonePlanningWrapper wrapper2 = mapper.getMilestonePlanningWrapper();
-		assertSame(wrapper, wrapper2);
-	}
-
-	/**
 	 * Configure the data for the tests.
 	 */
 	@Before
 	public void setUp() {
-		TaskRepository taskRepository = new TaskRepository("kind", "repository"); //$NON-NLS-1$ //$NON-NLS-2$
+		String repositoryUrl = "repository"; //$NON-NLS-1$
+		String connectorKind = "kind"; //$NON-NLS-1$
+		String taskId = "id"; //$NON-NLS-1$ 
+		TaskRepository taskRepository = new TaskRepository(connectorKind, repositoryUrl);
 		TaskAttributeMapper mapper = new TaskAttributeMapper(taskRepository);
-		taskData = new TaskData(mapper, "kind", "repository", "id"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		taskData = new TaskData(mapper, connectorKind, repositoryUrl, taskId);
 	}
 
 }
