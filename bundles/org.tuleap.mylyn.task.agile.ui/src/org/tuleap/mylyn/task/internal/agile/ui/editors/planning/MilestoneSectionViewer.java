@@ -172,7 +172,7 @@ public class MilestoneSectionViewer extends Viewer {
 	 * @return The text to use as a header for a milestone section.
 	 */
 	private String getMilestoneSectionHeaderText() {
-		TaskAttribute nameAtt = fInput.getAttribute(IMylynAgileCoreConstants.MILESTONE_NAME);
+		TaskAttribute nameAtt = fInput.getAttribute(IMylynAgileCoreConstants.LABEL);
 		TaskAttribute startDateAtt = fInput.getAttribute(IMylynAgileCoreConstants.START_DATE);
 		TaskAttribute endDateAtt = fInput.getAttribute(IMylynAgileCoreConstants.END_DATE);
 

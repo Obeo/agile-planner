@@ -83,7 +83,7 @@ public class CardwallTaskMapper extends AbstractTaskMapper {
 		if (taskAttribute != null) {
 			// Label
 			TaskAttribute labelTaskAttribute = taskAttribute
-					.createMappedAttribute(IMylynAgileCoreConstants.MILESTONE_NAME);
+					.createMappedAttribute(IMylynAgileCoreConstants.LABEL);
 			labelTaskAttribute.setValue(cardwallState.getLabel());
 
 			// Mappings
@@ -128,7 +128,7 @@ public class CardwallTaskMapper extends AbstractTaskMapper {
 
 			// title
 			TaskAttribute labelTaskAttribute = taskAttribute
-					.createMappedAttribute(IMylynAgileCoreConstants.MILESTONE_NAME);
+					.createMappedAttribute(IMylynAgileCoreConstants.LABEL);
 			labelTaskAttribute.setValue(cardwallBacklogItem.getTitle());
 
 			// Kind
@@ -201,7 +201,7 @@ public class CardwallTaskMapper extends AbstractTaskMapper {
 					.getType())) {
 
 				TaskAttribute labelAttribute = stateTaskAttribute
-						.getMappedAttribute(IMylynAgileCoreConstants.MILESTONE_NAME);
+						.getMappedAttribute(IMylynAgileCoreConstants.LABEL);
 				Collection<CardwallStateMapping> mappingsList = new ArrayList<CardwallStateMapping>();
 				for (TaskAttribute mappingAttribute : stateTaskAttribute.getAttributes().values()) {
 					if (mappingAttribute.getMetaData().getType() != null
@@ -267,7 +267,7 @@ public class CardwallTaskMapper extends AbstractTaskMapper {
 							.getMetaData().getType())) {
 
 				TaskAttribute labelTaskAttribute = backlogItemsTaskAttribute
-						.getMappedAttribute(IMylynAgileCoreConstants.MILESTONE_NAME);
+						.getMappedAttribute(IMylynAgileCoreConstants.LABEL);
 
 				TaskAttribute kindTaskAttribute = backlogItemsTaskAttribute
 						.getMappedAttribute(IMylynAgileCoreConstants.BACKLOG_ITEM_KIND);

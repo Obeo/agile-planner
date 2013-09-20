@@ -163,8 +163,7 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 		milestoneAtt.getMetaData().setType(IMylynAgileCoreConstants.TYPE_MILESTONE);
 		milestoneAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
 
-		TaskAttribute milestoneNameAtt = milestoneAtt
-				.createAttribute(IMylynAgileCoreConstants.MILESTONE_NAME);
+		TaskAttribute milestoneNameAtt = milestoneAtt.createAttribute(IMylynAgileCoreConstants.LABEL);
 		milestoneNameAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
 		milestoneNameAtt.getMetaData().setType(TaskAttribute.TYPE_SHORT_RICH_TEXT);
 		milestoneNameAtt.setValue(name);

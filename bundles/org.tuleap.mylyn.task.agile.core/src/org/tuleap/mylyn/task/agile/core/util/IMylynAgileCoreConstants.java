@@ -19,15 +19,6 @@ package org.tuleap.mylyn.task.agile.core.util;
  * @since 1.0
  */
 public interface IMylynAgileCoreConstants {
-	/**
-	 * The key used to indicate the kind of a mylyn task data.
-	 */
-	String TASK_KIND_KEY = "mta_kind"; //$NON-NLS-1$
-
-	/**
-	 * The value used to indicate that a task data represent an agile release.
-	 */
-	String TASK_KIND_RELEASE = "mta_kind_release"; //$NON-NLS-1$
 
 	/**
 	 * The value used to indicate that a task data represents a milestone (for instance, a sprint).
@@ -124,6 +115,31 @@ public interface IMylynAgileCoreConstants {
 	String MILESTONE_BACKLOG_ITEMS_KIND = "mta_milestone_backlog_items_kind"; //$NON-NLS-1$
 
 	/**
+	 * The value used to indicate that a task data represents an id.
+	 */
+	String ID = "mta_id"; //$NON-NLS-1$
+
+	/**
+	 * The value used to indicate that a task data represents a label (for a milestone, a backlog item, ...).
+	 */
+	String LABEL = "mta_label"; //$NON-NLS-1$
+
+	/**
+	 * The value used to indicate that a task data represents an index (for a milestone, a backlog item, ...).
+	 */
+	String INDEX = "mta_index"; //$NON-NLS-1$
+
+	/**
+	 * The key used to indicate the kind of a mylyn task data.
+	 */
+	String TASK_KIND_KEY = "mta_kind"; //$NON-NLS-1$
+
+	/**
+	 * The value used to indicate that a task data represent an agile release.
+	 */
+	String TASK_KIND_RELEASE = "mta_kind_release"; //$NON-NLS-1$
+
+	/**
 	 * The prefix used for the identifier of the milestone state.
 	 */
 	String PREFIX_MILESTONE_STATE = "mta_milestone_state_prefix-"; //$NON-NLS-1$
@@ -157,30 +173,30 @@ public interface IMylynAgileCoreConstants {
 	/**
 	 * The value used to indicate the backlog item kind.
 	 */
-	String BACKLOG_ITEM_KIND = "mta_backlog_item_kind"; //$NON-NLS-1$
+	String BACKLOG_ITEM_KIND = "mta_bi_kind"; //$NON-NLS-1$
 
 	/**
 	 * The value used to indicate the backlog item artifact prefix.
 	 */
-	String PREFIX_BACKLOG_ITEM_ARTIFACT = "mta_backlog_item_artifact_prefix"; //$NON-NLS-1$
+	String PREFIX_BACKLOG_ITEM_ARTIFACT = "mta_bi_artifact_prefix"; //$NON-NLS-1$
 
 	/**
 	 * The value used to indicate the backlog item artifact type.
 	 */
-	String TYPE_BACKLOG_ITEM_ARTIFACT = "mta_backlog_item_artifact_type"; //$NON-NLS-1$
+	String TYPE_BACKLOG_ITEM_ARTIFACT = "mta_bi_artifact_type"; //$NON-NLS-1$
 
 	/**
 	 * The value used to indicate the backlog item artifact title.
 	 */
-	String TITLE_BACKLOG_ITEM_ARTIFACT = "mta_backlog_item_artifact_title"; //$NON-NLS-1$
+	String TITLE_BACKLOG_ITEM_ARTIFACT = "mta_bi_artifact_title"; //$NON-NLS-1$
 
 	/**
 	 * The value used to indicate the backlog item artifact kind.
 	 */
-	String KIND_BACKLOG_ITEM_ARTIFACT = "mta_backlog_item_artifact_kind"; //$NON-NLS-1$
+	String KIND_BACKLOG_ITEM_ARTIFACT = "mta_bi_artifact_kind"; //$NON-NLS-1$
 
 	/**
 	 * The value used to indicate the backlog item artifact state value id.
 	 */
-	String BACKLOG_ITEM_ARTIFACT_STATE_VALUE = "mta_backlog_item_artifact_state_value"; //$NON-NLS-1$
+	String BACKLOG_ITEM_ARTIFACT_STATE_VALUE = "mta_bi_artifact_state_value"; //$NON-NLS-1$
 }
