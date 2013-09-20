@@ -12,6 +12,8 @@ package org.tuleap.mylyn.task.agile.core.data.planning;
 
 import com.google.common.collect.Iterables;
 
+import java.util.List;
+
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.tuleap.mylyn.task.agile.core.data.AbstractTaskAttributeWrapper;
 
@@ -153,6 +155,37 @@ public final class MilestonePlanningWrapper extends AbstractTaskAttributeWrapper
 	 */
 	public Iterable<BacklogItemWrapper> getBacklogItems() {
 		return Iterables.transform(backlog.getAttributes().values(), toBacklogItem);
+	}
+
+	/**
+	 * Moves a list of BacklogItem before or after a target BacklogItem.
+	 * 
+	 * @param items
+	 *            the BacklogItems list
+	 * @param target
+	 *            the target BacklogItem
+	 * @param before
+	 *            a boolean parameter that indicates if moving BacklogItems will be before or after the target
+	 */
+	public void moveItemsToBacklog(List<BacklogItemWrapper> items, BacklogItemWrapper target, boolean before) {
+		// TODO
+	}
+
+	/**
+	 * Moves a list of BacklogItem before or after a target BacklogItem.
+	 * 
+	 * @param items
+	 *            the BacklogItems list
+	 * @param target
+	 *            the target BacklogItem
+	 * @param before
+	 *            a boolean parameter that indicates if moving BacklogItems will be before or after the target
+	 * @param milestone
+	 *            the milestone to which BacklogItems will be moved
+	 */
+	public void moveItemsToMilestone(List<BacklogItemWrapper> items, BacklogItemWrapper target,
+			boolean before, MilestonePlanningWrapper milestone) {
+		// TODO
 	}
 
 }
