@@ -13,6 +13,7 @@ package org.tuleap.mylyn.task.agile.core.data.planning;
 import java.util.Date;
 
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
+import org.eclipse.mylyn.tasks.core.data.TaskAttributeMapper;
 import org.tuleap.mylyn.task.agile.core.data.AbstractTaskAttributeWrapper;
 import org.tuleap.mylyn.task.agile.core.util.IMylynAgileCoreConstants;
 
@@ -54,13 +55,21 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 	public static final String END_DATE = "mta_end_date"; //$NON-NLS-1$
 
 	/**
+	 * The parent planning.
+	 */
+	private final MilestonePlanningWrapper parent;
+
+	/**
 	 * Constructor to use to wrap an existing instance.
 	 * 
+	 * @param parent
+	 *            The parent planning
 	 * @param root
 	 *            The non-null task attribute that represents a sub-milestone to wrap.
 	 */
-	protected SubMilestoneWrapper(final TaskAttribute root) {
+	protected SubMilestoneWrapper(final MilestonePlanningWrapper parent, final TaskAttribute root) {
 		super(root);
+		this.parent = parent;
 	}
 
 	/**
@@ -70,9 +79,9 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 	 */
 	public int getId() {
 		int result = -1;
-		TaskAttribute milestoneNameAtt = root.getMappedAttribute(IMylynAgileCoreConstants.ID);
-		if (milestoneNameAtt != null) {
-			result = Integer.parseInt(milestoneNameAtt.getValue());
+		TaskAttribute attribute = root.getMappedAttribute(IMylynAgileCoreConstants.ID);
+		if (attribute != null) {
+			result = Integer.parseInt(attribute.getValue());
 		}
 		return result;
 	}
@@ -83,14 +92,14 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 	 * @param id
 	 *            The milestone's id.
 	 */
-	private void setId(int id) {
-		TaskAttribute milestoneNameAtt = root.getMappedAttribute(IMylynAgileCoreConstants.ID);
-		if (milestoneNameAtt == null) {
-			milestoneNameAtt = root.createMappedAttribute(IMylynAgileCoreConstants.ID);
-			milestoneNameAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
-			milestoneNameAtt.getMetaData().setType(TaskAttribute.TYPE_INTEGER);
+	public void setId(int id) {
+		TaskAttribute attribute = root.getMappedAttribute(IMylynAgileCoreConstants.ID);
+		if (attribute == null) {
+			attribute = root.createMappedAttribute(IMylynAgileCoreConstants.ID);
+			attribute.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
+			attribute.getMetaData().setType(TaskAttribute.TYPE_INTEGER);
 		}
-		milestoneNameAtt.setValue(Integer.toString(id));
+		attribute.setValue(Integer.toString(id));
 	}
 
 	/**
@@ -100,9 +109,9 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 	 */
 	public String getLabel() {
 		String result = null;
-		TaskAttribute milestoneNameAtt = root.getMappedAttribute(IMylynAgileCoreConstants.LABEL);
-		if (milestoneNameAtt != null) {
-			result = milestoneNameAtt.getValue();
+		TaskAttribute attribute = root.getMappedAttribute(IMylynAgileCoreConstants.LABEL);
+		if (attribute != null) {
+			result = attribute.getValue();
 		}
 		return result;
 	}
@@ -114,13 +123,19 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 	 *            The milestone's label.
 	 */
 	public void setLabel(String label) {
-		TaskAttribute milestoneNameAtt = root.getMappedAttribute(IMylynAgileCoreConstants.LABEL);
-		if (milestoneNameAtt == null) {
-			milestoneNameAtt = root.createMappedAttribute(IMylynAgileCoreConstants.LABEL);
-			milestoneNameAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
-			milestoneNameAtt.getMetaData().setType(TaskAttribute.TYPE_SHORT_RICH_TEXT);
+		TaskAttribute attribute = root.getMappedAttribute(IMylynAgileCoreConstants.LABEL);
+		String oldValue = null;
+		if (attribute == null) {
+			attribute = root.createMappedAttribute(IMylynAgileCoreConstants.LABEL);
+			attribute.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
+			attribute.getMetaData().setType(TaskAttribute.TYPE_SHORT_RICH_TEXT);
+		} else {
+			oldValue = attribute.getValue();
 		}
-		milestoneNameAtt.setValue(label);
+		if (oldValue == null && label != null || oldValue != null && !oldValue.equals(label)) {
+			attribute.setValue(label);
+			fireAttributeChanged(attribute);
+		}
 	}
 
 	/**
@@ -130,9 +145,9 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 	 */
 	public Float getCapacity() {
 		Float result = null;
-		TaskAttribute milestoneNameAtt = root.getMappedAttribute(MILESTONE_CAPACITY);
-		if (milestoneNameAtt != null) {
-			result = Float.valueOf(milestoneNameAtt.getValue());
+		TaskAttribute attribute = root.getMappedAttribute(MILESTONE_CAPACITY);
+		if (attribute != null) {
+			result = Float.valueOf(attribute.getValue());
 		}
 		return result;
 	}
@@ -144,13 +159,19 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 	 *            The milestone's capacity.
 	 */
 	public void setCapacity(float capacity) {
-		TaskAttribute capacityAtt = root.getMappedAttribute(MILESTONE_CAPACITY);
-		if (capacityAtt == null) {
-			capacityAtt = root.createMappedAttribute(MILESTONE_CAPACITY);
-			capacityAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
-			capacityAtt.getMetaData().setType(TaskAttribute.TYPE_DOUBLE);
+		TaskAttribute attribute = root.getMappedAttribute(MILESTONE_CAPACITY);
+		String oldValue = null;
+		if (attribute == null) {
+			attribute = root.createMappedAttribute(MILESTONE_CAPACITY);
+			attribute.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
+			attribute.getMetaData().setType(TaskAttribute.TYPE_DOUBLE);
+		} else {
+			oldValue = attribute.getValue();
 		}
-		capacityAtt.setValue(Float.toString(capacity));
+		if (oldValue == null || Float.parseFloat(oldValue) != capacity) {
+			attribute.setValue(Float.toString(capacity));
+			fireAttributeChanged(attribute);
+		}
 	}
 
 	/**
@@ -160,9 +181,10 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 	 */
 	public Date getStartDate() {
 		Date result = null;
-		TaskAttribute milestoneNameAtt = root.getMappedAttribute(START_DATE);
-		if (milestoneNameAtt != null) {
-			result = new Date(Long.parseLong(milestoneNameAtt.getValue()));
+		TaskAttribute attribute = root.getMappedAttribute(START_DATE);
+		if (attribute != null) {
+			TaskAttributeMapper mapper = attribute.getTaskData().getAttributeMapper();
+			result = mapper.getDateValue(attribute);
 		}
 		return result;
 	}
@@ -171,16 +193,25 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 	 * Start date setter.
 	 * 
 	 * @param start
-	 *            The milestone's start date.
+	 *            The milestone's start date. Nothing happens if it is null, and the former, if any, start
+	 *            date is left unchanged.
 	 */
 	public void setStartDate(Date start) {
-		TaskAttribute capacityAtt = root.getMappedAttribute(START_DATE);
-		if (capacityAtt == null) {
-			capacityAtt = root.createMappedAttribute(START_DATE);
-			capacityAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
-			capacityAtt.getMetaData().setType(TaskAttribute.TYPE_DATETIME);
+		if (start == null) {
+			return;
 		}
-		capacityAtt.setValue(Long.toString(start.getTime()));
+		TaskAttribute attribute = root.getMappedAttribute(START_DATE);
+		if (attribute == null) {
+			attribute = root.createMappedAttribute(START_DATE);
+			attribute.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
+			attribute.getMetaData().setType(TaskAttribute.TYPE_DATETIME);
+		}
+		TaskAttributeMapper mapper = attribute.getTaskData().getAttributeMapper();
+		Date oldValue = mapper.getDateValue(attribute);
+		if (oldValue == null || !oldValue.equals(start)) {
+			mapper.setDateValue(attribute, start);
+			fireAttributeChanged(attribute);
+		}
 	}
 
 	/**
@@ -190,9 +221,9 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 	 */
 	public Float getDuration() {
 		Float result = null;
-		TaskAttribute milestoneNameAtt = root.getMappedAttribute(MILESTONE_DURATION);
-		if (milestoneNameAtt != null) {
-			result = Float.valueOf(milestoneNameAtt.getValue());
+		TaskAttribute attribute = root.getMappedAttribute(MILESTONE_DURATION);
+		if (attribute != null) {
+			result = Float.valueOf(attribute.getValue());
 		}
 		return result;
 	}
@@ -204,41 +235,47 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 	 *            The milestone's duration.
 	 */
 	public void setDuration(float duration) {
-		TaskAttribute capacityAtt = root.getMappedAttribute(MILESTONE_DURATION);
-		if (capacityAtt == null) {
-			capacityAtt = root.createMappedAttribute(MILESTONE_DURATION);
-			capacityAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
-			capacityAtt.getMetaData().setType(TaskAttribute.TYPE_DOUBLE);
+		TaskAttribute attribute = root.getMappedAttribute(MILESTONE_DURATION);
+		String oldValue = null;
+		if (attribute == null) {
+			attribute = root.createMappedAttribute(MILESTONE_DURATION);
+			attribute.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
+			attribute.getMetaData().setType(TaskAttribute.TYPE_DOUBLE);
+		} else {
+			oldValue = attribute.getValue();
 		}
-		capacityAtt.setValue(Float.toString(duration));
+		if (oldValue == null || Float.parseFloat(oldValue) != duration) {
+			attribute.setValue(Float.toString(duration));
+			fireAttributeChanged(attribute);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see org.tuleap.mylyn.task.agile.core.data.AbstractTaskAttributeWrapper#fireAttributeChanged(org.eclipse.mylyn.tasks.core.data.TaskAttribute)
+	 */
+	@Override
+	protected void fireAttributeChanged(TaskAttribute attribute) {
+		parent.fireAttributeChanged(attribute);
 	}
 
 	/**
 	 * Creates a new task attribute in the given parent attribute to represent a new sub-milestone and returns
 	 * its wrapper.
 	 * 
-	 * @param parent
-	 *            The parent task attribute, should represent a list of sub-milestones.
+	 * @param wrapper
+	 *            the parent planning
 	 * @param id
-	 *            the submilestone identifier
+	 *            the sub-milestone identifier
 	 * @return a new wrapper for a new task attribute that represents a sub-milestone.
 	 */
-	public static SubMilestoneWrapper createSubMilestone(TaskAttribute parent, int id) {
+	public static SubMilestoneWrapper createSubMilestone(MilestonePlanningWrapper wrapper, int id) {
+		TaskAttribute parent = wrapper.getSubMilestoneListTaskAttribute();
 		TaskAttribute root = parent.createAttribute(PREFIX_MILESTONE + parent.getAttributes().size());
 		root.getMetaData().setReadOnly(true);
-		SubMilestoneWrapper subMilestoneWrapper = new SubMilestoneWrapper(root);
-		subMilestoneWrapper.setId(id);
-		return subMilestoneWrapper;
-	}
-
-	/**
-	 * Returns a sub-milestone wrapper for an existing task attribute.
-	 * 
-	 * @param root
-	 *            the task attribute to wrap, should represent a sub-milestone.
-	 * @return a new wrapper for the given task attribute.
-	 */
-	public static SubMilestoneWrapper wrapSubMilestone(TaskAttribute root) {
-		return new SubMilestoneWrapper(root);
+		SubMilestoneWrapper sub = new SubMilestoneWrapper(wrapper, root);
+		sub.setId(id);
+		return sub;
 	}
 }

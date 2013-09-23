@@ -17,30 +17,27 @@ import java.util.List;
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.mylyn.tasks.core.data.TaskDataModel;
+import org.eclipse.jface.viewers.ViewerDropAdapter;
 import org.eclipse.swt.dnd.TransferData;
 import org.tuleap.mylyn.task.agile.core.data.planning.BacklogItemWrapper;
 import org.tuleap.mylyn.task.agile.core.data.planning.MilestonePlanningWrapper;
 import org.tuleap.mylyn.task.agile.core.data.planning.SubMilestoneWrapper;
-import org.tuleap.mylyn.task.internal.agile.ui.editors.AbstractTaskAttributeViewerDropAdapter;
 
 /**
  * Drop Listener for BacklogItem tables.
  * 
  * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
  */
-public class BacklogItemDropAdapter extends AbstractTaskAttributeViewerDropAdapter {
+public class BacklogItemDropAdapter extends ViewerDropAdapter {
 
 	/**
 	 * Constructor, requires a viewer. Delegates to the parent class.
 	 * 
 	 * @param viewer
 	 *            The viewer.
-	 * @param model
-	 *            The task data model to use.
 	 */
-	public BacklogItemDropAdapter(Viewer viewer, TaskDataModel model) {
-		super(viewer, model);
+	public BacklogItemDropAdapter(Viewer viewer) {
+		super(viewer);
 	}
 
 	/**
@@ -76,7 +73,7 @@ public class BacklogItemDropAdapter extends AbstractTaskAttributeViewerDropAdapt
 	 */
 	private boolean performDropOnBacklogItem(IStructuredSelection selection, BacklogItemWrapper wrapper) {
 		boolean ret = false;
-		IBacklogItemContainer container = (IBacklogItemContainer)getViewer().getInput();
+		IBacklog container = (IBacklog)getViewer().getInput();
 		boolean mustUpdate;
 		boolean before;
 		switch (getCurrentLocation()) {
@@ -123,7 +120,7 @@ public class BacklogItemDropAdapter extends AbstractTaskAttributeViewerDropAdapt
 			return false;
 		}
 		boolean ret = false;
-		IBacklogItemContainer container = (IBacklogItemContainer)getViewer().getInput();
+		IBacklog container = (IBacklog)getViewer().getInput();
 		Iterable<BacklogItemWrapper> biWrappers = container.getBacklogItems();
 		BacklogItemWrapper lastBacklogItem = Iterables.getLast(biWrappers);
 		Integer targetAssignedMilestoneId = lastBacklogItem.getAssignedMilestoneId();

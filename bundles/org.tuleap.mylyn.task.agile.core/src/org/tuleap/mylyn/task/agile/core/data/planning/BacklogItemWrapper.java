@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.tuleap.mylyn.task.agile.core.data.planning;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.tuleap.mylyn.task.agile.core.data.AbstractTaskAttributeWrapper;
 import org.tuleap.mylyn.task.agile.core.util.IMylynAgileCoreConstants;
@@ -81,13 +82,22 @@ public class BacklogItemWrapper extends AbstractTaskAttributeWrapper {
 	public static final String MILESTONE_BACKLOG_ITEMS_KIND = "mta_milestone_bi_kind"; //$NON-NLS-1$
 
 	/**
+	 * The parent planning.
+	 */
+	private final MilestonePlanningWrapper parent;
+
+	/**
 	 * Constructor to use to wrap an existing instance.
 	 * 
+	 * @param parent
+	 *            The parent planning
 	 * @param root
 	 *            The non-null task attribute that represents a backlog item to wrap.
 	 */
-	protected BacklogItemWrapper(final TaskAttribute root) {
+	protected BacklogItemWrapper(final MilestonePlanningWrapper parent, final TaskAttribute root) {
 		super(root);
+		Assert.isNotNull(parent);
+		this.parent = parent;
 	}
 
 	/**
@@ -138,16 +148,24 @@ public class BacklogItemWrapper extends AbstractTaskAttributeWrapper {
 	 * Label setter.
 	 * 
 	 * @param label
-	 *            The item's label.
+	 *            The item's label. If it is null, nothing happens and the former label, if present, remains
+	 *            unchanged.
 	 */
 	public void setLabel(String label) {
+		if (label == null) {
+			return;
+		}
 		TaskAttribute attribute = root.getMappedAttribute(IMylynAgileCoreConstants.LABEL);
 		if (attribute == null) {
 			attribute = root.createMappedAttribute(IMylynAgileCoreConstants.LABEL);
 			attribute.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
 			attribute.getMetaData().setType(TaskAttribute.TYPE_SHORT_RICH_TEXT);
 		}
-		attribute.setValue(label);
+		String oldValue = attribute.getValue();
+		if (oldValue == null || !oldValue.equals(label)) {
+			attribute.setValue(label);
+			fireAttributeChanged(attribute);
+		}
 	}
 
 	/**
@@ -159,7 +177,11 @@ public class BacklogItemWrapper extends AbstractTaskAttributeWrapper {
 		Float result = null;
 		TaskAttribute attribute = root.getMappedAttribute(BACKLOG_ITEM_POINTS);
 		if (attribute != null) {
-			result = Float.valueOf(attribute.getValue());
+			try {
+				result = Float.valueOf(attribute.getValue());
+			} catch (NumberFormatException e) {
+				// Nothing to do
+			}
 		}
 		return result;
 	}
@@ -172,12 +194,18 @@ public class BacklogItemWrapper extends AbstractTaskAttributeWrapper {
 	 */
 	public void setInitialEffort(float initialEffort) {
 		TaskAttribute attribute = root.getMappedAttribute(BACKLOG_ITEM_POINTS);
+		String oldValue = null;
 		if (attribute == null) {
 			attribute = root.createMappedAttribute(BACKLOG_ITEM_POINTS);
 			attribute.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
 			attribute.getMetaData().setType(TaskAttribute.TYPE_DOUBLE);
+		} else {
+			oldValue = attribute.getValue();
 		}
-		attribute.setValue(Float.toString(initialEffort));
+		if (oldValue == null || Float.parseFloat(oldValue) != initialEffort) {
+			attribute.setValue(Float.toString(initialEffort));
+			fireAttributeChanged(attribute);
+		}
 	}
 
 	/**
@@ -203,11 +231,17 @@ public class BacklogItemWrapper extends AbstractTaskAttributeWrapper {
 	 */
 	public void setAssignedMilestoneId(int milestoneId) {
 		TaskAttribute attribute = root.getMappedAttribute(ASSIGNED_MILESTONE_ID);
+		String oldValue = null;
 		if (attribute == null) {
 			attribute = root.createAttribute(ASSIGNED_MILESTONE_ID);
 			attribute.getMetaData().setType(TaskAttribute.TYPE_INTEGER);
+		} else {
+			oldValue = attribute.getValue();
 		}
-		attribute.setValue(Integer.toString(milestoneId));
+		if (oldValue == null || Integer.parseInt(oldValue) != milestoneId) {
+			attribute.setValue(Integer.toString(milestoneId));
+			fireAttributeChanged(attribute);
+		}
 	}
 
 	/**
@@ -222,28 +256,38 @@ public class BacklogItemWrapper extends AbstractTaskAttributeWrapper {
 	 * its wrapper.
 	 * 
 	 * @param parent
-	 *            The parent task attribute, should represent a list of backlog items.
+	 *            The parent planning wrapper.
 	 * @param id
 	 *            The backlogItem identifier
 	 * @return a new wrapper for a new task attribute that represents a backlog items.
 	 */
-	public static BacklogItemWrapper createBacklogItem(TaskAttribute parent, int id) {
-		TaskAttribute root = parent.createAttribute(PREFIX_BACKLOG_ITEM + parent.getAttributes().size());
+	public static BacklogItemWrapper createBacklogItem(MilestonePlanningWrapper parent, int id) {
+		TaskAttribute backlogAtt = parent.getBacklogTaskAttribute();
+		TaskAttribute root = backlogAtt.createAttribute(PREFIX_BACKLOG_ITEM
+				+ backlogAtt.getAttributes().size());
 		root.getMetaData().setReadOnly(true);
-		BacklogItemWrapper backlogItemWrapper = new BacklogItemWrapper(root);
+		BacklogItemWrapper backlogItemWrapper = new BacklogItemWrapper(parent, backlogAtt);
 		backlogItemWrapper.setId(id);
-		parent.addValue(Integer.toString(id));
+		backlogAtt.addValue(Integer.toString(id));
 		return backlogItemWrapper;
 	}
 
 	/**
-	 * Returns a backlog item wrapper for an existing task attribute.
+	 * Return the parent planning as a wrapper.
 	 * 
-	 * @param root
-	 *            the task attribute to wrap, should represent a backlog item.
-	 * @return a new wrapper for the given task attribute.
+	 * @return The (never null) parent planning, as a wrapper.
 	 */
-	public static BacklogItemWrapper wrapBacklogItem(TaskAttribute root) {
-		return new BacklogItemWrapper(root);
+	public MilestonePlanningWrapper getParent() {
+		return parent;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see org.tuleap.mylyn.task.agile.core.data.AbstractTaskAttributeWrapper#fireAttributeChanged(org.eclipse.mylyn.tasks.core.data.TaskAttribute)
+	 */
+	@Override
+	protected void fireAttributeChanged(TaskAttribute attribute) {
+		parent.fireAttributeChanged(attribute);
 	}
 }

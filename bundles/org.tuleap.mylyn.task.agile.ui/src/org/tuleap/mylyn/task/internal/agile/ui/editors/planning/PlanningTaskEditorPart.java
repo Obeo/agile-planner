@@ -39,6 +39,7 @@ import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.forms.widgets.TableWrapData;
+import org.tuleap.mylyn.task.agile.core.data.ITaskAttributeChangeListener;
 import org.tuleap.mylyn.task.agile.core.data.planning.BacklogItemWrapper;
 import org.tuleap.mylyn.task.agile.core.data.planning.MilestonePlanningWrapper;
 import org.tuleap.mylyn.task.agile.core.data.planning.SubMilestoneWrapper;
@@ -58,7 +59,12 @@ import org.tuleap.mylyn.task.internal.agile.ui.util.MylynAgileUIMessages;
  * @author <a href="mailto:stephane.begaudeau@obeo.fr">Stephane Begaudeau</a>
  * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
  */
-public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
+public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements ITaskAttributeChangeListener {
+
+	/**
+	 * The edited planning wrapper.
+	 */
+	private MilestonePlanningWrapper wrapper;
 
 	/**
 	 * {@inheritDoc}
@@ -93,7 +99,8 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 		backlogSection.setLayout(FormLayoutFactory.createClearTableWrapLayout(false, 1));
 		TableWrapData data = new TableWrapData(TableWrapData.FILL_GRAB);
 		backlogSection.setLayoutData(data);
-		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(getTaskData().getRoot());
+		wrapper = new MilestonePlanningWrapper(getTaskData().getRoot());
+		wrapper.addListener(this);
 		TaskAttribute backlogItemTypeNameAtt = getTaskData().getRoot().getAttribute(
 				IMylynAgileCoreConstants.BACKLOG_ITEM_TYPE_LABEL);
 		String backlogItemTypeName;
@@ -108,9 +115,9 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 
 		// Drag'n drop
 		viewer.addDragSupport(DND.DROP_MOVE, new Transfer[] {LocalSelectionTransfer.getTransfer() },
-				new BacklogItemDragListener(viewer, getModel()));
+				new BacklogItemDragListener(viewer));
 		viewer.addDropSupport(DND.DROP_MOVE, new Transfer[] {LocalSelectionTransfer.getTransfer() },
-				new BacklogItemDropAdapter(viewer, getModel()));
+				new BacklogItemDropAdapter(viewer));
 
 		final Section milestoneList = toolkit.createSection(body, ExpandableComposite.TITLE_BAR
 				| Section.EXPANDED);
@@ -124,7 +131,7 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 		milestoneList.setClient(milestoneListComp);
 
 		for (SubMilestoneWrapper subMilestone : wrapper.getSubMilestones()) {
-			createMilestoneSection(toolkit, milestoneListComp, wrapper, subMilestone, backlogItemTypeName);
+			createMilestoneSection(toolkit, milestoneListComp, subMilestone, backlogItemTypeName);
 		}
 
 		ToolBarManager toolBarManager = new ToolBarManager(SWT.FLAT);
@@ -164,21 +171,29 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see org.tuleap.mylyn.task.agile.core.data.ITaskAttributeChangeListener#attributeChanged(org.eclipse.mylyn.tasks.core.data.TaskAttribute)
+	 */
+	@Override
+	public void attributeChanged(TaskAttribute attribute) {
+		getModel().attributeChanged(attribute);
+	}
+
+	/**
 	 * Creates a section for a given Milestone in a given parent composite.
 	 * 
 	 * @param toolkit
 	 *            The toolkit to use.
 	 * @param parentComposite
 	 *            The parent composite that will contain the created section.
-	 * @param planningWrapper
-	 *            The milestone planning wrapper.
-	 * @param wrapper
+	 * @param subMilestone
 	 *            The sub-milestone wrapper.
 	 * @param backlogItemTypeName
 	 *            The label to use for the milestone's backlog items type.
 	 */
 	private void createMilestoneSection(FormToolkit toolkit, Composite parentComposite,
-			MilestonePlanningWrapper planningWrapper, SubMilestoneWrapper wrapper, String backlogItemTypeName) {
+			SubMilestoneWrapper subMilestone, String backlogItemTypeName) {
 		Section milestoneSection = toolkit.createSection(parentComposite, ExpandableComposite.TITLE_BAR
 				| Section.DESCRIPTION | Section.TWISTIE | Section.EXPANDED);
 		milestoneSection.setLayout(FormLayoutFactory.createClearTableWrapLayout(false, 1));
@@ -206,16 +221,16 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 		toolBarManager.update(true);
 		milestoneSection.setTextClient(toolbar);
 		MilestoneSectionViewer milestoneViewer = new MilestoneSectionViewer(milestoneSection);
-		milestoneViewer.setInput(new SubMilestoneBacklogModel(planningWrapper, wrapper));
+		milestoneViewer.setInput(new SubMilestoneBacklogModel(wrapper, subMilestone));
 		milestoneViewer.refresh();
 		TableViewer viewer = createBacklogItemsTable(toolkit, milestoneSection, new SubMilestoneBacklogModel(
-				planningWrapper, wrapper), backlogItemTypeName);
+				wrapper, subMilestone), backlogItemTypeName);
 
 		// Drag'n drop
 		viewer.addDragSupport(DND.DROP_MOVE, new Transfer[] {LocalSelectionTransfer.getTransfer() },
-				new MilestoneDragListener(viewer, getModel(), milestoneViewer));
+				new MilestoneDragListener(viewer, milestoneViewer));
 		viewer.addDropSupport(DND.DROP_MOVE, new Transfer[] {LocalSelectionTransfer.getTransfer() },
-				new MilestoneDropAdapter(viewer, getModel(), milestoneViewer));
+				new MilestoneDropAdapter(viewer, milestoneViewer));
 	}
 
 	/**
@@ -232,7 +247,7 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 	 * @return The TableViewer that displays the milestone's backlog items.
 	 */
 	private TableViewer createBacklogItemsTable(final FormToolkit toolkit, final Section section,
-			final IBacklogItemContainer container, final String backlogItemTypeName) {
+			final IBacklog container, final String backlogItemTypeName) {
 		final String strMissing = MylynAgileUIMessages.getString("PlanningTaskEditorPart.MissingTextValue"); //$NON-NLS-1$
 		Table table = toolkit.createTable(section, SWT.BORDER | SWT.MULTI | SWT.FULL_SELECTION);
 		section.setClient(table);
@@ -347,5 +362,18 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 			}
 		});
 		return viewer;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see org.eclipse.ui.forms.AbstractFormPart#dispose()
+	 */
+	@Override
+	public void dispose() {
+		super.dispose();
+		if (wrapper != null) {
+			wrapper.removeListener(this);
+		}
 	}
 }

@@ -11,7 +11,6 @@
 package org.tuleap.mylyn.task.internal.agile.ui.editors.planning;
 
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.mylyn.tasks.core.data.TaskDataModel;
 import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.widgets.Control;
 
@@ -32,14 +31,11 @@ public class MilestoneDragListener extends BacklogItemDragListener {
 	 * 
 	 * @param viewer
 	 *            the table fViewer to listen to.
-	 * @param model
-	 *            The task data model to use.
 	 * @param milestoneSectionViewer
 	 *            The milestone section viewer, top use to update the section's UI after a drag operation.
 	 */
-	public MilestoneDragListener(TableViewer viewer, TaskDataModel model,
-			MilestoneSectionViewer milestoneSectionViewer) {
-		super(viewer, model);
+	public MilestoneDragListener(TableViewer viewer, MilestoneSectionViewer milestoneSectionViewer) {
+		super(viewer);
 		fMilestoneSectionViewer = milestoneSectionViewer;
 	}
 

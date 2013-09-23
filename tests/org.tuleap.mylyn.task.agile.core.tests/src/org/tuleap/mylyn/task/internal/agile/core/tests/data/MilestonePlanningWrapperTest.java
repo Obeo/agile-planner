@@ -260,4 +260,58 @@ public class MilestonePlanningWrapperTest {
 		taskData = new TaskData(mapper, connectorKind, repositoryUrl, taskId);
 	}
 
+	/**
+	 * Test the notificatino mechanism woth one listener.
+	 */
+	@Test
+	public void testNotificationsWithOneListener() {
+		TestChangeListener listener = new TestChangeListener();
+		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(taskData.getRoot());
+		wrapper.addListener(listener);
+
+		SubMilestoneWrapper subMilestone = wrapper.addSubMilestone();
+		subMilestone.setCapacity(12F);
+
+		TaskAttribute root = taskData.getRoot();
+		TaskAttribute planningAtt = root.getAttribute(MilestonePlanningWrapper.MILESTONE_PLANNING);
+		TaskAttribute milestoneListAtt = planningAtt.getAttribute(MilestonePlanningWrapper.MILESTONE_LIST);
+		TaskAttribute milestone0 = milestoneListAtt.getAttribute(SubMilestoneWrapper.PREFIX_MILESTONE + "0"); //$NON-NLS-1$
+		TaskAttribute capacity = milestone0.getAttribute(SubMilestoneWrapper.MILESTONE_CAPACITY);
+
+		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(capacity));
+		subMilestone.setCapacity(12F); // Should not notify
+		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(capacity));
+		subMilestone.setCapacity(13F); // Should notify
+		assertEquals(Integer.valueOf(2), listener.getInvocationsCount(capacity));
+
+		subMilestone.setDuration(21.5F);
+		TaskAttribute duration = milestone0.getAttribute(SubMilestoneWrapper.MILESTONE_DURATION);
+
+		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(duration));
+		subMilestone.setDuration(21.5F); // Should not notify
+		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(duration));
+		subMilestone.setDuration(20F); // Should notify
+		assertEquals(Integer.valueOf(2), listener.getInvocationsCount(duration));
+
+		subMilestone.setLabel("Label"); //$NON-NLS-1$
+		TaskAttribute label = milestone0.getAttribute(IMylynAgileCoreConstants.LABEL);
+
+		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(label));
+		subMilestone.setLabel("Label"); //$NON-NLS-1$
+		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(label));
+		subMilestone.setLabel("Other"); //$NON-NLS-1$
+		assertEquals(Integer.valueOf(2), listener.getInvocationsCount(label));
+
+		Date startDate = new Date();
+		subMilestone.setStartDate(startDate);
+
+		TaskAttribute start = milestone0.getAttribute(SubMilestoneWrapper.START_DATE);
+
+		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(start));
+		subMilestone.setStartDate(startDate); // Should not notify
+		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(start));
+		subMilestone.setStartDate(new Date(startDate.getTime() + 1)); // Should notify
+		assertEquals(Integer.valueOf(2), listener.getInvocationsCount(start));
+	}
+
 }

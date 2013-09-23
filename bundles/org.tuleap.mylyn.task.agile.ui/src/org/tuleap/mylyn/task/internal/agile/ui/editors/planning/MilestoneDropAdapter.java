@@ -11,7 +11,6 @@
 package org.tuleap.mylyn.task.internal.agile.ui.editors.planning;
 
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.mylyn.tasks.core.data.TaskDataModel;
 import org.eclipse.swt.widgets.Control;
 
 /**
@@ -31,15 +30,12 @@ public class MilestoneDropAdapter extends BacklogItemDropAdapter {
 	 * 
 	 * @param viewer
 	 *            The viewer.
-	 * @param model
-	 *            The TaskdataModel to use.
 	 * @param milestoneSectionViewer
 	 *            The milestone section viewer, top use to update the section's UI after a drag or drop
 	 *            operation.
 	 */
-	public MilestoneDropAdapter(Viewer viewer, TaskDataModel model,
-			MilestoneSectionViewer milestoneSectionViewer) {
-		super(viewer, model);
+	public MilestoneDropAdapter(Viewer viewer, MilestoneSectionViewer milestoneSectionViewer) {
+		super(viewer);
 		fMilestoneSectionViewer = milestoneSectionViewer;
 	}
 

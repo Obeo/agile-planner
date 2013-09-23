@@ -34,8 +34,8 @@ final class BacklogItemListContentProvider implements IStructuredContentProvider
 
 	@Override
 	public Object[] getElements(Object inputElement) {
-		if (inputElement instanceof IBacklogItemContainer) {
-			IBacklogItemContainer container = (IBacklogItemContainer)inputElement;
+		if (inputElement instanceof IBacklog) {
+			IBacklog container = (IBacklog)inputElement;
 			return Iterables.toArray(container.getBacklogItems(), Object.class);
 		}
 		return null;

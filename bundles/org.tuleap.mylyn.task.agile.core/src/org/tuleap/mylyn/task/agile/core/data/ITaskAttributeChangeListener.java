@@ -10,37 +10,20 @@
  *******************************************************************************/
 package org.tuleap.mylyn.task.agile.core.data;
 
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 
 /**
- * Abstract super-class of TaskAttribute wrappers that simplify the mylyn model manipulation.
+ * Listener of task attribute modifications.
  * 
  * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
  */
-public abstract class AbstractTaskAttributeWrapper {
+public interface ITaskAttributeChangeListener {
 
 	/**
-	 * The wrapped task attribute.
-	 */
-	protected final TaskAttribute root;
-
-	/**
-	 * Constructor that receives the taskAttribute to wrap.
-	 * 
-	 * @param root
-	 *            The task attribute to wrap
-	 */
-	public AbstractTaskAttributeWrapper(TaskAttribute root) {
-		Assert.isNotNull(root);
-		this.root = root;
-	}
-
-	/**
-	 * Informs the listeners of the given attribute's modification.
+	 * Notifies the modification of an attribute.
 	 * 
 	 * @param attribute
 	 *            The modified attribute.
 	 */
-	protected abstract void fireAttributeChanged(TaskAttribute attribute);
+	void attributeChanged(TaskAttribute attribute);
 }

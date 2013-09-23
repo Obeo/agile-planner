@@ -12,6 +12,7 @@ package org.tuleap.mylyn.task.agile.core.data.planning;
 
 import com.google.common.base.Function;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 
 /**
@@ -22,12 +23,28 @@ import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 public final class TaskAttributeToMilestone implements Function<TaskAttribute, SubMilestoneWrapper> {
 
 	/**
+	 * The milestone planning wrapper.
+	 */
+	private final MilestonePlanningWrapper wrapper;
+
+	/**
+	 * Constructor.
+	 * 
+	 * @param wrapper
+	 *            The wrapper
+	 */
+	public TaskAttributeToMilestone(MilestonePlanningWrapper wrapper) {
+		Assert.isNotNull(wrapper);
+		this.wrapper = wrapper;
+	}
+
+	/**
 	 * {@inheritDoc}
 	 * 
 	 * @see com.google.common.base.Function#apply(java.lang.Object)
 	 */
 	@Override
 	public SubMilestoneWrapper apply(TaskAttribute att) {
-		return new SubMilestoneWrapper(att);
+		return new SubMilestoneWrapper(wrapper, att);
 	}
 }

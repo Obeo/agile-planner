@@ -20,7 +20,7 @@ import org.tuleap.mylyn.task.agile.core.data.planning.MilestonePlanningWrapper;
  * 
  * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
  */
-public class MilestoneBacklogModel implements IBacklogItemContainer {
+public class MilestoneBacklogModel implements IBacklog {
 
 	/**
 	 * The wrapper.
@@ -40,7 +40,7 @@ public class MilestoneBacklogModel implements IBacklogItemContainer {
 	/**
 	 * {@inheritDoc}
 	 * 
-	 * @see org.tuleap.mylyn.task.internal.agile.ui.editors.planning.IBacklogItemContainer#getBacklogItems()
+	 * @see org.tuleap.mylyn.task.internal.agile.ui.editors.planning.IBacklog#getBacklogItems()
 	 */
 	@Override
 	public Iterable<BacklogItemWrapper> getBacklogItems() {
@@ -50,7 +50,7 @@ public class MilestoneBacklogModel implements IBacklogItemContainer {
 	/**
 	 * {@inheritDoc}
 	 * 
-	 * @see org.tuleap.mylyn.task.internal.agile.ui.editors.planning.IBacklogItemContainer#getMilestonePlanning()
+	 * @see org.tuleap.mylyn.task.internal.agile.ui.editors.planning.IBacklog#getMilestonePlanning()
 	 */
 	@Override
 	public MilestonePlanningWrapper getMilestonePlanning() {

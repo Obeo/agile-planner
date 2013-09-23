@@ -14,11 +14,11 @@ import org.tuleap.mylyn.task.agile.core.data.planning.BacklogItemWrapper;
 import org.tuleap.mylyn.task.agile.core.data.planning.MilestonePlanningWrapper;
 
 /**
- * Provides a collection of wrapped backlog items .
+ * Provides a collection of wrapped backlog items.
  * 
  * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
  */
-public interface IBacklogItemContainer {
+public interface IBacklog {
 
 	/**
 	 * Wrapped backlog items.

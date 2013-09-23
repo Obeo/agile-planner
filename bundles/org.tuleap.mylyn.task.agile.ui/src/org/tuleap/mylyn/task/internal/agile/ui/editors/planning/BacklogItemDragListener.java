@@ -13,8 +13,6 @@ package org.tuleap.mylyn.task.internal.agile.ui.editors.planning;
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.mylyn.tasks.core.data.TaskDataModel;
-import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.DragSourceListener;
 
@@ -31,21 +29,13 @@ public class BacklogItemDragListener implements DragSourceListener {
 	private final TableViewer fViewer;
 
 	/**
-	 * The task data model to use for managing dirty state.
-	 */
-	private final TaskDataModel fModel;
-
-	/**
 	 * Constructor, requires the table viewer to listen to.
 	 * 
 	 * @param viewer
 	 *            the table viewer to listen to.
-	 * @param model
-	 *            The task data model to use.
 	 */
-	public BacklogItemDragListener(TableViewer viewer, TaskDataModel model) {
+	public BacklogItemDragListener(TableViewer viewer) {
 		this.fViewer = viewer;
-		this.fModel = model;
 	}
 
 	/**
@@ -78,14 +68,8 @@ public class BacklogItemDragListener implements DragSourceListener {
 	 * 
 	 * @see org.eclipse.swt.dnd.DragSourceListener#dragFinished(org.eclipse.swt.dnd.DragSourceEvent)
 	 */
-	@SuppressWarnings({"cast", "unchecked" })
 	@Override
 	public void dragFinished(DragSourceEvent event) {
-		if (event.detail == DND.DROP_MOVE) {
-			IStructuredSelection selection = (IStructuredSelection)fViewer.getSelection();
-			IBacklogItemContainer itemList = (IBacklogItemContainer)fViewer.getInput();
-			// No need to do anything
-		}
 		fViewer.refresh();
 	}
 
