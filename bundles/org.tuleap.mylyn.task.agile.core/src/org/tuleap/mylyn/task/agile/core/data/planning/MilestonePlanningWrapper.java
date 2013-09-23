@@ -105,10 +105,12 @@ public final class MilestonePlanningWrapper extends AbstractTaskAttributeWrapper
 	/**
 	 * Creates a new sub-milestone in the wrapped milestone and returns its wrapper.
 	 * 
+	 * @param id
+	 *            the submilestone identifier
 	 * @return A new wrapper for a new task attribute that is created by invoking this method.
 	 */
-	public SubMilestoneWrapper addSubMilestone() {
-		return SubMilestoneWrapper.createSubMilestone(submilestoneList);
+	public SubMilestoneWrapper addSubMilestone(int id) {
+		return SubMilestoneWrapper.createSubMilestone(submilestoneList, id);
 	}
 
 	/**
@@ -133,10 +135,12 @@ public final class MilestonePlanningWrapper extends AbstractTaskAttributeWrapper
 	 * Creates a new task attribute to represent a BacklogItem and returns a wrapper for this new
 	 * TaskAttribute. The created TaskAttribute is inserted in the given parent, that must be non-null.
 	 * 
+	 * @param id
+	 *            the backlogItem identifier
 	 * @return A wrapper for a newly created TaskAttribute representing a BacklogItem in the given parent.
 	 */
-	public BacklogItemWrapper addBacklogItem() {
-		return BacklogItemWrapper.createBacklogItem(backlog);
+	public BacklogItemWrapper addBacklogItem(int id) {
+		return BacklogItemWrapper.createBacklogItem(backlog, id);
 	}
 
 	/**

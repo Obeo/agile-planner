@@ -83,7 +83,7 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 	 * @param id
 	 *            The milestone's id.
 	 */
-	public void setId(int id) {
+	private void setId(int id) {
 		TaskAttribute milestoneNameAtt = root.getMappedAttribute(IMylynAgileCoreConstants.ID);
 		if (milestoneNameAtt == null) {
 			milestoneNameAtt = root.createMappedAttribute(IMylynAgileCoreConstants.ID);
@@ -219,12 +219,16 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 	 * 
 	 * @param parent
 	 *            The parent task attribute, should represent a list of sub-milestones.
+	 * @param id
+	 *            the submilestone identifier
 	 * @return a new wrapper for a new task attribute that represents a sub-milestone.
 	 */
-	public static SubMilestoneWrapper createSubMilestone(TaskAttribute parent) {
+	public static SubMilestoneWrapper createSubMilestone(TaskAttribute parent, int id) {
 		TaskAttribute root = parent.createAttribute(PREFIX_MILESTONE + parent.getAttributes().size());
 		root.getMetaData().setReadOnly(true);
-		return new SubMilestoneWrapper(root);
+		SubMilestoneWrapper subMilestoneWrapper = new SubMilestoneWrapper(root);
+		subMilestoneWrapper.setId(id);
+		return subMilestoneWrapper;
 	}
 
 	/**

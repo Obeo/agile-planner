@@ -110,7 +110,7 @@ public class BacklogItemWrapper extends AbstractTaskAttributeWrapper {
 	 * @param id
 	 *            The item's id.
 	 */
-	public void setId(int id) {
+	private void setId(int id) {
 		TaskAttribute attribute = root.getMappedAttribute(IMylynAgileCoreConstants.ID);
 		if (attribute == null) {
 			attribute = root.createMappedAttribute(IMylynAgileCoreConstants.ID);
@@ -223,12 +223,17 @@ public class BacklogItemWrapper extends AbstractTaskAttributeWrapper {
 	 * 
 	 * @param parent
 	 *            The parent task attribute, should represent a list of backlog items.
+	 * @param id
+	 *            The backlogItem identifier
 	 * @return a new wrapper for a new task attribute that represents a backlog items.
 	 */
-	public static BacklogItemWrapper createBacklogItem(TaskAttribute parent) {
+	public static BacklogItemWrapper createBacklogItem(TaskAttribute parent, int id) {
 		TaskAttribute root = parent.createAttribute(PREFIX_BACKLOG_ITEM + parent.getAttributes().size());
 		root.getMetaData().setReadOnly(true);
-		return new BacklogItemWrapper(root);
+		BacklogItemWrapper backlogItemWrapper = new BacklogItemWrapper(root);
+		backlogItemWrapper.setId(id);
+		parent.addValue(Integer.toString(id));
+		return backlogItemWrapper;
 	}
 
 	/**

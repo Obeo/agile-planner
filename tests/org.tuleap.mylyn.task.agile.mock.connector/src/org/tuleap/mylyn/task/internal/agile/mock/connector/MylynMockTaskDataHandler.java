@@ -162,8 +162,7 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 	 */
 	private void createSprint(MilestonePlanningWrapper wrapper, int id, String name, float capacity,
 			Date startDate, float durationInDays) {
-		SubMilestoneWrapper subMilestone = wrapper.addSubMilestone();
-		subMilestone.setId(id);
+		SubMilestoneWrapper subMilestone = wrapper.addSubMilestone(id);
 		subMilestone.setLabel(name);
 		subMilestone.setCapacity(capacity);
 		subMilestone.setStartDate(startDate);
@@ -178,8 +177,7 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 	 * @return A new wrapper of backlog item
 	 */
 	private BacklogItemWrapper addNewBacklogItem(MilestonePlanningWrapper wrapper) {
-		BacklogItemWrapper bi = wrapper.addBacklogItem();
-		bi.setId(backlogItemIndex);
+		BacklogItemWrapper bi = wrapper.addBacklogItem(backlogItemIndex);
 		bi.setInitialEffort(4F);
 		bi.setLabel("User Story " + backlogItemIndex); //$NON-NLS-1$
 		backlogItemIndex++;
