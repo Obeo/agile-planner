@@ -11,6 +11,7 @@
 package org.tuleap.mylyn.task.internal.agile.ui.editors.planning;
 
 import org.tuleap.mylyn.task.agile.core.data.planning.BacklogItemWrapper;
+import org.tuleap.mylyn.task.agile.core.data.planning.MilestonePlanningWrapper;
 
 /**
  * Provides a collection of wrapped backlog items .
@@ -25,4 +26,11 @@ public interface IBacklogItemContainer {
 	 * @return An iterable of wrapped backlog items
 	 */
 	Iterable<BacklogItemWrapper> getBacklogItems();
+
+	/**
+	 * Enclosing milestone planning.
+	 * 
+	 * @return The enclosing milestone planning wrapper.
+	 */
+	MilestonePlanningWrapper getMilestonePlanning();
 }

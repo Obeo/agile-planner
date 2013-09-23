@@ -65,6 +65,16 @@ public class SubMilestoneBacklogModel implements IBacklogItemContainer {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see org.tuleap.mylyn.task.internal.agile.ui.editors.planning.IBacklogItemContainer#getMilestonePlanning()
+	 */
+	@Override
+	public MilestonePlanningWrapper getMilestonePlanning() {
+		return planningWrapper;
+	}
+
+	/**
 	 * Provides the sub-milestone.
 	 * 
 	 * @return The sub-milestone.

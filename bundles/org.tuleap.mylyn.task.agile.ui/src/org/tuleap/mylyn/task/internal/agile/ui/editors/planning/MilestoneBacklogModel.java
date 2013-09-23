@@ -46,4 +46,14 @@ public class MilestoneBacklogModel implements IBacklogItemContainer {
 	public Iterable<BacklogItemWrapper> getBacklogItems() {
 		return Iterables.filter(wrapper.getBacklogItems(), PlanningFilters.unassigned());
 	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see org.tuleap.mylyn.task.internal.agile.ui.editors.planning.IBacklogItemContainer#getMilestonePlanning()
+	 */
+	@Override
+	public MilestonePlanningWrapper getMilestonePlanning() {
+		return wrapper;
+	}
 }

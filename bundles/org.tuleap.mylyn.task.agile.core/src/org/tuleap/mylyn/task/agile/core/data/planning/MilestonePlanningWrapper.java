@@ -10,9 +10,12 @@
  *******************************************************************************/
 package org.tuleap.mylyn.task.agile.core.data.planning;
 
+import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Iterators;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -161,6 +164,30 @@ public final class MilestonePlanningWrapper extends AbstractTaskAttributeWrapper
 	 */
 	public Iterable<BacklogItemWrapper> getBacklogItems() {
 		return Iterables.transform(backlog.getAttributes().values(), toBacklogItem);
+	}
+
+	/**
+	 * Provides the sub-milestone with the given id.
+	 * 
+	 * @param id
+	 *            The id of the sub-milestone being looked for
+	 * @return The first milestone found with the given id in the list of sub-milestones.
+	 */
+	public SubMilestoneWrapper getSubMilestone(final int id) {
+		Iterator<SubMilestoneWrapper> candidates = Iterators.filter(getSubMilestones().iterator(),
+				new Predicate<SubMilestoneWrapper>() {
+					/**
+					 * {@inheritDoc}
+					 */
+					@Override
+					public boolean apply(SubMilestoneWrapper w) {
+						return id == w.getId();
+					}
+				});
+		if (candidates.hasNext()) {
+			return candidates.next();
+		}
+		return null;
 	}
 
 	/**

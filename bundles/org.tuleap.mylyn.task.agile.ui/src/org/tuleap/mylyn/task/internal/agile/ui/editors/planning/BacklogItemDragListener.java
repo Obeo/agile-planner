@@ -10,18 +10,13 @@
  *******************************************************************************/
 package org.tuleap.mylyn.task.internal.agile.ui.editors.planning;
 
-import java.util.Iterator;
-
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.core.data.TaskDataModel;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.DragSourceListener;
-import org.tuleap.mylyn.task.agile.core.util.IMylynAgileCoreConstants;
-import org.tuleap.mylyn.task.agile.core.util.TaskAttributeWrapper;
 
 /**
  * Drag listener for BacklogItem tables.
@@ -88,11 +83,8 @@ public class BacklogItemDragListener implements DragSourceListener {
 	public void dragFinished(DragSourceEvent event) {
 		if (event.detail == DND.DROP_MOVE) {
 			IStructuredSelection selection = (IStructuredSelection)fViewer.getSelection();
-			TaskAttribute itemListAtt = (TaskAttribute)fViewer.getInput();
-			new TaskAttributeWrapper(itemListAtt)
-					.removeElementsSortedByValue((Iterator<TaskAttribute>)selection.iterator(),
-							IMylynAgileCoreConstants.TYPE_BACKLOG_ITEM);
-			fModel.attributeChanged(itemListAtt);
+			IBacklogItemContainer itemList = (IBacklogItemContainer)fViewer.getInput();
+			// No need to do anything
 		}
 		fViewer.refresh();
 	}
