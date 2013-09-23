@@ -12,6 +12,8 @@ package org.tuleap.mylyn.task.agile.core.data.planning;
 
 import com.google.common.collect.Iterables;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
@@ -172,7 +174,33 @@ public final class MilestonePlanningWrapper extends AbstractTaskAttributeWrapper
 	 *            a boolean parameter that indicates if moving BacklogItems will be before or after the target
 	 */
 	public void moveItemsToBacklog(List<BacklogItemWrapper> items, BacklogItemWrapper target, boolean before) {
-		// TODO
+
+		List<String> addedItemsIds = new ArrayList<String>();
+		int insertposition = 0;
+		if (items != null) {
+			for (BacklogItemWrapper backlogItemWrapper : items) {
+				addedItemsIds.add(Integer.toString(backlogItemWrapper.getId()));
+				backlogItemWrapper.removeAssignedMilestoneId();
+			}
+
+			if (before) {
+				for (String id : backlog.getValues()) {
+					if (id == Integer.toString(target.getId())) {
+						insertposition = getBacklogItemIndex(target) - 1;
+					}
+				}
+			} else {
+				for (String id : backlog.getValues()) {
+					if (id == Integer.toString(target.getId())) {
+						insertposition = getBacklogItemIndex(target) + 1;
+					}
+				}
+			}
+		}
+		if (intersect(addedItemsIds, backlog.getValues()).size() == 0) {
+			backlog.getValues().addAll(insertposition, addedItemsIds);
+		}
+
 	}
 
 	/**
@@ -189,7 +217,110 @@ public final class MilestonePlanningWrapper extends AbstractTaskAttributeWrapper
 	 */
 	public void moveItemsToMilestone(List<BacklogItemWrapper> items, BacklogItemWrapper target,
 			boolean before, SubMilestoneWrapper subMilestone) {
-		// TODO
+		List<String> addedItemsIds = new ArrayList<String>();
+		int insertposition = 0;
+		if (items != null) {
+			for (BacklogItemWrapper backlogItemWrapper : items) {
+				addedItemsIds.add(Integer.toString(backlogItemWrapper.getId()));
+				backlogItemWrapper.setAssignedMilestoneId(subMilestone.getId());
+			}
+
+			if (before) {
+				for (String id : backlog.getValues()) {
+					if (id == Integer.toString(target.getId())) {
+						insertposition = getBacklogItemIndex(target) - 1;
+					}
+				}
+			} else {
+				for (String id : backlog.getValues()) {
+					if (id == Integer.toString(target.getId())) {
+						insertposition = getBacklogItemIndex(target) + 1;
+					}
+				}
+			}
+		}
+		if (intersect(addedItemsIds, backlog.getValues()).size() == 0) {
+			backlog.getValues().addAll(insertposition, addedItemsIds);
+		}
+	}
+
+	/**
+	 * Returns the index of a backlogItem.
+	 * 
+	 * @param target
+	 *            the backlogItem
+	 * @return the index of the BacklogItem in the list
+	 */
+	private int getBacklogItemIndex(BacklogItemWrapper target) {
+		for (int i = 0; i < backlog.getValues().size(); i++) {
+			if (backlog.getValues().get(i) == Integer.toString(target.getId())) {
+				return i;
+			}
+		}
+		return 0;
+	}
+
+	/**
+	 * returns the ordered list of backlogItems assigned to a submilestone.
+	 * 
+	 * @param subMilestone
+	 *            the submilestone
+	 * @return the ordered list of BacklogItems assigned to a submilestone
+	 */
+	public Iterable<BacklogItemWrapper> getMilestoneOrderedBacklogItemsList(SubMilestoneWrapper subMilestone) {
+
+		List<BacklogItemWrapper> result = new ArrayList<BacklogItemWrapper>();
+		for (String backlogItemId : backlog.getValues()) {
+			for (BacklogItemWrapper backlogItemWrapper : this.getBacklogItems()) {
+				if (backlogItemWrapper.getAssignedMilestoneId() != null) {
+					if (backlogItemId.equals(Integer.toString(backlogItemWrapper.getId()))
+							&& backlogItemWrapper.getAssignedMilestoneId().intValue() == subMilestone.getId()) {
+						result.add(backlogItemWrapper);
+					}
+				}
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * returns the ordered list of backlogItems not assigned to any submilestone.
+	 * 
+	 * @return the ordered list of BacklogItems not assigned to any submilestone
+	 */
+	public Iterable<BacklogItemWrapper> getBacklogOrderedBacklogItemsList() {
+
+		List<BacklogItemWrapper> result = new ArrayList<BacklogItemWrapper>();
+		for (String backlogItemId : backlog.getValues()) {
+			for (BacklogItemWrapper backlogItemWrapper : this.getBacklogItems()) {
+				if (backlogItemWrapper.getAssignedMilestoneId() != null) {
+					if (backlogItemId.equals(Integer.toString(backlogItemWrapper.getId()))
+							&& backlogItemWrapper.getAssignedMilestoneId() == null) {
+						result.add(backlogItemWrapper);
+					}
+				}
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * Return the intersection between two lists.
+	 * 
+	 * @param firstList
+	 *            the first list
+	 * @param secondList
+	 *            the second list
+	 * @return the intersection list
+	 */
+	private List<String> intersect(List<String> firstList, List<String> secondList) {
+		List<String> rtnList = new LinkedList<String>();
+		for (String element : firstList) {
+			if (secondList.contains(element)) {
+				rtnList.add(element);
+			}
+		}
+		return rtnList;
 	}
 
 }
