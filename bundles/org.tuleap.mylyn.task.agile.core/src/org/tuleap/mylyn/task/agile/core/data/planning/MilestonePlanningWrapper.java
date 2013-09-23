@@ -180,11 +180,11 @@ public final class MilestonePlanningWrapper extends AbstractTaskAttributeWrapper
 	 *            the target BacklogItem
 	 * @param before
 	 *            a boolean parameter that indicates if moving BacklogItems will be before or after the target
-	 * @param milestone
-	 *            the milestone to which BacklogItems will be moved
+	 * @param subMilestone
+	 *            the subMilestone to which BacklogItems will be moved
 	 */
 	public void moveItemsToMilestone(List<BacklogItemWrapper> items, BacklogItemWrapper target,
-			boolean before, MilestonePlanningWrapper milestone) {
+			boolean before, SubMilestoneWrapper subMilestone) {
 		// TODO
 	}
 
