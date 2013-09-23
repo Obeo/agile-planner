@@ -39,6 +39,9 @@ import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.forms.widgets.TableWrapData;
+import org.tuleap.mylyn.task.agile.core.data.planning.BacklogItemWrapper;
+import org.tuleap.mylyn.task.agile.core.data.planning.MilestonePlanningWrapper;
+import org.tuleap.mylyn.task.agile.core.data.planning.SubMilestoneWrapper;
 import org.tuleap.mylyn.task.agile.core.util.IMylynAgileCoreConstants;
 import org.tuleap.mylyn.task.internal.agile.ui.MylynAgileUIActivator;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.FormLayoutFactory;
@@ -90,8 +93,7 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 		backlogSection.setLayout(FormLayoutFactory.createClearTableWrapLayout(false, 1));
 		TableWrapData data = new TableWrapData(TableWrapData.FILL_GRAB);
 		backlogSection.setLayoutData(data);
-		TaskAttribute backlogItemList = getTaskData().getRoot().getAttribute(
-				IMylynAgileCoreConstants.BACKLOG_ITEM_LIST);
+		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(getTaskData().getRoot());
 		TaskAttribute backlogItemTypeNameAtt = getTaskData().getRoot().getAttribute(
 				IMylynAgileCoreConstants.BACKLOG_ITEM_TYPE_LABEL);
 		String backlogItemTypeName;
@@ -101,8 +103,8 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 		} else {
 			backlogItemTypeName = backlogItemTypeNameAtt.getValue();
 		}
-		TableViewer viewer = createBacklogItemsTable(toolkit, backlogSection, backlogItemList,
-				backlogItemTypeName);
+		TableViewer viewer = createBacklogItemsTable(toolkit, backlogSection, new MilestoneBacklogModel(
+				wrapper), backlogItemTypeName);
 
 		// Drag'n drop
 		viewer.addDragSupport(DND.DROP_MOVE, new Transfer[] {LocalSelectionTransfer.getTransfer() },
@@ -121,10 +123,8 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 		milestoneListComp.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
 		milestoneList.setClient(milestoneListComp);
 
-		for (TaskAttribute milestoneAtt : getTaskData().getRoot().getAttributes().values()) {
-			if (IMylynAgileCoreConstants.TYPE_MILESTONE.equals(milestoneAtt.getMetaData().getType())) {
-				createMilestoneSection(toolkit, milestoneListComp, milestoneAtt, backlogItemTypeName);
-			}
+		for (SubMilestoneWrapper subMilestone : wrapper.getSubMilestones()) {
+			createMilestoneSection(toolkit, milestoneListComp, wrapper, subMilestone, backlogItemTypeName);
 		}
 
 		ToolBarManager toolBarManager = new ToolBarManager(SWT.FLAT);
@@ -170,13 +170,15 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 	 *            The toolkit to use.
 	 * @param parentComposite
 	 *            The parent composite that will contain the created section.
-	 * @param milestoneAtt
-	 *            The TaskAttribute that represents the milestone.
+	 * @param planningWrapper
+	 *            The milestone planning wrapper.
+	 * @param wrapper
+	 *            The sub-milestone wrapper.
 	 * @param backlogItemTypeName
 	 *            The label to use for the milestone's backlog items type.
 	 */
 	private void createMilestoneSection(FormToolkit toolkit, Composite parentComposite,
-			TaskAttribute milestoneAtt, String backlogItemTypeName) {
+			MilestonePlanningWrapper planningWrapper, SubMilestoneWrapper wrapper, String backlogItemTypeName) {
 		Section milestoneSection = toolkit.createSection(parentComposite, ExpandableComposite.TITLE_BAR
 				| Section.DESCRIPTION | Section.TWISTIE | Section.EXPANDED);
 		milestoneSection.setLayout(FormLayoutFactory.createClearTableWrapLayout(false, 1));
@@ -204,10 +206,10 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 		toolBarManager.update(true);
 		milestoneSection.setTextClient(toolbar);
 		MilestoneSectionViewer milestoneViewer = new MilestoneSectionViewer(milestoneSection);
-		milestoneViewer.setInput(milestoneAtt);
+		milestoneViewer.setInput(new SubMilestoneBacklogModel(planningWrapper, wrapper));
 		milestoneViewer.refresh();
-		TableViewer viewer = createBacklogItemsTable(toolkit, milestoneSection, milestoneAtt,
-				backlogItemTypeName);
+		TableViewer viewer = createBacklogItemsTable(toolkit, milestoneSection, new SubMilestoneBacklogModel(
+				planningWrapper, wrapper), backlogItemTypeName);
 
 		// Drag'n drop
 		viewer.addDragSupport(DND.DROP_MOVE, new Transfer[] {LocalSelectionTransfer.getTransfer() },
@@ -223,14 +225,14 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 	 *            The form toolkit to use
 	 * @param section
 	 *            The parent section which will contain the table and use it as its client
-	 * @param milestoneAtt
-	 *            The <code>TaskAttribute</code> that contains the backlog item <code>TaskAttribute</code>s
+	 * @param container
+	 *            The container of the backlog items
 	 * @param backlogItemTypeName
 	 *            The label to use for the type of the backlog items (used as header for one of the columns
-	 * @return The TableViewer that displays the milestone's bakclog items.
+	 * @return The TableViewer that displays the milestone's backlog items.
 	 */
 	private TableViewer createBacklogItemsTable(final FormToolkit toolkit, final Section section,
-			final TaskAttribute milestoneAtt, final String backlogItemTypeName) {
+			final IBacklogItemContainer container, final String backlogItemTypeName) {
 		final String strMissing = MylynAgileUIMessages.getString("PlanningTaskEditorPart.MissingTextValue"); //$NON-NLS-1$
 		Table table = toolkit.createTable(section, SWT.BORDER | SWT.MULTI | SWT.FULL_SELECTION);
 		section.setClient(table);
@@ -248,9 +250,8 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 				String ret;
 				if (element == null) {
 					ret = strMissing;
-				} else if (element instanceof TaskAttribute) {
-					ret = ((TaskAttribute)element).getAttribute(IMylynAgileCoreConstants.BACKLOG_ITEM_ID)
-							.getValue();
+				} else if (element instanceof BacklogItemWrapper) {
+					ret = Integer.toString(((BacklogItemWrapper)element).getId());
 				} else {
 					ret = element.toString();
 				}
@@ -268,9 +269,8 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 				String ret;
 				if (element == null) {
 					ret = strMissing;
-				} else if (element instanceof TaskAttribute) {
-					ret = ((TaskAttribute)element).getAttribute(IMylynAgileCoreConstants.BACKLOG_ITEM_NAME)
-							.getValue();
+				} else if (element instanceof BacklogItemWrapper) {
+					ret = ((BacklogItemWrapper)element).getLabel();
 				} else {
 					ret = element.toString();
 				}
@@ -297,9 +297,8 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 				String ret;
 				if (element == null) {
 					ret = MylynAgileUIMessages.getString("PlanningTaskEditorPageFactory.MissingNumericValue"); //$NON-NLS-1$;
-				} else if (element instanceof TaskAttribute) {
-					ret = ((TaskAttribute)element).getAttribute(IMylynAgileCoreConstants.BACKLOG_ITEM_POINTS)
-							.getValue();
+				} else if (element instanceof BacklogItemWrapper) {
+					ret = String.valueOf(((BacklogItemWrapper)element).getInitialEffort());
 				} else {
 					ret = element.toString();
 				}
@@ -317,9 +316,8 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 				String ret;
 				if (element == null) {
 					ret = strMissing;
-				} else if (element instanceof TaskAttribute) {
-					ret = ((TaskAttribute)element).getAttribute(IMylynAgileCoreConstants.BACKLOG_ITEM_PARENT)
-							.getValue();
+				} else if (element instanceof BacklogItemWrapper) {
+					ret = "TODO"; //$NON-NLS-1$
 				} else {
 					ret = element.toString();
 				}
@@ -328,7 +326,7 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 		});
 		colParent.getColumn().setWidth(IMylynAgileUIConstants.DEFAULT_PARENT_COL_WIDTH);
 
-		viewer.setInput(milestoneAtt);
+		viewer.setInput(container);
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
 		viewer.setSorter(new ViewerSorter() {
@@ -340,9 +338,9 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart {
 			 */
 			@Override
 			public int compare(Viewer aViewer, Object e1, Object e2) {
-				if (e1 instanceof TaskAttribute && e2 instanceof TaskAttribute) {
-					int v1 = Integer.parseInt(((TaskAttribute)e1).getValue());
-					int v2 = Integer.parseInt(((TaskAttribute)e2).getValue());
+				if (e1 instanceof BacklogItemWrapper && e2 instanceof BacklogItemWrapper) {
+					int v1 = ((BacklogItemWrapper)e1).getId();
+					int v2 = ((BacklogItemWrapper)e2).getId();
 					return v1 - v2;
 				}
 				return super.compare(aViewer, e1, e2);

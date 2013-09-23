@@ -10,13 +10,10 @@
  *******************************************************************************/
 package org.tuleap.mylyn.task.internal.agile.ui.editors.planning;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.google.common.collect.Iterables;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
-import org.tuleap.mylyn.task.agile.core.util.IMylynAgileCoreConstants;
 
 /**
  * Content Provider for Milestones and Backlogs.
@@ -37,15 +34,9 @@ final class BacklogItemListContentProvider implements IStructuredContentProvider
 
 	@Override
 	public Object[] getElements(Object inputElement) {
-		if (inputElement instanceof TaskAttribute) {
-			TaskAttribute ta = (TaskAttribute)inputElement;
-			List<Object> children = new ArrayList<Object>();
-			for (TaskAttribute child : ta.getAttributes().values()) {
-				if (IMylynAgileCoreConstants.TYPE_BACKLOG_ITEM.equals(child.getMetaData().getType())) {
-					children.add(child);
-				}
-			}
-			return children.toArray();
+		if (inputElement instanceof IBacklogItemContainer) {
+			IBacklogItemContainer container = (IBacklogItemContainer)inputElement;
+			return Iterables.toArray(container.getBacklogItems(), Object.class);
 		}
 		return null;
 	}

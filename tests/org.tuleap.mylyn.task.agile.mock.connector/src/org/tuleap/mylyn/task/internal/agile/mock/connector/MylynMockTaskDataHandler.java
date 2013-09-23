@@ -22,6 +22,9 @@ import org.eclipse.mylyn.tasks.core.data.AbstractTaskDataHandler;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.core.data.TaskAttributeMapper;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
+import org.tuleap.mylyn.task.agile.core.data.planning.BacklogItemWrapper;
+import org.tuleap.mylyn.task.agile.core.data.planning.MilestonePlanningWrapper;
+import org.tuleap.mylyn.task.agile.core.data.planning.SubMilestoneWrapper;
 import org.tuleap.mylyn.task.agile.core.util.IMylynAgileCoreConstants;
 
 /**
@@ -37,14 +40,24 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 	private static final long MILLISECOND_IN_WEEK = 7L * 24L * 3600L * 1000L;
 
 	/**
-	 * The backlog item index.
+	 * Capacity.
 	 */
-	private int backlogItemIndex;
+	private static final float CAPACITY = 20F;
 
 	/**
-	 * The rank.
+	 * Duration.
 	 */
-	private int rank;
+	private static final float DURATION = 11F;
+
+	/**
+	 * The backlog item index.
+	 */
+	private int backlogItemIndex = 100;
+
+	/**
+	 * The backlog item index.
+	 */
+	private int milestoneId = 100;
 
 	/**
 	 * {@inheritDoc}
@@ -74,11 +87,11 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 		TaskAttribute summary = root.createAttribute(TaskAttribute.SUMMARY);
 		summary.getMetaData().setType(TaskAttribute.TYPE_SHORT_RICH_TEXT);
 		summary.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
-		summary.setValue("First Release"); //$NON-NLS-1$
+		summary.setValue("Project Test"); //$NON-NLS-1$
 
 		TaskAttribute kindAttribute = root.createAttribute(TaskAttribute.TASK_KIND);
 		kindAttribute.getMetaData().setType(TaskAttribute.TYPE_SHORT_TEXT);
-		kindAttribute.setValue("Release"); //$NON-NLS-1$
+		kindAttribute.setValue("Top Planning"); //$NON-NLS-1$
 
 		TaskAttribute urlAttribute = root.createAttribute(TaskAttribute.TASK_URL);
 		urlAttribute.getMetaData().setType(TaskAttribute.TYPE_URL);
@@ -102,39 +115,31 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 				.createAttribute(IMylynAgileCoreConstants.BACKLOG_ITEM_POINTS_LABEL);
 		backlogItemPointsLabelAtt.setValue("Story Points"); //$NON-NLS-1$
 
-		int milestoneIndex = 0;
 		// First Sprint
-		String startDate = String.valueOf(new Date().getTime() - 4 * MILLISECOND_IN_WEEK);
-		String endDate = String.valueOf(new Date().getTime() - 2 * MILLISECOND_IN_WEEK);
+		Date startDate = new Date(System.currentTimeMillis() - 4 * MILLISECOND_IN_WEEK);
 
-		TaskAttribute milestoneAtt = this.createSprint(root, milestoneIndex++,
-				"Sprint 1", "20", startDate, endDate); //$NON-NLS-1$ //$NON-NLS-2$
-		addNewMilestoneItem(milestoneAtt);
-		addNewMilestoneItem(milestoneAtt);
-		addNewMilestoneItem(milestoneAtt);
-		addNewMilestoneItem(milestoneAtt);
+		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(root);
+		this.createSprint(wrapper, milestoneId, "Sprint 1", CAPACITY, startDate, DURATION); //$NON-NLS-1$ 
+		addNewBacklogItem(wrapper, milestoneId);
+		addNewBacklogItem(wrapper, milestoneId);
+		addNewBacklogItem(wrapper, milestoneId);
+		addNewBacklogItem(wrapper, milestoneId);
+		milestoneId++;
 
 		// Second Sprint
-		startDate = String.valueOf(new Date().getTime() - 2 * MILLISECOND_IN_WEEK);
-		endDate = String.valueOf(new Date().getTime());
-		milestoneAtt = this.createSprint(root, milestoneIndex++, "Sprint 2", "18", startDate, endDate); //$NON-NLS-1$ //$NON-NLS-2$
+		startDate = new Date(startDate.getTime() - 2 * MILLISECOND_IN_WEEK);
+		this.createSprint(wrapper, milestoneId, "Sprint 2", CAPACITY - 2, startDate, DURATION); //$NON-NLS-1$ 
 
-		// Re-initialization of the rank, to start from 0 in each list.
-		rank = 0;
-		addNewMilestoneItem(milestoneAtt);
-		addNewMilestoneItem(milestoneAtt);
-		addNewMilestoneItem(milestoneAtt);
+		addNewBacklogItem(wrapper, milestoneId);
+		addNewBacklogItem(wrapper, milestoneId);
+		addNewBacklogItem(wrapper, milestoneId);
+		milestoneId++;
 
-		// Backlog items (left)
-		TaskAttribute backlogItemList = root.createAttribute(IMylynAgileCoreConstants.BACKLOG_ITEM_LIST);
-
-		// Re-initialization of the rank, to start from 0 in each list.
-		rank = 0;
-		addNewBacklogItem(backlogItemList);
-		addNewBacklogItem(backlogItemList);
-		addNewBacklogItem(backlogItemList);
-		addNewBacklogItem(backlogItemList);
-		addNewBacklogItem(backlogItemList);
+		addNewBacklogItem(wrapper);
+		addNewBacklogItem(wrapper);
+		addNewBacklogItem(wrapper);
+		addNewBacklogItem(wrapper);
+		addNewBacklogItem(wrapper);
 
 		return true;
 	}
@@ -142,137 +147,58 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 	/**
 	 * Creates a task attributes for the sprint under the root.
 	 * 
-	 * @param root
-	 *            The root of the task data
-	 * @param milestoneIndex
-	 *            The index of the sprint
+	 * @param wrapper
+	 *            The milestone planning wrapper
+	 * @param id
+	 *            The id of the sprint
 	 * @param name
 	 *            The name
 	 * @param capacity
-	 *            The capacity
+	 *            The sprint capacity
 	 * @param startDate
 	 *            The start date of the sprint
-	 * @param endDate
-	 *            The end date of the sprint
-	 * @return The task attribute representing the sprint under the task data's root
+	 * @param durationInDays
+	 *            The sprint duration
 	 */
-	private TaskAttribute createSprint(TaskAttribute root, int milestoneIndex, String name, String capacity,
-			String startDate, String endDate) {
-		TaskAttribute milestoneAtt = root.createAttribute(IMylynAgileCoreConstants.PREFIX_MILESTONE
-				+ milestoneIndex);
-		milestoneAtt.getMetaData().setType(IMylynAgileCoreConstants.TYPE_MILESTONE);
-		milestoneAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
-
-		TaskAttribute milestoneNameAtt = milestoneAtt.createAttribute(IMylynAgileCoreConstants.LABEL);
-		milestoneNameAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
-		milestoneNameAtt.getMetaData().setType(TaskAttribute.TYPE_SHORT_RICH_TEXT);
-		milestoneNameAtt.setValue(name);
-
-		TaskAttribute capacityAtt = milestoneAtt.createAttribute(IMylynAgileCoreConstants.MILESTONE_CAPACITY);
-		capacityAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
-		capacityAtt.getMetaData().setType(TaskAttribute.TYPE_DOUBLE);
-		capacityAtt.setValue(capacity);
-
-		TaskAttribute startDateAtt = milestoneAtt.createAttribute(IMylynAgileCoreConstants.START_DATE);
-		startDateAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
-		startDateAtt.getMetaData().setLabel("Creation Date"); //$NON-NLS-1$
-		startDateAtt.getMetaData().setType(TaskAttribute.TYPE_DATETIME);
-		startDateAtt.setValue(startDate);
-
-		TaskAttribute endDateAtt = milestoneAtt.createAttribute(IMylynAgileCoreConstants.END_DATE);
-		endDateAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
-		endDateAtt.getMetaData().setLabel("End Date"); //$NON-NLS-1$
-		endDateAtt.getMetaData().setType(TaskAttribute.TYPE_DATE);
-		endDateAtt.setValue(endDate);
-
-		return milestoneAtt;
+	private void createSprint(MilestonePlanningWrapper wrapper, int id, String name, float capacity,
+			Date startDate, float durationInDays) {
+		SubMilestoneWrapper subMilestone = wrapper.addSubMilestone();
+		subMilestone.setId(id);
+		subMilestone.setLabel(name);
+		subMilestone.setCapacity(capacity);
+		subMilestone.setStartDate(startDate);
+		subMilestone.setDuration(durationInDays);
 	}
 
 	/**
-	 * Adds a new backlog item to the list of backlog item.
+	 * Adds a new backlog item to a milestone planning.
 	 * 
-	 * @param backlogItemList
-	 *            The backlog item list
+	 * @param wrapper
+	 *            The milestone planning wrapper
+	 * @return A new wrapper of backlog item
 	 */
-	private void addNewBacklogItem(TaskAttribute backlogItemList) {
-		TaskAttribute idAtt;
-		TaskAttribute nameAtt;
-		TaskAttribute pointsAtt;
-		TaskAttribute summaryAtt;
-		TaskAttribute parentAtt;
-		TaskAttribute backlogItemAtt = backlogItemList
-				.createAttribute(IMylynAgileCoreConstants.PREFIX_BACKLOG_ITEM + backlogItemIndex++);
-		backlogItemAtt.getMetaData().setType(IMylynAgileCoreConstants.TYPE_BACKLOG_ITEM);
-		backlogItemAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
-		backlogItemAtt.setValue(String.valueOf(rank++));
-
-		idAtt = backlogItemAtt.createAttribute(IMylynAgileCoreConstants.BACKLOG_ITEM_ID);
-		idAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
-		idAtt.setValue(String.valueOf(100 + backlogItemIndex));
-		idAtt.getMetaData().setType(TaskAttribute.TYPE_SHORT_TEXT);
-
-		nameAtt = backlogItemAtt.createAttribute(IMylynAgileCoreConstants.BACKLOG_ITEM_NAME);
-		nameAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
-		nameAtt.setValue("User Story " + backlogItemIndex); //$NON-NLS-1$
-		nameAtt.getMetaData().setType(TaskAttribute.TYPE_SHORT_RICH_TEXT);
-
-		pointsAtt = backlogItemAtt.createAttribute(IMylynAgileCoreConstants.BACKLOG_ITEM_POINTS);
-		pointsAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
-		pointsAtt.setValue("4"); //$NON-NLS-1$
-		pointsAtt.getMetaData().setType(TaskAttribute.TYPE_DOUBLE);
-
-		summaryAtt = backlogItemAtt.createAttribute(TaskAttribute.SUMMARY);
-		summaryAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
-		summaryAtt.getMetaData().setLabel("Summary"); //$NON-NLS-1$
-		summaryAtt.getMetaData().setType(TaskAttribute.TYPE_LONG_RICH_TEXT);
-
-		parentAtt = backlogItemAtt.createAttribute(IMylynAgileCoreConstants.BACKLOG_ITEM_PARENT);
-		parentAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
-		parentAtt.getMetaData().setLabel("Parent"); //$NON-NLS-1$
-		parentAtt.getMetaData().setType(TaskAttribute.TYPE_TASK_DEPENDENCY);
-		parentAtt.setValue("Epic 201"); //$NON-NLS-1$
+	private BacklogItemWrapper addNewBacklogItem(MilestonePlanningWrapper wrapper) {
+		BacklogItemWrapper bi = wrapper.addBacklogItem();
+		bi.setId(backlogItemIndex);
+		bi.setInitialEffort(4F);
+		bi.setLabel("User Story " + backlogItemIndex); //$NON-NLS-1$
+		backlogItemIndex++;
+		return bi;
 	}
 
 	/**
-	 * Adds a new milestone attribute.
+	 * Adds a new backlog item to a milestone planning.
 	 * 
-	 * @param milestoneAtt
-	 *            The milestone attribute
+	 * @param wrapper
+	 *            The milestone planning wrapper
+	 * @param id
+	 *            the milestone id to assign the backlog item to
+	 * @return A new wrapper assigned to the given milestone id
 	 */
-	private void addNewMilestoneItem(TaskAttribute milestoneAtt) {
-		TaskAttribute milestoneItemAtt = milestoneAtt.createAttribute(milestoneAtt.getId()
-				+ "-" + backlogItemIndex++); //$NON-NLS-1$
-		milestoneItemAtt.getMetaData().setType(IMylynAgileCoreConstants.TYPE_BACKLOG_ITEM);
-		milestoneItemAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
-		milestoneItemAtt.setValue(String.valueOf(rank++));
-
-		TaskAttribute idAtt = milestoneItemAtt.createAttribute(IMylynAgileCoreConstants.BACKLOG_ITEM_ID);
-		idAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
-		idAtt.setValue(String.valueOf(100 + backlogItemIndex));
-		idAtt.getMetaData().setType(TaskAttribute.TYPE_SHORT_TEXT);
-
-		TaskAttribute nameAtt = milestoneItemAtt.createAttribute(IMylynAgileCoreConstants.BACKLOG_ITEM_NAME);
-		nameAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
-		nameAtt.setValue("User Story " + backlogItemIndex); //$NON-NLS-1$
-		nameAtt.getMetaData().setType(TaskAttribute.TYPE_SHORT_RICH_TEXT);
-
-		TaskAttribute pointsAtt = milestoneItemAtt
-				.createAttribute(IMylynAgileCoreConstants.BACKLOG_ITEM_POINTS);
-		pointsAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
-		pointsAtt.setValue("4"); //$NON-NLS-1$
-		pointsAtt.getMetaData().setType(TaskAttribute.TYPE_DOUBLE);
-
-		TaskAttribute summaryAtt = milestoneItemAtt.createAttribute(TaskAttribute.SUMMARY);
-		summaryAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
-		summaryAtt.getMetaData().setLabel("Summary"); //$NON-NLS-1$
-		summaryAtt.getMetaData().setType(TaskAttribute.TYPE_LONG_RICH_TEXT);
-
-		TaskAttribute parentAtt = milestoneItemAtt
-				.createAttribute(IMylynAgileCoreConstants.BACKLOG_ITEM_PARENT);
-		parentAtt.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
-		parentAtt.getMetaData().setLabel("Parent"); //$NON-NLS-1$
-		parentAtt.getMetaData().setType(TaskAttribute.TYPE_TASK_DEPENDENCY);
-		parentAtt.setValue("Epic 201"); //$NON-NLS-1$
+	private BacklogItemWrapper addNewBacklogItem(MilestonePlanningWrapper wrapper, int id) {
+		BacklogItemWrapper bi = addNewBacklogItem(wrapper);
+		bi.setAssignedMilestoneId(id);
+		return bi;
 	}
 
 	/**

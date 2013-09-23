@@ -12,7 +12,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.mylyn.tasks.ui,
  org.eclipse.mylyn.commons.ui,
  org.eclipse.draw2d,
- org.tuleap.mylyn.task.agile.core;bundle-version="1.0.0"
+ org.tuleap.mylyn.task.agile.core;bundle-version="1.0.0",
+ com.google.guava;bundle-version="11.0.2"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Bundle-Localization: plugin

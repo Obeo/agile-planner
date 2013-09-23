@@ -18,10 +18,10 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.forms.widgets.Section;
-import org.tuleap.mylyn.task.agile.core.util.IMylynAgileCoreConstants;
+import org.tuleap.mylyn.task.agile.core.data.planning.BacklogItemWrapper;
+import org.tuleap.mylyn.task.agile.core.data.planning.SubMilestoneWrapper;
 import org.tuleap.mylyn.task.internal.agile.ui.util.MylynAgileUIMessages;
 
 /**
@@ -32,14 +32,19 @@ import org.tuleap.mylyn.task.internal.agile.ui.util.MylynAgileUIMessages;
 public class MilestoneSectionViewer extends Viewer {
 
 	/**
+	 * Number of millisecond per day.
+	 */
+	private static final long MILLISECONDS_PER_DAY = 1000 * 60 * 60 * 24; // FIXME
+
+	/**
 	 * The wrapped section.
 	 */
 	private final Section fSection;
 
 	/**
-	 * The viewer's model, which is a task attribute representing a section.
+	 * The viewer's model, which provides the milestone's assigned backlog items.
 	 */
-	private TaskAttribute fInput;
+	private SubMilestoneBacklogModel fInput;
 
 	/**
 	 * Constructor receiving an existing section.
@@ -80,10 +85,9 @@ public class MilestoneSectionViewer extends Viewer {
 	@Override
 	public void setInput(Object input) {
 		Assert.isNotNull(input);
-		Assert.isTrue(input instanceof TaskAttribute);
-		TaskAttribute ta = (TaskAttribute)input;
-		Assert.isTrue(IMylynAgileCoreConstants.TYPE_MILESTONE.equals(ta.getMetaData().getType()));
-		this.fInput = ta;
+		Assert.isTrue(input instanceof SubMilestoneBacklogModel);
+		SubMilestoneBacklogModel model = (SubMilestoneBacklogModel)input;
+		this.fInput = model;
 	}
 
 	/**
@@ -132,19 +136,10 @@ public class MilestoneSectionViewer extends Viewer {
 	 */
 	private double getMilestoneSectionRequiredCapacity() {
 		double sumOfPoints = 0.0;
-		for (TaskAttribute child : fInput.getAttributes().values()) {
-			if (IMylynAgileCoreConstants.TYPE_BACKLOG_ITEM.equals(child.getMetaData().getType())) {
-				TaskAttribute pointsAtt = child.getAttribute(IMylynAgileCoreConstants.BACKLOG_ITEM_POINTS);
-				if (pointsAtt != null) {
-					String strPoints = pointsAtt.getValue();
-					if (strPoints != null) {
-						try {
-							sumOfPoints += Double.parseDouble(strPoints);
-						} catch (NumberFormatException e) {
-							// Nothing to do
-						}
-					}
-				}
+		for (BacklogItemWrapper bi : fInput.getBacklogItems()) {
+			Float effort = bi.getInitialEffort();
+			if (effort != null) {
+				sumOfPoints += effort.floatValue();
 			}
 		}
 		return sumOfPoints;
@@ -155,15 +150,14 @@ public class MilestoneSectionViewer extends Viewer {
 	 * TaskAttribute.
 	 * 
 	 * @return the estimated milestone capacity by retrieving it from the relevant sub-attribute in the given
-	 *         TaskAttribute
+	 *         TaskAttribute, or -1 if the capacity is not present
 	 */
 	private double getMilestoneSectionCapacity() {
-		String capacity = MylynAgileUIMessages.getString("PlanningTaskEditorPart.MissingNumericValue"); //$NON-NLS-1$;
-		TaskAttribute capacityAtt = fInput.getAttribute(IMylynAgileCoreConstants.MILESTONE_CAPACITY);
-		if (capacityAtt != null && capacityAtt.getValue() != null) {
-			capacity = capacityAtt.getValue();
+		Float capacity = fInput.getSubMilestone().getCapacity();
+		if (capacity != null) {
+			return capacity.doubleValue();
 		}
-		return Double.parseDouble(capacity);
+		return -1;
 	}
 
 	/**
@@ -172,32 +166,34 @@ public class MilestoneSectionViewer extends Viewer {
 	 * @return The text to use as a header for a milestone section.
 	 */
 	private String getMilestoneSectionHeaderText() {
-		TaskAttribute nameAtt = fInput.getAttribute(IMylynAgileCoreConstants.LABEL);
-		TaskAttribute startDateAtt = fInput.getAttribute(IMylynAgileCoreConstants.START_DATE);
-		TaskAttribute endDateAtt = fInput.getAttribute(IMylynAgileCoreConstants.END_DATE);
+		SubMilestoneWrapper subMilestone = fInput.getSubMilestone();
+		String label = subMilestone.getLabel();
+		Date startDate = subMilestone.getStartDate();
+		Float duration = subMilestone.getDuration();
 
 		// Compute the title of the section
 		StringBuilder titleBuilder = new StringBuilder();
-		if (nameAtt == null || nameAtt.getValue() == null) {
+		if (label == null) {
 			titleBuilder.append(MylynAgileUIMessages.getString("PlanningTaskEditorPart.MissingTextValue")); //$NON-NLS-1$
 		} else {
-			titleBuilder.append(nameAtt.getValue());
+			titleBuilder.append(label);
 		}
 		titleBuilder.append(" ("); //$NON-NLS-1$
 		DateFormat dateFormat = new SimpleDateFormat(MylynAgileUIMessages
 				.getString("PlanningTaskEditorPart.MilestoneDateFormat")); //$NON-NLS-1$
-		if (startDateAtt == null || startDateAtt.getValue() == null) {
+		if (startDate == null) {
 			titleBuilder.append("?"); //$NON-NLS-1$
 		} else {
-			String startDate = dateFormat.format(new Date(Long.parseLong(startDateAtt.getValue())));
-			titleBuilder.append(startDate);
+			String formattedDate = dateFormat.format(startDate);
+			titleBuilder.append(formattedDate);
 		}
 		titleBuilder.append(" - "); //$NON-NLS-1$
-		if (endDateAtt == null || endDateAtt.getValue() == null) {
+		if (duration == null || startDate == null) {
 			titleBuilder.append("?"); //$NON-NLS-1$
 		} else {
-			String endDate = dateFormat.format(new Date(Long.parseLong(endDateAtt.getValue())));
-			titleBuilder.append(endDate);
+			Date endDate = new Date(startDate.getTime() + (int)(MILLISECONDS_PER_DAY * duration.floatValue()));
+			String formattedDate = dateFormat.format(endDate);
+			titleBuilder.append(formattedDate);
 		}
 		titleBuilder.append(")"); //$NON-NLS-1$
 		String title = titleBuilder.toString();
