@@ -55,51 +55,66 @@ public class MilestonePlanningWrapperTest {
 		subMilestone.setDuration(11);
 		subMilestone.setLabel("Milestone 1"); //$NON-NLS-1$
 		subMilestone.setStartDate(testDate);
-		BacklogItemWrapper backlogItem = wrapper.addBacklogItem(300);
-		backlogItem.setLabel("label of backlog item 300"); //$NON-NLS-1$
-		backlogItem.setInitialEffort(5);
-		backlogItem.setAssignedMilestoneId(200);
-		// System.out.println(taskData.getRoot());
 
 		TaskAttribute root = taskData.getRoot();
 		TaskAttribute planningAtt = root.getAttribute(MilestonePlanningWrapper.MILESTONE_PLANNING);
-		assertNotNull(planningAtt);
 
 		// Milestones
 		TaskAttribute milestoneListAtt = planningAtt.getAttribute(MilestonePlanningWrapper.MILESTONE_LIST);
-		assertNotNull(milestoneListAtt);
 		TaskAttribute milestone0 = milestoneListAtt.getAttribute(SubMilestoneWrapper.PREFIX_MILESTONE + "0"); //$NON-NLS-1$
-		assertNotNull(milestone0);
 		assertTrue(milestone0.getMetaData().isReadOnly());
 
-		TaskAttribute capacity = milestone0.getAttribute(SubMilestoneWrapper.MILESTONE_CAPACITY);
-		assertNotNull(capacity);
+		TaskAttribute capacity = milestone0.getAttribute(milestone0.getId() + '-'
+				+ SubMilestoneWrapper.MILESTONE_CAPACITY);
 		assertEquals(Float.toString(20f), capacity.getValue());
 		assertEquals(TaskAttribute.TYPE_DOUBLE, capacity.getMetaData().getType());
 
-		TaskAttribute duration = milestone0.getAttribute(SubMilestoneWrapper.MILESTONE_DURATION);
-		assertNotNull(duration);
+		TaskAttribute duration = milestone0.getAttribute(milestone0.getId() + '-'
+				+ SubMilestoneWrapper.MILESTONE_DURATION);
 		assertEquals(Float.toString(11f), duration.getValue());
 		assertEquals(TaskAttribute.TYPE_DOUBLE, duration.getMetaData().getType());
 
-		TaskAttribute id = milestone0.getAttribute(IMylynAgileCoreConstants.ID);
-		assertNotNull(id);
+		TaskAttribute id = milestone0.getAttribute(milestone0.getId() + '-' + IMylynAgileCoreConstants.ID);
 		assertEquals("200", id.getValue()); //$NON-NLS-1$
 		assertEquals(TaskAttribute.TYPE_INTEGER, id.getMetaData().getType());
 
-		TaskAttribute label = milestone0.getAttribute(IMylynAgileCoreConstants.LABEL);
-		assertNotNull(label);
+		TaskAttribute label = milestone0.getAttribute(milestone0.getId() + '-'
+				+ IMylynAgileCoreConstants.LABEL);
 		assertEquals("Milestone 1", label.getValue()); //$NON-NLS-1$
 		assertEquals(TaskAttribute.TYPE_SHORT_RICH_TEXT, label.getMetaData().getType());
 
-		TaskAttribute start = milestone0.getAttribute(SubMilestoneWrapper.START_DATE);
-		assertNotNull(start);
+		TaskAttribute start = milestone0.getAttribute(milestone0.getId() + '-'
+				+ SubMilestoneWrapper.START_DATE);
 		assertEquals(Long.toString(testDate.getTime()), start.getValue());
 		assertEquals(TaskAttribute.TYPE_DATETIME, start.getMetaData().getType());
 
 		// Backlog
+		BacklogItemWrapper backlogItem = wrapper.addBacklogItem(300);
+		backlogItem.setLabel("label of backlog item 300"); //$NON-NLS-1$
+		backlogItem.setInitialEffort(5);
+		backlogItem.setAssignedMilestoneId(200);
+
 		TaskAttribute backlogAtt = planningAtt.getAttribute(MilestonePlanningWrapper.BACKLOG);
-		assertNotNull(backlogAtt);
+		TaskAttribute bi0 = backlogAtt.getAttribute(BacklogItemWrapper.PREFIX_BACKLOG_ITEM + "0"); //$NON-NLS-1$
+		assertTrue(bi0.getMetaData().isReadOnly());
+
+		TaskAttribute pointsAtt = bi0
+				.getAttribute(bi0.getId() + '-' + BacklogItemWrapper.BACKLOG_ITEM_POINTS);
+		assertEquals(Float.toString(5f), pointsAtt.getValue());
+		assertEquals(TaskAttribute.TYPE_DOUBLE, pointsAtt.getMetaData().getType());
+
+		TaskAttribute biIdAtt = bi0.getAttribute(bi0.getId() + '-' + IMylynAgileCoreConstants.ID);
+		assertEquals("300", biIdAtt.getValue());
+		assertEquals(TaskAttribute.TYPE_INTEGER, biIdAtt.getMetaData().getType());
+
+		TaskAttribute biLabelAtt = bi0.getAttribute(bi0.getId() + '-' + IMylynAgileCoreConstants.LABEL);
+		assertEquals("label of backlog item 300", biLabelAtt.getValue());
+		assertEquals(TaskAttribute.TYPE_SHORT_RICH_TEXT, biLabelAtt.getMetaData().getType());
+
+		TaskAttribute assignedIdAtt = bi0.getAttribute(bi0.getId() + '-'
+				+ BacklogItemWrapper.ASSIGNED_MILESTONE_ID);
+		assertEquals("200", assignedIdAtt.getValue());
+		assertEquals(TaskAttribute.TYPE_INTEGER, assignedIdAtt.getMetaData().getType());
 	}
 
 	/**
@@ -248,6 +263,19 @@ public class MilestonePlanningWrapperTest {
 	}
 
 	/**
+	 * Tests the retrieval of a milestone by its id.
+	 */
+	@Test
+	public void testGetMilestoneById() {
+		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(taskData.getRoot());
+		SubMilestoneWrapper subMilestone = wrapper.addSubMilestone(200);
+		subMilestone.setId(123);
+		assertNull(wrapper.getSubMilestone(122));
+		SubMilestoneWrapper other = wrapper.getSubMilestone(123);
+		assertNotNull(other);
+	}
+
+	/**
 	 * Configure the data for the tests.
 	 */
 	@Before
@@ -269,14 +297,15 @@ public class MilestonePlanningWrapperTest {
 		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(taskData.getRoot());
 		wrapper.addListener(listener);
 
-		SubMilestoneWrapper subMilestone = wrapper.addSubMilestone();
+		SubMilestoneWrapper subMilestone = wrapper.addSubMilestone(200);
 		subMilestone.setCapacity(12F);
 
 		TaskAttribute root = taskData.getRoot();
 		TaskAttribute planningAtt = root.getAttribute(MilestonePlanningWrapper.MILESTONE_PLANNING);
 		TaskAttribute milestoneListAtt = planningAtt.getAttribute(MilestonePlanningWrapper.MILESTONE_LIST);
 		TaskAttribute milestone0 = milestoneListAtt.getAttribute(SubMilestoneWrapper.PREFIX_MILESTONE + "0"); //$NON-NLS-1$
-		TaskAttribute capacity = milestone0.getAttribute(SubMilestoneWrapper.MILESTONE_CAPACITY);
+		TaskAttribute capacity = milestone0.getAttribute(milestone0.getId() + '-'
+				+ SubMilestoneWrapper.MILESTONE_CAPACITY);
 
 		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(capacity));
 		subMilestone.setCapacity(12F); // Should not notify
@@ -285,7 +314,8 @@ public class MilestonePlanningWrapperTest {
 		assertEquals(Integer.valueOf(2), listener.getInvocationsCount(capacity));
 
 		subMilestone.setDuration(21.5F);
-		TaskAttribute duration = milestone0.getAttribute(SubMilestoneWrapper.MILESTONE_DURATION);
+		TaskAttribute duration = milestone0.getAttribute(milestone0.getId() + '-'
+				+ SubMilestoneWrapper.MILESTONE_DURATION);
 
 		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(duration));
 		subMilestone.setDuration(21.5F); // Should not notify
@@ -294,7 +324,8 @@ public class MilestonePlanningWrapperTest {
 		assertEquals(Integer.valueOf(2), listener.getInvocationsCount(duration));
 
 		subMilestone.setLabel("Label"); //$NON-NLS-1$
-		TaskAttribute label = milestone0.getAttribute(IMylynAgileCoreConstants.LABEL);
+		TaskAttribute label = milestone0.getAttribute(milestone0.getId() + '-'
+				+ IMylynAgileCoreConstants.LABEL);
 
 		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(label));
 		subMilestone.setLabel("Label"); //$NON-NLS-1$
@@ -305,13 +336,49 @@ public class MilestonePlanningWrapperTest {
 		Date startDate = new Date();
 		subMilestone.setStartDate(startDate);
 
-		TaskAttribute start = milestone0.getAttribute(SubMilestoneWrapper.START_DATE);
+		TaskAttribute start = milestone0.getAttribute(milestone0.getId() + '-'
+				+ SubMilestoneWrapper.START_DATE);
 
 		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(start));
 		subMilestone.setStartDate(startDate); // Should not notify
 		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(start));
 		subMilestone.setStartDate(new Date(startDate.getTime() + 1)); // Should notify
 		assertEquals(Integer.valueOf(2), listener.getInvocationsCount(start));
+
+		// Backlog items
+		BacklogItemWrapper backlogItem = wrapper.addBacklogItem(200);
+
+		TaskAttribute backlogAtt = planningAtt.getAttribute(MilestonePlanningWrapper.BACKLOG);
+		TaskAttribute bi0 = backlogAtt.getAttribute(BacklogItemWrapper.PREFIX_BACKLOG_ITEM + "0"); //$NON-NLS-1$
+
+		backlogItem.setInitialEffort(5);
+		TaskAttribute pointsAtt = bi0
+				.getAttribute(bi0.getId() + '-' + BacklogItemWrapper.BACKLOG_ITEM_POINTS);
+
+		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(pointsAtt));
+		backlogItem.setInitialEffort(5);
+		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(pointsAtt));
+		backlogItem.setInitialEffort(6);
+		assertEquals(Integer.valueOf(2), listener.getInvocationsCount(pointsAtt));
+
+		backlogItem.setLabel("label of backlog item 300"); //$NON-NLS-1$
+		TaskAttribute biLabelAtt = bi0.getAttribute(bi0.getId() + '-' + IMylynAgileCoreConstants.LABEL);
+
+		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(biLabelAtt));
+		backlogItem.setLabel("label of backlog item 300"); //$NON-NLS-1$
+		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(biLabelAtt));
+		backlogItem.setLabel("Other"); //$NON-NLS-1$
+		assertEquals(Integer.valueOf(2), listener.getInvocationsCount(biLabelAtt));
+
+		backlogItem.setAssignedMilestoneId(200);
+		TaskAttribute assignedIdAtt = bi0.getAttribute(bi0.getId() + '-'
+				+ BacklogItemWrapper.ASSIGNED_MILESTONE_ID);
+
+		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(assignedIdAtt));
+		backlogItem.setAssignedMilestoneId(200);
+		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(assignedIdAtt));
+		backlogItem.setAssignedMilestoneId(201);
+		assertEquals(Integer.valueOf(2), listener.getInvocationsCount(assignedIdAtt));
 	}
 
 }

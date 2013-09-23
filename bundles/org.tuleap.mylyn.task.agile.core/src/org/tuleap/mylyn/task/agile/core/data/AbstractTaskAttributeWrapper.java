@@ -21,6 +21,11 @@ import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 public abstract class AbstractTaskAttributeWrapper {
 
 	/**
+	 * Separator used in computed ids.
+	 */
+	protected static final char ID_SEPARATOR = '-';
+
+	/**
 	 * The wrapped task attribute.
 	 */
 	protected final TaskAttribute root;

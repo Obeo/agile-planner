@@ -27,7 +27,7 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 	/**
 	 * Id of the backlog items list task attribute.
 	 */
-	public static final String MILESTONE_CAPACITY = "mta_capacity"; //$NON-NLS-1$
+	public static final String MILESTONE_CAPACITY = "capacity"; //$NON-NLS-1$
 
 	/**
 	 * The value used to indicate that a task data represents a milestone (for instance, a sprint).
@@ -37,22 +37,17 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 	/**
 	 * Prefix used to generate ids of milestones (there are several milestones in a parent Planning).
 	 */
-	public static final String PREFIX_MILESTONE = "mta_milestone-"; //$NON-NLS-1$
+	public static final String PREFIX_MILESTONE = "mta_ms-"; //$NON-NLS-1$
 
 	/**
 	 * The value used to indicate that a task data represents a milestone duration.
 	 */
-	public static final String MILESTONE_DURATION = "mta_duration"; //$NON-NLS-1$
+	public static final String MILESTONE_DURATION = "duration"; //$NON-NLS-1$
 
 	/**
 	 * The value used to indicate that a task data represents a planned start date.
 	 */
-	public static final String START_DATE = "mta_start_date"; //$NON-NLS-1$
-
-	/**
-	 * The value used to indicate that a task data represents a planned end date.
-	 */
-	public static final String END_DATE = "mta_end_date"; //$NON-NLS-1$
+	public static final String START_DATE = "start_date"; //$NON-NLS-1$
 
 	/**
 	 * The parent planning.
@@ -73,13 +68,58 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 	}
 
 	/**
+	 * Computes the unique id of the ID attribute.
+	 * 
+	 * @return The unique id of the id attribute.
+	 */
+	private String getIdAttributeId() {
+		return root.getId() + ID_SEPARATOR + IMylynAgileCoreConstants.ID;
+	}
+
+	/**
+	 * Computes the unique id of the Label attribute.
+	 * 
+	 * @return The unique id of the label attribute.
+	 */
+	private String getLabelAttributeId() {
+		return root.getId() + ID_SEPARATOR + IMylynAgileCoreConstants.LABEL;
+	}
+
+	/**
+	 * Computes the unique id of the capacity attribute.
+	 * 
+	 * @return The unique id of the capacity attribute.
+	 */
+	private String getCapacityAttributeId() {
+		return root.getId() + ID_SEPARATOR + MILESTONE_CAPACITY;
+	}
+
+	/**
+	 * Computes the unique id of the duration attribute.
+	 * 
+	 * @return The unique id of the duration attribute.
+	 */
+	private String getDurationAttributeId() {
+		return root.getId() + ID_SEPARATOR + MILESTONE_DURATION;
+	}
+
+	/**
+	 * Computes the unique id of the start date attribute.
+	 * 
+	 * @return The unique id of the start date attribute.
+	 */
+	private String getStartDateAttributeId() {
+		return root.getId() + ID_SEPARATOR + START_DATE;
+	}
+
+	/**
 	 * Id getter.
 	 * 
 	 * @return The milestone's id, or {@code -1} if the id is not set.
 	 */
 	public int getId() {
 		int result = -1;
-		TaskAttribute attribute = root.getMappedAttribute(IMylynAgileCoreConstants.ID);
+		TaskAttribute attribute = root.getMappedAttribute(getIdAttributeId());
 		if (attribute != null) {
 			result = Integer.parseInt(attribute.getValue());
 		}
@@ -93,9 +133,9 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 	 *            The milestone's id.
 	 */
 	public void setId(int id) {
-		TaskAttribute attribute = root.getMappedAttribute(IMylynAgileCoreConstants.ID);
+		TaskAttribute attribute = root.getMappedAttribute(getIdAttributeId());
 		if (attribute == null) {
-			attribute = root.createMappedAttribute(IMylynAgileCoreConstants.ID);
+			attribute = root.createMappedAttribute(getIdAttributeId());
 			attribute.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
 			attribute.getMetaData().setType(TaskAttribute.TYPE_INTEGER);
 		}
@@ -109,7 +149,7 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 	 */
 	public String getLabel() {
 		String result = null;
-		TaskAttribute attribute = root.getMappedAttribute(IMylynAgileCoreConstants.LABEL);
+		TaskAttribute attribute = root.getMappedAttribute(getLabelAttributeId());
 		if (attribute != null) {
 			result = attribute.getValue();
 		}
@@ -120,19 +160,23 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 	 * Label setter.
 	 * 
 	 * @param label
-	 *            The milestone's label.
+	 *            The milestone's label. If it is null, nothing is performed, the former label, if any,
+	 *            remains unchanged.
 	 */
 	public void setLabel(String label) {
-		TaskAttribute attribute = root.getMappedAttribute(IMylynAgileCoreConstants.LABEL);
+		if (label == null) {
+			return;
+		}
+		TaskAttribute attribute = root.getMappedAttribute(getLabelAttributeId());
 		String oldValue = null;
 		if (attribute == null) {
-			attribute = root.createMappedAttribute(IMylynAgileCoreConstants.LABEL);
+			attribute = root.createMappedAttribute(getLabelAttributeId());
 			attribute.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
 			attribute.getMetaData().setType(TaskAttribute.TYPE_SHORT_RICH_TEXT);
 		} else {
 			oldValue = attribute.getValue();
 		}
-		if (oldValue == null && label != null || oldValue != null && !oldValue.equals(label)) {
+		if (!label.equals(oldValue)) {
 			attribute.setValue(label);
 			fireAttributeChanged(attribute);
 		}
@@ -145,7 +189,7 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 	 */
 	public Float getCapacity() {
 		Float result = null;
-		TaskAttribute attribute = root.getMappedAttribute(MILESTONE_CAPACITY);
+		TaskAttribute attribute = root.getMappedAttribute(getCapacityAttributeId());
 		if (attribute != null) {
 			result = Float.valueOf(attribute.getValue());
 		}
@@ -159,10 +203,10 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 	 *            The milestone's capacity.
 	 */
 	public void setCapacity(float capacity) {
-		TaskAttribute attribute = root.getMappedAttribute(MILESTONE_CAPACITY);
+		TaskAttribute attribute = root.getMappedAttribute(getCapacityAttributeId());
 		String oldValue = null;
 		if (attribute == null) {
-			attribute = root.createMappedAttribute(MILESTONE_CAPACITY);
+			attribute = root.createMappedAttribute(getCapacityAttributeId());
 			attribute.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
 			attribute.getMetaData().setType(TaskAttribute.TYPE_DOUBLE);
 		} else {
@@ -181,7 +225,7 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 	 */
 	public Date getStartDate() {
 		Date result = null;
-		TaskAttribute attribute = root.getMappedAttribute(START_DATE);
+		TaskAttribute attribute = root.getMappedAttribute(getStartDateAttributeId());
 		if (attribute != null) {
 			TaskAttributeMapper mapper = attribute.getTaskData().getAttributeMapper();
 			result = mapper.getDateValue(attribute);
@@ -200,9 +244,9 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 		if (start == null) {
 			return;
 		}
-		TaskAttribute attribute = root.getMappedAttribute(START_DATE);
+		TaskAttribute attribute = root.getMappedAttribute(getStartDateAttributeId());
 		if (attribute == null) {
-			attribute = root.createMappedAttribute(START_DATE);
+			attribute = root.createMappedAttribute(getStartDateAttributeId());
 			attribute.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
 			attribute.getMetaData().setType(TaskAttribute.TYPE_DATETIME);
 		}
@@ -221,7 +265,7 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 	 */
 	public Float getDuration() {
 		Float result = null;
-		TaskAttribute attribute = root.getMappedAttribute(MILESTONE_DURATION);
+		TaskAttribute attribute = root.getMappedAttribute(getDurationAttributeId());
 		if (attribute != null) {
 			result = Float.valueOf(attribute.getValue());
 		}
@@ -235,10 +279,10 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 	 *            The milestone's duration.
 	 */
 	public void setDuration(float duration) {
-		TaskAttribute attribute = root.getMappedAttribute(MILESTONE_DURATION);
+		TaskAttribute attribute = root.getMappedAttribute(getDurationAttributeId());
 		String oldValue = null;
 		if (attribute == null) {
-			attribute = root.createMappedAttribute(MILESTONE_DURATION);
+			attribute = root.createMappedAttribute(getDurationAttributeId());
 			attribute.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
 			attribute.getMetaData().setType(TaskAttribute.TYPE_DOUBLE);
 		} else {
