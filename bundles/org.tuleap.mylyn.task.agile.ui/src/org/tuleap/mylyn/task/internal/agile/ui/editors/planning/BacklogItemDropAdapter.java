@@ -12,6 +12,7 @@ package org.tuleap.mylyn.task.internal.agile.ui.editors.planning;
 
 import com.google.common.collect.Iterables;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jface.util.LocalSelectionTransfer;
@@ -94,9 +95,27 @@ public class BacklogItemDropAdapter extends ViewerDropAdapter {
 			Integer milestoneId = wrapper.getAssignedMilestoneId();
 			MilestonePlanningWrapper planningWrapper = container.getMilestonePlanning();
 			if (milestoneId == null) {
-				planningWrapper.moveItemsToBacklog(selection.toList(), wrapper, before);
+				List<BacklogItemWrapper> items = new ArrayList<BacklogItemWrapper>();
+
+				List<?> list = selection.toList();
+				for (Object object : list) {
+					if (object instanceof BacklogItemWrapper) {
+						items.add((BacklogItemWrapper)object);
+					}
+				}
+
+				planningWrapper.moveItemsToBacklog(items, wrapper, before);
 			} else {
-				planningWrapper.moveItemsToMilestone(selection.toList(), wrapper, before, planningWrapper
+				List<BacklogItemWrapper> items = new ArrayList<BacklogItemWrapper>();
+
+				List<?> list = selection.toList();
+				for (Object object : list) {
+					if (object instanceof BacklogItemWrapper) {
+						items.add((BacklogItemWrapper)object);
+					}
+				}
+
+				planningWrapper.moveItemsToMilestone(items, wrapper, before, planningWrapper
 						.getSubMilestone(milestoneId.intValue()));
 			}
 			// TODO getModel().attributeChanged(listAtt);
