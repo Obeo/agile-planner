@@ -89,9 +89,11 @@ public class MilestonePlanningWrapperTest {
 		assertEquals(Long.toString(testDate.getTime()), start.getValue());
 		assertEquals(TaskAttribute.TYPE_DATETIME, start.getMetaData().getType());
 
+		String label1 = "label of backlog item 300"; //$NON-NLS-1$
+
 		// Backlog
 		BacklogItemWrapper backlogItem = wrapper.addBacklogItem(300);
-		backlogItem.setLabel("label of backlog item 300"); //$NON-NLS-1$
+		backlogItem.setLabel(label1);
 		backlogItem.setInitialEffort(5);
 		backlogItem.setAssignedMilestoneId(200);
 
@@ -105,17 +107,17 @@ public class MilestonePlanningWrapperTest {
 		assertEquals(TaskAttribute.TYPE_DOUBLE, pointsAtt.getMetaData().getType());
 
 		TaskAttribute biIdAtt = bi0.getAttribute(bi0.getId() + '-' + AbstractTaskAttributeWrapper.SUFFIX_ID);
-		assertEquals("300", biIdAtt.getValue());
+		assertEquals("300", biIdAtt.getValue()); //$NON-NLS-1$
 		assertEquals(TaskAttribute.TYPE_INTEGER, biIdAtt.getMetaData().getType());
 
 		TaskAttribute biLabelAtt = bi0.getAttribute(bi0.getId() + '-'
 				+ AbstractTaskAttributeWrapper.SUFFIX_LABEL);
-		assertEquals("label of backlog item 300", biLabelAtt.getValue());
+		assertEquals(label1, biLabelAtt.getValue());
 		assertEquals(TaskAttribute.TYPE_SHORT_RICH_TEXT, biLabelAtt.getMetaData().getType());
 
 		TaskAttribute assignedIdAtt = bi0.getAttribute(bi0.getId() + '-'
 				+ BacklogItemWrapper.ASSIGNED_MILESTONE_ID);
-		assertEquals("200", assignedIdAtt.getValue());
+		assertEquals("200", assignedIdAtt.getValue()); //$NON-NLS-1$
 		assertEquals(TaskAttribute.TYPE_INTEGER, assignedIdAtt.getMetaData().getType());
 	}
 
@@ -129,10 +131,12 @@ public class MilestonePlanningWrapperTest {
 		SubMilestoneWrapper subMilestone = wrapper.addSubMilestone(200);
 		subMilestone.setCapacity(20);
 		subMilestone.setDuration(11);
-		subMilestone.setLabel("Milestone 1"); //$NON-NLS-1$
+		String label0 = "Milestone 1"; //$NON-NLS-1$
+		subMilestone.setLabel(label0);
 		subMilestone.setStartDate(testDate);
 		BacklogItemWrapper backlogItem = wrapper.addBacklogItem(300);
-		backlogItem.setLabel("label of backlog item 300"); //$NON-NLS-1$
+		String label1 = "label of backlog item 300"; //$NON-NLS-1$
+		backlogItem.setLabel(label1);
 		backlogItem.setInitialEffort(5);
 		backlogItem.setAssignedMilestoneId(200);
 		// System.out.println(taskData.getRoot());
@@ -142,7 +146,7 @@ public class MilestonePlanningWrapperTest {
 		Iterator<SubMilestoneWrapper> subMilestones = wrapper.getSubMilestones().iterator();
 		subMilestone = subMilestones.next();
 		assertEquals(200, subMilestone.getId());
-		assertEquals("Milestone 1", subMilestone.getLabel()); //$NON-NLS-1$
+		assertEquals(label0, subMilestone.getLabel());
 		assertEquals(11f, subMilestone.getDuration().floatValue(), 0f);
 		assertEquals(20f, subMilestone.getCapacity().floatValue(), 0f);
 		assertEquals(testDate, subMilestone.getStartDate());
@@ -152,7 +156,7 @@ public class MilestonePlanningWrapperTest {
 		Iterator<BacklogItemWrapper> backlogItems = wrapper.getAllBacklogItems().iterator();
 		backlogItem = backlogItems.next();
 		assertEquals(300, backlogItem.getId());
-		assertEquals("label of backlog item 300", backlogItem.getLabel()); //$NON-NLS-1$
+		assertEquals(label1, backlogItem.getLabel());
 		assertEquals(5f, backlogItem.getInitialEffort().floatValue(), 0f);
 		assertEquals(200, backlogItem.getAssignedMilestoneId().intValue());
 
@@ -201,7 +205,7 @@ public class MilestonePlanningWrapperTest {
 	public void testBacklogItemAssignedIdRemoval() {
 		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(taskData.getRoot());
 		// Date testDate = new Date();
-		SubMilestoneWrapper subMilestone = wrapper.addSubMilestone(123);
+		wrapper.addSubMilestone(123);
 		BacklogItemWrapper backlogItem = wrapper.addBacklogItem(333);
 		backlogItem.setAssignedMilestoneId(123);
 		assertEquals(123, backlogItem.getAssignedMilestoneId().intValue());
@@ -270,7 +274,7 @@ public class MilestonePlanningWrapperTest {
 	@Test
 	public void testGetMilestoneById() {
 		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(taskData.getRoot());
-		SubMilestoneWrapper subMilestone = wrapper.addSubMilestone(123);
+		wrapper.addSubMilestone(123);
 		assertNull(wrapper.getSubMilestone(122));
 		SubMilestoneWrapper other = wrapper.getSubMilestone(123);
 		assertNotNull(other);
