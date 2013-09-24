@@ -11,8 +11,9 @@
 package org.tuleap.mylyn.task.internal.agile.ui.editors.planning;
 
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 
-import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.jface.util.LocalSelectionTransfer;
@@ -76,15 +77,13 @@ public class BacklogItemDropAdapter extends ViewerDropAdapter {
 		boolean ret = false;
 		IBacklog container = (IBacklog)getViewer().getInput();
 		boolean mustUpdate;
-		boolean before;
+		boolean before = false;
 		switch (getCurrentLocation()) {
 			case LOCATION_AFTER:
 				mustUpdate = true;
-				before = false;
 				break;
 			case LOCATION_NONE:
 				mustUpdate = false;
-				before = true;
 				break;
 			default: // ON or BEFORE
 				mustUpdate = true;
@@ -92,34 +91,32 @@ public class BacklogItemDropAdapter extends ViewerDropAdapter {
 				break;
 		}
 		if (mustUpdate) {
-			Integer milestoneId = wrapper.getAssignedMilestoneId();
-			MilestonePlanningWrapper planningWrapper = container.getMilestonePlanning();
-			if (milestoneId == null) {
-				List<BacklogItemWrapper> items = new ArrayList<BacklogItemWrapper>();
-
-				List<?> list = selection.toList();
-				for (Object object : list) {
-					if (object instanceof BacklogItemWrapper) {
-						items.add((BacklogItemWrapper)object);
-					}
+			// Only manage BacklogItemWrappers, nothing else
+			List<BacklogItemWrapper> selectedBacklogItems = Lists.newArrayList();
+			for (Iterator<?> it = selection.iterator(); it.hasNext();) {
+				Object o = it.next();
+				if (o instanceof BacklogItemWrapper) {
+					selectedBacklogItems.add((BacklogItemWrapper)o);
 				}
-
-				planningWrapper.moveItemsToBacklog(items, wrapper, before);
-			} else {
-				List<BacklogItemWrapper> items = new ArrayList<BacklogItemWrapper>();
-
-				List<?> list = selection.toList();
-				for (Object object : list) {
-					if (object instanceof BacklogItemWrapper) {
-						items.add((BacklogItemWrapper)object);
-					}
-				}
-
-				planningWrapper.moveItemsToMilestone(items, wrapper, before, planningWrapper
-						.getSubMilestone(milestoneId.intValue()));
 			}
-			// TODO getModel().attributeChanged(listAtt);
-			getViewer().refresh();
+			if (selectedBacklogItems.isEmpty()) {
+				ret = false;
+			} else {
+				Integer milestoneId = wrapper.getAssignedMilestoneId();
+				MilestonePlanningWrapper planningWrapper = container.getMilestonePlanning();
+				if (milestoneId == null) {
+					// Drop on planning's backlog
+					planningWrapper.moveItemsToBacklog(selectedBacklogItems, wrapper, before);
+				} else {
+					// Drop on a milestone's backlog item
+					planningWrapper.moveItemsToMilestone(selectedBacklogItems, wrapper, before,
+							planningWrapper
+
+							.getSubMilestone(milestoneId.intValue()));
+				}
+				getViewer().refresh();
+				ret = true;
+			}
 		}
 		return ret;
 	}
@@ -142,7 +139,7 @@ public class BacklogItemDropAdapter extends ViewerDropAdapter {
 		IBacklog container = (IBacklog)getViewer().getInput();
 		Iterable<BacklogItemWrapper> biWrappers = container.getBacklogItems();
 		BacklogItemWrapper lastBacklogItem = Iterables.getLast(biWrappers);
-		Integer targetAssignedMilestoneId = lastBacklogItem.getAssignedMilestoneId();
+		Integer targetAssignedMilestoneId = container.getMilestoneId();
 
 		BacklogItemWrapper firstSelectedElement = selectedBacklogItems.get(0);
 		Integer selectedAssignedMilestoneId = firstSelectedElement.getAssignedMilestoneId();

@@ -19,10 +19,10 @@ import org.eclipse.mylyn.tasks.core.data.TaskAttributeMapper;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.junit.Before;
 import org.junit.Test;
+import org.tuleap.mylyn.task.agile.core.data.AbstractTaskAttributeWrapper;
 import org.tuleap.mylyn.task.agile.core.data.planning.BacklogItemWrapper;
 import org.tuleap.mylyn.task.agile.core.data.planning.MilestonePlanningWrapper;
 import org.tuleap.mylyn.task.agile.core.data.planning.SubMilestoneWrapper;
-import org.tuleap.mylyn.task.agile.core.util.IMylynAgileCoreConstants;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -74,12 +74,13 @@ public class MilestonePlanningWrapperTest {
 		assertEquals(Float.toString(11f), duration.getValue());
 		assertEquals(TaskAttribute.TYPE_DOUBLE, duration.getMetaData().getType());
 
-		TaskAttribute id = milestone0.getAttribute(milestone0.getId() + '-' + IMylynAgileCoreConstants.ID);
+		TaskAttribute id = milestone0.getAttribute(milestone0.getId() + '-'
+				+ AbstractTaskAttributeWrapper.SUFFIX_ID);
 		assertEquals("200", id.getValue()); //$NON-NLS-1$
 		assertEquals(TaskAttribute.TYPE_INTEGER, id.getMetaData().getType());
 
 		TaskAttribute label = milestone0.getAttribute(milestone0.getId() + '-'
-				+ IMylynAgileCoreConstants.LABEL);
+				+ AbstractTaskAttributeWrapper.SUFFIX_LABEL);
 		assertEquals("Milestone 1", label.getValue()); //$NON-NLS-1$
 		assertEquals(TaskAttribute.TYPE_SHORT_RICH_TEXT, label.getMetaData().getType());
 
@@ -103,11 +104,12 @@ public class MilestonePlanningWrapperTest {
 		assertEquals(Float.toString(5f), pointsAtt.getValue());
 		assertEquals(TaskAttribute.TYPE_DOUBLE, pointsAtt.getMetaData().getType());
 
-		TaskAttribute biIdAtt = bi0.getAttribute(bi0.getId() + '-' + IMylynAgileCoreConstants.ID);
+		TaskAttribute biIdAtt = bi0.getAttribute(bi0.getId() + '-' + AbstractTaskAttributeWrapper.SUFFIX_ID);
 		assertEquals("300", biIdAtt.getValue());
 		assertEquals(TaskAttribute.TYPE_INTEGER, biIdAtt.getMetaData().getType());
 
-		TaskAttribute biLabelAtt = bi0.getAttribute(bi0.getId() + '-' + IMylynAgileCoreConstants.LABEL);
+		TaskAttribute biLabelAtt = bi0.getAttribute(bi0.getId() + '-'
+				+ AbstractTaskAttributeWrapper.SUFFIX_LABEL);
 		assertEquals("label of backlog item 300", biLabelAtt.getValue());
 		assertEquals(TaskAttribute.TYPE_SHORT_RICH_TEXT, biLabelAtt.getMetaData().getType());
 
@@ -147,7 +149,7 @@ public class MilestonePlanningWrapperTest {
 
 		assertFalse(subMilestones.hasNext());
 
-		Iterator<BacklogItemWrapper> backlogItems = wrapper.getBacklogItems().iterator();
+		Iterator<BacklogItemWrapper> backlogItems = wrapper.getAllBacklogItems().iterator();
 		backlogItem = backlogItems.next();
 		assertEquals(300, backlogItem.getId());
 		assertEquals("label of backlog item 300", backlogItem.getLabel()); //$NON-NLS-1$
@@ -182,7 +184,7 @@ public class MilestonePlanningWrapperTest {
 		assertFalse(subMilestones.hasNext());
 
 		assertEquals(1, wrapper.backlogItemsCount());
-		Iterator<BacklogItemWrapper> backlogItems = wrapper.getBacklogItems().iterator();
+		Iterator<BacklogItemWrapper> backlogItems = wrapper.getAllBacklogItems().iterator();
 		backlogItem = backlogItems.next();
 		assertEquals(-1, backlogItem.getId());
 		assertNull(backlogItem.getLabel());
@@ -268,8 +270,7 @@ public class MilestonePlanningWrapperTest {
 	@Test
 	public void testGetMilestoneById() {
 		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(taskData.getRoot());
-		SubMilestoneWrapper subMilestone = wrapper.addSubMilestone(200);
-		subMilestone.setId(123);
+		SubMilestoneWrapper subMilestone = wrapper.addSubMilestone(123);
 		assertNull(wrapper.getSubMilestone(122));
 		SubMilestoneWrapper other = wrapper.getSubMilestone(123);
 		assertNotNull(other);
@@ -289,7 +290,7 @@ public class MilestonePlanningWrapperTest {
 	}
 
 	/**
-	 * Test the notificatino mechanism woth one listener.
+	 * Test the notification mechanism with one listener.
 	 */
 	@Test
 	public void testNotificationsWithOneListener() {
@@ -325,7 +326,7 @@ public class MilestonePlanningWrapperTest {
 
 		subMilestone.setLabel("Label"); //$NON-NLS-1$
 		TaskAttribute label = milestone0.getAttribute(milestone0.getId() + '-'
-				+ IMylynAgileCoreConstants.LABEL);
+				+ AbstractTaskAttributeWrapper.SUFFIX_LABEL);
 
 		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(label));
 		subMilestone.setLabel("Label"); //$NON-NLS-1$
@@ -362,7 +363,8 @@ public class MilestonePlanningWrapperTest {
 		assertEquals(Integer.valueOf(2), listener.getInvocationsCount(pointsAtt));
 
 		backlogItem.setLabel("label of backlog item 300"); //$NON-NLS-1$
-		TaskAttribute biLabelAtt = bi0.getAttribute(bi0.getId() + '-' + IMylynAgileCoreConstants.LABEL);
+		TaskAttribute biLabelAtt = bi0.getAttribute(bi0.getId() + '-'
+				+ AbstractTaskAttributeWrapper.SUFFIX_LABEL);
 
 		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(biLabelAtt));
 		backlogItem.setLabel("label of backlog item 300"); //$NON-NLS-1$

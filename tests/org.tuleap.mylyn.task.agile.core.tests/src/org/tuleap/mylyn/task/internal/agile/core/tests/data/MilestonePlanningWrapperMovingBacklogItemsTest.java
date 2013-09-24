@@ -24,6 +24,8 @@ import org.tuleap.mylyn.task.agile.core.data.planning.MilestonePlanningWrapper;
 import org.tuleap.mylyn.task.agile.core.data.planning.SubMilestoneWrapper;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests of the milestone planning task mapper.
@@ -191,24 +193,25 @@ public class MilestonePlanningWrapperMovingBacklogItemsTest {
 	}
 
 	/**
-	 * Test moving backlogItems in the middle of a Milestone.
+	 * Check the behavior of MilestonePlanningWrapper.getAllBacklogItems().
 	 */
-	@SuppressWarnings("unused")
 	@Test
-	public void testmoveItemsToMilestone() {
-
+	public void testGetAllBacklogItems() {
 		// testing the total number of BI
-		Iterable<BacklogItemWrapper> backlogItemsList = wrapper.getBacklogItems();
-		int j = 0;
-		for (BacklogItemWrapper backlogItemWrapper : backlogItemsList) {
-			j++;
-		}
-		assertEquals(19, j);
+		List<BacklogItemWrapper> backlogItemsList = wrapper.getAllBacklogItems();
+		assertEquals(19, backlogItemsList.size());
 
-		for (BacklogItemWrapper backlogItemWrapper : wrapper.getBacklogItems()) {
+		// Check that they are all unassigned
+		for (BacklogItemWrapper backlogItemWrapper : backlogItemsList) {
 			assertEquals(null, backlogItemWrapper.getAssignedMilestoneId());
 		}
+	}
 
+	/**
+	 * Test moving backlogItems in the middle of a Milestone.
+	 */
+	@Test
+	public void testMoveItemsToMilestone() {
 		List<BacklogItemWrapper> milestone1BIs = new ArrayList<BacklogItemWrapper>();
 		milestone1BIs.add(backlogItem5);
 		milestone1BIs.add(backlogItem6);
@@ -217,95 +220,120 @@ public class MilestonePlanningWrapperMovingBacklogItemsTest {
 		// test moving a list in the middle of a milestone
 		wrapper.moveItemsToMilestone(milestone1BIs, backlogItem12, true, subMilestone1);
 
-		Iterable<BacklogItemWrapper> backlogItems = wrapper
-				.getMilestoneOrderedBacklogItemsList(subMilestone1);
-		Iterator<BacklogItemWrapper> i = backlogItems.iterator();
-		BacklogItemWrapper first = i.next();
-		BacklogItemWrapper second = i.next();
-		BacklogItemWrapper third = i.next();
+		List<BacklogItemWrapper> backlogItems = subMilestone1.getOrderedBacklogItems();
+		int id = 5; // Index of the first moved element
+		for (BacklogItemWrapper bi : backlogItems) {
+			assertEquals(id++, bi.getId());
+		}
 
-		assertEquals(5, first.getId());
-		assertEquals(6, second.getId());
-		assertEquals(7, third.getId());
+		// Check that unassigned items no longer contain moved elements
+		List<BacklogItemWrapper> unassignedBacklogItems = wrapper.getOrderedUnassignedBacklogItems();
+		assertFalse(unassignedBacklogItems.contains(backlogItem5));
+		assertFalse(unassignedBacklogItems.contains(backlogItem6));
+		assertFalse(unassignedBacklogItems.contains(backlogItem7));
 
-		assertEquals(100, first.getAssignedMilestoneId().intValue());
-		assertEquals(100, second.getAssignedMilestoneId().intValue());
-		assertEquals(100, third.getAssignedMilestoneId().intValue());
+		assertEquals(100, backlogItem5.getAssignedMilestoneId().intValue());
+		assertEquals(100, backlogItem6.getAssignedMilestoneId().intValue());
+		assertEquals(100, backlogItem7.getAssignedMilestoneId().intValue());
 		assertEquals(null, backlogItem8.getAssignedMilestoneId());
 
-		// the reverse way: test moving the list to the backlog
+		// the reverse way: test moving the list back to the backlog
 		wrapper.moveItemsToBacklog(milestone1BIs, backlogItem12, true);
-		for (BacklogItemWrapper backlogItemWrapper : wrapper.getBacklogItems()) {
+		for (BacklogItemWrapper backlogItemWrapper : wrapper.getAllBacklogItems()) {
 			assertEquals(null, backlogItemWrapper.getAssignedMilestoneId());
 		}
 	}
 
 	/**
-	 * Test moving backlogItems on the top of a Milestone.
+	 * Test moving one element.
 	 */
-	@SuppressWarnings("unused")
 	@Test
-	public void testmoveItemsOnTopOfMilestone() {
+	public void testMoveOneItemToMilestoneAndback() {
+		List<BacklogItemWrapper> milestone1BIs = new ArrayList<BacklogItemWrapper>();
+		milestone1BIs.add(backlogItem5);
 
-		// testing the total number of BI
-		Iterable<BacklogItemWrapper> backlogItemsList = wrapper.getBacklogItems();
-		int j = 0;
-		for (BacklogItemWrapper backlogItemWrapper : backlogItemsList) {
-			j++;
+		// test moving a list in the middle of a milestone
+		wrapper.moveItemsToMilestone(milestone1BIs, backlogItem12, true, subMilestone1);
+
+		List<BacklogItemWrapper> backlogItems = subMilestone1.getOrderedBacklogItems();
+		assertEquals(1, backlogItems.size());
+		assertEquals(5, backlogItems.get(0).getId());
+
+		int[] expectedIds = {0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18 };
+		int i = 0;
+		for (BacklogItemWrapper bi : wrapper.getOrderedUnassignedBacklogItems()) {
+			assertEquals(expectedIds[i++], bi.getId());
 		}
-		assertEquals(19, j);
 
-		for (BacklogItemWrapper backlogItemWrapper : wrapper.getBacklogItems()) {
-			assertEquals(null, backlogItemWrapper.getAssignedMilestoneId());
+		wrapper.moveItemsToBacklog(milestone1BIs, backlogItem1, true);
+
+		assertTrue(subMilestone1.getOrderedBacklogItems().isEmpty());
+
+		int[] expectedIds2 = {0, 5, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18 };
+		i = 0;
+		for (BacklogItemWrapper bi : wrapper.getOrderedUnassignedBacklogItems()) {
+			assertEquals(expectedIds2[i++], bi.getId());
 		}
 
+	}
+
+	/**
+	 * Test moving backlogItems to the top of a Milestone.
+	 */
+	@Test
+	public void testMoveItemsOnTopOfMilestone() {
 		List<BacklogItemWrapper> milestone2BIs = new ArrayList<BacklogItemWrapper>();
 		milestone2BIs.add(backlogItem9);
 		milestone2BIs.add(backlogItem10);
 		milestone2BIs.add(backlogItem11);
 
 		// test moving a list on the top of a milestone
-		wrapper.moveItemsToMilestone(milestone2BIs, backlogItem0, true, subMilestone2);
+		wrapper.moveItemsToMilestone(milestone2BIs, null, true, subMilestone2);
 
-		Iterable<BacklogItemWrapper> backlogItems = wrapper
-				.getMilestoneOrderedBacklogItemsList(subMilestone2);
-		Iterator<BacklogItemWrapper> i = backlogItems.iterator();
-		BacklogItemWrapper first = i.next();
-		BacklogItemWrapper second = i.next();
-		BacklogItemWrapper third = i.next();
+		Iterable<BacklogItemWrapper> backlogItems = subMilestone2.getOrderedBacklogItems();
 
-		assertEquals(9, first.getId());
-		assertEquals(10, second.getId());
-		assertEquals(11, third.getId());
+		int id = 9; // id of first moved element
+		for (BacklogItemWrapper bi : backlogItems) {
+			assertEquals(id++, bi.getId());
+		}
 
-		assertEquals(200, first.getAssignedMilestoneId().intValue());
-		assertEquals(200, second.getAssignedMilestoneId().intValue());
-		assertEquals(200, third.getAssignedMilestoneId().intValue());
+		int[] expectedIds = {0, 1, 2, 3, 4, 5, 6, 7, 8, 12, 13, 14, 15, 16, 17, 18 };
+		int i = 0;
+		for (BacklogItemWrapper bi : wrapper.getOrderedUnassignedBacklogItems()) {
+			assertEquals(expectedIds[i++], bi.getId());
+		}
+
+		// Check that unassigned items no longer contain moved elements
+		List<BacklogItemWrapper> unassignedBacklogItems = wrapper.getOrderedUnassignedBacklogItems();
+		assertFalse(unassignedBacklogItems.contains(backlogItem9));
+		assertFalse(unassignedBacklogItems.contains(backlogItem10));
+		assertFalse(unassignedBacklogItems.contains(backlogItem11));
+
+		assertEquals(200, backlogItem9.getAssignedMilestoneId().intValue());
+		assertEquals(200, backlogItem10.getAssignedMilestoneId().intValue());
+		assertEquals(200, backlogItem11.getAssignedMilestoneId().intValue());
 		assertEquals(null, backlogItem12.getAssignedMilestoneId());
 
-		// the reverse way: test moving the list to the backlog
+		// the reverse way: test moving the list back to the backlog
 		wrapper.moveItemsToBacklog(milestone2BIs, backlogItem0, true);
-		for (BacklogItemWrapper backlogItemWrapper : wrapper.getBacklogItems()) {
+		for (BacklogItemWrapper backlogItemWrapper : wrapper.getAllBacklogItems()) {
 			assertEquals(null, backlogItemWrapper.getAssignedMilestoneId());
+		}
+
+		// Check to order of backlog items
+		int[] expectedIds2 = {9, 10, 11, 0, 1, 2, 3, 4, 5, 6, 7, 8, 12, 13, 14, 15, 16, 17, 18 };
+		i = 0;
+		for (BacklogItemWrapper bi : wrapper.getOrderedUnassignedBacklogItems()) {
+			assertEquals(expectedIds2[i++], bi.getId());
 		}
 	}
 
 	/**
-	 * Test moving backlogItems on the bottom of a Milestone.
+	 * Test moving backlogItems to the bottom of a Milestone.
 	 */
 	@Test
-	public void testmoveItemsOnTheBottomOfMilestone() {
-
-		// testing the total number of BI
-		Iterable<BacklogItemWrapper> backlogItemsList = wrapper.getBacklogItems();
-		int j = 0;
-		for (@SuppressWarnings("unused")
-		BacklogItemWrapper backlogItemWrapper : backlogItemsList) {
-			j++;
-		}
-		assertEquals(19, j);
-
-		for (BacklogItemWrapper backlogItemWrapper : wrapper.getBacklogItems()) {
+	public void testMoveItemsOnTheBottomOfMilestone() {
+		for (BacklogItemWrapper backlogItemWrapper : wrapper.getAllBacklogItems()) {
 			assertEquals(null, backlogItemWrapper.getAssignedMilestoneId());
 		}
 
@@ -317,8 +345,7 @@ public class MilestonePlanningWrapperMovingBacklogItemsTest {
 		// test moving a list on the bottom of a milestone
 		wrapper.moveItemsToMilestone(milestone3BIs, backlogItem18, false, subMilestone3);
 
-		Iterable<BacklogItemWrapper> backlogItems = wrapper
-				.getMilestoneOrderedBacklogItemsList(subMilestone3);
+		Iterable<BacklogItemWrapper> backlogItems = subMilestone3.getOrderedBacklogItems();
 		Iterator<BacklogItemWrapper> i = backlogItems.iterator();
 		BacklogItemWrapper first = i.next();
 		BacklogItemWrapper second = i.next();
@@ -335,7 +362,7 @@ public class MilestonePlanningWrapperMovingBacklogItemsTest {
 
 		// the reverse way: test moving the list to the backlog
 		wrapper.moveItemsToBacklog(milestone3BIs, backlogItem18, true);
-		for (BacklogItemWrapper backlogItemWrapper : wrapper.getBacklogItems()) {
+		for (BacklogItemWrapper backlogItemWrapper : wrapper.getAllBacklogItems()) {
 			assertEquals(null, backlogItemWrapper.getAssignedMilestoneId());
 		}
 	}

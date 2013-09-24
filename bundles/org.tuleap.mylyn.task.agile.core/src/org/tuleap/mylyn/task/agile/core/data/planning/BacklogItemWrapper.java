@@ -13,7 +13,6 @@ package org.tuleap.mylyn.task.agile.core.data.planning;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.tuleap.mylyn.task.agile.core.data.AbstractTaskAttributeWrapper;
-import org.tuleap.mylyn.task.agile.core.util.IMylynAgileCoreConstants;
 
 /**
  * Wrapper of a TaskAttribute that represents a Backlog Item.
@@ -87,7 +86,24 @@ public class BacklogItemWrapper extends AbstractTaskAttributeWrapper {
 	private final MilestonePlanningWrapper parent;
 
 	/**
-	 * Constructor to use to wrap an existing instance.
+	 * Constructor to use to wrap an existing task attribute that is not yet filled with sub-attributes.
+	 * 
+	 * @param parent
+	 *            The parent planning
+	 * @param root
+	 *            The non-null task attribute that represents a backlog item to wrap.
+	 * @param id
+	 *            The backlog item's functional id
+	 */
+	protected BacklogItemWrapper(final MilestonePlanningWrapper parent, final TaskAttribute root, int id) {
+		super(root, id);
+		Assert.isNotNull(parent);
+		this.parent = parent;
+		parent.getBacklogTaskAttribute().addValue(root.getId());
+	}
+
+	/**
+	 * Constructor to use to wrap an existing instance that already has sub-attributes.
 	 * 
 	 * @param parent
 	 *            The parent planning
@@ -98,24 +114,6 @@ public class BacklogItemWrapper extends AbstractTaskAttributeWrapper {
 		super(root);
 		Assert.isNotNull(parent);
 		this.parent = parent;
-	}
-
-	/**
-	 * Computes the unique id of the ID attribute.
-	 * 
-	 * @return The unique id of the id attribute.
-	 */
-	private String getIdAttributeId() {
-		return root.getId() + ID_SEPARATOR + IMylynAgileCoreConstants.ID;
-	}
-
-	/**
-	 * Computes the unique id of the Label attribute.
-	 * 
-	 * @return The unique id of the label attribute.
-	 */
-	private String getLabelAttributeId() {
-		return root.getId() + ID_SEPARATOR + IMylynAgileCoreConstants.LABEL;
 	}
 
 	/**
@@ -134,74 +132,6 @@ public class BacklogItemWrapper extends AbstractTaskAttributeWrapper {
 	 */
 	private String getAssignedIdAttributeId() {
 		return root.getId() + ID_SEPARATOR + ASSIGNED_MILESTONE_ID;
-	}
-
-	/**
-	 * Id getter.
-	 * 
-	 * @return The item's id.
-	 */
-	public int getId() {
-		int result = -1;
-		TaskAttribute attribute = root.getMappedAttribute(getIdAttributeId());
-		if (attribute != null) {
-			result = Integer.parseInt(attribute.getValue());
-		}
-		return result;
-	}
-
-	/**
-	 * Id setter.
-	 * 
-	 * @param id
-	 *            The item's id.
-	 */
-	public void setId(int id) {
-		TaskAttribute attribute = root.getMappedAttribute(getIdAttributeId());
-		if (attribute == null) {
-			attribute = root.createMappedAttribute(getIdAttributeId());
-			attribute.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
-			attribute.getMetaData().setType(TaskAttribute.TYPE_INTEGER);
-		}
-		attribute.setValue(Integer.toString(id));
-	}
-
-	/**
-	 * Label getter.
-	 * 
-	 * @return The item's label, or {@code null} if not defined.
-	 */
-	public String getLabel() {
-		String result = null;
-		TaskAttribute attribute = root.getMappedAttribute(getLabelAttributeId());
-		if (attribute != null) {
-			result = attribute.getValue();
-		}
-		return result;
-	}
-
-	/**
-	 * Label setter.
-	 * 
-	 * @param label
-	 *            The item's label. If it is null, nothing happens and the former label, if present, remains
-	 *            unchanged.
-	 */
-	public void setLabel(String label) {
-		if (label == null) {
-			return;
-		}
-		TaskAttribute attribute = root.getMappedAttribute(getLabelAttributeId());
-		if (attribute == null) {
-			attribute = root.createMappedAttribute(getLabelAttributeId());
-			attribute.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
-			attribute.getMetaData().setType(TaskAttribute.TYPE_SHORT_RICH_TEXT);
-		}
-		String oldValue = attribute.getValue();
-		if (!label.equals(oldValue)) {
-			attribute.setValue(label);
-			fireAttributeChanged(attribute);
-		}
 	}
 
 	/**
@@ -302,9 +232,7 @@ public class BacklogItemWrapper extends AbstractTaskAttributeWrapper {
 		TaskAttribute root = backlogAtt.createAttribute(PREFIX_BACKLOG_ITEM
 				+ backlogAtt.getAttributes().size());
 		root.getMetaData().setReadOnly(true);
-		BacklogItemWrapper backlogItemWrapper = new BacklogItemWrapper(parent, root);
-		backlogItemWrapper.setId(id);
-		backlogAtt.addValue(Integer.toString(id));
+		BacklogItemWrapper backlogItemWrapper = new BacklogItemWrapper(parent, root, id);
 		return backlogItemWrapper;
 	}
 

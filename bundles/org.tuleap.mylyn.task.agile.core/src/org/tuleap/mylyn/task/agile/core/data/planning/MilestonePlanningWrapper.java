@@ -11,20 +11,20 @@
 package org.tuleap.mylyn.task.agile.core.data.planning;
 
 import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Sets;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.tuleap.mylyn.task.agile.core.data.AbstractTaskAttributeWrapper;
 import org.tuleap.mylyn.task.agile.core.data.ITaskAttributeChangeListener;
+
+import static com.google.common.collect.Lists.newArrayList;
 
 /**
  * <p>
@@ -71,16 +71,6 @@ public final class MilestonePlanningWrapper extends AbstractTaskAttributeWrapper
 	private final TaskAttribute planning;
 
 	/**
-	 * Function to transform a task attribute into a wrapper.
-	 */
-	private final TaskAttributeToMilestone toMilestone;
-
-	/**
-	 * Function to transform a task attribute into a wrapper.
-	 */
-	private final TaskAttributeToBacklogItem toBacklogItem;
-
-	/**
 	 * Task Attribute Change listeners.
 	 */
 	private final Set<ITaskAttributeChangeListener> listeners = Sets.newHashSet();
@@ -112,8 +102,6 @@ public final class MilestonePlanningWrapper extends AbstractTaskAttributeWrapper
 		}
 		backlog = backlogAtt;
 		submilestoneList = milestonesAtt;
-		toMilestone = new TaskAttributeToMilestone(this);
-		toBacklogItem = new TaskAttributeToBacklogItem(this);
 	}
 
 	/**
@@ -133,8 +121,12 @@ public final class MilestonePlanningWrapper extends AbstractTaskAttributeWrapper
 	 * 
 	 * @return a never null iterable of sub-milestone wrappers.
 	 */
-	public Iterable<SubMilestoneWrapper> getSubMilestones() {
-		return Iterables.transform(submilestoneList.getAttributes().values(), toMilestone);
+	public List<SubMilestoneWrapper> getSubMilestones() {
+		List<SubMilestoneWrapper> result = newArrayList();
+		for (TaskAttribute att : submilestoneList.getAttributes().values()) {
+			result.add(wrapSubMilestone(att));
+		}
+		return result;
 	}
 
 	/**
@@ -168,12 +160,33 @@ public final class MilestonePlanningWrapper extends AbstractTaskAttributeWrapper
 	}
 
 	/**
-	 * Returns the backlog items.
+	 * Returns all the backlog items (whether or not they are assigned to a milestone).
 	 * 
-	 * @return a never null iterable of backlog item wrappers.
+	 * @return a list of backlog item wrappers, never null but possibly empty.
 	 */
-	public Iterable<BacklogItemWrapper> getBacklogItems() {
-		return Iterables.transform(backlog.getAttributes().values(), toBacklogItem);
+	public List<BacklogItemWrapper> getAllBacklogItems() {
+		List<BacklogItemWrapper> result = newArrayList();
+		for (String attributeId : backlog.getValues()) {
+			result.add(wrapBacklogItem(backlog.getAttribute(attributeId)));
+		}
+		return result;
+	}
+
+	/**
+	 * Returns the unassigned backlog items (whether or not they are assigned to a milestone) in the oredering
+	 * corresponding to their priority.
+	 * 
+	 * @return a list of backlog item wrappers, never null but possibly empty.
+	 */
+	public List<BacklogItemWrapper> getOrderedUnassignedBacklogItems() {
+		List<BacklogItemWrapper> result = newArrayList();
+		for (String attributeId : backlog.getValues()) {
+			BacklogItemWrapper bi = wrapBacklogItem(backlog.getAttribute(attributeId));
+			if (bi.getAssignedMilestoneId() == null) {
+				result.add(bi);
+			}
+		}
+		return result;
 	}
 
 	/**
@@ -203,23 +216,23 @@ public final class MilestonePlanningWrapper extends AbstractTaskAttributeWrapper
 	/**
 	 * Returns a sub-milestone wrapper for an existing task attribute.
 	 * 
-	 * @param subMilestoneTaskAttribute
+	 * @param attribute
 	 *            the task attribute to wrap, should represent a sub-milestone.
 	 * @return a new sub-milestone wrapper for the given task attribute.
 	 */
-	public SubMilestoneWrapper wrapSubMilestone(TaskAttribute subMilestoneTaskAttribute) {
-		return new SubMilestoneWrapper(this, subMilestoneTaskAttribute);
+	public SubMilestoneWrapper wrapSubMilestone(TaskAttribute attribute) {
+		return new SubMilestoneWrapper(this, attribute);
 	}
 
 	/**
 	 * Returns a backlog item wrapper for an existing task attribute.
 	 * 
-	 * @param backlogItemTaskAttribute
+	 * @param attribute
 	 *            the task attribute to wrap, should represent a backlog item.
 	 * @return a new backlog wrapper for the given task attribute.
 	 */
-	public BacklogItemWrapper wrapBacklogItem(TaskAttribute backlogItemTaskAttribute) {
-		return new BacklogItemWrapper(this, backlogItemTaskAttribute);
+	public BacklogItemWrapper wrapBacklogItem(TaskAttribute attribute) {
+		return new BacklogItemWrapper(this, attribute);
 	}
 
 	/**
@@ -233,74 +246,89 @@ public final class MilestonePlanningWrapper extends AbstractTaskAttributeWrapper
 	 *            a boolean parameter that indicates if moving BacklogItems will be before or after the target
 	 */
 	public void moveItemsToBacklog(List<BacklogItemWrapper> items, BacklogItemWrapper target, boolean before) {
-
-		List<String> addedItemsIds = new ArrayList<String>();
-		int insertposition = 0;
-		if (items != null) {
-			for (BacklogItemWrapper backlogItemWrapper : items) {
-				addedItemsIds.add(Integer.toString(backlogItemWrapper.getId()));
-				backlogItemWrapper.removeAssignedMilestoneId();
-			}
-
-			if (before) {
-				for (String id : backlog.getValues()) {
-					if (id == Integer.toString(target.getId())) {
-						insertposition = getBacklogItemIndex(target) - 1;
-					}
-				}
-			} else {
-				for (String id : backlog.getValues()) {
-					if (id == Integer.toString(target.getId())) {
-						insertposition = getBacklogItemIndex(target) + 1;
-					}
-				}
+		Assert.isNotNull(items);
+		if (items.isEmpty()) {
+			return;
+		}
+		String targetId = null;
+		if (target != null) {
+			targetId = target.getWrappedAttribute().getId();
+		}
+		List<String> newIds = newArrayList();
+		newIds.addAll(backlog.getValues()); // Modifiable copy of ordered ids
+		List<String> movedIds = newArrayList();
+		for (BacklogItemWrapper bi : items) {
+			TaskAttribute wrappedAtt = bi.getWrappedAttribute();
+			if (wrappedAtt.getId() != targetId) {
+				String movedId = wrappedAtt.getId();
+				movedIds.add(movedId);
+				newIds.remove(movedId);
+				bi.removeAssignedMilestoneId();
 			}
 		}
-		if (intersect(addedItemsIds, backlog.getValues()).size() == 0) {
-			backlog.getValues().addAll(insertposition, addedItemsIds);
+		int insertPosition = newIds.size();
+		if (targetId != null) {
+			insertPosition = newIds.indexOf(targetId);
+			if (!before) {
+				insertPosition++;
+			}
 		}
-
+		for (String movedId : movedIds) {
+			newIds.add(insertPosition++, movedId);
+		}
+		backlog.clearValues();
+		backlog.setValues(newIds);
+		fireAttributeChanged(backlog);
 	}
 
 	/**
 	 * Moves a list of BacklogItem before or after a target BacklogItem.
 	 * 
 	 * @param items
-	 *            the BacklogItems list
+	 *            the BacklogItems list, must not be null
 	 * @param target
-	 *            the target BacklogItem
+	 *            the target BacklogItem, if null elements are appended at the end of the milestone.
 	 * @param before
 	 *            a boolean parameter that indicates if moving BacklogItems will be before or after the target
 	 * @param subMilestone
-	 *            the subMilestone to which BacklogItems will be moved
+	 *            the subMilestone to which BacklogItems will be moved. The target's assigned id should be
+	 *            equal to the subMilestone's id.
 	 */
 	public void moveItemsToMilestone(List<BacklogItemWrapper> items, BacklogItemWrapper target,
 			boolean before, SubMilestoneWrapper subMilestone) {
-		List<String> addedItemsIds = new ArrayList<String>();
-		int insertposition = 0;
-		if (items != null) {
-			for (BacklogItemWrapper backlogItemWrapper : items) {
-				addedItemsIds.add(Integer.toString(backlogItemWrapper.getId()));
-				backlogItemWrapper.setAssignedMilestoneId(subMilestone.getId());
-			}
-
-			if (before) {
-				for (String id : backlog.getValues()) {
-					if (id == Integer.toString(target.getId())) {
-						insertposition = getBacklogItemIndex(target) - 1;
-					}
-				}
-			} else {
-				for (String id : backlog.getValues()) {
-					if (id == Integer.toString(target.getId())) {
-						insertposition = getBacklogItemIndex(target) + 1;
-					}
-				}
+		Assert.isNotNull(items);
+		if (items.isEmpty()) {
+			return;
+		}
+		String targetId = null;
+		if (target != null) {
+			targetId = target.getWrappedAttribute().getId();
+		}
+		List<String> newIds = newArrayList();
+		newIds.addAll(backlog.getValues()); // Modifiable copy of ordered ids
+		List<String> movedIds = newArrayList();
+		for (BacklogItemWrapper bi : items) {
+			TaskAttribute wrappedAtt = bi.getWrappedAttribute();
+			if (wrappedAtt.getId() != targetId) {
+				String movedId = wrappedAtt.getId();
+				movedIds.add(movedId);
+				newIds.remove(movedId);
+				bi.setAssignedMilestoneId(subMilestone.getId());
 			}
 		}
-		if (intersect(addedItemsIds, backlog.getValues()).size() == 0) {
-			backlog.getValues().addAll(insertposition, addedItemsIds);
+		int insertPosition = newIds.size();
+		if (targetId != null) {
+			insertPosition = newIds.indexOf(targetId);
+			if (!before) {
+				insertPosition++;
+			}
 		}
+		for (String movedId : movedIds) {
+			newIds.add(insertPosition++, movedId);
+		}
+		backlog.clearValues();
+		backlog.setValues(newIds);
+		fireAttributeChanged(backlog);
 	}
 
 	/**
@@ -317,69 +345,6 @@ public final class MilestonePlanningWrapper extends AbstractTaskAttributeWrapper
 			}
 		}
 		return 0;
-	}
-
-	/**
-	 * returns the ordered list of backlogItems assigned to a submilestone.
-	 * 
-	 * @param subMilestone
-	 *            the submilestone
-	 * @return the ordered list of BacklogItems assigned to a submilestone
-	 */
-	public Iterable<BacklogItemWrapper> getMilestoneOrderedBacklogItemsList(SubMilestoneWrapper subMilestone) {
-
-		List<BacklogItemWrapper> result = new ArrayList<BacklogItemWrapper>();
-		for (String backlogItemId : backlog.getValues()) {
-			for (BacklogItemWrapper backlogItemWrapper : this.getBacklogItems()) {
-				if (backlogItemWrapper.getAssignedMilestoneId() != null) {
-					if (backlogItemId.equals(Integer.toString(backlogItemWrapper.getId()))
-							&& backlogItemWrapper.getAssignedMilestoneId().intValue() == subMilestone.getId()) {
-						result.add(backlogItemWrapper);
-					}
-				}
-			}
-		}
-		return result;
-	}
-
-	/**
-	 * returns the ordered list of backlogItems not assigned to any submilestone.
-	 * 
-	 * @return the ordered list of BacklogItems not assigned to any submilestone
-	 */
-	public Iterable<BacklogItemWrapper> getBacklogOrderedBacklogItemsList() {
-
-		List<BacklogItemWrapper> result = new ArrayList<BacklogItemWrapper>();
-		for (String backlogItemId : backlog.getValues()) {
-			for (BacklogItemWrapper backlogItemWrapper : this.getBacklogItems()) {
-				if (backlogItemWrapper.getAssignedMilestoneId() != null) {
-					if (backlogItemId.equals(Integer.toString(backlogItemWrapper.getId()))
-							&& backlogItemWrapper.getAssignedMilestoneId() == null) {
-						result.add(backlogItemWrapper);
-					}
-				}
-			}
-		}
-		return result;
-	}
-
-	/**
-	 * Return the intersection between two lists.
-	 * 
-	 * @param firstList
-	 *            the first list
-	 * @param secondList
-	 *            the second list
-	 * @return the intersection list
-	 */
-	private List<String> intersect(List<String> firstList, List<String> secondList) {
-		List<String> rtnList = new LinkedList<String>();
-		for (String element : firstList) {
-			if (secondList.contains(element)) {
-				rtnList.add(element);
-			}
-		}
-		return rtnList;
 	}
 
 	/**
@@ -454,4 +419,13 @@ public final class MilestonePlanningWrapper extends AbstractTaskAttributeWrapper
 		return submilestoneList;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see org.tuleap.mylyn.task.agile.core.data.AbstractTaskAttributeWrapper#getWrappedAttribute()
+	 */
+	@Override
+	public TaskAttribute getWrappedAttribute() {
+		return planning;
+	}
 }

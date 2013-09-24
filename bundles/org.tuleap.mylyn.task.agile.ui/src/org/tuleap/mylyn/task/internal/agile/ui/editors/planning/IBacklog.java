@@ -28,6 +28,15 @@ public interface IBacklog {
 	Iterable<BacklogItemWrapper> getBacklogItems();
 
 	/**
+	 * Returns the milestone ID associated to this backlog, which is null if this backlog is the planning's
+	 * backlog, and is the enclosing milestone's id if the backlog is that of a milestone.
+	 * 
+	 * @return The enclosing milestone's ID, or null if this is the planning's backlog (not related to a
+	 *         sub-milestone).
+	 */
+	Integer getMilestoneId();
+
+	/**
 	 * Enclosing milestone planning.
 	 * 
 	 * @return The enclosing milestone planning wrapper.

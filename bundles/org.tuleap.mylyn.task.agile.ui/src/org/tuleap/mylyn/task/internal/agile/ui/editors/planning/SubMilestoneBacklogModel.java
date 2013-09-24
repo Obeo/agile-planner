@@ -10,8 +10,7 @@
  *******************************************************************************/
 package org.tuleap.mylyn.task.internal.agile.ui.editors.planning;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
+import java.util.List;
 
 import org.tuleap.mylyn.task.agile.core.data.planning.BacklogItemWrapper;
 import org.tuleap.mylyn.task.agile.core.data.planning.MilestonePlanningWrapper;
@@ -35,11 +34,6 @@ public class SubMilestoneBacklogModel implements IBacklog {
 	private final SubMilestoneWrapper subMilestoneWrapper;
 
 	/**
-	 * The sub-milestone wrapper.
-	 */
-	private final Predicate<BacklogItemWrapper> filter;
-
-	/**
 	 * Constructor.
 	 * 
 	 * @param planningWrapper
@@ -51,7 +45,16 @@ public class SubMilestoneBacklogModel implements IBacklog {
 			SubMilestoneWrapper subMilestoneWrapper) {
 		this.planningWrapper = planningWrapper;
 		this.subMilestoneWrapper = subMilestoneWrapper;
-		this.filter = PlanningFilters.assignedTo(subMilestoneWrapper.getId());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see org.tuleap.mylyn.task.internal.agile.ui.editors.planning.IBacklog#getMilestoneId()
+	 */
+	@Override
+	public Integer getMilestoneId() {
+		return null; // This is not a mistake
 	}
 
 	/**
@@ -60,8 +63,8 @@ public class SubMilestoneBacklogModel implements IBacklog {
 	 * @see org.tuleap.mylyn.task.internal.agile.ui.editors.planning.IBacklog#getBacklogItems()
 	 */
 	@Override
-	public Iterable<BacklogItemWrapper> getBacklogItems() {
-		return Iterables.filter(planningWrapper.getBacklogItems(), filter);
+	public List<BacklogItemWrapper> getBacklogItems() {
+		return subMilestoneWrapper.getOrderedBacklogItems();
 	}
 
 	/**

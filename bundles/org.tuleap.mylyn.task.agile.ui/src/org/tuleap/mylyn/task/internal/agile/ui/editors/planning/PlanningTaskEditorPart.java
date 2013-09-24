@@ -16,8 +16,6 @@ import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPart;
 import org.eclipse.swt.SWT;
@@ -177,7 +175,8 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 	 */
 	@Override
 	public void attributeChanged(TaskAttribute attribute) {
-		getModel().attributeChanged(attribute);
+		// TODO Remove me! System.out.println(wrapper.getWrappedAttribute());
+		getModel().attributeChanged(wrapper.getWrappedAttribute());
 	}
 
 	/**
@@ -344,23 +343,6 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 		viewer.setInput(container);
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
-		viewer.setSorter(new ViewerSorter() {
-			/**
-			 * {@inheritDoc}
-			 * 
-			 * @see org.eclipse.jface.viewers.ViewerComparator#compare(org.eclipse.jface.viewers.Viewer,
-			 *      java.lang.Object, java.lang.Object)
-			 */
-			@Override
-			public int compare(Viewer aViewer, Object e1, Object e2) {
-				if (e1 instanceof BacklogItemWrapper && e2 instanceof BacklogItemWrapper) {
-					int v1 = ((BacklogItemWrapper)e1).getId();
-					int v2 = ((BacklogItemWrapper)e2).getId();
-					return v1 - v2;
-				}
-				return super.compare(aViewer, e1, e2);
-			}
-		});
 		return viewer;
 	}
 

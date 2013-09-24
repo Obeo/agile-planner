@@ -10,12 +10,14 @@
  *******************************************************************************/
 package org.tuleap.mylyn.task.agile.core.data.planning;
 
+import com.google.common.collect.Lists;
+
 import java.util.Date;
+import java.util.List;
 
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.core.data.TaskAttributeMapper;
 import org.tuleap.mylyn.task.agile.core.data.AbstractTaskAttributeWrapper;
-import org.tuleap.mylyn.task.agile.core.util.IMylynAgileCoreConstants;
 
 /**
  * Wrapper of a TaskAttribute that represents a Sub-milestone.
@@ -61,28 +63,25 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 	 *            The parent planning
 	 * @param root
 	 *            The non-null task attribute that represents a sub-milestone to wrap.
+	 * @param id
+	 *            The id of the sub-milestone.
 	 */
-	protected SubMilestoneWrapper(final MilestonePlanningWrapper parent, final TaskAttribute root) {
-		super(root);
+	protected SubMilestoneWrapper(final MilestonePlanningWrapper parent, final TaskAttribute root, int id) {
+		super(root, id);
 		this.parent = parent;
 	}
 
 	/**
-	 * Computes the unique id of the ID attribute.
+	 * Constructor to use to wrap an existing instance.
 	 * 
-	 * @return The unique id of the id attribute.
+	 * @param parent
+	 *            The parent planning
+	 * @param root
+	 *            The non-null task attribute that represents a sub-milestone to wrap.
 	 */
-	private String getIdAttributeId() {
-		return root.getId() + ID_SEPARATOR + IMylynAgileCoreConstants.ID;
-	}
-
-	/**
-	 * Computes the unique id of the Label attribute.
-	 * 
-	 * @return The unique id of the label attribute.
-	 */
-	private String getLabelAttributeId() {
-		return root.getId() + ID_SEPARATOR + IMylynAgileCoreConstants.LABEL;
+	protected SubMilestoneWrapper(final MilestonePlanningWrapper parent, final TaskAttribute root) {
+		super(root);
+		this.parent = parent;
 	}
 
 	/**
@@ -110,76 +109,6 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 	 */
 	private String getStartDateAttributeId() {
 		return root.getId() + ID_SEPARATOR + START_DATE;
-	}
-
-	/**
-	 * Id getter.
-	 * 
-	 * @return The milestone's id, or {@code -1} if the id is not set.
-	 */
-	public int getId() {
-		int result = -1;
-		TaskAttribute attribute = root.getMappedAttribute(getIdAttributeId());
-		if (attribute != null) {
-			result = Integer.parseInt(attribute.getValue());
-		}
-		return result;
-	}
-
-	/**
-	 * Id setter.
-	 * 
-	 * @param id
-	 *            The milestone's id.
-	 */
-	public void setId(int id) {
-		TaskAttribute attribute = root.getMappedAttribute(getIdAttributeId());
-		if (attribute == null) {
-			attribute = root.createMappedAttribute(getIdAttributeId());
-			attribute.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
-			attribute.getMetaData().setType(TaskAttribute.TYPE_INTEGER);
-		}
-		attribute.setValue(Integer.toString(id));
-	}
-
-	/**
-	 * Label getter.
-	 * 
-	 * @return The milestone's label, or {@code null} if not defined.
-	 */
-	public String getLabel() {
-		String result = null;
-		TaskAttribute attribute = root.getMappedAttribute(getLabelAttributeId());
-		if (attribute != null) {
-			result = attribute.getValue();
-		}
-		return result;
-	}
-
-	/**
-	 * Label setter.
-	 * 
-	 * @param label
-	 *            The milestone's label. If it is null, nothing is performed, the former label, if any,
-	 *            remains unchanged.
-	 */
-	public void setLabel(String label) {
-		if (label == null) {
-			return;
-		}
-		TaskAttribute attribute = root.getMappedAttribute(getLabelAttributeId());
-		String oldValue = null;
-		if (attribute == null) {
-			attribute = root.createMappedAttribute(getLabelAttributeId());
-			attribute.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
-			attribute.getMetaData().setType(TaskAttribute.TYPE_SHORT_RICH_TEXT);
-		} else {
-			oldValue = attribute.getValue();
-		}
-		if (!label.equals(oldValue)) {
-			attribute.setValue(label);
-			fireAttributeChanged(attribute);
-		}
 	}
 
 	/**
@@ -295,6 +224,26 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 	}
 
 	/**
+	 * Returns the unassigned backlog items (whether or not they are assigned to a milestone) in the oredering
+	 * corresponding to their priority.
+	 * 
+	 * @return a list of backlog item wrappers, never null but possibly empty.
+	 */
+	public List<BacklogItemWrapper> getOrderedBacklogItems() {
+		int milestoneId = getId();
+		List<BacklogItemWrapper> result = Lists.newArrayList();
+		TaskAttribute backlog = parent.getBacklogTaskAttribute();
+		for (String attributeId : backlog.getValues()) {
+			BacklogItemWrapper bi = parent.wrapBacklogItem(backlog.getAttribute(attributeId));
+			Integer assignedId = bi.getAssignedMilestoneId();
+			if (assignedId != null && assignedId.intValue() == milestoneId) {
+				result.add(bi);
+			}
+		}
+		return result;
+	}
+
+	/**
 	 * {@inheritDoc}
 	 * 
 	 * @see org.tuleap.mylyn.task.agile.core.data.AbstractTaskAttributeWrapper#fireAttributeChanged(org.eclipse.mylyn.tasks.core.data.TaskAttribute)
@@ -318,8 +267,7 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 		TaskAttribute parent = wrapper.getSubMilestoneListTaskAttribute();
 		TaskAttribute root = parent.createAttribute(PREFIX_MILESTONE + parent.getAttributes().size());
 		root.getMetaData().setReadOnly(true);
-		SubMilestoneWrapper sub = new SubMilestoneWrapper(wrapper, root);
-		sub.setId(id);
+		SubMilestoneWrapper sub = new SubMilestoneWrapper(wrapper, root, id);
 		return sub;
 	}
 }

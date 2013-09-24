@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.tuleap.mylyn.task.internal.agile.ui.editors.planning;
 
-import com.google.common.collect.Iterables;
+import java.util.List;
 
 import org.tuleap.mylyn.task.agile.core.data.planning.BacklogItemWrapper;
 import org.tuleap.mylyn.task.agile.core.data.planning.MilestonePlanningWrapper;
@@ -43,8 +43,18 @@ public class MilestoneBacklogModel implements IBacklog {
 	 * @see org.tuleap.mylyn.task.internal.agile.ui.editors.planning.IBacklog#getBacklogItems()
 	 */
 	@Override
-	public Iterable<BacklogItemWrapper> getBacklogItems() {
-		return Iterables.filter(wrapper.getBacklogItems(), PlanningFilters.unassigned());
+	public List<BacklogItemWrapper> getBacklogItems() {
+		return wrapper.getOrderedUnassignedBacklogItems();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see org.tuleap.mylyn.task.internal.agile.ui.editors.planning.IBacklog#getMilestoneId()
+	 */
+	@Override
+	public Integer getMilestoneId() {
+		return Integer.valueOf(wrapper.getId());
 	}
 
 	/**
