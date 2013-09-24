@@ -130,8 +130,14 @@ public class BacklogItemDropAdapter extends ViewerDropAdapter {
 	 *         drop has not been performed or has been performed but was only inside of the list.
 	 */
 	private boolean performDropOnContainer(IStructuredSelection selection) {
-		@SuppressWarnings("unchecked")
-		List<BacklogItemWrapper> selectedBacklogItems = selection.toList();
+		// Only manage BacklogItemWrappers, nothing else
+		List<BacklogItemWrapper> selectedBacklogItems = Lists.newArrayList();
+		for (Iterator<?> it = selection.iterator(); it.hasNext();) {
+			Object o = it.next();
+			if (o instanceof BacklogItemWrapper) {
+				selectedBacklogItems.add((BacklogItemWrapper)o);
+			}
+		}
 		if (selectedBacklogItems.isEmpty()) {
 			return false;
 		}
@@ -170,7 +176,12 @@ public class BacklogItemDropAdapter extends ViewerDropAdapter {
 	public boolean validateDrop(Object target, int operation, TransferData transferType) {
 		boolean ret = false;
 		if (LocalSelectionTransfer.getTransfer().isSupportedType(transferType)) {
-			if (target == null) {
+			IStructuredSelection selection = (IStructuredSelection)LocalSelectionTransfer.getTransfer()
+					.getSelection();
+			if (selection != null
+					&& (selection.isEmpty() || !(selection.getFirstElement() instanceof BacklogItemWrapper))) {
+				ret = false;
+			} else if (target == null) {
 				// empty table, or drop above empty line or table header
 				ret = true;
 			} else if (target instanceof BacklogItemWrapper) {
