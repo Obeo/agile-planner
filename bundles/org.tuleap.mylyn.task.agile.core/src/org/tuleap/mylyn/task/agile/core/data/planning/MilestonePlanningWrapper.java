@@ -332,22 +332,6 @@ public final class MilestonePlanningWrapper extends AbstractTaskAttributeWrapper
 	}
 
 	/**
-	 * Returns the index of a backlogItem.
-	 * 
-	 * @param target
-	 *            the backlogItem
-	 * @return the index of the BacklogItem in the list
-	 */
-	private int getBacklogItemIndex(BacklogItemWrapper target) {
-		for (int i = 0; i < backlog.getValues().size(); i++) {
-			if (backlog.getValues().get(i) == Integer.toString(target.getId())) {
-				return i;
-			}
-		}
-		return 0;
-	}
-
-	/**
 	 * Add a listener.
 	 * 
 	 * @param listener
