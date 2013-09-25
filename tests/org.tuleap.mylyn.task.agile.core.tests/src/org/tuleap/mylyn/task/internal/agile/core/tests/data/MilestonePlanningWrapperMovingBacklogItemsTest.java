@@ -366,4 +366,25 @@ public class MilestonePlanningWrapperMovingBacklogItemsTest {
 			assertEquals(null, backlogItemWrapper.getAssignedMilestoneId());
 		}
 	}
+
+	/**
+	 * Check that moving several elements on one of the selected element inserts all elements before or after
+	 * the target element without changing the order of the selected elements.
+	 */
+	@Test
+	public void testMovingElementsOverOneOfTheMovedElements() {
+		List<BacklogItemWrapper> milestone3BIs = new ArrayList<BacklogItemWrapper>();
+		milestone3BIs.add(backlogItem2);
+		milestone3BIs.add(backlogItem4);
+		milestone3BIs.add(backlogItem13);
+		milestone3BIs.add(backlogItem14);
+		wrapper.moveItemsToBacklog(milestone3BIs, backlogItem4, true);
+
+		// Check to order of backlog items
+		int[] expectedIds = {0, 1, 3, 2, 4, 13, 14, 5, 6, 7, 8, 9, 10, 11, 12, 15, 16, 17, 18 };
+		int i = 0;
+		for (BacklogItemWrapper bi : wrapper.getOrderedUnassignedBacklogItems()) {
+			assertEquals(expectedIds[i++], bi.getId());
+		}
+	}
 }

@@ -19,7 +19,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.tuleap.mylyn.task.agile.core.data.AbstractTaskAttributeWrapper;
 import org.tuleap.mylyn.task.agile.core.data.ITaskAttributeChangeListener;
@@ -241,43 +240,46 @@ public final class MilestonePlanningWrapper extends AbstractTaskAttributeWrapper
 	 * @param items
 	 *            the BacklogItems list
 	 * @param target
-	 *            the target BacklogItem
+	 *            the target BacklogItem, if null elements are appended at the end of the backlog.
 	 * @param before
 	 *            a boolean parameter that indicates if moving BacklogItems will be before or after the target
 	 */
 	public void moveItemsToBacklog(List<BacklogItemWrapper> items, BacklogItemWrapper target, boolean before) {
-		Assert.isNotNull(items);
-		if (items.isEmpty()) {
+		if (items == null || items.isEmpty()) {
 			return;
 		}
 		String targetId = null;
 		if (target != null) {
 			targetId = target.getWrappedAttribute().getId();
 		}
-		List<String> newIds = newArrayList();
-		newIds.addAll(backlog.getValues()); // Modifiable copy of ordered ids
+		int insertPosition = -1;
+		List<String> formerIds = newArrayList();
+		formerIds.addAll(backlog.getValues()); // Modifiable copy of ordered ids
+
 		List<String> movedIds = newArrayList();
 		for (BacklogItemWrapper bi : items) {
 			TaskAttribute wrappedAtt = bi.getWrappedAttribute();
-			if (wrappedAtt.getId() != targetId) {
-				String movedId = wrappedAtt.getId();
+			bi.removeAssignedMilestoneId();
+			if (wrappedAtt.getId().equals(targetId)) {
+				// If the target element is among the moved elements,
+				// Elements already treated must be moved before it,
+				// and the remaining elements must be moved after it.
+				insertPosition = formerIds.indexOf(targetId);
+			}
+			String movedId = wrappedAtt.getId();
+			// Security : we only move elements that are present in the original list
+			if (formerIds.remove(movedId)) {
 				movedIds.add(movedId);
-				newIds.remove(movedId);
-				bi.removeAssignedMilestoneId();
 			}
 		}
-		int insertPosition = newIds.size();
-		if (targetId != null) {
-			insertPosition = newIds.indexOf(targetId);
-			if (!before) {
-				insertPosition++;
-			}
+		if (insertPosition == -1) {
+			insertPosition = computeInsertPosition(before, targetId, formerIds);
 		}
 		for (String movedId : movedIds) {
-			newIds.add(insertPosition++, movedId);
+			formerIds.add(insertPosition++, movedId);
 		}
 		backlog.clearValues();
-		backlog.setValues(newIds);
+		backlog.setValues(formerIds);
 		fireAttributeChanged(backlog);
 	}
 
@@ -285,7 +287,7 @@ public final class MilestonePlanningWrapper extends AbstractTaskAttributeWrapper
 	 * Moves a list of BacklogItem before or after a target BacklogItem.
 	 * 
 	 * @param items
-	 *            the BacklogItems list, must not be null
+	 *            the BacklogItems list
 	 * @param target
 	 *            the target BacklogItem, if null elements are appended at the end of the milestone.
 	 * @param before
@@ -296,39 +298,66 @@ public final class MilestonePlanningWrapper extends AbstractTaskAttributeWrapper
 	 */
 	public void moveItemsToMilestone(List<BacklogItemWrapper> items, BacklogItemWrapper target,
 			boolean before, SubMilestoneWrapper subMilestone) {
-		Assert.isNotNull(items);
-		if (items.isEmpty()) {
+		if (items == null || items.isEmpty()) {
 			return;
 		}
 		String targetId = null;
 		if (target != null) {
 			targetId = target.getWrappedAttribute().getId();
 		}
-		List<String> newIds = newArrayList();
-		newIds.addAll(backlog.getValues()); // Modifiable copy of ordered ids
+		int insertPosition = -1;
+		List<String> formerIds = newArrayList();
+		formerIds.addAll(backlog.getValues()); // Modifiable copy of ordered ids
+
 		List<String> movedIds = newArrayList();
 		for (BacklogItemWrapper bi : items) {
 			TaskAttribute wrappedAtt = bi.getWrappedAttribute();
-			if (wrappedAtt.getId() != targetId) {
-				String movedId = wrappedAtt.getId();
+			bi.setAssignedMilestoneId(subMilestone.getId());
+			if (wrappedAtt.getId().equals(targetId)) {
+				// If the target element is among the moved elements,
+				// Elements already treated must be moved before it,
+				// and the remaining elements must be moved after it.
+				insertPosition = formerIds.indexOf(targetId);
+			}
+			String movedId = wrappedAtt.getId();
+			// Security : we only move elements that are present in the original list
+			if (formerIds.remove(movedId)) {
 				movedIds.add(movedId);
-				newIds.remove(movedId);
-				bi.setAssignedMilestoneId(subMilestone.getId());
 			}
 		}
-		int insertPosition = newIds.size();
-		if (targetId != null) {
-			insertPosition = newIds.indexOf(targetId);
+		if (insertPosition == -1) {
+			insertPosition = computeInsertPosition(before, targetId, formerIds);
+		}
+		for (String movedId : movedIds) {
+			formerIds.add(insertPosition++, movedId);
+		}
+		backlog.clearValues();
+		backlog.setValues(formerIds);
+		fireAttributeChanged(backlog);
+	}
+
+	/**
+	 * Compute the insertion index.
+	 * 
+	 * @param before
+	 *            flag
+	 * @param targetId
+	 *            id of target, can be null
+	 * @param formerIds
+	 *            List of ids not moved
+	 * @return The insertion index in formerIds.
+	 */
+	private int computeInsertPosition(boolean before, String targetId, List<String> formerIds) {
+		int insertPosition;
+		if (targetId == null) {
+			insertPosition = formerIds.size();
+		} else {
+			insertPosition = formerIds.indexOf(targetId);
 			if (!before) {
 				insertPosition++;
 			}
 		}
-		for (String movedId : movedIds) {
-			newIds.add(insertPosition++, movedId);
-		}
-		backlog.clearValues();
-		backlog.setValues(newIds);
-		fireAttributeChanged(backlog);
+		return insertPosition;
 	}
 
 	/**
