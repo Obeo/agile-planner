@@ -54,7 +54,7 @@ public class SubMilestoneBacklogModel implements IBacklog {
 	 */
 	@Override
 	public Integer getMilestoneId() {
-		return null; // This is not a mistake
+		return Integer.valueOf(subMilestoneWrapper.getId());
 	}
 
 	/**

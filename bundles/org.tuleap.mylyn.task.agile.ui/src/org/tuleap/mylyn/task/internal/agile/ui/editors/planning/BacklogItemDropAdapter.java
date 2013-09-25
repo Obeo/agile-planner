@@ -60,6 +60,9 @@ public class BacklogItemDropAdapter extends ViewerDropAdapter {
 			// Drop on the whole list
 			ret = performDropOnContainer(selection);
 		}
+		if (ret) {
+			getViewer().refresh();
+		}
 		return ret;
 	}
 
@@ -114,7 +117,6 @@ public class BacklogItemDropAdapter extends ViewerDropAdapter {
 
 							.getSubMilestone(milestoneId.intValue()));
 				}
-				getViewer().refresh();
 				ret = true;
 			}
 		}
@@ -144,7 +146,10 @@ public class BacklogItemDropAdapter extends ViewerDropAdapter {
 		boolean ret = false;
 		IBacklog container = (IBacklog)getViewer().getInput();
 		Iterable<BacklogItemWrapper> biWrappers = container.getBacklogItems();
-		BacklogItemWrapper lastBacklogItem = Iterables.getLast(biWrappers);
+		BacklogItemWrapper lastBacklogItem = null;
+		if (biWrappers.iterator().hasNext()) {
+			lastBacklogItem = Iterables.getLast(biWrappers);
+		}
 		Integer targetAssignedMilestoneId = container.getMilestoneId();
 
 		BacklogItemWrapper firstSelectedElement = selectedBacklogItems.get(0);
