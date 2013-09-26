@@ -44,4 +44,18 @@ public abstract class AbstractAgileRepositoryConnectorUI {
 	public abstract IWizard getNewMilestoneWizard(TaskData planningTaskData, TaskRepository taskRepository,
 			IProgressMonitor monitor);
 
+	/**
+	 * Indicates the list of the identifier of the task editor page factories that are in conflict with the
+	 * task editor page factory identifier provided. Every task editor page factory of the Agile UI bundle
+	 * will call this method before initialization. As a result, one can say that for a specific use case, the
+	 * planning page factory or the context page factory is in conflict with the editor.
+	 * 
+	 * @param taskEditorPageFactoryId
+	 *            The identifier of the task editor page factory that is being used
+	 * @param taskData
+	 *            The task data of the task that the editor tries to open
+	 * @return The list of the identifiers of the page factories that should not be used
+	 */
+	public abstract String[] getConflictingIds(String taskEditorPageFactoryId, TaskData taskData);
+
 }

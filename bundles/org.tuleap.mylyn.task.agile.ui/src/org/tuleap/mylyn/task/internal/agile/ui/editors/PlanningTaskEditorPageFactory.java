@@ -16,7 +16,6 @@ import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
-import org.eclipse.mylyn.tasks.ui.ITasksUiConstants;
 import org.eclipse.mylyn.tasks.ui.TasksUiImages;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPageFactory;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditor;
@@ -24,6 +23,9 @@ import org.eclipse.mylyn.tasks.ui.editors.TaskEditorInput;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.forms.editor.IFormPage;
 import org.tuleap.mylyn.task.agile.core.data.planning.MilestonePlanningWrapper;
+import org.tuleap.mylyn.task.agile.ui.AbstractAgileRepositoryConnectorUI;
+import org.tuleap.mylyn.task.agile.ui.editors.ITaskEditorPageFactoryConstants;
+import org.tuleap.mylyn.task.internal.agile.ui.AgileRepositoryConnectorUiServiceTrackerCustomizer;
 import org.tuleap.mylyn.task.internal.agile.ui.MylynAgileUIActivator;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.planning.PlanningTaskEditorPage;
 import org.tuleap.mylyn.task.internal.agile.ui.util.MylynAgileUIMessages;
@@ -95,7 +97,24 @@ public class PlanningTaskEditorPageFactory extends AbstractTaskEditorPageFactory
 	 */
 	@Override
 	public String[] getConflictingIds(TaskEditorInput input) {
-		return new String[] {ITasksUiConstants.ID_PAGE_PLANNING };
+		ITask task = input.getTask();
+		String connectorKind = input.getTaskRepository().getConnectorKind();
+		try {
+			TaskData taskData = TasksUiPlugin.getTaskDataManager().getTaskData(task);
+
+			AgileRepositoryConnectorUiServiceTrackerCustomizer serviceTrackerCustomizer = MylynAgileUIActivator
+					.getDefault().getServiceTrackerCustomizer();
+			AbstractAgileRepositoryConnectorUI connector = serviceTrackerCustomizer
+					.getConnector(connectorKind);
+			if (connector != null) {
+				return connector.getConflictingIds(
+						ITaskEditorPageFactoryConstants.PLANNING_TASK_EDITOR_PAGE_FACTORY_ID, taskData);
+			}
+		} catch (CoreException e) {
+			MylynAgileUIActivator.log(e, true);
+		}
+
+		return new String[] {};
 	}
 
 	/**

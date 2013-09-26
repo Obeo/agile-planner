@@ -135,6 +135,11 @@ public interface IMylynAgileCoreConstants {
 	String TASK_KIND_KEY = "mta_kind"; //$NON-NLS-1$
 
 	/**
+	 * The value used to indicate that the artifact is a top planning.
+	 */
+	String TASK_KIND_TOP_PLANNING = "mta_kind_top_planning"; //$NON-NLS-1$
+
+	/**
 	 * The value used to indicate that a task data represent an agile release.
 	 */
 	String TASK_KIND_RELEASE = "mta_kind_release"; //$NON-NLS-1$
