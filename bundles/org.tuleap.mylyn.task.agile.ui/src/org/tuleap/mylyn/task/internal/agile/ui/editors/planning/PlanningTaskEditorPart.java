@@ -10,13 +10,18 @@
  *******************************************************************************/
 package org.tuleap.mylyn.task.internal.agile.ui.editors.planning;
 
+import java.util.List;
+
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
+import org.eclipse.mylyn.tasks.ui.TasksUi;
+import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPart;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
@@ -202,6 +207,7 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 		ToolBar toolbar = toolBarManager.createControl(milestoneSection);
 		final Cursor handCursor = new Cursor(Display.getCurrent(), SWT.CURSOR_HAND);
 		toolbar.setCursor(handCursor);
+
 		// Cursor needs to be explicitly disposed
 		toolbar.addDisposeListener(new DisposeListener() {
 			@Override
@@ -209,15 +215,30 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 				handCursor.dispose();
 			}
 		});
-		// Add sort action to the tool bar
 
+		// Add sort edit to the tool bar
+		final int subMilestoneId = subMilestone.getId();
 		Action a = new Action(MylynAgileUIMessages
 				.getString("PlanningTaskEditorPart.EditMilestoneActionLabel"), PlatformUI.getWorkbench() //$NON-NLS-1$
 				.getSharedImages().getImageDescriptor(ISharedImages.IMG_OBJ_FILE)) {
-			// TODO Implement action to open milestone in its own editor
+			@Override
+			public void run() {
+				TaskRepository repository = null;
+				String repositoryUrl = PlanningTaskEditorPart.this.getTaskData().getRepositoryUrl();
+				List<TaskRepository> allRepositories = TasksUi.getRepositoryManager().getAllRepositories();
+				for (TaskRepository taskRepository : allRepositories) {
+					if (repositoryUrl.equals(taskRepository.getRepositoryUrl())) {
+						repository = taskRepository;
+					}
+				}
+				if (repository != null) {
+					TasksUiUtil.openTask(repository, String.valueOf(subMilestoneId));
+				}
+			}
 		};
 		toolBarManager.add(a);
 		toolBarManager.update(true);
+
 		milestoneSection.setTextClient(toolbar);
 		MilestoneSectionViewer milestoneViewer = new MilestoneSectionViewer(milestoneSection);
 		milestoneViewer.setInput(new SubMilestoneBacklogModel(wrapper, subMilestone));
