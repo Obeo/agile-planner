@@ -45,11 +45,11 @@ public interface IMylynAgileCoreConstants {
 	 * The value used in a field attribute with the key TASK_KIND_KEY to indicate that a task data represents
 	 * a milestone.
 	 */
-	String KIND_MILESTONE = "mta_ms"; //$NON-NLS-1$
+	String KIND_MILESTONE = "mta_milestone"; //$NON-NLS-1$
 
 	/**
 	 * The value used in a field attribute with the key TASK_KIND_KEY to indicate that a task data represents
 	 * a backlog item.
 	 */
-	String KIND_BACKLOG_ITEM = "mta_bi"; //$NON-NLS-1$
+	String KIND_BACKLOG_ITEM = "mta_backlog_item"; //$NON-NLS-1$
 }
