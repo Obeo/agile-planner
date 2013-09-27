@@ -180,7 +180,6 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 	 */
 	@Override
 	public void attributeChanged(TaskAttribute attribute) {
-		// TODO Remove me! System.out.println(wrapper.getWrappedAttribute());
 		getModel().attributeChanged(wrapper.getWrappedAttribute());
 	}
 
