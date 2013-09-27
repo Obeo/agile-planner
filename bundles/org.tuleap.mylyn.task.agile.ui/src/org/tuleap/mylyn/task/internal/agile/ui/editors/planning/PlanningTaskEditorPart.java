@@ -46,7 +46,6 @@ import org.tuleap.mylyn.task.agile.core.data.ITaskAttributeChangeListener;
 import org.tuleap.mylyn.task.agile.core.data.planning.BacklogItemWrapper;
 import org.tuleap.mylyn.task.agile.core.data.planning.MilestonePlanningWrapper;
 import org.tuleap.mylyn.task.agile.core.data.planning.SubMilestoneWrapper;
-import org.tuleap.mylyn.task.agile.core.util.IMylynAgileCoreConstants;
 import org.tuleap.mylyn.task.internal.agile.ui.MylynAgileUIActivator;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.FormLayoutFactory;
 import org.tuleap.mylyn.task.internal.agile.ui.util.IMylynAgileIcons;
@@ -91,28 +90,29 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 
 		Section backlogSection = toolkit.createSection(backlog, ExpandableComposite.TITLE_BAR
 				| Section.DESCRIPTION);
-		TaskAttribute backlogTypeNameAtt = getTaskData().getRoot().getAttribute(
-				IMylynAgileCoreConstants.BACKLOG_TYPE_LABEL);
-		if (backlogTypeNameAtt == null || backlogTypeNameAtt.getValue() == null) {
-			backlogSection.setText(MylynAgileUIMessages
-					.getString("PlanningTaskEditorPart.DefaulBacklogLabel")); //$NON-NLS-1$
-		} else {
-			backlogSection.setText(backlogTypeNameAtt.getValue());
-		}
+		// TODO Add baklog type label ("Release", "Sprint", ...)
+		// TaskAttribute backlogTypeNameAtt = getTaskData().getRoot().getAttribute(
+		// IMylynAgileCoreConstants.BACKLOG_TYPE_LABEL);
+		// if (backlogTypeNameAtt == null || backlogTypeNameAtt.getValue() == null) {
+		backlogSection.setText(MylynAgileUIMessages.getString("PlanningTaskEditorPart.DefaulBacklogLabel")); //$NON-NLS-1$
+		// } else {
+		// backlogSection.setText(backlogTypeNameAtt.getValue());
+		// }
 		backlogSection.setLayout(FormLayoutFactory.createClearTableWrapLayout(false, 1));
 		TableWrapData data = new TableWrapData(TableWrapData.FILL_GRAB);
 		backlogSection.setLayoutData(data);
 		wrapper = new MilestonePlanningWrapper(getTaskData().getRoot());
 		wrapper.addListener(this);
-		TaskAttribute backlogItemTypeNameAtt = getTaskData().getRoot().getAttribute(
-				IMylynAgileCoreConstants.BACKLOG_ITEM_TYPE_LABEL);
 		String backlogItemTypeName;
-		if (backlogItemTypeNameAtt == null || backlogItemTypeNameAtt.getValue() == null) {
-			backlogItemTypeName = MylynAgileUIMessages
-					.getString("PlanningTaskEditorPart.DefaulLabelColumnHeader"); //$NON-NLS-1$
-		} else {
-			backlogItemTypeName = backlogItemTypeNameAtt.getValue();
-		}
+		// TODO Add backlog item type label ("Release", "Sprint", ...)
+		// TaskAttribute backlogItemTypeNameAtt = getTaskData().getRoot().getAttribute(
+		// IMylynAgileCoreConstants.BACKLOG_ITEM_TYPE_LABEL);
+		// if (backlogItemTypeNameAtt == null || backlogItemTypeNameAtt.getValue() == null) {
+		backlogItemTypeName = MylynAgileUIMessages
+				.getString("PlanningTaskEditorPart.DefaulLabelColumnHeader"); //$NON-NLS-1$
+		// } else {
+		// backlogItemTypeName = backlogItemTypeNameAtt.getValue();
+		// }
 		TableViewer viewer = createBacklogItemsTable(toolkit, backlogSection, new MilestoneBacklogModel(
 				wrapper), backlogItemTypeName);
 
@@ -315,15 +315,16 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 
 		// Column "points", whose label is dynamic ("Story Points" if the BacklogItem represents a UserStory)
 		TableViewerColumn colPoints = new TableViewerColumn(viewer, SWT.NONE);
-		TaskAttribute backlogItemPointLabelAtt = getTaskData().getRoot().getAttribute(
-				IMylynAgileCoreConstants.BACKLOG_ITEM_POINTS_LABEL);
+		// TODO Manage label of initial effort
+		// TaskAttribute backlogItemPointLabelAtt = getTaskData().getRoot().getAttribute(
+		// IMylynAgileCoreConstants.BACKLOG_ITEM_POINTS_LABEL);
 		String backlogItemPointLabel;
-		if (backlogItemPointLabelAtt == null) {
-			backlogItemPointLabel = MylynAgileUIMessages
-					.getString("PlanningTaskEditorPart.DefaultPointsColumnHeader"); //$NON-NLS-1$
-		} else {
-			backlogItemPointLabel = backlogItemPointLabelAtt.getValue();
-		}
+		// if (backlogItemPointLabelAtt == null) {
+		backlogItemPointLabel = MylynAgileUIMessages
+				.getString("PlanningTaskEditorPart.DefaultPointsColumnHeader"); //$NON-NLS-1$
+		// } else {
+		// backlogItemPointLabel = backlogItemPointLabelAtt.getValue();
+		// }
 		colPoints.getColumn().setText(backlogItemPointLabel);
 		colPoints.setLabelProvider(new ColumnLabelProvider() {
 			@Override

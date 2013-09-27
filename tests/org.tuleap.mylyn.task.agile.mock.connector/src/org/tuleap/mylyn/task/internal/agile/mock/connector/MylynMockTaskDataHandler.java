@@ -25,7 +25,6 @@ import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.tuleap.mylyn.task.agile.core.data.planning.BacklogItemWrapper;
 import org.tuleap.mylyn.task.agile.core.data.planning.MilestonePlanningWrapper;
 import org.tuleap.mylyn.task.agile.core.data.planning.SubMilestoneWrapper;
-import org.tuleap.mylyn.task.agile.core.util.IMylynAgileCoreConstants;
 
 /**
  * The task data handler.
@@ -101,19 +100,20 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 		descAttribute.getMetaData().setType(TaskAttribute.TYPE_SHORT_RICH_TEXT);
 		descAttribute.setValue("Release Planning Description"); //$NON-NLS-1$
 
+		// TODO Fiw these tests when these labels are managed
 		// The label of the types of the backlog
-		TaskAttribute backlogTypeAtt = root.createAttribute(IMylynAgileCoreConstants.BACKLOG_TYPE_LABEL);
-		backlogTypeAtt.setValue("Release Backlog"); //$NON-NLS-1$
+		// TaskAttribute backlogTypeAtt = root.createAttribute(IMylynAgileCoreConstants.BACKLOG_TYPE_LABEL);
+		//		backlogTypeAtt.setValue("Release Backlog"); //$NON-NLS-1$
 
 		// The label of the types of elements contained in backlog and milestones
-		TaskAttribute backlogItemTypeAtt = root
-				.createAttribute(IMylynAgileCoreConstants.BACKLOG_ITEM_TYPE_LABEL);
-		backlogItemTypeAtt.setValue("User Story"); //$NON-NLS-1$
+		// TaskAttribute backlogItemTypeAtt = root
+		// .createAttribute(IMylynAgileCoreConstants.BACKLOG_ITEM_TYPE_LABEL);
+		//		backlogItemTypeAtt.setValue("User Story"); //$NON-NLS-1$
 
 		// The label of the types of elements contained in backlog and milestones
-		TaskAttribute backlogItemPointsLabelAtt = root
-				.createAttribute(IMylynAgileCoreConstants.BACKLOG_ITEM_POINTS_LABEL);
-		backlogItemPointsLabelAtt.setValue("Story Points"); //$NON-NLS-1$
+		// TaskAttribute backlogItemPointsLabelAtt = root
+		// .createAttribute(IMylynAgileCoreConstants.BACKLOG_ITEM_POINTS_LABEL);
+		//		backlogItemPointsLabelAtt.setValue("Story Points"); //$NON-NLS-1$
 
 		// First Sprint
 		Date startDate = new Date(System.currentTimeMillis() - 4 * MILLISECOND_IN_WEEK);

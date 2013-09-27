@@ -29,7 +29,7 @@ public class BacklogItemWrapper extends AbstractTaskAttributeWrapper {
 	/**
 	 * Prefix used to generate ids of milestones (there are several milestones in a parent Planning).
 	 */
-	public static final String PREFIX_BACKLOG_ITEM = "mta_backlog_item-"; //$NON-NLS-1$
+	public static final String PREFIX_BACKLOG_ITEM = "mta_bi-"; //$NON-NLS-1$
 
 	/**
 	 * The value used to indicate that a task data represents the Tuleap ID of a backlog item.
@@ -39,7 +39,7 @@ public class BacklogItemWrapper extends AbstractTaskAttributeWrapper {
 	/**
 	 * The value used to indicate that a task data represents the name of a backlog item.
 	 */
-	public static final String BACKLOG_ITEM_NAME = "mta_backlog_item_name"; //$NON-NLS-1$
+	public static final String BACKLOG_ITEM_NAME = "mta_bi_name"; //$NON-NLS-1$
 
 	/**
 	 * The value used to indicate that a task data represents the name of the type of a backlog. This name
@@ -63,12 +63,12 @@ public class BacklogItemWrapper extends AbstractTaskAttributeWrapper {
 	 * The value used to indicate that a task data represents the label to use for points ("Story Points" for
 	 * example).
 	 */
-	public static final String ASSIGNED_MILESTONE_ID = "assigned_id"; //$NON-NLS-1$
+	public static final String SUFFIX_ASSIGNED_MILESTONE_ID = "assigned_id"; //$NON-NLS-1$
 
 	/**
 	 * The value used to indicate that a task data represents a number of points in a backlog item.
 	 */
-	public static final String BACKLOG_ITEM_POINTS = "points"; //$NON-NLS-1$
+	public static final String SUFFIX_BACKLOG_ITEM_POINTS = "points"; //$NON-NLS-1$
 
 	/**
 	 * The value used to indicate that a task data represents the parent of a backlog item.
@@ -78,7 +78,7 @@ public class BacklogItemWrapper extends AbstractTaskAttributeWrapper {
 	/**
 	 * The value used to describe the kind of the backlog items contained in the milestone.
 	 */
-	public static final String MILESTONE_BACKLOG_ITEMS_KIND = "mta_milestone_bi_kind"; //$NON-NLS-1$
+	public static final String MILESTONE_BACKLOG_ITEMS_KIND = "mta_ms_bi_kind"; //$NON-NLS-1$
 
 	/**
 	 * The parent planning.
@@ -122,7 +122,7 @@ public class BacklogItemWrapper extends AbstractTaskAttributeWrapper {
 	 * @return The unique id of the initial effort attribute.
 	 */
 	private String getInitialEffortAttributeId() {
-		return root.getId() + ID_SEPARATOR + BACKLOG_ITEM_POINTS;
+		return root.getId() + ID_SEPARATOR + SUFFIX_BACKLOG_ITEM_POINTS;
 	}
 
 	/**
@@ -131,7 +131,7 @@ public class BacklogItemWrapper extends AbstractTaskAttributeWrapper {
 	 * @return The unique id of the Assigned milestone id attribute.
 	 */
 	private String getAssignedIdAttributeId() {
-		return root.getId() + ID_SEPARATOR + ASSIGNED_MILESTONE_ID;
+		return root.getId() + ID_SEPARATOR + SUFFIX_ASSIGNED_MILESTONE_ID;
 	}
 
 	/**

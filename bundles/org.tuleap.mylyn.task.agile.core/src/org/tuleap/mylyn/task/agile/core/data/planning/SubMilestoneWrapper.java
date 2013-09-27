@@ -29,7 +29,7 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 	/**
 	 * Id of the backlog items list task attribute.
 	 */
-	public static final String MILESTONE_CAPACITY = "capacity"; //$NON-NLS-1$
+	public static final String SUFFIX_MILESTONE_CAPACITY = "capacity"; //$NON-NLS-1$
 
 	/**
 	 * The value used to indicate that a task data represents a milestone (for instance, a sprint).
@@ -44,12 +44,12 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 	/**
 	 * The value used to indicate that a task data represents a milestone duration.
 	 */
-	public static final String MILESTONE_DURATION = "duration"; //$NON-NLS-1$
+	public static final String SUFFIX_MILESTONE_DURATION = "duration"; //$NON-NLS-1$
 
 	/**
 	 * The value used to indicate that a task data represents a planned start date.
 	 */
-	public static final String START_DATE = "start_date"; //$NON-NLS-1$
+	public static final String SUFFIX_START_DATE = "start_date"; //$NON-NLS-1$
 
 	/**
 	 * The parent planning.
@@ -90,7 +90,7 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 	 * @return The unique id of the capacity attribute.
 	 */
 	private String getCapacityAttributeId() {
-		return root.getId() + ID_SEPARATOR + MILESTONE_CAPACITY;
+		return root.getId() + ID_SEPARATOR + SUFFIX_MILESTONE_CAPACITY;
 	}
 
 	/**
@@ -99,7 +99,7 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 	 * @return The unique id of the duration attribute.
 	 */
 	private String getDurationAttributeId() {
-		return root.getId() + ID_SEPARATOR + MILESTONE_DURATION;
+		return root.getId() + ID_SEPARATOR + SUFFIX_MILESTONE_DURATION;
 	}
 
 	/**
@@ -108,7 +108,7 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 	 * @return The unique id of the start date attribute.
 	 */
 	private String getStartDateAttributeId() {
-		return root.getId() + ID_SEPARATOR + START_DATE;
+		return root.getId() + ID_SEPARATOR + SUFFIX_START_DATE;
 	}
 
 	/**
