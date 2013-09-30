@@ -40,7 +40,20 @@ public class CardWrapper extends AbstractTaskAttributeWrapper {
 	private final SwimlaneWrapper parent;
 
 	/**
-	 * Constructor.
+	 * Constructor to use to wrap an existing instance.
+	 * 
+	 * @param parent
+	 *            The parent.
+	 * @param root
+	 *            The {@link TaskAttribute} that contains the columns
+	 */
+	protected CardWrapper(SwimlaneWrapper parent, TaskAttribute root) {
+		super(root);
+		this.parent = parent;
+	}
+
+	/**
+	 * Constructor to use when creating a new instance.
 	 * 
 	 * @param parent
 	 *            The parent.
@@ -87,8 +100,8 @@ public class CardWrapper extends AbstractTaskAttributeWrapper {
 	/**
 	 * Assigned milestone id getter.
 	 * 
-	 * @return The id of the (sub) milestone to which this item is assigned, or {@code null} if it is not
-	 *         assigned to any (sub) milestone.
+	 * @return The id of the status to which this card is assigned, or null if it is not assigned, which
+	 *         should not happen in an ideal world.
 	 */
 	public Integer getStatusId() {
 		Integer result = null;

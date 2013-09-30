@@ -77,7 +77,9 @@ public class CardwallWrapper extends AbstractNotifyingWrapper {
 	 * @return The created wrapper.
 	 */
 	public ColumnWrapper addColumn(int id, String label) {
-		return new ColumnWrapper(this, columnList, id, label);
+		TaskAttribute columnAtt = columnList.createMappedAttribute(getAttributeId(columnList, String
+				.valueOf(columnList.getAttributes().size())));
+		return new ColumnWrapper(this, columnAtt, id, label);
 	}
 
 	/**
@@ -136,7 +138,9 @@ public class CardwallWrapper extends AbstractNotifyingWrapper {
 	 * @return The created wrapper.
 	 */
 	public SwimlaneWrapper addSwimlane(int itemId) {
-		return new SwimlaneWrapper(this, swimlaneList, itemId);
+		TaskAttribute swimlaneAtt = swimlaneList.createMappedAttribute(getAttributeId(swimlaneList, String
+				.valueOf(swimlaneList.getAttributes().size())));
+		return new SwimlaneWrapper(this, swimlaneAtt, itemId);
 	}
 
 	/**

@@ -40,7 +40,7 @@ public class SwimlaneItemWrapper extends AbstractBacklogItemWrapper {
 		super(root, id);
 		Assert.isNotNull(parent);
 		this.parent = parent;
-		parent.getWrappedAttribute().addValue(root.getId());
+		// TODO Remove parent.getWrappedAttribute().addValue(root.getId());
 	}
 
 	/**

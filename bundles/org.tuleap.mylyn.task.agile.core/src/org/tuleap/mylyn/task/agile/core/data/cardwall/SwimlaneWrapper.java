@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.tuleap.mylyn.task.agile.core.data.cardwall;
 
+import com.google.common.collect.Lists;
+
 import java.util.List;
 
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
@@ -26,7 +28,12 @@ public class SwimlaneWrapper extends AbstractTaskAttributeWrapper {
 	/**
 	 * Suffix used for computing the card list task attribute id.
 	 */
-	public static final String SUFFIX_CARD_LIST = "_cards"; //$NON-NLS-1$
+	public static final String SUFFIX_CARD_LIST = "cards"; //$NON-NLS-1$
+
+	/**
+	 * Suffix used for computing the swimlane item task attribute id.
+	 */
+	public static final String SUFFIX_SWIMLANE_ITEM = "item"; //$NON-NLS-1$
 
 	/**
 	 * The parent card wall.
@@ -54,8 +61,10 @@ public class SwimlaneWrapper extends AbstractTaskAttributeWrapper {
 	protected SwimlaneWrapper(CardwallWrapper parent, TaskAttribute root) {
 		super(root);
 		this.parent = parent;
-		this.cardList = root.getMappedAttribute(root.getId() + SUFFIX_CARD_LIST);
-		TaskAttribute swimlaneItemAtt = root.getAttribute(root.getId() + ID_SEPARATOR + '0');
+		this.cardList = root.getMappedAttribute(getAttributeId(root, SUFFIX_CARD_LIST));
+		// TODO Remove this sysout!
+		System.out.println(root);
+		TaskAttribute swimlaneItemAtt = root.getAttribute(getAttributeId(root, SUFFIX_SWIMLANE_ITEM));
 		swimlaneItem = new SwimlaneItemWrapper(this, swimlaneItemAtt);
 	}
 
@@ -65,16 +74,16 @@ public class SwimlaneWrapper extends AbstractTaskAttributeWrapper {
 	 * @param parent
 	 *            The parent.
 	 * @param root
-	 *            The {@link TaskAttribute} that represents the swimlane.
+	 *            The {@link TaskAttribute} that represents the swimlane list.
 	 * @param id
 	 *            The id of the swimlane's backlog item.
 	 */
 	protected SwimlaneWrapper(CardwallWrapper parent, TaskAttribute root, int id) {
 		super(root);
 		this.parent = parent;
-		this.cardList = root.createMappedAttribute(root.getId() + SUFFIX_CARD_LIST);
-		TaskAttribute swimlaneItemAtt = root.createAttribute(root.getId() + ID_SEPARATOR
-				+ root.getAttributes().size());
+		cardList = root.createMappedAttribute(getAttributeId(root, SUFFIX_CARD_LIST));
+		TaskAttribute swimlaneItemAtt = root
+				.createMappedAttribute(getAttributeId(root, SUFFIX_SWIMLANE_ITEM));
 		swimlaneItem = new SwimlaneItemWrapper(this, swimlaneItemAtt, id);
 	}
 
@@ -96,9 +105,20 @@ public class SwimlaneWrapper extends AbstractTaskAttributeWrapper {
 	 * @return A new wrapper. No control is made as to existing card with this id.
 	 */
 	public CardWrapper addCard(int id) {
-		TaskAttribute cardAtt = cardList.createAttribute(getCardAttributeId());
+		TaskAttribute cardAtt = cardList.createMappedAttribute(getCardAttributeId());
 		cardAtt.getMetaData().setReadOnly(true);
-		return new CardWrapper(this, root, id);
+		return new CardWrapper(this, cardAtt, id);
+	}
+
+	/**
+	 * Creates a new Card wrapper and adds it to the list of cards in this swimlane.
+	 * 
+	 * @param cardAtt
+	 *            The {@link TaskAttribute} that represents an existing card.
+	 * @return A new wrapper.
+	 */
+	public CardWrapper wrapCard(TaskAttribute cardAtt) {
+		return new CardWrapper(this, cardAtt);
 	}
 
 	/**
@@ -107,7 +127,7 @@ public class SwimlaneWrapper extends AbstractTaskAttributeWrapper {
 	 * @return The unique ID of the {@link TaskAttribute} that represents a card in this swimlane.
 	 */
 	private String getCardAttributeId() {
-		return root.getId() + ID_SEPARATOR + root.getAttributes().size();
+		return cardList.getId() + ID_SEPARATOR + cardList.getAttributes().size();
 	}
 
 	/**
@@ -123,9 +143,17 @@ public class SwimlaneWrapper extends AbstractTaskAttributeWrapper {
 		return new CardWrapper(this, root, id);
 	}
 
+	/**
+	 * Provides the list of the cards of this swimlane.
+	 * 
+	 * @return A list never null of the cards of this swimlane.
+	 */
 	public List<CardWrapper> getCards() {
-		// TODO
-		return null;
+		List<CardWrapper> cards = Lists.newArrayList();
+		for (TaskAttribute cardAtt : cardList.getAttributes().values()) {
+			cards.add(wrapCard(cardAtt));
+		}
+		return cards;
 	}
 
 	/**
