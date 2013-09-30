@@ -62,8 +62,6 @@ public class SwimlaneWrapper extends AbstractTaskAttributeWrapper {
 		super(root);
 		this.parent = parent;
 		this.cardList = root.getMappedAttribute(getAttributeId(root, SUFFIX_CARD_LIST));
-		// TODO Remove this sysout!
-		System.out.println(root);
 		TaskAttribute swimlaneItemAtt = root.getAttribute(getAttributeId(root, SUFFIX_SWIMLANE_ITEM));
 		swimlaneItem = new SwimlaneItemWrapper(this, swimlaneItemAtt);
 	}
