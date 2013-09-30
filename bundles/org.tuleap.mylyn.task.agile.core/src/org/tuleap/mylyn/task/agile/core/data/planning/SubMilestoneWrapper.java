@@ -252,22 +252,4 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 	protected void fireAttributeChanged(TaskAttribute attribute) {
 		parent.fireAttributeChanged(attribute);
 	}
-
-	/**
-	 * Creates a new task attribute in the given parent attribute to represent a new sub-milestone and returns
-	 * its wrapper.
-	 * 
-	 * @param wrapper
-	 *            the parent planning
-	 * @param id
-	 *            the sub-milestone identifier
-	 * @return a new wrapper for a new task attribute that represents a sub-milestone.
-	 */
-	public static SubMilestoneWrapper createSubMilestone(MilestonePlanningWrapper wrapper, int id) {
-		TaskAttribute parent = wrapper.getSubMilestoneListTaskAttribute();
-		TaskAttribute root = parent.createAttribute(PREFIX_MILESTONE + parent.getAttributes().size());
-		root.getMetaData().setReadOnly(true);
-		SubMilestoneWrapper sub = new SubMilestoneWrapper(wrapper, root, id);
-		return sub;
-	}
 }

@@ -12,16 +12,12 @@ package org.tuleap.mylyn.task.agile.core.data.planning;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterators;
-import com.google.common.collect.Sets;
 
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
-import org.tuleap.mylyn.task.agile.core.data.AbstractTaskAttributeWrapper;
-import org.tuleap.mylyn.task.agile.core.data.ITaskAttributeChangeListener;
+import org.tuleap.mylyn.task.agile.core.data.AbstractNotifyingWrapper;
 
 import static com.google.common.collect.Lists.newArrayList;
 
@@ -37,10 +33,10 @@ import static com.google.common.collect.Lists.newArrayList;
  * 
  * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
  */
-public final class MilestonePlanningWrapper extends AbstractTaskAttributeWrapper {
+public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 
 	/**
-	 * Id of the milestone list task attribute.
+	 * Id of the planning task attribute.
 	 */
 	public static final String MILESTONE_PLANNING = "mta_planning"; //$NON-NLS-1$
 
@@ -68,11 +64,6 @@ public final class MilestonePlanningWrapper extends AbstractTaskAttributeWrapper
 	 * The attribute that represents the milestone.
 	 */
 	private final TaskAttribute planning;
-
-	/**
-	 * Task Attribute Change listeners.
-	 */
-	private final Set<ITaskAttributeChangeListener> listeners = Sets.newHashSet();
 
 	/**
 	 * Constructor.
@@ -107,12 +98,15 @@ public final class MilestonePlanningWrapper extends AbstractTaskAttributeWrapper
 	 * Creates a new sub-milestone in the wrapped milestone and returns its wrapper.
 	 * 
 	 * @param id
-	 *            the submilestone identifier
+	 *            the sub-milestone identifier
 	 * @return A new wrapper for a new task attribute that is created by invoking this method.
 	 */
 	public SubMilestoneWrapper addSubMilestone(int id) {
-		SubMilestoneWrapper res = SubMilestoneWrapper.createSubMilestone(this, id);
-		return res;
+		TaskAttribute smAtt = submilestoneList.createAttribute(SubMilestoneWrapper.PREFIX_MILESTONE
+				+ submilestoneList.getAttributes().size());
+		smAtt.getMetaData().setReadOnly(true);
+		SubMilestoneWrapper sub = new SubMilestoneWrapper(this, smAtt, id);
+		return sub;
 	}
 
 	/**
@@ -146,7 +140,11 @@ public final class MilestonePlanningWrapper extends AbstractTaskAttributeWrapper
 	 * @return A wrapper for a newly created TaskAttribute representing a BacklogItem in the given parent.
 	 */
 	public BacklogItemWrapper addBacklogItem(int id) {
-		return BacklogItemWrapper.createBacklogItem(this, id);
+		TaskAttribute biAtt = backlog.createAttribute(BacklogItemWrapper.PREFIX_BACKLOG_ITEM
+				+ backlog.getAttributes().size());
+		biAtt.getMetaData().setReadOnly(true);
+		BacklogItemWrapper backlogItemWrapper = new BacklogItemWrapper(this, biAtt, id);
+		return backlogItemWrapper;
 	}
 
 	/**
@@ -361,51 +359,6 @@ public final class MilestonePlanningWrapper extends AbstractTaskAttributeWrapper
 	}
 
 	/**
-	 * Add a listener.
-	 * 
-	 * @param listener
-	 *            The listener to add
-	 * @return {@code true} if and only if the given listener has been added and was not already registered.
-	 */
-	public boolean addListener(ITaskAttributeChangeListener listener) {
-		return listeners.add(listener);
-	}
-
-	/**
-	 * Remove a listener.
-	 * 
-	 * @param listener
-	 *            The listener to remove
-	 * @return {@code true} if and only if the listener was registered and has been removed.
-	 */
-	public boolean removeListener(ITaskAttributeChangeListener listener) {
-		return listeners.remove(listener);
-	}
-
-	/**
-	 * Add a collection of listeners.
-	 * 
-	 * @param someListeners
-	 *            The listeners to add
-	 */
-	public void addAllListeners(Collection<ITaskAttributeChangeListener> someListeners) {
-		this.listeners.addAll(someListeners);
-	}
-
-	/**
-	 * Informs the listeners of the given attribute's modification.
-	 * 
-	 * @param attribute
-	 *            The modified attribute.
-	 */
-	@Override
-	protected void fireAttributeChanged(TaskAttribute attribute) {
-		for (ITaskAttributeChangeListener l : listeners) {
-			l.attributeChanged(attribute);
-		}
-	}
-
-	/**
 	 * Provides the wrapped task attribute that represents the planning.
 	 * 
 	 * @return The wrapped task attribute that represents the planning.
@@ -440,5 +393,16 @@ public final class MilestonePlanningWrapper extends AbstractTaskAttributeWrapper
 	@Override
 	public TaskAttribute getWrappedAttribute() {
 		return planning;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see org.tuleap.mylyn.task.agile.core.data.AbstractNotifyingWrapper#fireAttributeChanged(org.eclipse.mylyn.tasks.core.data.TaskAttribute)
+	 */
+	@Override
+	protected void fireAttributeChanged(TaskAttribute attribute) {
+		// Required for delegation from other classes of this package
+		super.fireAttributeChanged(attribute);
 	}
 }

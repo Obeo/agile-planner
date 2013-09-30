@@ -14,6 +14,7 @@ Bundle-Localization: plugin
 Export-Package: org.tuleap.mylyn.task.agile.core,
  org.tuleap.mylyn.task.agile.core.data,
  org.tuleap.mylyn.task.agile.core.data.planning,
+ org.tuleap.mylyn.task.agile.core.data.cardwall,
  org.tuleap.mylyn.task.agile.core.util,
  org.tuleap.mylyn.task.internal.agile.core;x-internal:=true,
  org.tuleap.mylyn.task.internal.agile.core.util;x-internal:=true

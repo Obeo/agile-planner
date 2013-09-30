@@ -8,23 +8,23 @@
  * Contributors:
  *     Obeo - initial API and implementation
  *******************************************************************************/
-package org.tuleap.mylyn.task.agile.core.data.planning;
+package org.tuleap.mylyn.task.agile.core.data.cardwall;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.tuleap.mylyn.task.agile.core.data.AbstractBacklogItemWrapper;
 
 /**
- * Wrapper of a TaskAttribute that represents a Backlog Item.
+ * Wrapper of a TaskAttribute that represents a Backlog Item in a swimlane.
  * 
  * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
  */
-public class BacklogItemWrapper extends AbstractBacklogItemWrapper {
+public class SwimlaneItemWrapper extends AbstractBacklogItemWrapper {
 
 	/**
 	 * The parent planning.
 	 */
-	private final MilestonePlanningWrapper parent;
+	private final SwimlaneWrapper parent;
 
 	/**
 	 * Constructor to use to wrap an existing task attribute that is not yet filled with sub-attributes.
@@ -36,11 +36,11 @@ public class BacklogItemWrapper extends AbstractBacklogItemWrapper {
 	 * @param id
 	 *            The backlog item's functional id
 	 */
-	protected BacklogItemWrapper(final MilestonePlanningWrapper parent, final TaskAttribute root, int id) {
+	protected SwimlaneItemWrapper(final SwimlaneWrapper parent, final TaskAttribute root, int id) {
 		super(root, id);
 		Assert.isNotNull(parent);
 		this.parent = parent;
-		parent.getBacklogTaskAttribute().addValue(root.getId());
+		parent.getWrappedAttribute().addValue(root.getId());
 	}
 
 	/**
@@ -51,7 +51,7 @@ public class BacklogItemWrapper extends AbstractBacklogItemWrapper {
 	 * @param root
 	 *            The non-null task attribute that represents a backlog item to wrap.
 	 */
-	protected BacklogItemWrapper(final MilestonePlanningWrapper parent, final TaskAttribute root) {
+	protected SwimlaneItemWrapper(final SwimlaneWrapper parent, final TaskAttribute root) {
 		super(root);
 		Assert.isNotNull(parent);
 		this.parent = parent;
@@ -62,7 +62,7 @@ public class BacklogItemWrapper extends AbstractBacklogItemWrapper {
 	 * 
 	 * @return The (never null) parent planning, as a wrapper.
 	 */
-	public MilestonePlanningWrapper getParent() {
+	public SwimlaneWrapper getParent() {
 		return parent;
 	}
 
