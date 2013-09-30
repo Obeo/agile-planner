@@ -103,7 +103,7 @@ public class SwimlaneWrapper extends AbstractTaskAttributeWrapper {
 	 * @return A new wrapper. No control is made as to existing card with this id.
 	 */
 	public CardWrapper addCard(int id) {
-		TaskAttribute cardAtt = cardList.createMappedAttribute(getCardAttributeId());
+		TaskAttribute cardAtt = cardList.createMappedAttribute(getCardAttributeId(id));
 		cardAtt.getMetaData().setReadOnly(true);
 		fireAttributeChanged(cardList);
 		return new CardWrapper(this, cardAtt, id);
@@ -123,10 +123,12 @@ public class SwimlaneWrapper extends AbstractTaskAttributeWrapper {
 	/**
 	 * Computes the ID of the {@link TaskAttribute} that represents a card in this swimlane.
 	 * 
+	 * @param id
+	 *            The card's ID.
 	 * @return The unique ID of the {@link TaskAttribute} that represents a card in this swimlane.
 	 */
-	private String getCardAttributeId() {
-		return cardList.getId() + ID_SEPARATOR + cardList.getAttributes().size();
+	private String getCardAttributeId(int id) {
+		return cardList.getId() + ID_SEPARATOR + id;
 	}
 
 	/**
@@ -137,9 +139,8 @@ public class SwimlaneWrapper extends AbstractTaskAttributeWrapper {
 	 * @return A new wrapper, or null if the card with this id doesn't exist.
 	 */
 	public CardWrapper getCard(int id) {
-		TaskAttribute cardAtt = cardList.getAttribute(getCardAttributeId());
-		cardAtt.getMetaData().setReadOnly(true);
-		return new CardWrapper(this, root, id);
+		TaskAttribute cardAtt = cardList.getAttribute(getCardAttributeId(id));
+		return wrapCard(cardAtt);
 	}
 
 	/**

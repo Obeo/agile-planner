@@ -87,7 +87,58 @@ public class CardwallWrapperTest {
 			assertEquals(10 + i, cards.get(i).getStatusId().intValue());
 			assertEquals("Value 100" + i, cards.get(i).getFieldValue(100));
 		}
+	}
 
+	/**
+	 * Tests basic ward wall modifications.
+	 */
+	@Test
+	public void testCardwallModification() {
+		CardwallWrapper wrapper = new CardwallWrapper(taskData.getRoot());
+		for (int i = 0; i < 4; i++) {
+			wrapper.addColumn(10 + i, "Column" + i);
+		}
+		SwimlaneWrapper swimlane = wrapper.addSwimlane(123);
+		SwimlaneItemWrapper item = swimlane.getSwimlaneItem();
+		item.setLabel("Label item");
+		item.setInitialEffort(12.5F);
+		item.setAssignedMilestoneId(1234);
+
+		// Retrieval of swimlane item from the cardwall to modify it
+		swimlane = wrapper.getSwimlanes().get(0);
+		item = swimlane.getSwimlaneItem();
+		item.setLabel("Other label");
+		item.setInitialEffort(55.2F);
+		item.setAssignedMilestoneId(4321);
+
+		assertEquals("Other label", item.getLabel());
+		assertEquals(55.2F, item.getInitialEffort(), 0F);
+		assertEquals(4321, item.getAssignedMilestoneId().intValue());
+
+		for (int i = 0; i < 4; i++) {
+			CardWrapper card = swimlane.addCard(200 + i);
+			card.setLabel("Label " + (200 + i));
+			card.setStatusId(10 + i);
+			card.addFieldValue(100, "Value 100" + i);
+		}
+
+		// Modification of the cards created previously
+		for (int i = 0; i < 4; i++) {
+			CardWrapper card = swimlane.getCard(200 + i);
+			card.setLabel("Other " + (200 + i));
+			card.setStatusId(13 - i);
+			card.setFieldValue(100, "Other 100" + i);
+		}
+
+		List<CardWrapper> cards = swimlane.getCards();
+		assertEquals(4, cards.size());
+		for (int i = 0; i < 4; i++) {
+			CardWrapper card = cards.get(i);
+			assertEquals(200 + i, card.getId());
+			assertEquals("Other " + (200 + i), card.getLabel());
+			assertEquals(13 - i, card.getStatusId().intValue());
+			assertEquals("Other 100" + i, card.getFieldValue(100));
+		}
 	}
 
 	/**
