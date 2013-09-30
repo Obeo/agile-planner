@@ -169,14 +169,23 @@ public class CardWrapper extends AbstractTaskAttributeWrapper {
 	 * @param id
 	 *            the id of the field.
 	 * @param value
-	 *            The value to set.
+	 *            The value to set. If null, nothing is done.
 	 */
 	public void setFieldValue(int id, String value) {
+		if (value == null) {
+			return;
+		}
 		TaskAttribute attribute = root.getMappedAttribute(getFieldAttributeId(id));
+		String oldValue = null;
 		if (attribute == null) {
 			attribute = root.createMappedAttribute(getFieldAttributeId(id));
+		} else {
+			oldValue = attribute.getValue();
 		}
-		attribute.setValue(value);
+		if (oldValue != null && !oldValue.equals(value)) {
+			attribute.setValue(value);
+			fireAttributeChanged(attribute);
+		}
 	}
 
 	/**
@@ -189,6 +198,7 @@ public class CardWrapper extends AbstractTaskAttributeWrapper {
 		TaskAttribute attribute = root.getMappedAttribute(getFieldAttributeId(id));
 		if (attribute != null) {
 			attribute.clearValues();
+			fireAttributeChanged(attribute);
 		}
 	}
 
@@ -199,14 +209,19 @@ public class CardWrapper extends AbstractTaskAttributeWrapper {
 	 * @param id
 	 *            the id of the field.
 	 * @param values
-	 *            The values to set.
+	 *            The values to set. If null or empty, nothing is done.
 	 */
 	public void setFieldValues(int id, List<String> values) {
+		if (values == null || values.isEmpty()) {
+			return;
+		}
 		TaskAttribute attribute = root.getMappedAttribute(getFieldAttributeId(id));
 		if (attribute == null) {
 			attribute = root.createMappedAttribute(getFieldAttributeId(id));
 		}
 		attribute.setValues(values);
+		// TODO Refine this
+		fireAttributeChanged(attribute);
 	}
 
 	/**
@@ -215,14 +230,18 @@ public class CardWrapper extends AbstractTaskAttributeWrapper {
 	 * @param id
 	 *            the id of the field.
 	 * @param value
-	 *            The value to add.
+	 *            The value to add. If null, nothing is done.
 	 */
 	public void addFieldValue(int id, String value) {
+		if (value == null) {
+			return;
+		}
 		TaskAttribute attribute = root.getMappedAttribute(getFieldAttributeId(id));
 		if (attribute == null) {
 			attribute = root.createMappedAttribute(getFieldAttributeId(id));
 		}
 		attribute.addValue(value);
+		fireAttributeChanged(attribute);
 	}
 
 	/**
@@ -232,9 +251,12 @@ public class CardWrapper extends AbstractTaskAttributeWrapper {
 	 * @param id
 	 *            the id of the field.
 	 * @param values
-	 *            The values to add.
+	 *            The values to add. If null or empty, nothing is done.
 	 */
 	public void addFieldValues(int id, List<String> values) {
+		if (values == null || values.isEmpty()) {
+			return;
+		}
 		TaskAttribute attribute = root.getMappedAttribute(getFieldAttributeId(id));
 		if (attribute == null) {
 			attribute = root.createMappedAttribute(getFieldAttributeId(id));
@@ -242,5 +264,6 @@ public class CardWrapper extends AbstractTaskAttributeWrapper {
 		for (String value : values) {
 			attribute.addValue(value);
 		}
+		fireAttributeChanged(attribute);
 	}
 }

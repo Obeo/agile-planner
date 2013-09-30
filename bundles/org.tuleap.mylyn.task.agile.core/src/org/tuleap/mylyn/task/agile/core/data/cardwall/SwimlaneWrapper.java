@@ -105,6 +105,7 @@ public class SwimlaneWrapper extends AbstractTaskAttributeWrapper {
 	public CardWrapper addCard(int id) {
 		TaskAttribute cardAtt = cardList.createMappedAttribute(getCardAttributeId());
 		cardAtt.getMetaData().setReadOnly(true);
+		fireAttributeChanged(cardList);
 		return new CardWrapper(this, cardAtt, id);
 	}
 
