@@ -305,44 +305,38 @@ public class MilestonePlanningWrapperTest {
 		SubMilestoneWrapper subMilestone = wrapper.addSubMilestone(200);
 		subMilestone.setCapacity(12F);
 
-		TaskAttribute root = taskData.getRoot();
-		TaskAttribute planningAtt = root.getAttribute(MilestonePlanningWrapper.MILESTONE_PLANNING);
-		TaskAttribute milestoneListAtt = planningAtt.getAttribute(MilestonePlanningWrapper.MILESTONE_LIST);
-		TaskAttribute milestone0 = milestoneListAtt.getAttribute(SubMilestoneWrapper.PREFIX_MILESTONE + "0"); //$NON-NLS-1$
-		TaskAttribute capacity = milestone0.getAttribute(milestone0.getId() + '-'
-				+ SubMilestoneWrapper.SUFFIX_MILESTONE_CAPACITY);
-
-		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(capacity));
+		String capacityKey = SubMilestoneWrapper.PREFIX_MILESTONE + "0-"
+				+ SubMilestoneWrapper.SUFFIX_MILESTONE_CAPACITY;
+		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(capacityKey));
 		subMilestone.setCapacity(12F); // Should not notify
-		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(capacity));
+		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(capacityKey));
 		subMilestone.setCapacity(13F); // Should notify
-		assertEquals(Integer.valueOf(2), listener.getInvocationsCount(capacity));
+		assertEquals(Integer.valueOf(2), listener.getInvocationsCount(capacityKey));
 
 		subMilestone.setDuration(21.5F);
-		TaskAttribute duration = milestone0.getAttribute(milestone0.getId() + '-'
-				+ SubMilestoneWrapper.SUFFIX_MILESTONE_DURATION);
+		String durationKey = SubMilestoneWrapper.PREFIX_MILESTONE + "0-"
+				+ SubMilestoneWrapper.SUFFIX_MILESTONE_DURATION;
 
-		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(duration));
+		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(durationKey));
 		subMilestone.setDuration(21.5F); // Should not notify
-		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(duration));
+		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(durationKey));
 		subMilestone.setDuration(20F); // Should notify
-		assertEquals(Integer.valueOf(2), listener.getInvocationsCount(duration));
+		assertEquals(Integer.valueOf(2), listener.getInvocationsCount(durationKey));
 
 		subMilestone.setLabel("Label"); //$NON-NLS-1$
-		TaskAttribute label = milestone0.getAttribute(milestone0.getId() + '-'
-				+ AbstractTaskAttributeWrapper.SUFFIX_LABEL);
+		String labelKey = SubMilestoneWrapper.PREFIX_MILESTONE + "0-"
+				+ AbstractTaskAttributeWrapper.SUFFIX_LABEL;
 
-		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(label));
+		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(labelKey));
 		subMilestone.setLabel("Label"); //$NON-NLS-1$
-		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(label));
+		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(labelKey));
 		subMilestone.setLabel("Other"); //$NON-NLS-1$
-		assertEquals(Integer.valueOf(2), listener.getInvocationsCount(label));
+		assertEquals(Integer.valueOf(2), listener.getInvocationsCount(labelKey));
 
 		Date startDate = new Date();
 		subMilestone.setStartDate(startDate);
 
-		TaskAttribute start = milestone0.getAttribute(milestone0.getId() + '-'
-				+ SubMilestoneWrapper.SUFFIX_START_DATE);
+		String start = SubMilestoneWrapper.PREFIX_MILESTONE + "0-" + SubMilestoneWrapper.SUFFIX_START_DATE;
 
 		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(start));
 		subMilestone.setStartDate(startDate); // Should not notify
@@ -353,38 +347,35 @@ public class MilestonePlanningWrapperTest {
 		// Backlog items
 		BacklogItemWrapper backlogItem = wrapper.addBacklogItem(200);
 
-		TaskAttribute backlogAtt = planningAtt.getAttribute(MilestonePlanningWrapper.BACKLOG);
-		TaskAttribute bi0 = backlogAtt.getAttribute(BacklogItemWrapper.PREFIX_BACKLOG_ITEM + "0"); //$NON-NLS-1$
-
 		backlogItem.setInitialEffort(5);
-		TaskAttribute pointsAtt = bi0.getAttribute(bi0.getId() + '-'
-				+ BacklogItemWrapper.SUFFIX_BACKLOG_ITEM_POINTS);
+		String pointsKey = BacklogItemWrapper.PREFIX_BACKLOG_ITEM + "0-"
+				+ BacklogItemWrapper.SUFFIX_BACKLOG_ITEM_POINTS;
 
-		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(pointsAtt));
+		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(pointsKey));
 		backlogItem.setInitialEffort(5);
-		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(pointsAtt));
+		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(pointsKey));
 		backlogItem.setInitialEffort(6);
-		assertEquals(Integer.valueOf(2), listener.getInvocationsCount(pointsAtt));
+		assertEquals(Integer.valueOf(2), listener.getInvocationsCount(pointsKey));
 
 		backlogItem.setLabel("label of backlog item 300"); //$NON-NLS-1$
-		TaskAttribute biLabelAtt = bi0.getAttribute(bi0.getId() + '-'
-				+ AbstractTaskAttributeWrapper.SUFFIX_LABEL);
+		String biLabelKey = BacklogItemWrapper.PREFIX_BACKLOG_ITEM + "0-"
+				+ AbstractTaskAttributeWrapper.SUFFIX_LABEL;
 
-		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(biLabelAtt));
+		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(biLabelKey));
 		backlogItem.setLabel("label of backlog item 300"); //$NON-NLS-1$
-		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(biLabelAtt));
+		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(biLabelKey));
 		backlogItem.setLabel("Other"); //$NON-NLS-1$
-		assertEquals(Integer.valueOf(2), listener.getInvocationsCount(biLabelAtt));
+		assertEquals(Integer.valueOf(2), listener.getInvocationsCount(biLabelKey));
 
 		backlogItem.setAssignedMilestoneId(200);
-		TaskAttribute assignedIdAtt = bi0.getAttribute(bi0.getId() + '-'
-				+ BacklogItemWrapper.SUFFIX_ASSIGNED_MILESTONE_ID);
+		String assignedIdKey = BacklogItemWrapper.PREFIX_BACKLOG_ITEM + "0-"
+				+ BacklogItemWrapper.SUFFIX_ASSIGNED_MILESTONE_ID;
 
-		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(assignedIdAtt));
+		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(assignedIdKey));
 		backlogItem.setAssignedMilestoneId(200);
-		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(assignedIdAtt));
+		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(assignedIdKey));
 		backlogItem.setAssignedMilestoneId(201);
-		assertEquals(Integer.valueOf(2), listener.getInvocationsCount(assignedIdAtt));
+		assertEquals(Integer.valueOf(2), listener.getInvocationsCount(assignedIdKey));
 	}
 
 }

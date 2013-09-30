@@ -26,7 +26,7 @@ public class TestChangeListener implements ITaskAttributeChangeListener {
 	/**
 	 * Invocations count map.
 	 */
-	private Map<TaskAttribute, Integer> invocationsCount = new HashMap<TaskAttribute, Integer>();
+	private Map<String, Integer> invocationsCount = new HashMap<String, Integer>();
 
 	/**
 	 * {@inheritDoc}
@@ -35,22 +35,22 @@ public class TestChangeListener implements ITaskAttributeChangeListener {
 	 */
 	@Override
 	public void attributeChanged(TaskAttribute attribute) {
-		Integer count = invocationsCount.get(attribute);
+		Integer count = invocationsCount.get(attribute.getId());
 		if (count == null) {
-			invocationsCount.put(attribute, Integer.valueOf(1));
+			invocationsCount.put(attribute.getId(), Integer.valueOf(1));
 		} else {
-			invocationsCount.put(attribute, Integer.valueOf(count.intValue() + 1));
+			invocationsCount.put(attribute.getId(), Integer.valueOf(count.intValue() + 1));
 		}
 	}
 
 	/**
 	 * Provides the number of times this listener has been called for the given attribute.
 	 * 
-	 * @param attribute
-	 *            the attribute
+	 * @param id
+	 *            the {@link TaskAttribute} id.
 	 * @return The number of times this listener has been called for the given attribute.
 	 */
-	public Integer getInvocationsCount(TaskAttribute attribute) {
-		return invocationsCount.get(attribute);
+	public Integer getInvocationsCount(String id) {
+		return invocationsCount.get(id);
 	}
 }
