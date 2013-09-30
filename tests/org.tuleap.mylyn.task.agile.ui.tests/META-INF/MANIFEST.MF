@@ -10,3 +10,5 @@ Require-Bundle: org.junit,
  org.tuleap.mylyn.task.agile.core,
  org.eclipse.mylyn.tasks.core,
  org.tuleap.mylyn.task.agile.ui
+Export-Package: org.tuleap.mylyn.task.agile.ui.tests,
+ org.tuleap.mylyn.task.agile.ui.tests.data
