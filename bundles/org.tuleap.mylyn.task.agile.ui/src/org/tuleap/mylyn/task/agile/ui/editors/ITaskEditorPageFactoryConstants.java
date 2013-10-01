@@ -21,4 +21,9 @@ public interface ITaskEditorPageFactoryConstants {
 	 * The identifier of the planning task editor page factory.
 	 */
 	String PLANNING_TASK_EDITOR_PAGE_FACTORY_ID = "org.tuleap.mylyn.task.agile.ui.planningTaskEditorPageFactory"; //$NON-NLS-1$
+
+	/**
+	 * The identifier of the planning task editor page factory.
+	 */
+	String CARDWALL_TASK_EDITOR_PAGE_FACTORY_ID = "org.tuleap.mylyn.task.agile.ui.cardwallTaskEditorPageFactory"; //$NON-NLS-1$
 }

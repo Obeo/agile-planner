@@ -24,6 +24,11 @@ public interface IMylynAgileUIConstants {
 	String PLANNING_TASK_EDITOR_PART_DESC_ID = "MylynAgileUIPlanning"; //$NON-NLS-1$
 
 	/**
+	 * The CardwallTaskEditorPart identifier.
+	 */
+	String CARDWALL_TASK_EDITOR_PART_DESC_ID = "MylynAgileUICardwall"; //$NON-NLS-1$
+
+	/**
 	 * Default width of column "Points".
 	 */
 	int DEFAULT_POINTS_COL_WIDTH = 80;
