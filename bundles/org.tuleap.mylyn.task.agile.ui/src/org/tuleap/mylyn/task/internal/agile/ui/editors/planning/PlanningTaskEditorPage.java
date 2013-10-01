@@ -10,7 +10,8 @@
  *******************************************************************************/
 package org.tuleap.mylyn.task.internal.agile.ui.editors.planning;
 
-import java.util.Iterator;
+import com.google.common.collect.Sets;
+
 import java.util.Set;
 
 import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPage;
@@ -45,36 +46,9 @@ public class PlanningTaskEditorPage extends AbstractTaskEditorPage {
 	 */
 	@Override
 	protected Set<TaskEditorPartDescriptor> createPartDescriptors() {
-		Set<TaskEditorPartDescriptor> descriptors = super.createPartDescriptors();
-		// Remove useless part
-		this.removePart(descriptors, AbstractTaskEditorPage.ID_PART_DESCRIPTION);
-		this.removePart(descriptors, AbstractTaskEditorPage.ID_PART_ACTIONS);
-		this.removePart(descriptors, AbstractTaskEditorPage.ID_PART_PEOPLE);
-		this.removePart(descriptors, AbstractTaskEditorPage.ID_PART_ATTRIBUTES);
-
-		// This part will have its dedicated tab
-		this.removePart(descriptors, AbstractTaskEditorPage.ID_PART_PLANNING);
-
+		// We just want to display the planning editor in this tab
+		Set<TaskEditorPartDescriptor> descriptors = Sets.newLinkedHashSet();
 		descriptors.add(new PlanningTaskEditorPartDescriptor());
-
 		return descriptors;
-	}
-
-	/**
-	 * Removes the parts with an ID matching the given partId from the set of parts.
-	 * 
-	 * @param parts
-	 *            The set of parts
-	 * @param partId
-	 *            The part ID.
-	 */
-	private void removePart(Set<TaskEditorPartDescriptor> parts, String partId) {
-		Iterator<TaskEditorPartDescriptor> iterator = parts.iterator();
-		while (iterator.hasNext()) {
-			TaskEditorPartDescriptor taskEditorPartDescriptor = iterator.next();
-			if (partId.equals(taskEditorPartDescriptor.getId())) {
-				iterator.remove();
-			}
-		}
 	}
 }
