@@ -22,6 +22,11 @@ Export-Package: org.tuleap.mylyn.task.agile.ui,
  org.tuleap.mylyn.task.agile.ui.editors,
  org.tuleap.mylyn.task.internal.agile.ui;x-internal:=true,
  org.tuleap.mylyn.task.internal.agile.ui.editors;x-internal:=true,
- org.tuleap.mylyn.task.internal.agile.ui.editors.planning;x-internal:=true,
+ org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall;x-internal:=true,
+ org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.command;x-internal:=true,
+ org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.figure;x-internal:=true,
+ org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.part;x-internal:=true,
+ org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.policy;x-internal:=true,
+ org.tuleap.mylyn.task.internal.agile.ui.editors.planning;x-friends:="org.tuleap.mylyn.task.agile.ui.tests",
  org.tuleap.mylyn.task.internal.agile.ui.util;x-internal:=true
 

@@ -44,18 +44,18 @@ public class BacklogModelTest {
 	public void testMilestoneBacklogModel() {
 		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(taskData.getRoot());
 
-		SubMilestoneWrapper subMilestone = wrapper.addSubMilestone("200");
+		SubMilestoneWrapper subMilestone = wrapper.addSubMilestone("200"); //$NON-NLS-1$
 		subMilestone.setCapacity(20);
 		subMilestone.setDuration(11);
 		subMilestone.setLabel("Milestone 1"); //$NON-NLS-1$
 		subMilestone.setStartDate(new Date());
 
-		BacklogItemWrapper backlogItem = wrapper.addBacklogItem("300");
-		backlogItem.setAssignedMilestoneId("200");
+		BacklogItemWrapper backlogItem = wrapper.addBacklogItem("300"); //$NON-NLS-1$
+		backlogItem.setAssignedMilestoneId("200"); //$NON-NLS-1$
 		backlogItem.setInitialEffort(5);
 		backlogItem.setLabel("backlog item 1"); //$NON-NLS-1$
 
-		BacklogItemWrapper backlogItem2 = wrapper.addBacklogItem("301");
+		BacklogItemWrapper backlogItem2 = wrapper.addBacklogItem("301"); //$NON-NLS-1$
 		backlogItem2.setInitialEffort(10);
 		backlogItem2.setLabel("backlog item 2"); //$NON-NLS-1$
 
@@ -75,24 +75,24 @@ public class BacklogModelTest {
 	public void testSubMilestoneBacklogModel() {
 		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(taskData.getRoot());
 
-		SubMilestoneWrapper subMilestone = wrapper.addSubMilestone("200");
+		SubMilestoneWrapper subMilestone = wrapper.addSubMilestone("200"); //$NON-NLS-1$
 		subMilestone.setCapacity(20);
 		subMilestone.setDuration(11);
 		subMilestone.setLabel("Milestone 1"); //$NON-NLS-1$
 		subMilestone.setStartDate(new Date());
 		SubMilestoneBacklogModel backlogModel = new SubMilestoneBacklogModel(wrapper, subMilestone);
 
-		BacklogItemWrapper backlogItem = wrapper.addBacklogItem("300");
+		BacklogItemWrapper backlogItem = wrapper.addBacklogItem("300"); //$NON-NLS-1$
 		backlogItem.setInitialEffort(5);
 		backlogItem.setLabel("backlog item 1"); //$NON-NLS-1$
 
-		BacklogItemWrapper backlogItem2 = wrapper.addBacklogItem("301");
-		backlogItem2.setAssignedMilestoneId("200");
+		BacklogItemWrapper backlogItem2 = wrapper.addBacklogItem("301"); //$NON-NLS-1$
+		backlogItem2.setAssignedMilestoneId("200"); //$NON-NLS-1$
 		backlogItem2.setInitialEffort(5);
 		backlogItem2.setLabel("backlog item 2"); //$NON-NLS-1$
 
-		BacklogItemWrapper backlogItem3 = wrapper.addBacklogItem("302");
-		backlogItem3.setAssignedMilestoneId("201");
+		BacklogItemWrapper backlogItem3 = wrapper.addBacklogItem("302"); //$NON-NLS-1$
+		backlogItem3.setAssignedMilestoneId("201"); //$NON-NLS-1$
 		backlogItem3.setInitialEffort(5);
 		backlogItem3.setLabel("backlog item 3"); //$NON-NLS-1$
 
