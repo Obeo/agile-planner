@@ -56,7 +56,7 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 	/**
 	 * The backlog item index.
 	 */
-	private int milestoneId = 100;
+	private String milestoneId = "100";
 
 	/**
 	 * {@inheritDoc}
@@ -124,7 +124,7 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 		addNewBacklogItem(wrapper, milestoneId);
 		addNewBacklogItem(wrapper, milestoneId);
 		addNewBacklogItem(wrapper, milestoneId);
-		milestoneId++;
+		milestoneId = Integer.toString(Integer.parseInt(milestoneId) + 1);
 
 		// Second Sprint
 		startDate = new Date(startDate.getTime() - 2 * MILLISECOND_IN_WEEK);
@@ -133,7 +133,7 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 		addNewBacklogItem(wrapper, milestoneId);
 		addNewBacklogItem(wrapper, milestoneId);
 		addNewBacklogItem(wrapper, milestoneId);
-		milestoneId++;
+		milestoneId = Integer.toString(Integer.parseInt(milestoneId) + 1);
 
 		addNewBacklogItem(wrapper);
 		addNewBacklogItem(wrapper);
@@ -160,7 +160,7 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 	 * @param durationInDays
 	 *            The sprint duration
 	 */
-	private void createSprint(MilestonePlanningWrapper wrapper, int id, String name, float capacity,
+	private void createSprint(MilestonePlanningWrapper wrapper, String id, String name, float capacity,
 			Date startDate, float durationInDays) {
 		SubMilestoneWrapper subMilestone = wrapper.addSubMilestone(id);
 		subMilestone.setLabel(name);
@@ -177,7 +177,7 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 	 * @return A new wrapper of backlog item
 	 */
 	private BacklogItemWrapper addNewBacklogItem(MilestonePlanningWrapper wrapper) {
-		BacklogItemWrapper bi = wrapper.addBacklogItem(backlogItemIndex);
+		BacklogItemWrapper bi = wrapper.addBacklogItem(Integer.toString(backlogItemIndex));
 		bi.setInitialEffort(4F);
 		bi.setLabel("User Story " + backlogItemIndex); //$NON-NLS-1$
 		backlogItemIndex++;
@@ -193,7 +193,7 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 	 *            the milestone id to assign the backlog item to
 	 * @return A new wrapper assigned to the given milestone id
 	 */
-	private BacklogItemWrapper addNewBacklogItem(MilestonePlanningWrapper wrapper, int id) {
+	private BacklogItemWrapper addNewBacklogItem(MilestonePlanningWrapper wrapper, String id) {
 		BacklogItemWrapper bi = addNewBacklogItem(wrapper);
 		bi.setAssignedMilestoneId(id);
 		return bi;

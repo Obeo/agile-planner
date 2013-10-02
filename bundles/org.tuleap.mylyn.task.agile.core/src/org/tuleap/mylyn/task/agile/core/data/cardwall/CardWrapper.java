@@ -62,7 +62,7 @@ public class CardWrapper extends AbstractTaskAttributeWrapper {
 	 * @param id
 	 *            The id of the column
 	 */
-	protected CardWrapper(SwimlaneWrapper parent, TaskAttribute root, int id) {
+	protected CardWrapper(SwimlaneWrapper parent, TaskAttribute root, String id) {
 		super(root, id);
 		this.parent = parent;
 	}
@@ -93,8 +93,8 @@ public class CardWrapper extends AbstractTaskAttributeWrapper {
 	 *            The if of the field.
 	 * @return The unique id of the Assigned status id attribute.
 	 */
-	private String getFieldAttributeId(int id) {
-		return root.getId() + FIELD_SEPARATOR + Integer.toString(id);
+	private String getFieldAttributeId(String id) {
+		return root.getId() + FIELD_SEPARATOR + id;
 	}
 
 	/**
@@ -103,11 +103,11 @@ public class CardWrapper extends AbstractTaskAttributeWrapper {
 	 * @return The id of the status to which this card is assigned, or null if it is not assigned, which
 	 *         should not happen in an ideal world.
 	 */
-	public Integer getStatusId() {
-		Integer result = null;
+	public String getStatusId() {
+		String result = null;
 		TaskAttribute attribute = root.getMappedAttribute(getStatusIdAttributeId());
 		if (attribute != null) {
-			result = Integer.valueOf(attribute.getValue());
+			result = attribute.getValue();
 		}
 		return result;
 	}
@@ -118,7 +118,7 @@ public class CardWrapper extends AbstractTaskAttributeWrapper {
 	 * @param columnId
 	 *            The assigned milestone id.
 	 */
-	public void setStatusId(int columnId) {
+	public void setStatusId(String columnId) {
 		TaskAttribute attribute = root.getMappedAttribute(getStatusIdAttributeId());
 		String oldValue = null;
 		if (attribute == null) {
@@ -127,8 +127,8 @@ public class CardWrapper extends AbstractTaskAttributeWrapper {
 		} else {
 			oldValue = attribute.getValue();
 		}
-		if (oldValue == null || Integer.parseInt(oldValue) != columnId) {
-			attribute.setValue(Integer.toString(columnId));
+		if (oldValue == null || !oldValue.equals(columnId)) {
+			attribute.setValue(columnId);
 			fireAttributeChanged(attribute);
 		}
 	}
@@ -140,7 +140,7 @@ public class CardWrapper extends AbstractTaskAttributeWrapper {
 	 *            The if of the field.
 	 * @return The value of the field with this id, or null if cannot be found.
 	 */
-	public String getFieldValue(int id) {
+	public String getFieldValue(String id) {
 		TaskAttribute attribute = root.getMappedAttribute(getFieldAttributeId(id));
 		if (attribute != null) {
 			return attribute.getValue();
@@ -155,7 +155,7 @@ public class CardWrapper extends AbstractTaskAttributeWrapper {
 	 *            The if of the field.
 	 * @return The list of values, never null but possibly empty;
 	 */
-	public List<String> getFieldValues(int id) {
+	public List<String> getFieldValues(String id) {
 		TaskAttribute attribute = root.getMappedAttribute(getFieldAttributeId(id));
 		if (attribute != null) {
 			return attribute.getValues();
@@ -171,7 +171,7 @@ public class CardWrapper extends AbstractTaskAttributeWrapper {
 	 * @param value
 	 *            The value to set. If null, nothing is done.
 	 */
-	public void setFieldValue(int id, String value) {
+	public void setFieldValue(String id, String value) {
 		if (value == null) {
 			return;
 		}
@@ -194,7 +194,7 @@ public class CardWrapper extends AbstractTaskAttributeWrapper {
 	 * @param id
 	 *            the id of the field.
 	 */
-	public void clearFieldValues(int id) {
+	public void clearFieldValues(String id) {
 		TaskAttribute attribute = root.getMappedAttribute(getFieldAttributeId(id));
 		if (attribute != null) {
 			attribute.clearValues();
@@ -211,7 +211,7 @@ public class CardWrapper extends AbstractTaskAttributeWrapper {
 	 * @param values
 	 *            The values to set. If null or empty, nothing is done.
 	 */
-	public void setFieldValues(int id, List<String> values) {
+	public void setFieldValues(String id, List<String> values) {
 		if (values == null || values.isEmpty()) {
 			return;
 		}
@@ -232,7 +232,7 @@ public class CardWrapper extends AbstractTaskAttributeWrapper {
 	 * @param value
 	 *            The value to add. If null, nothing is done.
 	 */
-	public void addFieldValue(int id, String value) {
+	public void addFieldValue(String id, String value) {
 		if (value == null) {
 			return;
 		}
@@ -253,7 +253,7 @@ public class CardWrapper extends AbstractTaskAttributeWrapper {
 	 * @param values
 	 *            The values to add. If null or empty, nothing is done.
 	 */
-	public void addFieldValues(int id, List<String> values) {
+	public void addFieldValues(String id, List<String> values) {
 		if (values == null || values.isEmpty()) {
 			return;
 		}

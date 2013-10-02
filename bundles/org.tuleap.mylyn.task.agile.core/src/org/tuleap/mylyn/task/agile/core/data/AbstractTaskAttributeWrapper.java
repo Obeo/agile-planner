@@ -38,7 +38,7 @@ public abstract class AbstractTaskAttributeWrapper {
 	/**
 	 * Default value used for IDs not set.
 	 */
-	protected static final int UNSET_ID = -1;
+	protected static final String UNSET_ID = "";
 
 	/**
 	 * The wrapped task attribute.
@@ -65,7 +65,7 @@ public abstract class AbstractTaskAttributeWrapper {
 	 *            The functional ID of the wrapped element.
 	 */
 	// TODO The id should be a string!
-	public AbstractTaskAttributeWrapper(TaskAttribute root, int id) {
+	public AbstractTaskAttributeWrapper(TaskAttribute root, String id) {
 		this(root);
 		TaskAttribute attribute = root.getMappedAttribute(getIdAttributeId());
 		if (attribute == null) {
@@ -73,7 +73,7 @@ public abstract class AbstractTaskAttributeWrapper {
 			attribute.getMetaData().setReadOnly(true);
 			attribute.getMetaData().setType(TaskAttribute.TYPE_INTEGER);
 		}
-		attribute.setValue(Integer.toString(id));
+		attribute.setValue(id);
 	}
 
 	/**
@@ -112,10 +112,10 @@ public abstract class AbstractTaskAttributeWrapper {
 	 * 
 	 * @return The item's id.
 	 */
-	public int getId() {
+	public String getId() {
 		TaskAttribute attribute = root.getMappedAttribute(getIdAttributeId());
 		if (attribute != null) {
-			return Integer.parseInt(attribute.getValue());
+			return attribute.getValue();
 		}
 		return UNSET_ID;
 	}

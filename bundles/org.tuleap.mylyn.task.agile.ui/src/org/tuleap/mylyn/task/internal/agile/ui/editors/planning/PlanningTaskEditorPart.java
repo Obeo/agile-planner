@@ -216,7 +216,7 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 		});
 
 		// Add sort edit to the tool bar
-		final int subMilestoneId = subMilestone.getId();
+		final String subMilestoneId = subMilestone.getId();
 		Action a = new Action(MylynAgileUIMessages
 				.getString("PlanningTaskEditorPart.EditMilestoneActionLabel"), PlatformUI.getWorkbench() //$NON-NLS-1$
 				.getSharedImages().getImageDescriptor(ISharedImages.IMG_OBJ_FILE)) {
@@ -285,7 +285,7 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 				if (element == null) {
 					ret = strMissing;
 				} else if (element instanceof BacklogItemWrapper) {
-					ret = Integer.toString(((BacklogItemWrapper)element).getId());
+					ret = ((BacklogItemWrapper)element).getId();
 				} else {
 					ret = element.toString();
 				}

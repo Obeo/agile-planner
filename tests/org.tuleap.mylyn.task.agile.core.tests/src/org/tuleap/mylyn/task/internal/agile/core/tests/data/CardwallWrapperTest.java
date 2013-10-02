@@ -46,51 +46,51 @@ public class CardwallWrapperTest {
 	public void testCardwallCreation() {
 		CardwallWrapper wrapper = new CardwallWrapper(taskData.getRoot());
 		for (int i = 0; i < 4; i++) {
-			wrapper.addColumn(10 + i, "Column" + i);
+			wrapper.addColumn(Integer.toString(10 + i), "Column" + i);
 		}
-		SwimlaneWrapper swimlane = wrapper.addSwimlane(123);
+		SwimlaneWrapper swimlane = wrapper.addSwimlane("123");
 		SwimlaneItemWrapper item = swimlane.getSwimlaneItem();
 		item.setLabel("Label item");
 		item.setInitialEffort(12.5F);
-		item.setAssignedMilestoneId(1234);
+		item.setAssignedMilestoneId("1234");
 
 		for (int i = 0; i < 4; i++) {
-			CardWrapper card = swimlane.addCard(200 + i);
+			CardWrapper card = swimlane.addCard(Integer.toString(200 + i));
 			card.setLabel("Label " + (200 + i));
-			card.setStatusId(10 + i);
-			card.addFieldValue(100, "Value 100" + i);
+			card.setStatusId(Integer.toString(10 + i));
+			card.addFieldValue("100", "Value 100" + i);
 		}
 
 		// Retrieval of swimlane item from the cardwall to check that retrieved object has the right behavior
 		swimlane = wrapper.getSwimlanes().get(0);
 
 		item = swimlane.getSwimlaneItem();
-		assertEquals(123, item.getId());
+		assertEquals("123", item.getId());
 		assertEquals("Label item", item.getLabel());
 		assertEquals(12.5F, item.getInitialEffort(), 0F);
-		assertEquals(1234, item.getAssignedMilestoneId().intValue());
+		assertEquals("1234", item.getAssignedMilestoneId());
 
 		List<ColumnWrapper> columns = wrapper.getColumns();
 		for (int i = 0; i < 4; i++) {
-			assertEquals(10 + i, columns.get(i).getId());
+			assertEquals(Integer.toString(10 + i), columns.get(i).getId());
 			assertEquals("Column" + i, columns.get(i).getLabel());
 			// assertEquals()
 		}
 		List<SwimlaneWrapper> swimlanes = wrapper.getSwimlanes();
 		assertEquals(1, swimlanes.size());
 		swimlane = swimlanes.get(0);
-		assertEquals(123, swimlane.getSwimlaneItem().getId());
+		assertEquals("123", swimlane.getSwimlaneItem().getId());
 		assertEquals("Label item", swimlane.getSwimlaneItem().getLabel());
 		assertEquals(12.5F, swimlane.getSwimlaneItem().getInitialEffort(), 0F);
-		assertEquals(1234, swimlane.getSwimlaneItem().getAssignedMilestoneId().intValue());
+		assertEquals("1234", swimlane.getSwimlaneItem().getAssignedMilestoneId());
 
 		List<CardWrapper> cards = swimlane.getCards();
 		assertEquals(4, cards.size());
 		for (int i = 0; i < 4; i++) {
-			assertEquals(200 + i, cards.get(i).getId());
+			assertEquals(Integer.toString(200 + i), cards.get(i).getId());
 			assertEquals("Label " + (200 + i), cards.get(i).getLabel());
-			assertEquals(10 + i, cards.get(i).getStatusId().intValue());
-			assertEquals("Value 100" + i, cards.get(i).getFieldValue(100));
+			assertEquals(Integer.toString(10 + i), cards.get(i).getStatusId());
+			assertEquals("Value 100" + i, cards.get(i).getFieldValue("100"));
 		}
 	}
 
@@ -101,48 +101,48 @@ public class CardwallWrapperTest {
 	public void testCardwallModification() {
 		CardwallWrapper wrapper = new CardwallWrapper(taskData.getRoot());
 		for (int i = 0; i < 4; i++) {
-			wrapper.addColumn(10 + i, "Column" + i);
+			wrapper.addColumn(Integer.toString(10 + i), "Column" + i);
 		}
-		SwimlaneWrapper swimlane = wrapper.addSwimlane(123);
+		SwimlaneWrapper swimlane = wrapper.addSwimlane("123");
 		SwimlaneItemWrapper item = swimlane.getSwimlaneItem();
 		item.setLabel("Label item");
 		item.setInitialEffort(12.5F);
-		item.setAssignedMilestoneId(1234);
+		item.setAssignedMilestoneId("1234");
 
 		// Retrieval of swimlane item from the cardwall to modify it
 		swimlane = wrapper.getSwimlanes().get(0);
 		item = swimlane.getSwimlaneItem();
 		item.setLabel("Other label");
 		item.setInitialEffort(55.2F);
-		item.setAssignedMilestoneId(4321);
+		item.setAssignedMilestoneId("4321");
 
 		assertEquals("Other label", item.getLabel());
 		assertEquals(55.2F, item.getInitialEffort(), 0F);
-		assertEquals(4321, item.getAssignedMilestoneId().intValue());
+		assertEquals("4321", item.getAssignedMilestoneId());
 
 		for (int i = 0; i < 4; i++) {
-			CardWrapper card = swimlane.addCard(200 + i);
+			CardWrapper card = swimlane.addCard(Integer.toString(200 + i));
 			card.setLabel("Label " + (200 + i));
-			card.setStatusId(10 + i);
-			card.addFieldValue(100, "Value 100" + i);
+			card.setStatusId(Integer.toString(10 + i));
+			card.addFieldValue("100", "Value 100" + i);
 		}
 
 		// Modification of the cards created previously
 		for (int i = 0; i < 4; i++) {
-			CardWrapper card = swimlane.getCard(200 + i);
+			CardWrapper card = swimlane.getCard(Integer.toString(200 + i));
 			card.setLabel("Other " + (200 + i));
-			card.setStatusId(13 - i);
-			card.setFieldValue(100, "Other 100" + i);
+			card.setStatusId(Integer.toString(13 - i));
+			card.setFieldValue("100", "Other 100" + i);
 		}
 
 		List<CardWrapper> cards = swimlane.getCards();
 		assertEquals(4, cards.size());
 		for (int i = 0; i < 4; i++) {
 			CardWrapper card = cards.get(i);
-			assertEquals(200 + i, card.getId());
+			assertEquals(Integer.toString(200 + i), card.getId());
 			assertEquals("Other " + (200 + i), card.getLabel());
-			assertEquals(13 - i, card.getStatusId().intValue());
-			assertEquals("Other 100" + i, card.getFieldValue(100));
+			assertEquals(Integer.toString(13 - i), card.getStatusId());
+			assertEquals("Other 100" + i, card.getFieldValue("100"));
 		}
 	}
 
@@ -155,13 +155,13 @@ public class CardwallWrapperTest {
 		CardwallWrapper wrapper = new CardwallWrapper(taskData.getRoot());
 		wrapper.addListener(listener);
 		for (int i = 0; i < 4; i++) {
-			wrapper.addColumn(10 + i, "Column" + i);
+			wrapper.addColumn(Integer.toString(10 + i), "Column" + i);
 		}
-		SwimlaneWrapper swimlane = wrapper.addSwimlane(123);
+		SwimlaneWrapper swimlane = wrapper.addSwimlane("123");
 		SwimlaneItemWrapper item = swimlane.getSwimlaneItem();
 		item.setLabel("Label item");
 		item.setInitialEffort(12.5F);
-		item.setAssignedMilestoneId(1234);
+		item.setAssignedMilestoneId("1234");
 
 		String itemLabelKey = CardwallWrapper.SWIMLANE_LIST + "-0-" + SwimlaneWrapper.SUFFIX_SWIMLANE_ITEM
 				+ '-' + AbstractTaskAttributeWrapper.SUFFIX_LABEL;
@@ -182,9 +182,9 @@ public class CardwallWrapperTest {
 		String assignedIdKey = CardwallWrapper.SWIMLANE_LIST + "-0-" + SwimlaneWrapper.SUFFIX_SWIMLANE_ITEM
 				+ '-' + SwimlaneItemWrapper.SUFFIX_ASSIGNED_MILESTONE_ID;
 		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(assignedIdKey));
-		item.setAssignedMilestoneId(1234); // Should not notify
+		item.setAssignedMilestoneId("1234"); // Should not notify
 		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(assignedIdKey));
-		item.setAssignedMilestoneId(4321); // Should notify
+		item.setAssignedMilestoneId("4321"); // Should notify
 		assertEquals(Integer.valueOf(2), listener.getInvocationsCount(assignedIdKey));
 
 		// Retrieval of swimlane item from the cardwall to modify it
@@ -192,18 +192,18 @@ public class CardwallWrapperTest {
 
 		assertEquals("Other label", item.getLabel());
 		assertEquals(10F, item.getInitialEffort(), 0F);
-		assertEquals(4321, item.getAssignedMilestoneId().intValue());
+		assertEquals("4321", item.getAssignedMilestoneId());
 
 		for (int i = 0; i < 4; i++) {
-			CardWrapper card = swimlane.addCard(200 + i);
+			CardWrapper card = swimlane.addCard(Integer.toString(200 + i));
 			card.setLabel("Label " + (200 + i));
-			card.setStatusId(10 + i);
-			card.addFieldValue(100, "Value 100" + i);
+			card.setStatusId(Integer.toString(10 + i));
+			card.addFieldValue("100", "Value 100" + i);
 		}
 
 		// Modification of the cards created previously
 		for (int i = 0; i < 4; i++) {
-			int id = 200 + i;
+			String id = Integer.toString(200 + i);
 			String cardPrefix = CardwallWrapper.SWIMLANE_LIST + "-0-" + SwimlaneWrapper.SUFFIX_CARD_LIST
 					+ '-' + id;
 			CardWrapper card = swimlane.getCard(id);
@@ -217,26 +217,26 @@ public class CardwallWrapperTest {
 
 			String statusKey = cardPrefix + '-' + CardWrapper.SUFFIX_STATUS_ID;
 			assertEquals(1, listener.getInvocationsCount(statusKey).intValue());
-			card.setStatusId(10 + i);
+			card.setStatusId(Integer.toString(10 + i));
 			assertEquals(1, listener.getInvocationsCount(statusKey).intValue());
-			card.setStatusId(13 - i);
+			card.setStatusId(Integer.toString(13 - i));
 			assertEquals(2, listener.getInvocationsCount(statusKey).intValue());
 
 			String fieldKey = cardPrefix + CardWrapper.FIELD_SEPARATOR + "100";
 			assertEquals(1, listener.getInvocationsCount(fieldKey).intValue());
-			card.setFieldValue(100, "Value 100" + i); // Should not notify
+			card.setFieldValue("100", "Value 100" + i); // Should not notify
 			assertEquals(1, listener.getInvocationsCount(fieldKey).intValue());
-			card.setFieldValue(100, "Other 100" + i); // Should notify
+			card.setFieldValue("100", "Other 100" + i); // Should notify
 			assertEquals(2, listener.getInvocationsCount(fieldKey).intValue());
-			card.addFieldValue(100, "Other 100" + i); // Should notify
+			card.addFieldValue("100", "Other 100" + i); // Should notify
 			assertEquals(3, listener.getInvocationsCount(fieldKey).intValue());
-			card.clearFieldValues(100); // Should notify
+			card.clearFieldValues("100"); // Should notify
 			assertEquals(4, listener.getInvocationsCount(fieldKey).intValue());
-			assertEquals("", card.getFieldValue(100));
+			assertEquals("", card.getFieldValue("100"));
 			// Following should notify only once
-			card.addFieldValues(100, Arrays.asList("Other 100" + i, "Some 100" + i, "And again 100" + i));
+			card.addFieldValues("100", Arrays.asList("Other 100" + i, "Some 100" + i, "And again 100" + i));
 			assertEquals(5, listener.getInvocationsCount(fieldKey).intValue());
-			List<String> fieldValues = card.getFieldValues(100);
+			List<String> fieldValues = card.getFieldValues("100");
 			assertEquals(3, fieldValues.size());
 			assertEquals("Other 100" + i, fieldValues.get(0));
 			assertEquals("Some 100" + i, fieldValues.get(1));

@@ -76,7 +76,7 @@ public class SwimlaneWrapper extends AbstractTaskAttributeWrapper {
 	 * @param id
 	 *            The id of the swimlane's backlog item.
 	 */
-	protected SwimlaneWrapper(CardwallWrapper parent, TaskAttribute root, int id) {
+	protected SwimlaneWrapper(CardwallWrapper parent, TaskAttribute root, String id) {
 		super(root);
 		this.parent = parent;
 		cardList = root.createMappedAttribute(getAttributeId(root, SUFFIX_CARD_LIST));
@@ -102,7 +102,7 @@ public class SwimlaneWrapper extends AbstractTaskAttributeWrapper {
 	 *            Id of the card to create.
 	 * @return A new wrapper. No control is made as to existing card with this id.
 	 */
-	public CardWrapper addCard(int id) {
+	public CardWrapper addCard(String id) {
 		TaskAttribute cardAtt = cardList.createMappedAttribute(getCardAttributeId(id));
 		cardAtt.getMetaData().setReadOnly(true);
 		fireAttributeChanged(cardList);
@@ -127,7 +127,7 @@ public class SwimlaneWrapper extends AbstractTaskAttributeWrapper {
 	 *            The card's ID.
 	 * @return The unique ID of the {@link TaskAttribute} that represents a card in this swimlane.
 	 */
-	private String getCardAttributeId(int id) {
+	private String getCardAttributeId(String id) {
 		return cardList.getId() + ID_SEPARATOR + id;
 	}
 
@@ -138,7 +138,7 @@ public class SwimlaneWrapper extends AbstractTaskAttributeWrapper {
 	 *            Id of the being looked for.
 	 * @return A new wrapper, or null if the card with this id doesn't exist.
 	 */
-	public CardWrapper getCard(int id) {
+	public CardWrapper getCard(String id) {
 		TaskAttribute cardAtt = cardList.getAttribute(getCardAttributeId(id));
 		return wrapCard(cardAtt);
 	}

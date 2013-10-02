@@ -86,7 +86,7 @@ public abstract class AbstractBacklogItemWrapper extends AbstractTaskAttributeWr
 	 * @param id
 	 *            The backlog item's functional id
 	 */
-	protected AbstractBacklogItemWrapper(final TaskAttribute root, int id) {
+	protected AbstractBacklogItemWrapper(final TaskAttribute root, String id) {
 		super(root, id);
 	}
 
@@ -164,11 +164,11 @@ public abstract class AbstractBacklogItemWrapper extends AbstractTaskAttributeWr
 	 * @return The id of the (sub) milestone to which this item is assigned, or {@code null} if it is not
 	 *         assigned to any (sub) milestone.
 	 */
-	public Integer getAssignedMilestoneId() {
-		Integer result = null;
+	public String getAssignedMilestoneId() {
+		String result = null;
 		TaskAttribute attribute = root.getMappedAttribute(getAssignedIdAttributeId());
 		if (attribute != null) {
-			result = Integer.valueOf(attribute.getValue());
+			result = attribute.getValue();
 		}
 		return result;
 	}
@@ -179,7 +179,7 @@ public abstract class AbstractBacklogItemWrapper extends AbstractTaskAttributeWr
 	 * @param milestoneId
 	 *            The assigned milestone id.
 	 */
-	public void setAssignedMilestoneId(int milestoneId) {
+	public void setAssignedMilestoneId(String milestoneId) {
 		TaskAttribute attribute = root.getMappedAttribute(getAssignedIdAttributeId());
 		String oldValue = null;
 		if (attribute == null) {
@@ -188,8 +188,8 @@ public abstract class AbstractBacklogItemWrapper extends AbstractTaskAttributeWr
 		} else {
 			oldValue = attribute.getValue();
 		}
-		if (oldValue == null || Integer.parseInt(oldValue) != milestoneId) {
-			attribute.setValue(Integer.toString(milestoneId));
+		if (oldValue == null || !oldValue.equals(milestoneId)) {
+			attribute.setValue(milestoneId);
 			fireAttributeChanged(attribute);
 		}
 	}

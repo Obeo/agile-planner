@@ -36,7 +36,7 @@ public class SwimlaneItemWrapper extends AbstractBacklogItemWrapper {
 	 * @param id
 	 *            The backlog item's functional id
 	 */
-	protected SwimlaneItemWrapper(final SwimlaneWrapper parent, final TaskAttribute root, int id) {
+	protected SwimlaneItemWrapper(final SwimlaneWrapper parent, final TaskAttribute root, String id) {
 		super(root, id);
 		Assert.isNotNull(parent);
 		this.parent = parent;

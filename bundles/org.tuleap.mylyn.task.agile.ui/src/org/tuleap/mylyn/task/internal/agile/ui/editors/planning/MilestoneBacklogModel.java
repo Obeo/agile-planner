@@ -53,7 +53,7 @@ public class MilestoneBacklogModel implements IBacklog {
 	 * @see org.tuleap.mylyn.task.internal.agile.ui.editors.planning.IBacklog#getMilestoneId()
 	 */
 	@Override
-	public Integer getMilestoneId() {
+	public String getMilestoneId() {
 		return null; // This is not a mistake
 	}
 

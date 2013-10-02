@@ -41,7 +41,7 @@ public final class PlanningFilters {
 	 *            The milestone id
 	 * @return A Guava predicate.
 	 */
-	public static Predicate<BacklogItemWrapper> assignedTo(int milestoneId) {
+	public static Predicate<BacklogItemWrapper> assignedTo(String milestoneId) {
 		return new FilterAssignedTo(milestoneId);
 	}
 
@@ -81,7 +81,7 @@ public final class PlanningFilters {
 		/**
 		 * The milestone id to which a backlog item must be assigned to be accepted.
 		 */
-		private final int milestoneId;
+		private final String milestoneId;
 
 		/**
 		 * Constructor.
@@ -89,7 +89,7 @@ public final class PlanningFilters {
 		 * @param milestoneId
 		 *            The milestone id
 		 */
-		public FilterAssignedTo(int milestoneId) {
+		public FilterAssignedTo(String milestoneId) {
 			this.milestoneId = milestoneId;
 		}
 
@@ -100,9 +100,9 @@ public final class PlanningFilters {
 		 */
 		@Override
 		public boolean apply(BacklogItemWrapper wrapper) {
-			Integer assignedId = wrapper.getAssignedMilestoneId();
+			String assignedId = wrapper.getAssignedMilestoneId();
 			if (assignedId != null) {
-				return assignedId.intValue() == milestoneId;
+				return assignedId.equals(milestoneId);
 			}
 			return false;
 		}

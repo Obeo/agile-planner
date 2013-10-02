@@ -36,7 +36,7 @@ public class BacklogItemWrapper extends AbstractBacklogItemWrapper {
 	 * @param id
 	 *            The backlog item's functional id
 	 */
-	protected BacklogItemWrapper(final MilestonePlanningWrapper parent, final TaskAttribute root, int id) {
+	protected BacklogItemWrapper(final MilestonePlanningWrapper parent, final TaskAttribute root, String id) {
 		super(root, id);
 		Assert.isNotNull(parent);
 		this.parent = parent;

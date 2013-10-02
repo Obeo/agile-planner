@@ -53,8 +53,8 @@ public class SubMilestoneBacklogModel implements IBacklog {
 	 * @see org.tuleap.mylyn.task.internal.agile.ui.editors.planning.IBacklog#getMilestoneId()
 	 */
 	@Override
-	public Integer getMilestoneId() {
-		return Integer.valueOf(subMilestoneWrapper.getId());
+	public String getMilestoneId() {
+		return subMilestoneWrapper.getId();
 	}
 
 	/**

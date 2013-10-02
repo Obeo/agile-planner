@@ -61,7 +61,7 @@ public class CardEditPart extends AbstractGraphicalEditPart {
 		CardFigure fig = getCardFigure();
 		CardWrapper artifact = (CardWrapper)getModel();
 		fig.setTitle(artifact.getLabel());
-		fig.setDescription(artifact.getFieldValue(100)); // TODO
+		fig.setDescription(artifact.getFieldValue("100")); // TODO
 	}
 
 }

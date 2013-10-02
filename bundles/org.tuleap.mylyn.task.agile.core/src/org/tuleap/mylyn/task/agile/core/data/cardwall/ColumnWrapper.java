@@ -51,7 +51,7 @@ public class ColumnWrapper extends AbstractTaskAttributeWrapper {
 	 * @param label
 	 *            The label of the column
 	 */
-	protected ColumnWrapper(CardwallWrapper parent, TaskAttribute root, int id, String label) {
+	protected ColumnWrapper(CardwallWrapper parent, TaskAttribute root, String id, String label) {
 		super(root, id);
 		this.parent = parent;
 		setLabel(label);

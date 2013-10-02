@@ -66,7 +66,7 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 	 * @param id
 	 *            The id of the sub-milestone.
 	 */
-	protected SubMilestoneWrapper(final MilestonePlanningWrapper parent, final TaskAttribute root, int id) {
+	protected SubMilestoneWrapper(final MilestonePlanningWrapper parent, final TaskAttribute root, String id) {
 		super(root, id);
 		this.parent = parent;
 	}
@@ -230,13 +230,13 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 	 * @return a list of backlog item wrappers, never null but possibly empty.
 	 */
 	public List<BacklogItemWrapper> getOrderedBacklogItems() {
-		int milestoneId = getId();
+		String milestoneId = getId();
 		List<BacklogItemWrapper> result = Lists.newArrayList();
 		TaskAttribute backlog = parent.getBacklogTaskAttribute();
 		for (String attributeId : backlog.getValues()) {
 			BacklogItemWrapper bi = parent.wrapBacklogItem(backlog.getAttribute(attributeId));
-			Integer assignedId = bi.getAssignedMilestoneId();
-			if (assignedId != null && assignedId.intValue() == milestoneId) {
+			String assignedId = bi.getAssignedMilestoneId();
+			if (assignedId != null && assignedId.equals(milestoneId)) {
 				result.add(bi);
 			}
 		}

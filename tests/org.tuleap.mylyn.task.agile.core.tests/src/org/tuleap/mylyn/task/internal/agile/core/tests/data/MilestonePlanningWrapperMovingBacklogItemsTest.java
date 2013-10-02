@@ -167,29 +167,29 @@ public class MilestonePlanningWrapperMovingBacklogItemsTest {
 		taskData = new TaskData(mapper, connectorKind, repositoryUrl, taskId);
 		wrapper = new MilestonePlanningWrapper(taskData.getRoot());
 		// Date testDate = new Date();
-		subMilestone1 = wrapper.addSubMilestone(100);
-		subMilestone2 = wrapper.addSubMilestone(200);
-		subMilestone3 = wrapper.addSubMilestone(300);
+		subMilestone1 = wrapper.addSubMilestone("100");
+		subMilestone2 = wrapper.addSubMilestone("200");
+		subMilestone3 = wrapper.addSubMilestone("300");
 
-		backlogItem0 = wrapper.addBacklogItem(0);
-		backlogItem1 = wrapper.addBacklogItem(1);
-		backlogItem2 = wrapper.addBacklogItem(2);
-		backlogItem3 = wrapper.addBacklogItem(3);
-		backlogItem4 = wrapper.addBacklogItem(4);
-		backlogItem5 = wrapper.addBacklogItem(5);
-		backlogItem6 = wrapper.addBacklogItem(6);
-		backlogItem7 = wrapper.addBacklogItem(7);
-		backlogItem8 = wrapper.addBacklogItem(8);
-		backlogItem9 = wrapper.addBacklogItem(9);
-		backlogItem10 = wrapper.addBacklogItem(10);
-		backlogItem11 = wrapper.addBacklogItem(11);
-		backlogItem12 = wrapper.addBacklogItem(12);
-		backlogItem13 = wrapper.addBacklogItem(13);
-		backlogItem14 = wrapper.addBacklogItem(14);
-		backlogItem15 = wrapper.addBacklogItem(15);
-		backlogItem16 = wrapper.addBacklogItem(16);
-		backlogItem17 = wrapper.addBacklogItem(17);
-		backlogItem18 = wrapper.addBacklogItem(18);
+		backlogItem0 = wrapper.addBacklogItem("0");
+		backlogItem1 = wrapper.addBacklogItem("1");
+		backlogItem2 = wrapper.addBacklogItem("2");
+		backlogItem3 = wrapper.addBacklogItem("3");
+		backlogItem4 = wrapper.addBacklogItem("4");
+		backlogItem5 = wrapper.addBacklogItem("5");
+		backlogItem6 = wrapper.addBacklogItem("6");
+		backlogItem7 = wrapper.addBacklogItem("7");
+		backlogItem8 = wrapper.addBacklogItem("8");
+		backlogItem9 = wrapper.addBacklogItem("9");
+		backlogItem10 = wrapper.addBacklogItem("10");
+		backlogItem11 = wrapper.addBacklogItem("11");
+		backlogItem12 = wrapper.addBacklogItem("12");
+		backlogItem13 = wrapper.addBacklogItem("13");
+		backlogItem14 = wrapper.addBacklogItem("14");
+		backlogItem15 = wrapper.addBacklogItem("15");
+		backlogItem16 = wrapper.addBacklogItem("16");
+		backlogItem17 = wrapper.addBacklogItem("17");
+		backlogItem18 = wrapper.addBacklogItem("18");
 	}
 
 	/**
@@ -223,7 +223,7 @@ public class MilestonePlanningWrapperMovingBacklogItemsTest {
 		List<BacklogItemWrapper> backlogItems = subMilestone1.getOrderedBacklogItems();
 		int id = 5; // Index of the first moved element
 		for (BacklogItemWrapper bi : backlogItems) {
-			assertEquals(id++, bi.getId());
+			assertEquals(Integer.toString(id++), bi.getId());
 		}
 
 		// Check that unassigned items no longer contain moved elements
@@ -232,9 +232,9 @@ public class MilestonePlanningWrapperMovingBacklogItemsTest {
 		assertFalse(unassignedBacklogItems.contains(backlogItem6));
 		assertFalse(unassignedBacklogItems.contains(backlogItem7));
 
-		assertEquals(100, backlogItem5.getAssignedMilestoneId().intValue());
-		assertEquals(100, backlogItem6.getAssignedMilestoneId().intValue());
-		assertEquals(100, backlogItem7.getAssignedMilestoneId().intValue());
+		assertEquals("100", backlogItem5.getAssignedMilestoneId());
+		assertEquals("100", backlogItem6.getAssignedMilestoneId());
+		assertEquals("100", backlogItem7.getAssignedMilestoneId());
 		assertEquals(null, backlogItem8.getAssignedMilestoneId());
 
 		// the reverse way: test moving the list back to the backlog
@@ -257,9 +257,10 @@ public class MilestonePlanningWrapperMovingBacklogItemsTest {
 
 		List<BacklogItemWrapper> backlogItems = subMilestone1.getOrderedBacklogItems();
 		assertEquals(1, backlogItems.size());
-		assertEquals(5, backlogItems.get(0).getId());
+		assertEquals("5", backlogItems.get(0).getId());
 
-		int[] expectedIds = {0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18 };
+		String[] expectedIds = {"0", "1", "2", "3", "4", "6", "7", "8", "9", "10", "11", "12", "13", "14",
+				"15", "16", "17", "18", };
 		int i = 0;
 		for (BacklogItemWrapper bi : wrapper.getOrderedUnassignedBacklogItems()) {
 			assertEquals(expectedIds[i++], bi.getId());
@@ -269,7 +270,8 @@ public class MilestonePlanningWrapperMovingBacklogItemsTest {
 
 		assertTrue(subMilestone1.getOrderedBacklogItems().isEmpty());
 
-		int[] expectedIds2 = {0, 5, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18 };
+		String[] expectedIds2 = {"0", "5", "1", "2", "3", "4", "6", "7", "8", "9", "10", "11", "12", "13",
+				"14", "15", "16", "17", "18", };
 		i = 0;
 		for (BacklogItemWrapper bi : wrapper.getOrderedUnassignedBacklogItems()) {
 			assertEquals(expectedIds2[i++], bi.getId());
@@ -294,10 +296,11 @@ public class MilestonePlanningWrapperMovingBacklogItemsTest {
 
 		int id = 9; // id of first moved element
 		for (BacklogItemWrapper bi : backlogItems) {
-			assertEquals(id++, bi.getId());
+			assertEquals(Integer.toString(id++), bi.getId());
 		}
 
-		int[] expectedIds = {0, 1, 2, 3, 4, 5, 6, 7, 8, 12, 13, 14, 15, 16, 17, 18 };
+		String[] expectedIds = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "12", "13", "14", "15", "16",
+				"17", "18", };
 		int i = 0;
 		for (BacklogItemWrapper bi : wrapper.getOrderedUnassignedBacklogItems()) {
 			assertEquals(expectedIds[i++], bi.getId());
@@ -309,9 +312,9 @@ public class MilestonePlanningWrapperMovingBacklogItemsTest {
 		assertFalse(unassignedBacklogItems.contains(backlogItem10));
 		assertFalse(unassignedBacklogItems.contains(backlogItem11));
 
-		assertEquals(200, backlogItem9.getAssignedMilestoneId().intValue());
-		assertEquals(200, backlogItem10.getAssignedMilestoneId().intValue());
-		assertEquals(200, backlogItem11.getAssignedMilestoneId().intValue());
+		assertEquals("200", backlogItem9.getAssignedMilestoneId());
+		assertEquals("200", backlogItem10.getAssignedMilestoneId());
+		assertEquals("200", backlogItem11.getAssignedMilestoneId());
 		assertEquals(null, backlogItem12.getAssignedMilestoneId());
 
 		// the reverse way: test moving the list back to the backlog
@@ -321,7 +324,8 @@ public class MilestonePlanningWrapperMovingBacklogItemsTest {
 		}
 
 		// Check to order of backlog items
-		int[] expectedIds2 = {9, 10, 11, 0, 1, 2, 3, 4, 5, 6, 7, 8, 12, 13, 14, 15, 16, 17, 18 };
+		String[] expectedIds2 = {"9", "10", "11", "0", "1", "2", "3", "4", "5", "6", "7", "8", "12", "13",
+				"14", "15", "16", "17", "18", };
 		i = 0;
 		for (BacklogItemWrapper bi : wrapper.getOrderedUnassignedBacklogItems()) {
 			assertEquals(expectedIds2[i++], bi.getId());
@@ -351,13 +355,13 @@ public class MilestonePlanningWrapperMovingBacklogItemsTest {
 		BacklogItemWrapper second = i.next();
 		BacklogItemWrapper third = i.next();
 
-		assertEquals(15, first.getId());
-		assertEquals(16, second.getId());
-		assertEquals(17, third.getId());
+		assertEquals("15", first.getId());
+		assertEquals("16", second.getId());
+		assertEquals("17", third.getId());
 
-		assertEquals(300, first.getAssignedMilestoneId().intValue());
-		assertEquals(300, second.getAssignedMilestoneId().intValue());
-		assertEquals(300, third.getAssignedMilestoneId().intValue());
+		assertEquals("300", first.getAssignedMilestoneId());
+		assertEquals("300", second.getAssignedMilestoneId());
+		assertEquals("300", third.getAssignedMilestoneId());
 		assertEquals(null, backlogItem18.getAssignedMilestoneId());
 
 		// the reverse way: test moving the list to the backlog
@@ -381,7 +385,8 @@ public class MilestonePlanningWrapperMovingBacklogItemsTest {
 		wrapper.moveItemsToBacklog(milestone3BIs, backlogItem4, true);
 
 		// Check to order of backlog items
-		int[] expectedIds = {0, 1, 3, 2, 4, 13, 14, 5, 6, 7, 8, 9, 10, 11, 12, 15, 16, 17, 18 };
+		String[] expectedIds = {"0", "1", "3", "2", "4", "13", "14", "5", "6", "7", "8", "9", "10", "11",
+				"12", "15", "16", "17", "18", };
 		int i = 0;
 		for (BacklogItemWrapper bi : wrapper.getOrderedUnassignedBacklogItems()) {
 			assertEquals(expectedIds[i++], bi.getId());

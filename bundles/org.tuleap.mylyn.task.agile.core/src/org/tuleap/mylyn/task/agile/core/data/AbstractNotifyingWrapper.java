@@ -47,7 +47,7 @@ public abstract class AbstractNotifyingWrapper extends AbstractTaskAttributeWrap
 	 * @param id
 	 *            The functional ID of the wrapped element.
 	 */
-	public AbstractNotifyingWrapper(TaskAttribute root, int id) {
+	public AbstractNotifyingWrapper(TaskAttribute root, String id) {
 		super(root, id);
 	}
 

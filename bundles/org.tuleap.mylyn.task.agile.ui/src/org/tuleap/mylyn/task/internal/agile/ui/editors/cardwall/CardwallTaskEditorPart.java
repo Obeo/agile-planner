@@ -125,19 +125,19 @@ public class CardwallTaskEditorPart extends AbstractTaskEditorPart implements IT
 		TaskData taskData = new TaskData(mapper, connectorKind, repositoryUrl, taskId);
 		CardwallWrapper wrapper = new CardwallWrapper(taskData.getRoot());
 		for (int i = 0; i < 4; i++) {
-			wrapper.addColumn(10 + i, "Column" + i); //$NON-NLS-1$
+			wrapper.addColumn(Integer.toString(10 + i), "Column" + i); //$NON-NLS-1$
 		}
-		SwimlaneWrapper swimlane = wrapper.addSwimlane(123);
+		SwimlaneWrapper swimlane = wrapper.addSwimlane("123");
 		SwimlaneItemWrapper item = swimlane.getSwimlaneItem();
 		item.setLabel("Label item"); //$NON-NLS-1$
 		item.setInitialEffort(12.5F);
-		item.setAssignedMilestoneId(1234);
+		item.setAssignedMilestoneId("1234");
 
 		for (int i = 0; i < 4; i++) {
-			CardWrapper card = swimlane.addCard(200 + i);
+			CardWrapper card = swimlane.addCard(Integer.toString(200 + i));
 			card.setLabel("Label " + (200 + i)); //$NON-NLS-1$
-			card.setStatusId(10 + i);
-			card.addFieldValue(100, "Value 100" + i); //$NON-NLS-1$
+			card.setStatusId(Integer.toString(10 + i));
+			card.addFieldValue("100", "Value 100" + i); //$NON-NLS-1$
 		}
 		return wrapper;
 		// CHECKSTYLE:ON

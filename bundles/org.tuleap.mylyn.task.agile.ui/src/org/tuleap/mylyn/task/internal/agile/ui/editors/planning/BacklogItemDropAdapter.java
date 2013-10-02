@@ -105,7 +105,7 @@ public class BacklogItemDropAdapter extends ViewerDropAdapter {
 			if (selectedBacklogItems.isEmpty()) {
 				ret = false;
 			} else {
-				Integer milestoneId = wrapper.getAssignedMilestoneId();
+				String milestoneId = wrapper.getAssignedMilestoneId();
 				MilestonePlanningWrapper planningWrapper = container.getMilestonePlanning();
 				if (milestoneId == null) {
 					// Drop on planning's backlog
@@ -115,7 +115,7 @@ public class BacklogItemDropAdapter extends ViewerDropAdapter {
 					planningWrapper.moveItemsToMilestone(selectedBacklogItems, wrapper, before,
 							planningWrapper
 
-							.getSubMilestone(milestoneId.intValue()));
+							.getSubMilestone(milestoneId));
 				}
 				ret = true;
 			}
@@ -150,10 +150,10 @@ public class BacklogItemDropAdapter extends ViewerDropAdapter {
 		if (biWrappers.iterator().hasNext()) {
 			lastBacklogItem = Iterables.getLast(biWrappers);
 		}
-		Integer targetAssignedMilestoneId = container.getMilestoneId();
+		String targetAssignedMilestoneId = container.getMilestoneId();
 
 		BacklogItemWrapper firstSelectedElement = selectedBacklogItems.get(0);
-		Integer selectedAssignedMilestoneId = firstSelectedElement.getAssignedMilestoneId();
+		String selectedAssignedMilestoneId = firstSelectedElement.getAssignedMilestoneId();
 		if (targetAssignedMilestoneId == null) {
 			// Move to the backlog
 			if (selectedAssignedMilestoneId != null) {
@@ -163,7 +163,7 @@ public class BacklogItemDropAdapter extends ViewerDropAdapter {
 			}
 		} else if (!targetAssignedMilestoneId.equals(selectedAssignedMilestoneId)) {
 			SubMilestoneWrapper targetMilestone = container.getMilestonePlanning().getSubMilestone(
-					targetAssignedMilestoneId.intValue());
+					targetAssignedMilestoneId);
 			container.getMilestonePlanning().moveItemsToMilestone(selectedBacklogItems, lastBacklogItem,
 					false, targetMilestone);
 			ret = true;

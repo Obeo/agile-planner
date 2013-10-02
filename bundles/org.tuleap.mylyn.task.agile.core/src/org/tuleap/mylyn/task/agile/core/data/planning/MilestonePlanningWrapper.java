@@ -101,7 +101,7 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 	 *            the sub-milestone identifier
 	 * @return A new wrapper for a new task attribute that is created by invoking this method.
 	 */
-	public SubMilestoneWrapper addSubMilestone(int id) {
+	public SubMilestoneWrapper addSubMilestone(String id) {
 		TaskAttribute smAtt = submilestoneList.createAttribute(SubMilestoneWrapper.PREFIX_MILESTONE
 				+ submilestoneList.getAttributes().size());
 		smAtt.getMetaData().setReadOnly(true);
@@ -139,7 +139,7 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 	 *            the backlogItem identifier
 	 * @return A wrapper for a newly created TaskAttribute representing a BacklogItem in the given parent.
 	 */
-	public BacklogItemWrapper addBacklogItem(int id) {
+	public BacklogItemWrapper addBacklogItem(String id) {
 		TaskAttribute biAtt = backlog.createAttribute(BacklogItemWrapper.PREFIX_BACKLOG_ITEM
 				+ backlog.getAttributes().size());
 		biAtt.getMetaData().setReadOnly(true);
@@ -193,19 +193,21 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 	 *            The id of the sub-milestone being looked for
 	 * @return The first milestone found with the given id in the list of sub-milestones.
 	 */
-	public SubMilestoneWrapper getSubMilestone(final int id) {
-		Iterator<SubMilestoneWrapper> candidates = Iterators.filter(getSubMilestones().iterator(),
-				new Predicate<SubMilestoneWrapper>() {
-					/**
-					 * {@inheritDoc}
-					 */
-					@Override
-					public boolean apply(SubMilestoneWrapper w) {
-						return id == w.getId();
-					}
-				});
-		if (candidates.hasNext()) {
-			return candidates.next();
+	public SubMilestoneWrapper getSubMilestone(final String id) {
+		if (id != null) {
+			Iterator<SubMilestoneWrapper> candidates = Iterators.filter(getSubMilestones().iterator(),
+					new Predicate<SubMilestoneWrapper>() {
+						/**
+						 * {@inheritDoc}
+						 */
+						@Override
+						public boolean apply(SubMilestoneWrapper w) {
+							return id.equals(w.getId());
+						}
+					});
+			if (candidates.hasNext()) {
+				return candidates.next();
+			}
 		}
 		return null;
 	}

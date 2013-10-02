@@ -34,7 +34,7 @@ public interface IBacklog {
 	 * @return The enclosing milestone's ID, or null if this is the planning's backlog (not related to a
 	 *         sub-milestone).
 	 */
-	Integer getMilestoneId();
+	String getMilestoneId();
 
 	/**
 	 * Enclosing milestone planning.

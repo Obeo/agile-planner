@@ -76,7 +76,7 @@ public class CardwallWrapper extends AbstractNotifyingWrapper {
 	 *            The label of the column.
 	 * @return The created wrapper.
 	 */
-	public ColumnWrapper addColumn(int id, String label) {
+	public ColumnWrapper addColumn(String id, String label) {
 		TaskAttribute columnAtt = columnList.createMappedAttribute(getAttributeId(columnList, String
 				.valueOf(columnList.getAttributes().size())));
 		fireAttributeChanged(columnList);
@@ -138,7 +138,7 @@ public class CardwallWrapper extends AbstractNotifyingWrapper {
 	 *            The id of the swimlane's backlog ite.
 	 * @return The created wrapper.
 	 */
-	public SwimlaneWrapper addSwimlane(int itemId) {
+	public SwimlaneWrapper addSwimlane(String itemId) {
 		TaskAttribute swimlaneAtt = swimlaneList.createMappedAttribute(getAttributeId(swimlaneList, String
 				.valueOf(swimlaneList.getAttributes().size())));
 		fireAttributeChanged(swimlaneList);
