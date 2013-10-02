@@ -64,6 +64,7 @@ public abstract class AbstractTaskAttributeWrapper {
 	 * @param id
 	 *            The functional ID of the wrapped element.
 	 */
+	// TODO The id should be a string!
 	public AbstractTaskAttributeWrapper(TaskAttribute root, int id) {
 		this(root);
 		TaskAttribute attribute = root.getMappedAttribute(getIdAttributeId());
