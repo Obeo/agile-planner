@@ -78,7 +78,7 @@ public class CellContentEditPart extends AbstractCellEditPart {
 
 				@Override
 				public boolean apply(CardWrapper input) {
-					return Integer.valueOf(col.getId()).equals(input.getStatusId());
+					return col.getId() != null && col.getId().equals(input.getStatusId());
 				}
 
 			}));
