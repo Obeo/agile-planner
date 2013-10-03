@@ -22,6 +22,10 @@ import org.eclipse.mylyn.tasks.core.data.AbstractTaskDataHandler;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.core.data.TaskAttributeMapper;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
+import org.tuleap.mylyn.task.agile.core.data.cardwall.CardWrapper;
+import org.tuleap.mylyn.task.agile.core.data.cardwall.CardwallWrapper;
+import org.tuleap.mylyn.task.agile.core.data.cardwall.SwimlaneItemWrapper;
+import org.tuleap.mylyn.task.agile.core.data.cardwall.SwimlaneWrapper;
 import org.tuleap.mylyn.task.agile.core.data.planning.BacklogItemWrapper;
 import org.tuleap.mylyn.task.agile.core.data.planning.MilestonePlanningWrapper;
 import org.tuleap.mylyn.task.agile.core.data.planning.SubMilestoneWrapper;
@@ -141,7 +145,36 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 		addNewBacklogItem(wrapper);
 		addNewBacklogItem(wrapper);
 
+		addNewCardwall(root);
+
 		return true;
+	}
+
+	/**
+	 * Adds a new cardwall to the given task attribute.
+	 * 
+	 * @param root
+	 *            The task attribute
+	 */
+	private void addNewCardwall(TaskAttribute root) {
+		// CHECKSTYLE:OFF
+		CardwallWrapper cardwallWrapper = new CardwallWrapper(root);
+		for (int i = 0; i < 4; i++) {
+			cardwallWrapper.addColumn(Integer.toString(10 + i), "Column" + i); //$NON-NLS-1$
+		}
+		SwimlaneWrapper swimlane = cardwallWrapper.addSwimlane("123"); //$NON-NLS-1$
+		SwimlaneItemWrapper item = swimlane.getSwimlaneItem();
+		item.setLabel("Label item"); //$NON-NLS-1$
+		item.setInitialEffort(12.5F);
+		item.setAssignedMilestoneId("1234"); //$NON-NLS-1$
+
+		for (int i = 0; i < 4; i++) {
+			CardWrapper card = swimlane.addCard(Integer.toString(200 + i));
+			card.setLabel("Label " + (200 + i)); //$NON-NLS-1$
+			card.setStatusId(Integer.toString(10 + i));
+			card.addFieldValue("100", "Value 100" + i); //$NON-NLS-1$
+		}
+		// CHECKSTYLE:ON
 	}
 
 	/**
