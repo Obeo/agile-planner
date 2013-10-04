@@ -53,6 +53,11 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 	private static final float DURATION = 11F;
 
 	/**
+	 * The id of the value field of a card.
+	 */
+	private static final String CARD_VALUE_FIELD_ID = "100"; //$NON-NLS-1$
+
+	/**
 	 * The backlog item index.
 	 */
 	private int backlogItemIndex = 100;
@@ -60,7 +65,7 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 	/**
 	 * The backlog item index.
 	 */
-	private String milestoneId = "100";
+	private String milestoneId = "100"; //$NON-NLS-1$
 
 	/**
 	 * {@inheritDoc}
@@ -157,6 +162,16 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 	 *            The task attribute
 	 */
 	private void addNewCardwall(TaskAttribute root) {
+		cardwall2(root);
+	}
+
+	/**
+	 * Data set 1 for an example of cardwall.
+	 * 
+	 * @param root
+	 *            The task attribute
+	 */
+	private void cardwall1(TaskAttribute root) {
 		// CHECKSTYLE:OFF
 		CardwallWrapper cardwallWrapper = new CardwallWrapper(root);
 		for (int i = 0; i < 4; i++) {
@@ -172,7 +187,60 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 			CardWrapper card = swimlane.addCard(Integer.toString(200 + i));
 			card.setLabel("Label " + (200 + i)); //$NON-NLS-1$
 			card.setStatusId(Integer.toString(10 + i));
-			card.addFieldValue("100", "Value 100" + i); //$NON-NLS-1$
+			card.addFieldValue(CARD_VALUE_FIELD_ID, "Value 100" + i); //$NON-NLS-1$
+		}
+		// CHECKSTYLE:ON
+	}
+
+	/**
+	 * Data set 2 for an example of cardwall.
+	 * 
+	 * @param root
+	 *            The task attribute
+	 */
+	private void cardwall2(TaskAttribute root) {
+		// CHECKSTYLE:OFF
+		CardwallWrapper cardwallWrapper = new CardwallWrapper(root);
+		for (int i = 0; i < 3; i++) {
+			cardwallWrapper.addColumn(Integer.toString(10 + i), "Column " + i); //$NON-NLS-1$
+		}
+		for (int i = 0; i < 3; i++) {
+			SwimlaneWrapper swimlane = cardwallWrapper.addSwimlane(Integer.toString(20 + i));
+			SwimlaneItemWrapper item = swimlane.getSwimlaneItem();
+			item.setLabel("Item " + i); //$NON-NLS-1$
+			item.setInitialEffort(5);
+			item.setAssignedMilestoneId("1234"); //$NON-NLS-1$
+
+			switch (i) {
+				case 0:
+					CardWrapper card00 = swimlane.addCard(Integer.toString(300) + i);
+					card00.setLabel("Title of " + (300 + i)); //$NON-NLS-1$
+					card00.setStatusId(Integer.toString(10 + i));
+					card00.addFieldValue(CARD_VALUE_FIELD_ID,
+							"Blablafdfdjjdkeds  deffsfsrfersfrqsefhqz euofhzquofgeo zfuiegpgzfe fgpzeufg"); //$NON-NLS-1$ 
+
+					CardWrapper card10 = swimlane.addCard(Integer.toString(301) + i);
+					card10.setLabel("Title of " + (301 + i)); //$NON-NLS-1$
+					card10.setStatusId(Integer.toString(10 + i));
+					card10.addFieldValue(
+							CARD_VALUE_FIELD_ID,
+							"Blablafdfdjjdkedsdeffsfrezgtzehrtehrthertherjhretyherthrt\ndezgfdiezlruerf\nzedfezaferfgrzegtr\ncezfezafazerfze\nferfrezfgr\ngusmzad\nkdzedezeyf\ndezdeazd\ntfz\nsdzgdzeyi\ndezqdgeui"); //$NON-NLS-1$ 
+					break;
+				case 1:
+					CardWrapper card01 = swimlane.addCard(Integer.toString(300) + i);
+					card01.setLabel("Title of " + (300 + i)); //$NON-NLS-1$
+					card01.setStatusId(Integer.toString(10 + i));
+					card01.addFieldValue(CARD_VALUE_FIELD_ID, "Blablafdfdjjdkedsdeffsdegzufigeuofzgyoz"); //$NON-NLS-1$ 
+					break;
+				case 2:
+					// CardWrapper card02 = swimlane.addCard(Integer.toString(300 + i));
+					// CardWrapper card12 = swimlane.addCard(Integer.toString(301 + i));
+					// CardWrapper card22 = swimlane.addCard(Integer.toString(302 + i));
+					break;
+				default:
+					break;
+			}
+
 		}
 		// CHECKSTYLE:ON
 	}
