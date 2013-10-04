@@ -10,12 +10,16 @@
  *******************************************************************************/
 package org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.figure;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.draw2d.GridData;
 import org.eclipse.draw2d.GridLayout;
 import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.Panel;
 import org.eclipse.draw2d.StackLayout;
 import org.eclipse.draw2d.ToolbarLayout;
+import org.eclipse.draw2d.text.BlockFlow;
 import org.eclipse.draw2d.text.FlowPage;
 import org.eclipse.draw2d.text.TextFlow;
 import org.eclipse.swt.SWT;
@@ -72,6 +76,16 @@ public class CardFigure extends Panel {
 	private TextFlow descTextFlow;
 
 	/**
+	 * The panel containing the data of the card.
+	 */
+	private Panel contentPanel;
+
+	/**
+	 * Map containing the configurable fields on the card, indexed by their id.
+	 */
+	private Map<String, TextFlow> configurableFields = new HashMap<String, TextFlow>();
+
+	/**
 	 * Constructor.
 	 */
 	public CardFigure() {
@@ -93,7 +107,7 @@ public class CardFigure extends Panel {
 		marginsLayout.marginWidth = MARGIN;
 		marginsPanel.setLayoutManager(marginsLayout);
 
-		Panel contentPanel = new Panel();
+		contentPanel = new Panel();
 		ToolbarLayout contentLayout = new ToolbarLayout(false);
 		contentLayout.setMinorAlignment(ToolbarLayout.ALIGN_TOPLEFT);
 		contentLayout.setStretchMinorAxis(true);
@@ -108,22 +122,10 @@ public class CardFigure extends Panel {
 		titleTextFlow = new TextFlow();
 		titleFlowPage.add(titleTextFlow);
 
-		Panel desc = new Panel(); // TODO: Manage a scroll pane...
-		desc.setLayoutManager(new GridLayout(1, false));
-
-		FlowPage descFlowPage = new FlowPage();
-		descFlowPage.setOpaque(true);
-		descTextFlow = new TextFlow();
-		descFlowPage.add(descTextFlow);
-
 		title.add(titleFlowPage);
 		title.setConstraint(titleFlowPage, new GridData(SWT.CENTER, SWT.TOP, true, true));
 
-		desc.add(descFlowPage);
-		desc.setConstraint(descFlowPage, new GridData(SWT.LEFT, SWT.TOP, true, true));
-
 		contentPanel.add(title);
-		contentPanel.add(desc);
 
 		marginsPanel.add(contentPanel);
 		marginsPanel.setConstraint(contentPanel, new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -151,6 +153,73 @@ public class CardFigure extends Panel {
 	 */
 	public void setDescription(String description) {
 		descTextFlow.setText(description);
+	}
+
+	/**
+	 * Set the value of the field identified by the given <code>id</code> with the given <code>value</code>.<br>
+	 * If the field does not exist, it is added to the card before setting the value.<br>
+	 * The label of the field is required if the field does not already exist.
+	 * 
+	 * @param id
+	 *            The id of the configurable field.
+	 * @param label
+	 *            The label of the configurable field (if the field does not exist).
+	 * @param value
+	 *            The value to set.
+	 */
+	public void setField(String id, String label, String value) {
+		TextFlow fieldValue = getField(id);
+		if (fieldValue == null) {
+			fieldValue = addConfigurablePanel(id, label);
+		}
+		fieldValue.setText(value);
+	}
+
+	/**
+	 * Get the field on the card from its id.
+	 * 
+	 * @param id
+	 *            The id of the configurable field.
+	 * @return The graphical field.
+	 */
+	public TextFlow getField(String id) {
+		return configurableFields.get(id);
+	}
+
+	/**
+	 * Add a new panel to the card to display a new field.
+	 * 
+	 * @param id
+	 *            The id of the configurable field.
+	 * @param label
+	 *            The label of the configurable field.
+	 * @return The text flow of the field.
+	 */
+	private TextFlow addConfigurablePanel(String id, String label) {
+		Panel panel = new Panel();
+		panel.setLayoutManager(new GridLayout(1, false));
+
+		FlowPage flowPage = new FlowPage();
+		flowPage.setOpaque(true);
+
+		BlockFlow blockFlow = new BlockFlow();
+
+		TextFlow labelFlow = new TextFlow();
+		labelFlow.setText(label + ": "); //$NON-NLS-1$
+		blockFlow.add(labelFlow);
+
+		TextFlow textFlow = new TextFlow();
+		blockFlow.add(textFlow);
+
+		flowPage.add(blockFlow);
+
+		panel.add(flowPage);
+		panel.setConstraint(flowPage, new GridData(SWT.LEFT, SWT.TOP, true, true));
+
+		contentPanel.add(panel);
+		configurableFields.put(id, textFlow);
+
+		return textFlow;
 	}
 
 }

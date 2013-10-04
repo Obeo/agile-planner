@@ -59,9 +59,27 @@ public class CardEditPart extends AbstractGraphicalEditPart {
 	@Override
 	protected void refreshVisuals() {
 		CardFigure fig = getCardFigure();
-		CardWrapper artifact = (CardWrapper)getModel();
-		fig.setTitle(artifact.getLabel());
-		fig.setDescription(artifact.getFieldValue("100")); // TODO
+		CardWrapper card = (CardWrapper)getModel();
+
+		fig.setTitle(card.getLabel());
+
+		// TODO: Iterate on all the managed configurable fields.
+		addFieldValue(CardWrapper.CARD_VALUE_FIELD_ID);
+		addFieldValue(CardWrapper.CARD_REMAINING_EFFORT_FIELD_ID);
+		addFieldValue(CardWrapper.CARD_ASSIGNED_TO_FIELD_ID);
 	}
 
+	/**
+	 * Add a new field to the card.
+	 * 
+	 * @param id
+	 *            The id of the configurable field to add.
+	 */
+	private void addFieldValue(String id) {
+		String value = ((CardWrapper)getModel()).getFieldValue(id);
+		if (value != null) {
+			String label = ((CardWrapper)getModel()).getFieldLabel(id);
+			getCardFigure().setField(id, label, value);
+		}
+	}
 }

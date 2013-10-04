@@ -24,6 +24,26 @@ import org.tuleap.mylyn.task.agile.core.data.AbstractTaskAttributeWrapper;
  */
 public class CardWrapper extends AbstractTaskAttributeWrapper {
 
+	// BEGIN Just used for tests with connector mock. TODO: We have to know the id of the configurable fields
+	// to display them.
+
+	/**
+	 * The id of the value field of a card.
+	 */
+	public static final String CARD_VALUE_FIELD_ID = "1000"; //$NON-NLS-1$
+
+	/**
+	 * The id of the value field of a card.
+	 */
+	public static final String CARD_REMAINING_EFFORT_FIELD_ID = "2000"; //$NON-NLS-1$
+
+	/**
+	 * The id of the "assigned to" field of a card.
+	 */
+	public static final String CARD_ASSIGNED_TO_FIELD_ID = "3000"; //$NON-NLS-1$
+
+	// END
+
 	/**
 	 * Separator to use to compute the mylyn id of a configurable field {@link TaskAttribute}.
 	 */
@@ -140,6 +160,21 @@ public class CardWrapper extends AbstractTaskAttributeWrapper {
 	 *            The if of the field.
 	 * @return The value of the field with this id, or null if cannot be found.
 	 */
+	public String getFieldLabel(String id) {
+		TaskAttribute attribute = root.getMappedAttribute(getFieldAttributeId(id));
+		if (attribute != null) {
+			return attribute.getMetaData().getLabel();
+		}
+		return null;
+	}
+
+	/**
+	 * Get the value of a configurable field by its id.
+	 * 
+	 * @param id
+	 *            The if of the field.
+	 * @return The value of the field with this id, or null if cannot be found.
+	 */
 	public String getFieldValue(String id) {
 		TaskAttribute attribute = root.getMappedAttribute(getFieldAttributeId(id));
 		if (attribute != null) {
@@ -161,6 +196,25 @@ public class CardWrapper extends AbstractTaskAttributeWrapper {
 			return attribute.getValues();
 		}
 		return Collections.emptyList();
+	}
+
+	/**
+	 * Set a label of a configurable field, after creating the relevant {@link TaskAttribute} if necessary.
+	 * 
+	 * @param id
+	 *            the id of the field.
+	 * @param label
+	 *            The label to set. If null, nothing is done.
+	 */
+	public void setFieldLabel(String id, String label) {
+		if (label == null) {
+			return;
+		}
+		TaskAttribute attribute = root.getMappedAttribute(getFieldAttributeId(id));
+		if (attribute == null) {
+			attribute = root.createMappedAttribute(getFieldAttributeId(id));
+		}
+		attribute.getMetaData().setLabel(label);
 	}
 
 	/**
