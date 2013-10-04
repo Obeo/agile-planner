@@ -46,9 +46,19 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 	public static final String MILESTONE_LIST = "mta_milestones"; //$NON-NLS-1$
 
 	/**
+	 * Id of the milestone title task attribute.
+	 */
+	public static final String MILESTONES_TITLE = "mta_milestones_title"; //$NON-NLS-1$
+
+	/**
 	 * Id of the backlog items list task attribute.
 	 */
 	public static final String BACKLOG = "mta_backlog"; //$NON-NLS-1$
+
+	/**
+	 * Id of the backlog items title task attribute.
+	 */
+	public static final String BACKLOG_TITLE = "mta_backlog_title"; //$NON-NLS-1$
 
 	/**
 	 * The attribute that represents the list of the sub-milestones.
@@ -358,6 +368,68 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 			}
 		}
 		return insertPosition;
+	}
+
+	/**
+	 * Milestones list title setter. Does not notify.
+	 * 
+	 * @param title
+	 *            The milestones list title
+	 */
+	public void setMilestonesTitle(String title) {
+		TaskAttribute attribute = root.getMappedAttribute(MILESTONES_TITLE);
+		if (attribute == null) {
+			attribute = root.createMappedAttribute(MILESTONES_TITLE);
+			attribute.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
+			attribute.getMetaData().setType(TaskAttribute.TYPE_SHORT_RICH_TEXT);
+			attribute.getMetaData().setReadOnly(true);
+		}
+		// No notification needed, read-only
+		attribute.setValue(title);
+	}
+
+	/**
+	 * Backlog title getter.
+	 * 
+	 * @return The backlog title, or <code>null</code> if unset.
+	 */
+	public String getMilestonesTitle() {
+		TaskAttribute attribute = root.getMappedAttribute(MILESTONES_TITLE);
+		if (attribute != null) {
+			return attribute.getValue();
+		}
+		return null;
+	}
+
+	/**
+	 * Backlog title setter. Does not notify.
+	 * 
+	 * @param title
+	 *            The backlog title
+	 */
+	public void setBacklogTitle(String title) {
+		TaskAttribute attribute = root.getMappedAttribute(BACKLOG_TITLE);
+		if (attribute == null) {
+			attribute = root.createMappedAttribute(BACKLOG_TITLE);
+			attribute.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
+			attribute.getMetaData().setType(TaskAttribute.TYPE_SHORT_RICH_TEXT);
+			attribute.getMetaData().setReadOnly(true);
+		}
+		// No notification needed, read-only
+		attribute.setValue(title);
+	}
+
+	/**
+	 * Backlog title getter.
+	 * 
+	 * @return The backlog title, or <code>null</code> if unset.
+	 */
+	public String getBacklogTitle() {
+		TaskAttribute attribute = root.getMappedAttribute(BACKLOG_TITLE);
+		if (attribute != null) {
+			return attribute.getValue();
+		}
+		return null;
 	}
 
 	/**

@@ -90,19 +90,18 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 
 		Section backlogSection = toolkit.createSection(backlog, ExpandableComposite.TITLE_BAR
 				| Section.DESCRIPTION);
-		// TODO Add baklog type label ("Release", "Sprint", ...)
-		// TaskAttribute backlogTypeNameAtt = getTaskData().getRoot().getAttribute(
-		// IMylynAgileCoreConstants.BACKLOG_TYPE_LABEL);
-		// if (backlogTypeNameAtt == null || backlogTypeNameAtt.getValue() == null) {
-		backlogSection.setText(MylynAgileUIMessages.getString("PlanningTaskEditorPart.DefaulBacklogLabel")); //$NON-NLS-1$
-		// } else {
-		// backlogSection.setText(backlogTypeNameAtt.getValue());
-		// }
+		wrapper = new MilestonePlanningWrapper(getTaskData().getRoot());
+		wrapper.addListener(this);
+		String backlogTitle = wrapper.getBacklogTitle();
+		if (backlogTitle == null) {
+			backlogSection.setText(MylynAgileUIMessages
+					.getString("PlanningTaskEditorPart.DefaulBacklogLabel")); //$NON-NLS-1$
+		} else {
+			backlogSection.setText(backlogTitle);
+		}
 		backlogSection.setLayout(FormLayoutFactory.createClearTableWrapLayout(false, 1));
 		TableWrapData data = new TableWrapData(TableWrapData.FILL_GRAB);
 		backlogSection.setLayoutData(data);
-		wrapper = new MilestonePlanningWrapper(getTaskData().getRoot());
-		wrapper.addListener(this);
 		String backlogItemTypeName;
 		// TODO Add backlog item type label ("Release", "Sprint", ...)
 		// TaskAttribute backlogItemTypeNameAtt = getTaskData().getRoot().getAttribute(
@@ -124,7 +123,13 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 
 		final Section milestoneList = toolkit.createSection(body, ExpandableComposite.TITLE_BAR
 				| Section.EXPANDED);
-		milestoneList.setText("Sprints Planning"); // TODO Make this label dynamic, from the data model //$NON-NLS-1$
+		String milestonesTitle = wrapper.getMilestonesTitle();
+		if (milestonesTitle == null) {
+			milestoneList.setText(MylynAgileUIMessages
+					.getString("PlanningTaskEditorPart.DefaulMilestonesTitle")); //$NON-NLS-1$
+		} else {
+			milestoneList.setText(milestonesTitle);
+		}
 		milestoneList.setLayout(FormLayoutFactory.createFormPaneTableWrapLayout(false, 1));
 		milestoneList.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
 

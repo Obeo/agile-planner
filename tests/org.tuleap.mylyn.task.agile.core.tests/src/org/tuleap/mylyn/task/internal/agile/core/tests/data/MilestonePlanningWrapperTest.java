@@ -122,6 +122,20 @@ public class MilestonePlanningWrapperTest {
 	}
 
 	/**
+	 * Tests the setting and reading of titles in the milestone planning wrapper.
+	 */
+	@Test
+	public void testPlanningTitles() {
+		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(taskData.getRoot());
+		assertNull(wrapper.getMilestonesTitle());
+		assertNull(wrapper.getBacklogTitle());
+		wrapper.setBacklogTitle("Release Backlog");
+		wrapper.setMilestonesTitle("Sprints");
+		assertEquals("Release Backlog", wrapper.getBacklogTitle());
+		assertEquals("Sprints", wrapper.getMilestonesTitle());
+	}
+
+	/**
 	 * Tests the basic manipulation of a MilestonePlanningWrapper for writing and reading.
 	 */
 	@Test
