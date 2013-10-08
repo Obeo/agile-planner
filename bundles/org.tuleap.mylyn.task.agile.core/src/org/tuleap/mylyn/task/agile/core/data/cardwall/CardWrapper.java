@@ -233,9 +233,10 @@ public class CardWrapper extends AbstractTaskAttributeWrapper {
 		String oldValue = null;
 		if (attribute == null) {
 			attribute = root.createMappedAttribute(getFieldAttributeId(id));
+		} else {
 			oldValue = attribute.getValue();
 		}
-		if (oldValue != null || !value.equals(oldValue)) {
+		if (oldValue == null || !oldValue.equals(value)) {
 			attribute.setValue(value);
 			fireAttributeChanged(attribute);
 		}
