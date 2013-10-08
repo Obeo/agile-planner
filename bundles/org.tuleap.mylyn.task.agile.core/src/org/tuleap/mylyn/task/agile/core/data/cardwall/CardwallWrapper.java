@@ -155,4 +155,13 @@ public class CardwallWrapper extends AbstractNotifyingWrapper {
 		// Required for delegation from other classes of this package
 		super.fireAttributeChanged(attribute);
 	}
+
+	/**
+	 * Provides the {@link TaskAttribute} that represents the swimlane list.
+	 * 
+	 * @return The {@link TaskAttribute} that represents the swimlane list, never null.
+	 */
+	public TaskAttribute getSwimlaneListAttribute() {
+		return swimlaneList;
+	}
 }
