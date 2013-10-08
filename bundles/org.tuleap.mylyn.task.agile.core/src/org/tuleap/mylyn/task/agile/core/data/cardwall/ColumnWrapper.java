@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.tuleap.mylyn.task.agile.core.data.cardwall;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.tuleap.mylyn.task.agile.core.data.AbstractTaskAttributeWrapper;
 
@@ -36,6 +37,7 @@ public class ColumnWrapper extends AbstractTaskAttributeWrapper {
 	 */
 	protected ColumnWrapper(CardwallWrapper parent, TaskAttribute root) {
 		super(root);
+		Assert.isNotNull(parent);
 		this.parent = parent;
 	}
 
@@ -53,6 +55,7 @@ public class ColumnWrapper extends AbstractTaskAttributeWrapper {
 	 */
 	protected ColumnWrapper(CardwallWrapper parent, TaskAttribute root, String id, String label) {
 		super(root, id);
+		Assert.isNotNull(parent);
 		this.parent = parent;
 		setLabel(label);
 	}

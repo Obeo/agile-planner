@@ -14,6 +14,7 @@ import com.google.common.collect.Lists;
 
 import java.util.List;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.tuleap.mylyn.task.agile.core.data.AbstractTaskAttributeWrapper;
 
@@ -60,6 +61,7 @@ public class SwimlaneWrapper extends AbstractTaskAttributeWrapper {
 	 */
 	protected SwimlaneWrapper(CardwallWrapper parent, TaskAttribute root) {
 		super(root);
+		Assert.isNotNull(parent);
 		this.parent = parent;
 		this.cardList = root.getMappedAttribute(getAttributeId(root, SUFFIX_CARD_LIST));
 		TaskAttribute swimlaneItemAtt = root.getAttribute(getAttributeId(root, SUFFIX_SWIMLANE_ITEM));
@@ -78,6 +80,7 @@ public class SwimlaneWrapper extends AbstractTaskAttributeWrapper {
 	 */
 	protected SwimlaneWrapper(CardwallWrapper parent, TaskAttribute root, String id) {
 		super(root);
+		Assert.isNotNull(parent);
 		this.parent = parent;
 		cardList = root.createMappedAttribute(getAttributeId(root, SUFFIX_CARD_LIST));
 		TaskAttribute swimlaneItemAtt = root
