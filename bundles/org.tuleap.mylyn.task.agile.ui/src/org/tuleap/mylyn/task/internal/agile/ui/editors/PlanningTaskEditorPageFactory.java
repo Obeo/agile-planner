@@ -14,7 +14,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.mylyn.commons.ui.CommonImages;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.tasks.core.ITask;
-import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.eclipse.mylyn.tasks.ui.TasksUiImages;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPageFactory;
@@ -22,7 +21,7 @@ import org.eclipse.mylyn.tasks.ui.editors.TaskEditor;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditorInput;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.forms.editor.IFormPage;
-import org.tuleap.mylyn.task.agile.core.data.planning.MilestonePlanningWrapper;
+import org.tuleap.mylyn.task.agile.core.data.AgileTaskKindUtil;
 import org.tuleap.mylyn.task.agile.ui.AbstractAgileRepositoryConnectorUI;
 import org.tuleap.mylyn.task.agile.ui.editors.ITaskEditorPageFactoryConstants;
 import org.tuleap.mylyn.task.internal.agile.ui.AgileRepositoryConnectorUiServiceTrackerCustomizer;
@@ -47,11 +46,12 @@ public class PlanningTaskEditorPageFactory extends AbstractTaskEditorPageFactory
 	public boolean canCreatePageFor(TaskEditorInput input) {
 		ITask task = input.getTask();
 		try {
+			@SuppressWarnings("restriction")
 			TaskData taskData = TasksUiPlugin.getTaskDataManager().getTaskData(task);
-			TaskAttribute planningAtt = taskData.getRoot().getAttribute(
-					MilestonePlanningWrapper.MILESTONE_PLANNING);
+			String taskKind = AgileTaskKindUtil.getAgileTaskKind(taskData);
 
-			return planningAtt != null;
+			return AgileTaskKindUtil.TASK_KIND_MILESTONE.equals(taskKind)
+					|| AgileTaskKindUtil.TASK_KIND_TOP_PLANNING.equals(taskKind);
 		} catch (CoreException e) {
 			MylynAgileUIActivator.log(e, true);
 		}

@@ -21,16 +21,20 @@ import org.eclipse.mylyn.tasks.ui.editors.TaskEditor;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditorInput;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.forms.editor.IFormPage;
+import org.tuleap.mylyn.task.agile.core.data.AgileTaskKindUtil;
+import org.tuleap.mylyn.task.agile.core.data.planning.MilestonePlanningWrapper;
 import org.tuleap.mylyn.task.agile.ui.AbstractAgileRepositoryConnectorUI;
 import org.tuleap.mylyn.task.agile.ui.editors.ITaskEditorPageFactoryConstants;
 import org.tuleap.mylyn.task.internal.agile.ui.AgileRepositoryConnectorUiServiceTrackerCustomizer;
 import org.tuleap.mylyn.task.internal.agile.ui.MylynAgileUIActivator;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.CardwallTaskEditorPage;
+import org.tuleap.mylyn.task.internal.agile.ui.util.MylynAgileUIMessages;
 
 /**
  * The editor page factory will instantiate the editor page.
  * 
  * @author <a href="mailto:cedric.notot@obeo.fr">Cedric Notot</a>
+ * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
  */
 public class CardwallTaskEditorPageFactory extends AbstractTaskEditorPageFactory {
 
@@ -41,19 +45,22 @@ public class CardwallTaskEditorPageFactory extends AbstractTaskEditorPageFactory
 	 */
 	@Override
 	public boolean canCreatePageFor(TaskEditorInput input) {
-		// TODO
-		return true;
-		// ITask task = input.getTask();
-		// try {
-		// TaskData taskData = TasksUiPlugin.getTaskDataManager().getTaskData(task);
-		// TaskAttribute planningAtt = taskData.getRoot().getAttribute(
-		// MilestonePlanningWrapper.MILESTONE_PLANNING);
-		//
-		// return planningAtt != null;
-		// } catch (CoreException e) {
-		// MylynAgileUIActivator.log(e, true);
-		// }
-		// return false;
+		ITask task = input.getTask();
+		try {
+			@SuppressWarnings("restriction")
+			TaskData taskData = TasksUiPlugin.getTaskDataManager().getTaskData(task);
+			String taskKind = AgileTaskKindUtil.getAgileTaskKind(taskData);
+
+			boolean isCandidate = AgileTaskKindUtil.TASK_KIND_MILESTONE.equals(taskKind)
+					|| AgileTaskKindUtil.TASK_KIND_TOP_PLANNING.equals(taskKind);
+			if (isCandidate) {
+				MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(taskData.getRoot());
+				return wrapper.getHasCardwall();
+			}
+		} catch (CoreException e) {
+			MylynAgileUIActivator.log(e, true);
+		}
+		return false;
 	}
 
 	/**
@@ -74,9 +81,7 @@ public class CardwallTaskEditorPageFactory extends AbstractTaskEditorPageFactory
 	 */
 	@Override
 	public String getPageText() {
-		// TODO
-		return "Card wall"; //$NON-NLS-1$
-		//return MylynAgileUIMessages.getString("PlanningTaskEditorPageFactory.PageText"); //$NON-NLS-1$
+		return MylynAgileUIMessages.getString("CardwallTaskEditorPageFactory.PageText"); //$NON-NLS-1$
 	}
 
 	/**

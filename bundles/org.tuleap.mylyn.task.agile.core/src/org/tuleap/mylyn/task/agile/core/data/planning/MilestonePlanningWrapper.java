@@ -61,6 +61,11 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 	public static final String BACKLOG_TITLE = "mta_backlog_title"; //$NON-NLS-1$
 
 	/**
+	 * Id of the task attribute that indicates whether there is a card wall for this planning.
+	 */
+	public static final String HAS_CARDWALL = "mta_has_cardwall"; //$NON-NLS-1$
+
+	/**
 	 * The attribute that represents the list of the sub-milestones.
 	 */
 	private final TaskAttribute submilestoneList;
@@ -102,6 +107,33 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 		}
 		backlog = backlogAtt;
 		submilestoneList = milestonesAtt;
+	}
+
+	/**
+	 * Gets the cardwall flag.
+	 * 
+	 * @return The cardwall flag that indicates whether there ought to be a cardwall for this planning.
+	 */
+	public boolean getHasCardwall() {
+		TaskAttribute att = backlog.getParentAttribute().getMappedAttribute(HAS_CARDWALL);
+		if (att != null) {
+			return att.getTaskData().getAttributeMapper().getBooleanValue(att);
+		}
+		return false;
+	}
+
+	/**
+	 * Sets the cardwall flag.
+	 * 
+	 * @param hasCardwall
+	 *            The cardwall flag.
+	 */
+	public void setHasCardwall(boolean hasCardwall) {
+		TaskAttribute att = backlog.getParentAttribute().getMappedAttribute(HAS_CARDWALL);
+		if (att == null) {
+			att = backlog.getParentAttribute().createMappedAttribute(HAS_CARDWALL);
+		}
+		att.getTaskData().getAttributeMapper().setBooleanValue(att, Boolean.valueOf(hasCardwall));
 	}
 
 	/**
