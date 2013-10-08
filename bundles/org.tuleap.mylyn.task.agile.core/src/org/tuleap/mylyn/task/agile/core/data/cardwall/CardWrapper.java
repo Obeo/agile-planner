@@ -233,10 +233,9 @@ public class CardWrapper extends AbstractTaskAttributeWrapper {
 		String oldValue = null;
 		if (attribute == null) {
 			attribute = root.createMappedAttribute(getFieldAttributeId(id));
-		} else {
 			oldValue = attribute.getValue();
 		}
-		if (oldValue != null && !oldValue.equals(value)) {
+		if (oldValue != null || !value.equals(oldValue)) {
 			attribute.setValue(value);
 			fireAttributeChanged(attribute);
 		}
@@ -320,4 +319,6 @@ public class CardWrapper extends AbstractTaskAttributeWrapper {
 		}
 		fireAttributeChanged(attribute);
 	}
+
+	// TODO add a method that permits managing the AttachementFieldValues
 }
