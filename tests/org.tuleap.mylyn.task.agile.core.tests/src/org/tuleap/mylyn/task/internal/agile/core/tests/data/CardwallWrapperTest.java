@@ -26,6 +26,7 @@ import org.tuleap.mylyn.task.agile.core.data.cardwall.SwimlaneItemWrapper;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.SwimlaneWrapper;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 /**
  * Tests of the cardwall wrapper.
@@ -233,6 +234,7 @@ public class CardwallWrapperTest {
 			card.clearFieldValues("100"); // Should notify
 			assertEquals(4, listener.getInvocationsCount(fieldKey).intValue());
 			assertEquals("", card.getFieldValue("100"));
+
 			// Following should notify only once
 			card.addFieldValues("100", Arrays.asList("Other 100" + i, "Some 100" + i, "And again 100" + i));
 			assertEquals(5, listener.getInvocationsCount(fieldKey).intValue());
@@ -242,6 +244,132 @@ public class CardwallWrapperTest {
 			assertEquals("Some 100" + i, fieldValues.get(1));
 			assertEquals("And again 100" + i, fieldValues.get(2));
 		}
+	}
+
+	/**
+	 * Tests the removal of a listener from the cardwall wrapper.
+	 */
+	@Test
+	public void testRemoveListenerFromCardwallWrapper() {
+		TestChangeListener listener = new TestChangeListener();
+		CardwallWrapper wrapper = new CardwallWrapper(taskData.getRoot());
+		wrapper.addListener(listener);
+		for (int i = 0; i < 4; i++) {
+			wrapper.addColumn(Integer.toString(10 + i), "Column" + i);
+		}
+		SwimlaneWrapper swimlane = wrapper.addSwimlane("123");
+		SwimlaneItemWrapper item = swimlane.getSwimlaneItem();
+		item.setLabel("Label item");
+		item.setInitialEffort(12.5F);
+		item.setAssignedMilestoneId("1234");
+
+		String itemLabelKey = CardwallWrapper.SWIMLANE_LIST + "-0-" + SwimlaneWrapper.SUFFIX_SWIMLANE_ITEM
+				+ '-' + AbstractTaskAttributeWrapper.SUFFIX_LABEL;
+		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(itemLabelKey));
+		item.setLabel("Other label"); // Should notify
+		assertEquals(Integer.valueOf(2), listener.getInvocationsCount(itemLabelKey));
+
+		wrapper.removeListener(listener);
+		item.setLabel("Yet another label"); // Should notify
+		// the listener call count must not change anymore
+		assertEquals(Integer.valueOf(2), listener.getInvocationsCount(itemLabelKey));
+	}
+
+	/**
+	 * Tests card wall setFieldValue() method.
+	 */
+	@Test
+	public void testSetFieldValue() {
+		TestChangeListener listener = new TestChangeListener();
+		CardwallWrapper wrapper = new CardwallWrapper(taskData.getRoot());
+		wrapper.addListener(listener);
+		for (int i = 0; i < 4; i++) {
+			wrapper.addColumn(Integer.toString(10 + i), "Column" + i);
+		}
+		SwimlaneWrapper swimlane = wrapper.addSwimlane("123");
+		for (int i = 0; i < 4; i++) {
+			CardWrapper card = swimlane.addCard(Integer.toString(200 + i));
+			card.setFieldValue("100", "Value 100" + i);
+		}
+
+		// Retrieval of swimlane item from the cardwall to modify it
+		swimlane = wrapper.getSwimlanes().get(0);
+
+		// Modification of the cards created previously
+		for (int i = 0; i < 4; i++) {
+			String id = Integer.toString(200 + i);
+			String cardPrefix = CardwallWrapper.SWIMLANE_LIST + "-0-" + SwimlaneWrapper.SUFFIX_CARD_LIST
+					+ '-' + id;
+			CardWrapper card = swimlane.getCard(id);
+
+			assertEquals("Value 100" + i, card.getFieldValue("100"));
+			String fieldKey = cardPrefix + CardWrapper.FIELD_SEPARATOR + "100";
+			assertEquals(1, listener.getInvocationsCount(fieldKey).intValue());
+
+			card.setFieldValue("100", "Value 100" + i); // Should not notify
+			assertEquals(1, listener.getInvocationsCount(fieldKey).intValue());
+			assertEquals("Value 100" + i, card.getFieldValue("100"));
+
+			card.setFieldValue("100", null); // Should not notify
+			assertEquals(1, listener.getInvocationsCount(fieldKey).intValue());
+			assertEquals("Value 100" + i, card.getFieldValue("100")); // Value must not have changed
+
+			card.setFieldValue("100", "Other 100" + i); // Should notify
+			assertEquals(2, listener.getInvocationsCount(fieldKey).intValue());
+			assertEquals("Other 100" + i, card.getFieldValue("100")); // Value must have changed
+		}
+	}
+
+	/**
+	 * Tests the behavior of getFieldLabel() and setFieldlabel().
+	 */
+	@Test
+	public void testGetSetFieldLabel() {
+		CardwallWrapper wrapper = new CardwallWrapper(taskData.getRoot());
+		for (int i = 0; i < 4; i++) {
+			wrapper.addColumn(Integer.toString(10 + i), "Column" + i);
+		}
+		SwimlaneWrapper swimlane = wrapper.addSwimlane("123");
+		for (int i = 0; i < 4; i++) {
+			CardWrapper card = swimlane.addCard(Integer.toString(200 + i));
+			card.setFieldLabel("100", "Label 100" + i);
+		}
+
+		// Retrieval of swimlane item from the cardwall to modify it
+		swimlane = wrapper.getSwimlanes().get(0);
+
+		// Modification of the cards created previously
+		for (int i = 0; i < 4; i++) {
+			String id = Integer.toString(200 + i);
+			CardWrapper card = swimlane.getCard(id);
+
+			assertEquals("Label 100" + i, card.getFieldLabel("100"));
+
+			card.setFieldLabel("100", "Label 100" + i);
+			assertEquals("Label 100" + i, card.getFieldLabel("100"));
+
+			card.setFieldLabel("100", null);
+			assertEquals("Label 100" + i, card.getFieldLabel("100")); // Value must not have changed
+
+			card.setFieldLabel("100", "Other 100" + i);
+			assertEquals("Other 100" + i, card.getFieldLabel("100")); // Value must have changed
+		}
+	}
+
+	/**
+	 * Tests the behavior of getFieldLabel() and setFieldlabel().
+	 */
+	@Test
+	public void testGetFieldNeverSet() {
+		CardwallWrapper wrapper = new CardwallWrapper(taskData.getRoot());
+		for (int i = 0; i < 4; i++) {
+			wrapper.addColumn(Integer.toString(10 + i), "Column" + i);
+		}
+		SwimlaneWrapper swimlane = wrapper.addSwimlane("123");
+		CardWrapper card = swimlane.addCard("200");
+		assertNull(card.getFieldLabel("123"));
+		assertNull(card.getFieldValue("123"));
+		assertEquals(0, card.getFieldValues("123").size());
 	}
 
 	/**

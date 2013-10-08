@@ -42,13 +42,13 @@ public final class AgileTaskKindUtil {
 	/**
 	 * The key used to indicate the kind of a mylyn task data.
 	 */
-	private static final String TASK_KIND_KEY = "mta_kind"; //$NON-NLS-1$
+	public static final String TASK_KIND_KEY = "mta_kind"; //$NON-NLS-1$
 
 	/**
 	 * The constructor.
 	 */
 	private AgileTaskKindUtil() {
-		// prevent instanciation
+		// prevent instantiation
 	}
 
 	/**

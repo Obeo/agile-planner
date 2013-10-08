@@ -16,6 +16,7 @@ import junit.textui.TestRunner;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+import org.tuleap.mylyn.task.internal.agile.core.tests.data.AgileTaksKindUtilTests;
 import org.tuleap.mylyn.task.internal.agile.core.tests.data.CardwallWrapperTest;
 import org.tuleap.mylyn.task.internal.agile.core.tests.data.MilestonePlanningWrapperMovingBacklogItemsTest;
 import org.tuleap.mylyn.task.internal.agile.core.tests.data.MilestonePlanningWrapperTest;
@@ -28,7 +29,8 @@ import org.tuleap.mylyn.task.internal.agile.core.tests.data.MilestonePlanningWra
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({MilestonePlanningWrapperTest.class,
-		MilestonePlanningWrapperMovingBacklogItemsTest.class, CardwallWrapperTest.class })
+		MilestonePlanningWrapperMovingBacklogItemsTest.class, CardwallWrapperTest.class,
+		AgileTaksKindUtilTests.class })
 public final class AllMylynAgileCoreTests {
 
 	/**
