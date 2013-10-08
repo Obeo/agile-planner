@@ -14,6 +14,7 @@ import com.google.common.collect.Sets;
 
 import java.util.Set;
 
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPage;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditor;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditorPartDescriptor;
@@ -28,15 +29,23 @@ import org.eclipse.mylyn.tasks.ui.editors.TaskEditorPartDescriptor;
 public class PlanningTaskEditorPage extends AbstractTaskEditorPage {
 
 	/**
+	 * Flag to indicate whether standard mylyn actions should be created by this page.
+	 */
+	private boolean createActionsInToolbar;
+
+	/**
 	 * Constructor, which delegates to the matching super constructor.
 	 * 
 	 * @param editor
 	 *            The parent TaskEditor.
 	 * @param connectorKind
 	 *            The related connector kind.
+	 * @param createActionsInToolbar
+	 *            Flag to indicate whether standard mylyn actions should be created by this page.
 	 */
-	public PlanningTaskEditorPage(TaskEditor editor, String connectorKind) {
+	public PlanningTaskEditorPage(TaskEditor editor, String connectorKind, boolean createActionsInToolbar) {
 		super(editor, connectorKind);
+		this.createActionsInToolbar = createActionsInToolbar;
 	}
 
 	/**
@@ -50,5 +59,17 @@ public class PlanningTaskEditorPage extends AbstractTaskEditorPage {
 		Set<TaskEditorPartDescriptor> descriptors = Sets.newLinkedHashSet();
 		descriptors.add(new PlanningTaskEditorPartDescriptor());
 		return descriptors;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPage#fillToolBar(org.eclipse.jface.action.IToolBarManager)
+	 */
+	@Override
+	public void fillToolBar(IToolBarManager toolBarManager) {
+		if (createActionsInToolbar) {
+			super.fillToolBar(toolBarManager);
+		}
 	}
 }

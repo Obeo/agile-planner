@@ -87,7 +87,18 @@ public class PlanningTaskEditorPageFactory extends AbstractTaskEditorPageFactory
 	public IFormPage createPage(TaskEditor parentEditor) {
 		TaskEditorInput taskEditorInput = parentEditor.getTaskEditorInput();
 		String connectorKind = taskEditorInput.getTask().getConnectorKind();
-		return new PlanningTaskEditorPage(parentEditor, connectorKind);
+		try {
+			@SuppressWarnings("restriction")
+			TaskData taskData = TasksUiPlugin.getTaskDataManager().getTaskData(taskEditorInput.getTask());
+			String taskKind = AgileTaskKindUtil.getAgileTaskKind(taskData);
+			// We want to create the toolbar actions (synchronize etc.) only for top-plannings
+			// because otherwise another tab will do it.
+			return new PlanningTaskEditorPage(parentEditor, connectorKind,
+					AgileTaskKindUtil.TASK_KIND_TOP_PLANNING.equals(taskKind));
+		} catch (CoreException e) {
+			MylynAgileUIActivator.log(e, true);
+		}
+		return new PlanningTaskEditorPage(parentEditor, connectorKind, false);
 	}
 
 	/**
@@ -100,6 +111,7 @@ public class PlanningTaskEditorPageFactory extends AbstractTaskEditorPageFactory
 		ITask task = input.getTask();
 		String connectorKind = input.getTaskRepository().getConnectorKind();
 		try {
+			@SuppressWarnings("restriction")
 			TaskData taskData = TasksUiPlugin.getTaskDataManager().getTaskData(task);
 
 			AgileRepositoryConnectorUiServiceTrackerCustomizer serviceTrackerCustomizer = MylynAgileUIActivator

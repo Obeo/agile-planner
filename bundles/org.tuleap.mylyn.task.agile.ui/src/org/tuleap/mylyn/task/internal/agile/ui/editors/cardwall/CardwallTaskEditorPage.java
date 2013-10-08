@@ -13,6 +13,7 @@ package org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPage;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditor;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditorPartDescriptor;
@@ -65,5 +66,16 @@ public class CardwallTaskEditorPage extends AbstractTaskEditorPage {
 			iterator.next();
 			iterator.remove();
 		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPage#fillToolBar(org.eclipse.jface.action.IToolBarManager)
+	 */
+	@Override
+	public void fillToolBar(IToolBarManager toolBarManager) {
+		// Do NOT call super.fillToolbar() otherwise there will be
+		// several identical actions!
 	}
 }
