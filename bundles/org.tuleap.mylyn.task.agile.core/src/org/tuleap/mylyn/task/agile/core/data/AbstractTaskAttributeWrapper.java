@@ -38,7 +38,7 @@ public abstract class AbstractTaskAttributeWrapper {
 	/**
 	 * Default value used for IDs not set.
 	 */
-	protected static final String UNSET_ID = "";
+	protected static final String UNSET_ID = ""; //$NON-NLS-1$
 
 	/**
 	 * The wrapped task attribute.
