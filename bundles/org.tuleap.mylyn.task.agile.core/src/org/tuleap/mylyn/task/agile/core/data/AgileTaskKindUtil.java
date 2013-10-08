@@ -40,6 +40,11 @@ public final class AgileTaskKindUtil {
 	public static final String TASK_KIND_TOP_PLANNING = "top_planning"; //$NON-NLS-1$
 
 	/**
+	 * The value used for a cardwall.
+	 */
+	public static final String TASK_KIND_CARDWALL = "cardwall"; //$NON-NLS-1$
+
+	/**
 	 * The key used to indicate the kind of a mylyn task data.
 	 */
 	private static final String TASK_KIND_KEY = "mta_kind"; //$NON-NLS-1$
