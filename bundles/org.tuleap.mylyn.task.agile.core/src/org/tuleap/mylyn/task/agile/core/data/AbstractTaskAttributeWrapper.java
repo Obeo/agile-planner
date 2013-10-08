@@ -26,9 +26,14 @@ public abstract class AbstractTaskAttributeWrapper {
 	public static final char ID_SEPARATOR = '-';
 
 	/**
-	 * Suffix appended to the ids of Task Attributes representing IDs.
+	 * Suffix appended to the ids of Task Attributes representing internal IDs.
 	 */
 	public static final String SUFFIX_ID = "id"; //$NON-NLS-1$
+
+	/**
+	 * Suffix appended to the ids of Task Attributes representing IDs to display to an end-user.
+	 */
+	public static final String SUFFIX_DISPLAY_ID = "display_id"; //$NON-NLS-1$
 
 	/**
 	 * Suffix appended to the ids of Task Attributes representing labels.
@@ -99,6 +104,15 @@ public abstract class AbstractTaskAttributeWrapper {
 	}
 
 	/**
+	 * Computes the unique id of the ID attribute.
+	 * 
+	 * @return The unique id of the id attribute.
+	 */
+	protected String getDisplayIdAttributeId() {
+		return getAttributeId(root, SUFFIX_DISPLAY_ID);
+	}
+
+	/**
 	 * Computes the unique id of the Label attribute.
 	 * 
 	 * @return The unique id of the label attribute.
@@ -118,6 +132,33 @@ public abstract class AbstractTaskAttributeWrapper {
 			return attribute.getValue();
 		}
 		return UNSET_ID;
+	}
+
+	/**
+	 * Display ID setter.
+	 * 
+	 * @param displayId
+	 *            The item's display id.
+	 */
+	public void setDisplayId(String displayId) {
+		TaskAttribute attribute = root.getMappedAttribute(getDisplayIdAttributeId());
+		if (attribute == null) {
+			attribute = root.createMappedAttribute(getDisplayIdAttributeId());
+		}
+		attribute.setValue(displayId);
+	}
+
+	/**
+	 * Display ID getter.
+	 * 
+	 * @return The item's display id, or the item's id if the display id is not set.
+	 */
+	public String getDisplayId() {
+		TaskAttribute attribute = root.getMappedAttribute(getDisplayIdAttributeId());
+		if (attribute != null) {
+			return attribute.getValue();
+		}
+		return getId();
 	}
 
 	/**

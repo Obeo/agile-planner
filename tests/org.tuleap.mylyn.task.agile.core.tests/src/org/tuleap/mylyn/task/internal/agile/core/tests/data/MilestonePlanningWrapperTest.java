@@ -392,4 +392,22 @@ public class MilestonePlanningWrapperTest {
 		assertEquals(Integer.valueOf(2), listener.getInvocationsCount(assignedIdKey));
 	}
 
+	/**
+	 * Tests the behavior of get and setDisplayId on milestone wrapper classes.
+	 */
+	@Test
+	public void testGetSetDisplayId() {
+		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(taskData.getRoot());
+		assertEquals("", wrapper.getDisplayId());
+		wrapper.setDisplayId("300");
+		assertEquals("300", wrapper.getDisplayId());
+		String id = "3:809#123";
+		String displayId = "123";
+		BacklogItemWrapper backlogItem = wrapper.addBacklogItem(id); // technical id
+		assertEquals(id, backlogItem.getId());
+		assertEquals(id, backlogItem.getDisplayId()); // display id = id if not set
+		backlogItem.setDisplayId(displayId);
+		assertEquals(displayId, backlogItem.getDisplayId());
+		assertEquals(id, backlogItem.getId()); // id must not have changed
+	}
 }

@@ -290,7 +290,7 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 				if (element == null) {
 					ret = strMissing;
 				} else if (element instanceof BacklogItemWrapper) {
-					ret = ((BacklogItemWrapper)element).getId();
+					ret = ((BacklogItemWrapper)element).getDisplayId();
 				} else {
 					ret = element.toString();
 				}
