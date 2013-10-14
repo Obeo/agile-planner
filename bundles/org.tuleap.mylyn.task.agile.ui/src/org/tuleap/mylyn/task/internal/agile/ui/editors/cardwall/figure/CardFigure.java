@@ -47,7 +47,7 @@ public class CardFigure extends Panel {
 	/**
 	 * Red part for the color of the card.
 	 */
-	private static final int CARD_COLOR_RED = 231;
+	private static final int CARD_COLOR_RED = 255;
 
 	/**
 	 * Green part for the color of the card.
@@ -57,7 +57,7 @@ public class CardFigure extends Panel {
 	/**
 	 * Blue part for the color of the card.
 	 */
-	private static final int CARD_COLOR_BLUE = 175;
+	private static final int CARD_COLOR_BLUE = 238;
 
 	/**
 	 * The margin between text block inside the card and the border of this one, and between the title and
