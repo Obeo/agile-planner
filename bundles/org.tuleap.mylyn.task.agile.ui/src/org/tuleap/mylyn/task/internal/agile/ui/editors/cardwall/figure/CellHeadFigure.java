@@ -11,8 +11,6 @@
 package org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.figure;
 
 import org.eclipse.draw2d.Label;
-import org.eclipse.draw2d.LineBorder;
-import org.eclipse.draw2d.StackLayout;
 
 /**
  * Figure representing a cell used as heading for columns, swimlanes and the whole card wall.
@@ -30,9 +28,7 @@ public class CellHeadFigure extends AbstractCellFigure {
 	 * Constructor.
 	 */
 	public CellHeadFigure() {
-		setBorder(new LineBorder());
-		setOpaque(true);
-		setLayoutManager(new StackLayout());
+		super();
 
 		label = new Label();
 		label.setOpaque(true); // has to be true to change the background color of this.
