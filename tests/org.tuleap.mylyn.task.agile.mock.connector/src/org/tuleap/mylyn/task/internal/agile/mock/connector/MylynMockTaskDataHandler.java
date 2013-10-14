@@ -22,6 +22,7 @@ import org.eclipse.mylyn.tasks.core.data.AbstractTaskDataHandler;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.core.data.TaskAttributeMapper;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
+import org.tuleap.mylyn.task.agile.core.data.AgileTaskKindUtil;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.CardWrapper;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.CardwallWrapper;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.SwimlaneItemWrapper;
@@ -90,11 +91,16 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 		TaskAttribute summary = root.createAttribute(TaskAttribute.SUMMARY);
 		summary.getMetaData().setType(TaskAttribute.TYPE_SHORT_RICH_TEXT);
 		summary.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
+		summary.getMetaData().setLabel("Gros label bien moche");
 		summary.setValue("Project Test"); //$NON-NLS-1$
 
 		TaskAttribute kindAttribute = root.createAttribute(TaskAttribute.TASK_KIND);
 		kindAttribute.getMetaData().setType(TaskAttribute.TYPE_SHORT_TEXT);
-		kindAttribute.setValue("Top Planning"); //$NON-NLS-1$
+		kindAttribute.setValue(AgileTaskKindUtil.TASK_KIND_TOP_PLANNING);
+
+		kindAttribute = root.createAttribute("mta_kind"); // TODO use constant
+		kindAttribute.getMetaData().setType(TaskAttribute.TYPE_SHORT_TEXT);
+		kindAttribute.setValue(AgileTaskKindUtil.TASK_KIND_TOP_PLANNING);
 
 		TaskAttribute urlAttribute = root.createAttribute(TaskAttribute.TASK_URL);
 		urlAttribute.getMetaData().setType(TaskAttribute.TYPE_URL);
@@ -157,6 +163,9 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 	 *            The task attribute
 	 */
 	private void addNewCardwall(TaskAttribute root) {
+		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(root);
+		wrapper.setHasCardwall(true);
+
 		cardwall3(root);
 	}
 
