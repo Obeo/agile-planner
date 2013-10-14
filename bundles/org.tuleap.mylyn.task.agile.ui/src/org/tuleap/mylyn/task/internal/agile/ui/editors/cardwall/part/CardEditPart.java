@@ -62,6 +62,7 @@ public class CardEditPart extends AbstractGraphicalEditPart {
 		CardWrapper card = (CardWrapper)getModel();
 
 		fig.setTitle(card.getLabel());
+		fig.setUrl(card.getDisplayId());
 
 		// TODO: Iterate on all the managed configurable fields.
 		addFieldValue(CardWrapper.CARD_VALUE_FIELD_ID);
