@@ -13,7 +13,6 @@ package org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.figure;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.GridData;
-import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.StackLayout;
 import org.eclipse.swt.SWT;
 
@@ -28,7 +27,7 @@ public abstract class AbstractCellFigure extends Figure {
 	 * Constructor.
 	 */
 	public AbstractCellFigure() {
-		setBorder(new LineBorder());
+		// setBorder(new LineBorder());
 		setOpaque(true);
 		setLayoutManager(new StackLayout());
 	}

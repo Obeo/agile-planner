@@ -16,7 +16,6 @@ import java.util.List;
 import org.eclipse.draw2d.FreeformLayer;
 import org.eclipse.draw2d.GridLayout;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.LineBorder;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.CardwallWrapper;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.ColumnWrapper;
@@ -53,7 +52,7 @@ public class CardwallEditPart extends AbstractGraphicalEditPart {
 		layout.marginWidth = 0;
 
 		// The border of the cardwall
-		layer.setBorder(new LineBorder());
+		// layer.setBorder(new LineBorder());
 
 		layer.setLayoutManager(layout);
 
