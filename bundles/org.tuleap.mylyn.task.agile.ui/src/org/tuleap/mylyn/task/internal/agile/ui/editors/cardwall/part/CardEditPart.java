@@ -80,7 +80,7 @@ public class CardEditPart extends AbstractGraphicalEditPart {
 		String value = ((CardWrapper)getModel()).getFieldValue(id);
 		if (value != null) {
 			String label = ((CardWrapper)getModel()).getFieldLabel(id);
-			getCardFigure().setField(id, label, value);
+			getCardFigure().setConfigurableField(id, label, value);
 		}
 	}
 }

@@ -10,30 +10,37 @@
  *******************************************************************************/
 package org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.figure;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
+import com.google.common.collect.Iterables;
 
-import org.eclipse.draw2d.ColorConstants;
-import org.eclipse.draw2d.Cursors;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.GridData;
 import org.eclipse.draw2d.GridLayout;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseListener;
-import org.eclipse.draw2d.MouseMotionListener;
 import org.eclipse.draw2d.Panel;
 import org.eclipse.draw2d.StackLayout;
 import org.eclipse.draw2d.ToolbarLayout;
 import org.eclipse.draw2d.text.BlockFlow;
+import org.eclipse.draw2d.text.FlowFigure;
 import org.eclipse.draw2d.text.FlowPage;
 import org.eclipse.draw2d.text.TextFlow;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
+import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.figure.util.URLFigure;
 
 /**
  * Figure representing a card in the card wall.
@@ -43,111 +50,283 @@ import org.eclipse.ui.PlatformUI;
 public class CardFigure extends Panel {
 
 	/**
-	 * Listener to change the display of the cursor when this one is on the URL label.
+	 * Interface for listeners having to manage changes on the configurable fields of a card.
 	 * 
 	 * @author <a href="mailto:cedric.notot@obeo.fr">Cedric Notot</a>
 	 */
-	private class URLMouseMotionListener implements MouseMotionListener {
+	private interface ConfigurableFieldListener {
 
 		/**
-		 * {@inheritDoc}
+		 * Executed behavior when the given configurable field is added to a card figure.
 		 * 
-		 * @see org.eclipse.draw2d.MouseMotionListener#mouseDragged(org.eclipse.draw2d.MouseEvent)
+		 * @param field
+		 *            The added field.
 		 */
-		@Override
-		public void mouseDragged(MouseEvent me) {
-			// nothing
-		}
-
-		/**
-		 * {@inheritDoc}
-		 * 
-		 * @see org.eclipse.draw2d.MouseMotionListener#mouseEntered(org.eclipse.draw2d.MouseEvent)
-		 */
-		@Override
-		public void mouseEntered(MouseEvent me) {
-			Object source = me.getSource();
-			IFigure target = null;
-			if (source instanceof IFigure) {
-				if (((IFigure)source).getParent() != null) {
-					target = ((IFigure)source).getParent();
-				} else {
-					target = ((IFigure)source).getParent();
-				}
-			}
-			if (target != null) {
-				target.setForegroundColor(ColorConstants.black);
-			}
-			setCursor(Cursors.HAND);
-		}
-
-		/**
-		 * {@inheritDoc}
-		 * 
-		 * @see org.eclipse.draw2d.MouseMotionListener#mouseExited(org.eclipse.draw2d.MouseEvent)
-		 */
-		@Override
-		public void mouseExited(MouseEvent me) {
-			Object source = me.getSource();
-			IFigure target = null;
-			if (source instanceof IFigure) {
-				if (((IFigure)source).getParent() != null) {
-					target = ((IFigure)source).getParent();
-				} else {
-					target = ((IFigure)source).getParent();
-				}
-			}
-			if (target != null) {
-				target.setForegroundColor(ColorConstants.gray);
-			}
-			// FIXME: Retrieve the "system" cursor.
-			setCursor(Cursors.ARROW);
-		}
-
-		/**
-		 * {@inheritDoc}
-		 * 
-		 * @see org.eclipse.draw2d.MouseMotionListener#mouseHover(org.eclipse.draw2d.MouseEvent)
-		 */
-		@Override
-		public void mouseHover(MouseEvent me) {
-			// nothing
-		}
-
-		/**
-		 * {@inheritDoc}
-		 * 
-		 * @see org.eclipse.draw2d.MouseMotionListener#mouseMoved(org.eclipse.draw2d.MouseEvent)
-		 */
-		@Override
-		public void mouseMoved(MouseEvent me) {
-			// nothing
-		}
+		void configurableFieldAdded(ConfigurableFieldFigure field);
 
 	}
 
 	/**
-	 * Listener to launch action on click on the URL.
+	 * Listener to launch action on click on a URL.
 	 * 
 	 * @author <a href="mailto:cedric.notot@obeo.fr">Cedric Notot</a>
 	 */
-	private class URLMouseListener implements MouseListener {
+	private class ActionURLMouseListener implements MouseListener {
+		/**
+		 * {@inheritDoc}
+		 * 
+		 * @see org.eclipse.draw2d.MouseListener#mouseReleased(org.eclipse.draw2d.MouseEvent)
+		 */
 		@Override
 		public void mouseReleased(MouseEvent me) {
 			// nothing
 		}
 
+		/**
+		 * {@inheritDoc}
+		 * 
+		 * @see org.eclipse.draw2d.MouseListener#mousePressed(org.eclipse.draw2d.MouseEvent)
+		 */
 		@Override
 		public void mousePressed(MouseEvent me) {
-			// TODO
+			// TODO Action from the URL id
 			MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
 					"TODO", "TODO: We should open the details of the relative item");
 		}
 
+		/**
+		 * {@inheritDoc}
+		 * 
+		 * @see org.eclipse.draw2d.MouseListener#mouseDoubleClicked(org.eclipse.draw2d.MouseEvent)
+		 */
 		@Override
 		public void mouseDoubleClicked(MouseEvent me) {
 			// nothing
 		}
+	}
+
+	/**
+	 * Listener to fold/unfold a group of fields and add new fields to a graphical container (folder).
+	 * 
+	 * @author <a href="mailto:cedric.notot@obeo.fr">Cedric Notot</a>
+	 */
+	private class FoldingListener implements MouseListener, ConfigurableFieldListener {
+
+		/**
+		 * The configurable fields nested in a folder.
+		 */
+		private List<ConfigurableFieldFigure> foldedFields;
+
+		/**
+		 * The folder to fold or unfold.
+		 */
+		private IFigure folder;
+
+		/**
+		 * Constructor.
+		 * 
+		 * @param folder
+		 *            The folder to fold or unfold.
+		 * @param foldedFields
+		 *            The configurable fields nested in a folder.
+		 */
+		public FoldingListener(IFigure folder, List<ConfigurableFieldFigure> foldedFields) {
+			this.folder = folder;
+			this.foldedFields = foldedFields;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 * 
+		 * @see org.eclipse.draw2d.MouseListener#mouseReleased(org.eclipse.draw2d.MouseEvent)
+		 */
+		@Override
+		public void mouseReleased(MouseEvent me) {
+			// nothing
+		}
+
+		/**
+		 * {@inheritDoc}
+		 * 
+		 * @see org.eclipse.draw2d.MouseListener#mousePressed(org.eclipse.draw2d.MouseEvent)
+		 */
+		@Override
+		public void mousePressed(MouseEvent me) {
+			boolean isFolderExpanded = isFolderExpanded();
+			for (ConfigurableFieldFigure field : foldedFields) {
+				if (isFolderExpanded) {
+					folder.remove(field);
+				} else {
+					folder.add(field);
+				}
+			}
+		}
+
+		/**
+		 * {@inheritDoc}
+		 * 
+		 * @see org.eclipse.draw2d.MouseListener#mouseDoubleClicked(org.eclipse.draw2d.MouseEvent)
+		 */
+		@Override
+		public void mouseDoubleClicked(MouseEvent me) {
+			// nothing
+		}
+
+		/**
+		 * {@inheritDoc}
+		 * 
+		 * @see org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.figure.CardFigure.ConfigurableFieldListener#configurableFieldAdded(org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.figure.CardFigure.ConfigurableFieldFigure)
+		 */
+		@Override
+		public void configurableFieldAdded(ConfigurableFieldFigure field) {
+			if (isFolderExpanded()) {
+				folder.add(field);
+			}
+		}
+
+		/**
+		 * Checks if the folder is folded or unfolded (expanded).
+		 * 
+		 * @return True if the folder is expanded, False otherwise.
+		 */
+		private boolean isFolderExpanded() {
+			return folder.getChildren().containsAll(foldedFields);
+		}
+	}
+
+	/**
+	 * URL figure which may react clicking on the label to fold or unfold a set of configurable fields and
+	 * from the add of configurable fields.
+	 * 
+	 * @author <a href="mailto:cedric.notot@obeo.fr">Cedric Notot</a>
+	 */
+	private class FoldingFigure extends URLFigure {
+
+		/**
+		 * Listeners to fold/unfold and add new fields.
+		 */
+		private List<FoldingListener> foldingListeners = new ArrayList<FoldingListener>();
+
+		/**
+		 * Constructor.
+		 * 
+		 * @param text
+		 *            The flow figure which display the label of the url.
+		 */
+		public FoldingFigure(FlowFigure text) {
+			super(text);
+		}
+
+		/**
+		 * Add a folding listener to manage fold/unfold and the add of new configurable fields.
+		 * 
+		 * @param listener
+		 *            A folding listener.
+		 */
+		public void addFoldingListener(FoldingListener listener) {
+			textFigure.addMouseListener(listener);
+			if (!foldingListeners.contains(listener)) {
+				foldingListeners.add(listener);
+			}
+		}
+
+		/**
+		 * Notifies the folding listeners that a configurable field has been added.
+		 * 
+		 * @param field
+		 *            A configurable field.
+		 */
+		public void fireFieldAdded(ConfigurableFieldFigure field) {
+			for (FoldingListener listener : foldingListeners) {
+				listener.configurableFieldAdded(field);
+			}
+		}
+	}
+
+	/**
+	 * A configurable field composed of a label and a value. Each configurable field is identified by an id.
+	 * 
+	 * @author <a href="mailto:cedric.notot@obeo.fr">Cedric Notot</a>
+	 */
+	private class ConfigurableFieldFigure extends Panel {
+
+		/**
+		 * The id.
+		 */
+		private String id;
+
+		/**
+		 * The figure which is about label.
+		 */
+		private TextFlow labelFlow;
+
+		/**
+		 * The figure which is about value.
+		 */
+		private TextFlow valueFlow;
+
+		/**
+		 * Constructor.
+		 * 
+		 * @param id
+		 *            The id of the field.
+		 * @param label
+		 *            The label to use.
+		 */
+		public ConfigurableFieldFigure(String id, String label) {
+
+			this.id = id;
+
+			setLayoutManager(new GridLayout(1, false));
+			FlowPage flowPage = new FlowPage();
+			flowPage.setOpaque(true);
+			FontData[] defaultFontData = defaultFont.getFontData();
+			FontData newFontData = new FontData(defaultFontData[0].getName(),
+					defaultFontData[0].getHeight() - 1, defaultFontData[0].getStyle());
+			flowPage.setFont(new Font(null, newFontData));
+
+			BlockFlow blockFlow = new BlockFlow();
+
+			labelFlow = new TextFlow();
+			labelFlow.setText(label + ": "); //$NON-NLS-1$
+			blockFlow.add(labelFlow);
+
+			valueFlow = new TextFlow();
+			blockFlow.add(valueFlow);
+
+			flowPage.add(blockFlow);
+
+			add(flowPage);
+			setConstraint(flowPage, new GridData(SWT.LEFT, SWT.TOP, true, true));
+		}
+
+		/**
+		 * Get the figure which is about the label.
+		 * 
+		 * @return The label figure.
+		 */
+		public TextFlow getLabel() {
+			return labelFlow;
+		}
+
+		/**
+		 * Get the figure which is about the value.
+		 * 
+		 * @return The value figure.
+		 */
+		public TextFlow getValue() {
+			return valueFlow;
+		}
+
+		/**
+		 * Get the id.
+		 * 
+		 * @return The id.
+		 */
+		public String getId() {
+			return id;
+		}
+
 	}
 
 	/**
@@ -202,16 +381,27 @@ public class CardFigure extends Panel {
 	private Panel contentPanel;
 
 	/**
-	 * Map containing the configurable fields on the card, indexed by their id.
+	 * The panel containing the details of the card (the set of the configurable fields).
 	 */
-	private Map<String, TextFlow> configurableFields = new HashMap<String, TextFlow>();
+	private Panel detailsPanel;
+
+	/**
+	 * The list of configurable fields to fold or unfold in the card.
+	 */
+	private List<ConfigurableFieldFigure> configurableFields = new ArrayList<ConfigurableFieldFigure>();
+
+	/**
+	 * The default font to use in the card.
+	 */
+	private Font defaultFont = JFaceResources.getDefaultFont();
 
 	/**
 	 * Constructor.
 	 */
 	public CardFigure() {
 
-		setPreferredSize(CARD_PREFERRED_WIDTH, CARD_PREFERRED_HEIGHT);
+		// If uncommented, the wrapping of labels will work but the height will not adjust itself.
+		// setPreferredSize(CARD_PREFERRED_WIDTH, CARD_PREFERRED_HEIGHT);
 
 		setBackgroundColor(new Color(Display.getCurrent(), new RGB(CARD_COLOR_RED, CARD_COLOR_GREEN,
 				CARD_COLOR_BLUE)));
@@ -229,6 +419,7 @@ public class CardFigure extends Panel {
 		marginsPanel.setLayoutManager(marginsLayout);
 
 		contentPanel = new Panel();
+
 		ToolbarLayout contentLayout = new ToolbarLayout(false);
 		contentLayout.setMinorAlignment(ToolbarLayout.ALIGN_TOPLEFT);
 		contentLayout.setStretchMinorAxis(true);
@@ -239,59 +430,49 @@ public class CardFigure extends Panel {
 
 		addTitle();
 
+		addDetails();
+
 		marginsPanel.add(contentPanel);
 		marginsPanel.setConstraint(contentPanel, new GridData(SWT.FILL, SWT.FILL, true, true));
 
 		add(marginsPanel);
-		setConstraint(marginsPanel, new GridData(SWT.FILL, SWT.FILL, true, true));
+		setConstraint(marginsPanel, new GridData(SWT.CENTER, SWT.CENTER, false, false));
 
+		setFont(defaultFont);
 	}
 
 	/**
-	 * Add the title of the card.
+	 * {@inheritDoc}
+	 * 
+	 * @see org.eclipse.draw2d.Figure#paint(org.eclipse.draw2d.Graphics)
 	 */
-	private void addTitle() {
-		Panel title = new Panel();
-		title.setLayoutManager(new GridLayout(1, false));
-
-		FlowPage titleFlowPage = new FlowPage();
-		titleFlowPage.setOpaque(true);
-		titleTextFlow = new TextFlow();
-		titleFlowPage.add(titleTextFlow);
-
-		title.add(titleFlowPage);
-		title.setConstraint(titleFlowPage, new GridData(SWT.CENTER, SWT.TOP, true, true));
-
-		contentPanel.add(title);
+	@Override
+	public void paint(Graphics graphics) {
+		// FIXME I'm not sure it is the good solution to locate this here ! This may involve performance
+		// issues...
+		// But this enables to have the same column width and a height which adjust itself in relation to the
+		// fields added + wrapping of labels.
+		setPreferredSize(CARD_PREFERRED_WIDTH, getPreferredHeight());
+		super.paint(graphics);
 	}
 
 	/**
-	 * Add the url of the card.
+	 * Get the preferred height of the card in relation to the displayed fields.
+	 * 
+	 * @return The preferred height.
 	 */
-	private void addUrl() {
-
-		Panel url = new Panel();
-		url.setLayoutManager(new GridLayout(1, false));
-
-		FlowPage urlFlowPage = new FlowPage();
-		urlFlowPage.setForegroundColor(ColorConstants.gray);
-
-		urlFlowPage.setOpaque(true);
-		urlTextFlow = new TextFlow();
-
-		// FontData[] defaultFont = JFaceResources.getDefaultFont().getFontData();
-		// FontData boldFontData = new FontData(defaultFont[0].getName(), defaultFont[0].getHeight(),
-		// SWT.BOLD);
-		// urlTextFlow.setFont(new Font(null, boldFontData));
-
-		urlFlowPage.addMouseMotionListener(new URLMouseMotionListener());
-		urlFlowPage.addMouseListener(new URLMouseListener());
-		urlFlowPage.add(urlTextFlow);
-
-		url.add(urlFlowPage);
-		url.setConstraint(urlFlowPage, new GridData(SWT.LEFT, SWT.TOP, true, true));
-
-		contentPanel.add(url);
+	public int getPreferredHeight() {
+		int cardY = getLocation().y;
+		int lastY = CARD_PREFERRED_HEIGHT;
+		if (contentPanel.getChildren().size() > 0) {
+			Object last = contentPanel.getChildren().get(contentPanel.getChildren().size() - 1);
+			if (last instanceof IFigure) {
+				lastY = ((IFigure)last).getBounds().y + ((IFigure)last).getBounds().height;
+			}
+		} else {
+			lastY = detailsPanel.getLocation().y;
+		}
+		return lastY - cardY;
 	}
 
 	/**
@@ -336,10 +517,10 @@ public class CardFigure extends Panel {
 	 * @param value
 	 *            The value to set.
 	 */
-	public void setField(String id, String label, String value) {
-		TextFlow fieldValue = getField(id);
+	public void setConfigurableField(String id, String label, String value) {
+		TextFlow fieldValue = getConfigurableField(id);
 		if (fieldValue == null) {
-			fieldValue = addConfigurablePanel(id, label);
+			fieldValue = addConfigurableField(id, label);
 		}
 		fieldValue.setText(value);
 	}
@@ -351,8 +532,78 @@ public class CardFigure extends Panel {
 	 *            The id of the configurable field.
 	 * @return The graphical field.
 	 */
-	public TextFlow getField(String id) {
-		return configurableFields.get(id);
+	public TextFlow getConfigurableField(final String id) {
+		ConfigurableFieldFigure field = Iterables.find(configurableFields,
+				new Predicate<ConfigurableFieldFigure>() {
+					/**
+					 * {@inheritDoc}
+					 * 
+					 * @see com.google.common.base.Predicate#apply(java.lang.Object)
+					 */
+					@Override
+					public boolean apply(ConfigurableFieldFigure input) {
+						return id.equals(input.getId());
+					}
+				}, null);
+
+		if (field != null) {
+			return field.getValue();
+		}
+		return null;
+	}
+
+	/**
+	 * Add the title of the card.
+	 */
+	private void addTitle() {
+		Panel title = new Panel();
+		title.setLayoutManager(new GridLayout(1, false));
+
+		FlowPage titleFlowPage = new FlowPage();
+		titleFlowPage.setOpaque(true);
+		titleTextFlow = new TextFlow();
+		titleFlowPage.add(titleTextFlow);
+
+		title.add(titleFlowPage);
+		title.setConstraint(titleFlowPage, new GridData(SWT.CENTER, SWT.TOP, true, true));
+
+		contentPanel.add(title);
+	}
+
+	/**
+	 * Add the url of the card.
+	 */
+	private void addUrl() {
+
+		Panel url = new Panel();
+		url.setLayoutManager(new GridLayout(1, false));
+
+		urlTextFlow = new TextFlow();
+		URLFigure urlFigure = new URLFigure(urlTextFlow);
+
+		urlFigure.addMouseListener(new ActionURLMouseListener());
+
+		url.add(urlFigure);
+		url.setConstraint(urlFigure, new GridData(SWT.LEFT, SWT.TOP, true, true));
+
+		contentPanel.add(url);
+	}
+
+	/**
+	 * Add the details folder which contains a set of configurable fields.
+	 */
+	private void addDetails() {
+		detailsPanel = new Panel();
+		detailsPanel.setLayoutManager(new GridLayout(1, false));
+
+		FoldingFigure urlFigure = new FoldingFigure(new TextFlow("détails")); //$NON-NLS-1$
+
+		urlFigure.addFoldingListener(new FoldingListener(contentPanel, configurableFields));
+
+		detailsPanel.add(urlFigure);
+		detailsPanel.setConstraint(urlFigure, new GridData(SWT.LEFT, SWT.TOP, true, true));
+
+		contentPanel.add(detailsPanel);
 	}
 
 	/**
@@ -364,31 +615,28 @@ public class CardFigure extends Panel {
 	 *            The label of the configurable field.
 	 * @return The text flow of the field.
 	 */
-	private TextFlow addConfigurablePanel(String id, String label) {
-		Panel panel = new Panel();
-		panel.setLayoutManager(new GridLayout(1, false));
+	private TextFlow addConfigurableField(String id, String label) {
+		ConfigurableFieldFigure field = new ConfigurableFieldFigure(id, label);
 
-		FlowPage flowPage = new FlowPage();
-		flowPage.setOpaque(true);
+		configurableFields.add(field);
+		fireConfigurableFieldAdded(field);
 
-		BlockFlow blockFlow = new BlockFlow();
+		return field.getValue();
+	}
 
-		TextFlow labelFlow = new TextFlow();
-		labelFlow.setText(label + ": "); //$NON-NLS-1$
-		blockFlow.add(labelFlow);
-
-		TextFlow textFlow = new TextFlow();
-		blockFlow.add(textFlow);
-
-		flowPage.add(blockFlow);
-
-		panel.add(flowPage);
-		panel.setConstraint(flowPage, new GridData(SWT.LEFT, SWT.TOP, true, true));
-
-		contentPanel.add(panel);
-		configurableFields.put(id, textFlow);
-
-		return textFlow;
+	/**
+	 * Notifies the URL figure, which manages the folding/unfolding of the configurable fields, for the add of
+	 * a configurable field to the card.
+	 * 
+	 * @param field
+	 *            The added configurable field.
+	 */
+	private void fireConfigurableFieldAdded(ConfigurableFieldFigure field) {
+		FoldingFigure figure = Iterables.find(detailsPanel.getChildren(), Predicates
+				.instanceOf(FoldingFigure.class), null);
+		if (figure != null) {
+			figure.fireFieldAdded(field);
+		}
 	}
 
 }

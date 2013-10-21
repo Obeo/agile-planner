@@ -54,7 +54,7 @@ public class CellContentFigure extends AbstractCellFigure {
 		marginsPanel.add(contentPanel);
 		marginsPanel.setConstraint(contentPanel, new GridData(SWT.FILL, SWT.FILL, true, true));
 		ToolbarLayout contentLayout = new ToolbarLayout(false);
-		contentLayout.setMinorAlignment(ToolbarLayout.ALIGN_TOPLEFT);
+		contentLayout.setMinorAlignment(ToolbarLayout.ALIGN_CENTER);
 		contentLayout.setStretchMinorAxis(true);
 		contentLayout.setSpacing(MARGIN);
 		contentPanel.setLayoutManager(contentLayout);
