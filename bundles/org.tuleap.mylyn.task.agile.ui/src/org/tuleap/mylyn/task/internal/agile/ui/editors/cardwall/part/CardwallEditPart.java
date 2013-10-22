@@ -13,9 +13,11 @@ package org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.part;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.FreeformLayer;
 import org.eclipse.draw2d.GridLayout;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.LineBorder;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.CardwallWrapper;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.ColumnWrapper;
@@ -44,15 +46,17 @@ public class CardwallEditPart extends AbstractGraphicalEditPart {
 		layout.makeColumnsEqualWidth = false;
 
 		// Spaces between columns and lines
-		layout.horizontalSpacing = 0;
-		layout.verticalSpacing = 0;
+		layout.horizontalSpacing = -1;
+		layout.verticalSpacing = -1;
 
 		// Spaces between head figures and the border of the cardwall
-		layout.marginHeight = 0;
-		layout.marginWidth = 0;
+		layout.marginHeight = -1;
+		layout.marginWidth = -1;
 
 		// The border of the cardwall
-		// layer.setBorder(new LineBorder());
+		LineBorder lineBorder = new LineBorder();
+		lineBorder.setColor(ColorConstants.gray);
+		layer.setBorder(lineBorder);
 
 		layer.setLayoutManager(layout);
 
