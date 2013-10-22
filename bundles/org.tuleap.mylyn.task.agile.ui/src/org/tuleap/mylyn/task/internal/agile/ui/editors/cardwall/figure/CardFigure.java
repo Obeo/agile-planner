@@ -21,11 +21,10 @@ import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.GridData;
 import org.eclipse.draw2d.GridLayout;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseListener;
 import org.eclipse.draw2d.Panel;
-import org.eclipse.draw2d.StackLayout;
+import org.eclipse.draw2d.RoundedRectangle;
 import org.eclipse.draw2d.ToolbarLayout;
 import org.eclipse.draw2d.text.BlockFlow;
 import org.eclipse.draw2d.text.FlowFigure;
@@ -47,7 +46,7 @@ import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.figure.util.URLF
  * 
  * @author <a href="mailto:cedric.notot@obeo.fr">Cedric Notot</a>
  */
-public class CardFigure extends Panel {
+public class CardFigure extends RoundedRectangle {
 
 	/**
 	 * Interface for listeners having to manage changes on the configurable fields of a card.
@@ -405,11 +404,10 @@ public class CardFigure extends Panel {
 
 		setBackgroundColor(new Color(Display.getCurrent(), new RGB(CARD_COLOR_RED, CARD_COLOR_GREEN,
 				CARD_COLOR_BLUE)));
-		setLayoutManager(new StackLayout());
+		setLayoutManager(new GridLayout());
 
-		setBorder(new LineBorder());
+		setLineWidth(1);
 		setOpaque(true);
-		setLayoutManager(new StackLayout());
 
 		Panel marginsPanel = new Panel();
 		marginsPanel.setOpaque(false);
@@ -436,7 +434,7 @@ public class CardFigure extends Panel {
 		marginsPanel.setConstraint(contentPanel, new GridData(SWT.FILL, SWT.FILL, true, true));
 
 		add(marginsPanel);
-		setConstraint(marginsPanel, new GridData(SWT.CENTER, SWT.CENTER, false, false));
+		setConstraint(marginsPanel, new GridData(SWT.FILL, SWT.FILL, true, true));
 
 		setFont(defaultFont);
 	}
@@ -472,7 +470,7 @@ public class CardFigure extends Panel {
 		} else {
 			lastY = detailsPanel.getLocation().y;
 		}
-		return lastY - cardY;
+		return lastY + MARGIN - cardY;
 	}
 
 	/**
