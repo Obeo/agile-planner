@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.tuleap.mylyn.task.internal.agile.ui.util;
 
+import org.eclipse.swt.graphics.RGB;
+
 /**
  * Useful constants for the Agile Planner UI are here.
  * 
@@ -47,4 +49,19 @@ public interface IMylynAgileUIConstants {
 	 * Default width of column "Parent".
 	 */
 	int DEFAULT_PARENT_COL_WIDTH = 80;
+
+	/**
+	 * Default margin used in cardwall.
+	 */
+	int MARGIN = 3;
+
+	/**
+	 * Default background color for cards.
+	 */
+	RGB CARD_BG_COLOR = new RGB(255, 255, 187);
+
+	/**
+	 * Default background color for backlog item cards (in the left column).
+	 */
+	RGB BI_CARD_BG_COLOR = new RGB(240, 240, 255);
 }

@@ -13,21 +13,20 @@ package org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.part;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.draw2d.FreeformLayer;
+import org.eclipse.draw2d.GridLayout;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.ToolbarLayout;
+import org.eclipse.draw2d.Panel;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
-import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.CardwallModel;
+import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.figure.SwimlaneHeaderFigure;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.HeaderModel;
-import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.SwimlaneModel;
 import org.tuleap.mylyn.task.internal.agile.ui.util.IMylynAgileUIConstants;
 
 /**
- * The root edit part for the card wall.
+ * The edit part for the cells used as heading for columns, swimlanes and the whole card wall.
  * 
  * @author <a href="mailto:cedric.notot@obeo.fr">Cedric Notot</a>
  */
-public class CardwallEditPart extends AbstractGraphicalEditPart {
+public class HeaderEditPart extends AbstractGraphicalEditPart {
 
 	/**
 	 * {@inheritDoc}
@@ -36,13 +35,28 @@ public class CardwallEditPart extends AbstractGraphicalEditPart {
 	 */
 	@Override
 	protected IFigure createFigure() {
-		FreeformLayer layer = new FreeformLayer();
+		Panel panel = new Panel();
 
-		ToolbarLayout layout = new ToolbarLayout();
-		layout.setSpacing(IMylynAgileUIConstants.MARGIN);
-		layer.setLayoutManager(layout);
+		GridLayout layout = new GridLayout();
+		layout.marginHeight = 0;
+		layout.marginWidth = 0;
+		layout.horizontalSpacing = IMylynAgileUIConstants.MARGIN;
+		layout.verticalSpacing = 0;
+		HeaderModel header = (HeaderModel)getModel();
+		layout.numColumns = header.getColumns().size() + 1;
+		layout.makeColumnsEqualWidth = true;
+		panel.setLayoutManager(layout);
 
-		return layer;
+		return panel;
+	}
+
+	/**
+	 * Returns the figure as a {@link SwimlaneHeaderFigure}.
+	 * 
+	 * @return the figure as a {@link SwimlaneHeaderFigure}.
+	 */
+	public SwimlaneHeaderFigure getHeaderFigure() {
+		return (SwimlaneHeaderFigure)getFigure();
 	}
 
 	/**
@@ -61,13 +75,11 @@ public class CardwallEditPart extends AbstractGraphicalEditPart {
 	 * @see org.eclipse.gef.editparts.AbstractEditPart#getModelChildren()
 	 */
 	@Override
-	protected List<Object> getModelChildren() {
-		List<Object> ret = new ArrayList<Object>();
-		CardwallModel cardwall = (CardwallModel)getModel();
-		ret.add(new HeaderModel(cardwall));
-		for (SwimlaneModel swimlane : cardwall.getSwimlanes()) {
-			ret.add(swimlane);
-		}
-		return ret;
+	protected List<?> getModelChildren() {
+		List<Object> res = new ArrayList<Object>();
+		HeaderModel header = (HeaderModel)getModel();
+		res.add(header.getbacklogLabel());
+		res.addAll(header.getColumns());
+		return res;
 	}
 }

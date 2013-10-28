@@ -10,47 +10,40 @@
  *******************************************************************************/
 package org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.part;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
-
 import java.util.List;
 
+import org.eclipse.draw2d.ChangeEvent;
+import org.eclipse.draw2d.ChangeListener;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.geometry.Dimension;
+import org.eclipse.draw2d.StackLayout;
+import org.eclipse.draw2d.ToolbarLayout;
 import org.eclipse.gef.EditPolicy;
+import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.CardWrapper;
-import org.tuleap.mylyn.task.agile.core.data.cardwall.ColumnWrapper;
-import org.tuleap.mylyn.task.agile.core.data.cardwall.SwimlaneWrapper;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.figure.CellContentFigure;
+import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.CardwallEvent;
+import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.CardwallEvent.Type;
+import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.IModelListener;
+import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.SwimlaneCell;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.policy.CellContentEditPolicy;
+import org.tuleap.mylyn.task.internal.agile.ui.util.IMylynAgileUIConstants;
 
 /**
  * The edit part for the cells containing cards.
  * 
  * @author <a href="mailto:cedric.notot@obeo.fr">Cedric Notot</a>
  */
-public class CellContentEditPart extends AbstractCellEditPart {
+public class CellContentEditPart extends AbstractGraphicalEditPart {
 
 	/**
-	 * Preferred width for an empty cell.
+	 * The folding listener.
 	 */
-	private static final int EMPTY_CELL_PREFERRED_WIDTH = 160;
+	private IModelListener foldingListener;
 
 	/**
-	 * Preferred height for an empty cell.
+	 * The mouse listener used to capture events of folding checkbox and updating the model.
 	 */
-	private static final int EMPTY_CELL_PREFERRED_HEIGHT = 160;
-
-	/**
-	 * Index in the input list to retrieve the swimlane related to the current cell.
-	 */
-	private static final int INDEX_SWIMLANE = 0;
-
-	/**
-	 * Index in the input list to retrieve the column related to the current cell.
-	 */
-	private static final int INDEX_COLUMN = 1;
+	private ChangeListener foldingChangeListener;
 
 	/**
 	 * {@inheritDoc}
@@ -60,16 +53,6 @@ public class CellContentEditPart extends AbstractCellEditPart {
 	@Override
 	protected IFigure createFigure() {
 		return new CellContentFigure();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * 
-	 * @see org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.part.AbstractCellEditPart#getCellFigure()
-	 */
-	@Override
-	public CellContentFigure getCellFigure() {
-		return (CellContentFigure)getFigure();
 	}
 
 	/**
@@ -89,15 +72,8 @@ public class CellContentEditPart extends AbstractCellEditPart {
 	 */
 	@Override
 	protected List<CardWrapper> getModelChildren() {
-		final ColumnWrapper column = getColumn();
-		return Lists.newArrayList(Iterables.filter(getCards(), new Predicate<CardWrapper>() {
-
-			@Override
-			public boolean apply(CardWrapper input) {
-				return column.getId() != null && column.getId().equals(input.getStatusId());
-			}
-
-		}));
+		SwimlaneCell cell = (SwimlaneCell)getModel();
+		return cell.getCards();
 	}
 
 	/**
@@ -107,7 +83,7 @@ public class CellContentEditPart extends AbstractCellEditPart {
 	 */
 	@Override
 	public IFigure getContentPane() {
-		return getCellFigure().getArtifactContainer();
+		return ((CellContentFigure)getFigure()).getCardsContainer();
 	}
 
 	/**
@@ -117,52 +93,73 @@ public class CellContentEditPart extends AbstractCellEditPart {
 	 */
 	@Override
 	protected void refreshVisuals() {
-		if (getCards().isEmpty()) {
-			getFigure().setPreferredSize(
-					new Dimension(EMPTY_CELL_PREFERRED_WIDTH, EMPTY_CELL_PREFERRED_HEIGHT));
-		}
 		super.refreshVisuals();
+		IFigure contentPane = getContentPane();
+		SwimlaneCell cell = (SwimlaneCell)getModel();
+		if (cell.isFolded() || cell.getColumn().isFolded()) {
+			StackLayout sl = new StackLayout();
+			contentPane.setLayoutManager(sl);
+		} else {
+			ToolbarLayout tl = new ToolbarLayout(false);
+			tl.setMinorAlignment(ToolbarLayout.ALIGN_CENTER);
+			tl.setStretchMinorAxis(true);
+			tl.setSpacing(IMylynAgileUIConstants.MARGIN);
+			contentPane.setLayoutManager(tl);
+		}
+		contentPane.invalidateTree();
 	}
 
 	/**
-	 * Get the cards of the whole swimlane related to the current cell.
+	 * {@inheritDoc}
 	 * 
-	 * @return The list of card wrappers.
+	 * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#activate()
 	 */
-	private List<CardWrapper> getCards() {
-		SwimlaneWrapper item = getSwimlane();
-		if (item != null) {
-			return item.getCards();
-		}
-		return Lists.newArrayList();
+	@Override
+	public void activate() {
+		super.activate();
+		// Listen to the model
+		SwimlaneCell cell = (SwimlaneCell)getModel();
+		foldingListener = new IModelListener() {
+			@Override
+			public void eventOccurred(CardwallEvent event) {
+				if (event != null && event.getType() == Type.FOLDING_CHANGED) {
+					refreshVisuals();
+				}
+			}
+		};
+		cell.addModelListener(foldingListener);
+		cell.getColumn().addModelListener(foldingListener);
+		// And listen to the figures
+		CellContentFigure f = (CellContentFigure)getFigure();
+		foldingChangeListener = new ChangeListener() {
+			/**
+			 * {@inheritDoc}
+			 * 
+			 * @see org.eclipse.draw2d.ChangeListener#handleStateChanged(org.eclipse.draw2d.ChangeEvent)
+			 */
+			@Override
+			public void handleStateChanged(ChangeEvent event) {
+				SwimlaneCell c = (SwimlaneCell)getModel();
+				CellContentFigure cellFigure = (CellContentFigure)getFigure();
+				c.setFolded(cellFigure.isFolded());
+			}
+		};
+		f.addFoldingListener(foldingChangeListener);
 	}
 
 	/**
-	 * Get the swimlane related to the current cell.
+	 * {@inheritDoc}
 	 * 
-	 * @return The swimlane.
+	 * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#deactivate()
 	 */
-	private SwimlaneWrapper getSwimlane() {
-		Object mdl = getModel();
-		if (mdl instanceof List) {
-			List<Object> model = (List<Object>)mdl;
-			return (SwimlaneWrapper)model.get(INDEX_SWIMLANE);
-		}
-		return null;
+	@Override
+	public void deactivate() {
+		SwimlaneCell cell = (SwimlaneCell)getModel();
+		cell.removeModelListener(foldingListener);
+		foldingListener = null;
+		CellContentFigure f = (CellContentFigure)getFigure();
+		f.removeFoldingListener(foldingChangeListener);
+		foldingChangeListener = null;
+		super.deactivate();
 	}
-
-	/**
-	 * Get the column related to the current cell.
-	 * 
-	 * @return The column.
-	 */
-	private ColumnWrapper getColumn() {
-		Object mdl = getModel();
-		if (mdl instanceof List) {
-			List<Object> model = (List<Object>)mdl;
-			return (ColumnWrapper)model.get(INDEX_COLUMN);
-		}
-		return null;
-	}
-
 }

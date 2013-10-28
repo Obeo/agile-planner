@@ -10,9 +10,14 @@
  *******************************************************************************/
 package org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.part;
 
+import java.util.List;
+
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.MouseEvent;
+import org.eclipse.draw2d.MouseListener;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.CardWrapper;
+import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.figure.CardDetailsPanel;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.figure.CardFigure;
 
 /**
@@ -21,6 +26,11 @@ import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.figure.CardFigur
  * @author <a href="mailto:cedric.notot@obeo.fr">Cedric Notot</a>
  */
 public class CardEditPart extends AbstractGraphicalEditPart {
+
+	/**
+	 * Listener for folding the card's details.
+	 */
+	private MouseListener mouseFoldingListener;
 
 	/**
 	 * {@inheritDoc}
@@ -64,23 +74,84 @@ public class CardEditPart extends AbstractGraphicalEditPart {
 		fig.setTitle(card.getLabel());
 		fig.setUrl(card.getDisplayId());
 
-		// TODO: Iterate on all the managed configurable fields.
-		addFieldValue(CardWrapper.CARD_VALUE_FIELD_ID);
-		addFieldValue(CardWrapper.CARD_REMAINING_EFFORT_FIELD_ID);
-		addFieldValue(CardWrapper.CARD_ASSIGNED_TO_FIELD_ID);
+		CardDetailsPanel panel = getDetailsPanel();
+		if (panel.isFolded()) {
+			panel.setTitle("> details");
+		} else {
+			panel.setTitle("v details");
+		}
+		panel.invalidateTree();
 	}
 
 	/**
-	 * Add a new field to the card.
+	 * Provides the detail panel.
 	 * 
-	 * @param id
-	 *            The id of the configurable field to add.
+	 * @return The details panel.
 	 */
-	private void addFieldValue(String id) {
-		String value = ((CardWrapper)getModel()).getFieldValue(id);
-		if (value != null) {
-			String label = ((CardWrapper)getModel()).getFieldLabel(id);
-			getCardFigure().setConfigurableField(id, label, value);
-		}
+	public CardDetailsPanel getDetailsPanel() {
+		return getCardFigure().getDetailsPanel();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#getContentPane()
+	 */
+	@Override
+	public IFigure getContentPane() {
+		return getCardFigure().getDetailsPanel().getFieldsPanel();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see org.eclipse.gef.editparts.AbstractEditPart#getChildren()
+	 */
+	@Override
+	public List<?> getModelChildren() {
+		CardWrapper card = (CardWrapper)getModel();
+		return card.getFieldAttributes();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#activate()
+	 */
+	@Override
+	public void activate() {
+		super.activate();
+		mouseFoldingListener = new MouseListener() {
+
+			@Override
+			public void mouseReleased(MouseEvent me) {
+				//
+			}
+
+			@Override
+			public void mousePressed(MouseEvent me) {
+				getDetailsPanel().toggleDetails();
+				getDetailsPanel().invalidateTree();
+				refreshVisuals();
+			}
+
+			@Override
+			public void mouseDoubleClicked(MouseEvent me) {
+				//
+			}
+		};
+		getCardFigure().getDetailsPanel().addFoldingListener(mouseFoldingListener);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#deactivate()
+	 */
+	@Override
+	public void deactivate() {
+		getCardFigure().getDetailsPanel().removeFoldingListener(mouseFoldingListener);
+		mouseFoldingListener = null;
+		super.deactivate();
 	}
 }

@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.tuleap.mylyn.task.agile.core.data.cardwall;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map.Entry;
 
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.tuleap.mylyn.task.agile.core.data.AbstractTaskAttributeWrapper;
@@ -110,11 +112,36 @@ public class CardWrapper extends AbstractTaskAttributeWrapper {
 	 * Computes the unique id of the Assigned status id attribute.
 	 * 
 	 * @param id
-	 *            The if of the field.
+	 *            The id of the field.
 	 * @return The unique id of the Assigned status id attribute.
 	 */
 	private String getFieldAttributeId(String id) {
-		return root.getId() + FIELD_SEPARATOR + id;
+		return getFieldAttributePrefix() + id;
+	}
+
+	/**
+	 * Computes the prefix to use for task attributes representing configurable fields.
+	 * 
+	 * @return The prefix to use for task attributes representing configurable fields.
+	 */
+	private String getFieldAttributePrefix() {
+		return root.getId() + FIELD_SEPARATOR;
+	}
+
+	/**
+	 * Returns all the configurable fields {@link TaskAttribute}s.
+	 * 
+	 * @return all the existing configurable fields {@link TaskAttribute}s.
+	 */
+	public List<TaskAttribute> getFieldAttributes() {
+		List<TaskAttribute> res = new ArrayList<TaskAttribute>();
+		String prefix = getFieldAttributePrefix();
+		for (Entry<String, TaskAttribute> entry : root.getAttributes().entrySet()) {
+			if (entry.getKey().startsWith(prefix)) {
+				res.add(entry.getValue());
+			}
+		}
+		return res;
 	}
 
 	/**

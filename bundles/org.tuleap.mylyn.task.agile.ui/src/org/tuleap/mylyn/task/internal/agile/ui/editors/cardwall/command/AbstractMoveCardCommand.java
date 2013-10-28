@@ -10,13 +10,11 @@
  *******************************************************************************/
 package org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.command;
 
-import java.util.List;
-
-import org.eclipse.gef.EditPart;
 import org.eclipse.gef.commands.Command;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.CardWrapper;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.ColumnWrapper;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.SwimlaneWrapper;
+import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.SwimlaneCell;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.part.CardEditPart;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.part.CellContentEditPart;
 
@@ -67,9 +65,9 @@ public abstract class AbstractMoveCardCommand extends Command {
 			CardEditPart after) {
 		this.targetCellContentEditPart = cellContentEditPart;
 
-		List<Object> cell = (List<Object>)cellContentEditPart.getModel();
-		targetSwimlane = (SwimlaneWrapper)cell.get(0);
-		targetColumn = (ColumnWrapper)cell.get(1);
+		SwimlaneCell cell = (SwimlaneCell)cellContentEditPart.getModel();
+		targetSwimlane = cell.getSwimlane().getWrapper();
+		targetColumn = cell.getColumn().getWrapper();
 
 		movedCard = (CardWrapper)moved.getModel();
 
@@ -130,9 +128,10 @@ public abstract class AbstractMoveCardCommand extends Command {
 	@Override
 	public void execute() {
 		// FIXME: How to retrieve only the two implied cell edit part ?
-		for (EditPart part : (List<EditPart>)targetCellContentEditPart.getParent().getChildren()) {
-			part.refresh();
-		}
+		// for (EditPart part : (List<EditPart>)targetCellContentEditPart.getParent().getChildren()) {
+		// part.refresh();
+		// }
+		targetCellContentEditPart.getParent().refresh();
 	}
 
 	// /**

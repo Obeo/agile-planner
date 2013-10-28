@@ -276,7 +276,7 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 			switch (i) {
 				case 0:
 					CardWrapper card00 = swimlane.addCard(Integer.toString(300) + i);
-					card00.setLabel("Title of " + (300 + i)); //$NON-NLS-1$
+					card00.setLabel("This is very very long title to test line wrapping, Title of " + (300 + i)); //$NON-NLS-1$
 					card00.setStatusId(Integer.toString(10 + i));
 					card00.setFieldLabel(CardWrapper.CARD_REMAINING_EFFORT_FIELD_ID, "Remaining Effort");
 					card00.addFieldValue(CardWrapper.CARD_REMAINING_EFFORT_FIELD_ID, "2.5"); //$NON-NLS-1$

@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
@@ -56,6 +57,11 @@ public class MylynAgileUIActivator extends AbstractUIPlugin {
 	 * The images.
 	 */
 	private Map<String, Image> imageMap = new HashMap<String, Image>();
+
+	/**
+	 * cache of colors by arbitrary id.
+	 */
+	private Map<String, Color> colorsById = new HashMap<String, Color>();
 
 	/**
 	 * Returns the sole instance of the activator.
@@ -99,6 +105,12 @@ public class MylynAgileUIActivator extends AbstractUIPlugin {
 			image.dispose();
 		}
 		imageMap.clear();
+
+		// Dispose the used colors.
+		for (Color c : colorsById.values()) {
+			c.dispose();
+		}
+		colorsById.clear();
 
 		super.stop(context);
 	}
@@ -231,6 +243,40 @@ public class MylynAgileUIActivator extends AbstractUIPlugin {
 			}
 			log(new Status(severity, PLUGIN_ID, errorMessage));
 		}
+	}
+
+	/**
+	 * Get the color for the given id, if it exists.
+	 * 
+	 * @param key
+	 *            The color key (arbitrary)
+	 * @return The cached color, possibly <code>null</code>.
+	 */
+	public Color getColor(String key) {
+		return colorsById.get(key);
+	}
+
+	/**
+	 * Indicates whether there is a cached color for the given key.
+	 * 
+	 * @param key
+	 *            the color key;
+	 * @return <code>true</code> if and only if there is an entry for the given key.
+	 */
+	public boolean hasColor(String key) {
+		return colorsById.containsKey(key);
+	}
+
+	/**
+	 * Caches the given color for the given key.
+	 * 
+	 * @param key
+	 *            The key
+	 * @param color
+	 *            The color.
+	 */
+	public void putColor(String key, Color color) {
+		colorsById.put(key, color);
 	}
 
 }

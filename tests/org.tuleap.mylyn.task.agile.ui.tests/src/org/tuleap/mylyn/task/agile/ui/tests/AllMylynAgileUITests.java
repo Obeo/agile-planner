@@ -16,6 +16,8 @@ import junit.textui.TestRunner;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+import org.tuleap.mylyn.task.agile.ui.tests.cardwall.model.CardwallEventTest;
+import org.tuleap.mylyn.task.agile.ui.tests.cardwall.model.CardwallModelTest;
 import org.tuleap.mylyn.task.agile.ui.tests.data.BacklogModelTest;
 
 /**
@@ -24,7 +26,7 @@ import org.tuleap.mylyn.task.agile.ui.tests.data.BacklogModelTest;
  * @author <a href="mailto:cedric.notot@obeo.fr">Cedric Notot</a>
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({BacklogModelTest.class })
+@Suite.SuiteClasses({BacklogModelTest.class, CardwallModelTest.class, CardwallEventTest.class })
 public final class AllMylynAgileUITests {
 
 	/**

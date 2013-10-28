@@ -26,6 +26,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.tuleap.mylyn.task.agile.core.data.ITaskAttributeChangeListener;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.CardwallWrapper;
+import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.CardwallModel;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.part.CardwallEditPartFactory;
 
 /**
@@ -85,7 +86,7 @@ public class CardwallTaskEditorPart extends AbstractTaskEditorPart implements IT
 		wrapper = new CardwallWrapper(getTaskData().getRoot());
 		wrapper.addListener(this);
 
-		viewer.setContents(wrapper);
+		viewer.setContents(new CardwallModel(wrapper));
 	}
 
 	/**

@@ -10,12 +10,16 @@
  *******************************************************************************/
 package org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.part;
 
-import java.util.List;
-
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartFactory;
+import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.CardWrapper;
-import org.tuleap.mylyn.task.agile.core.data.cardwall.CardwallWrapper;
+import org.tuleap.mylyn.task.agile.core.data.cardwall.SwimlaneItemWrapper;
+import org.tuleap.mylyn.task.agile.core.data.cardwall.SwimlaneWrapper;
+import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.CardwallModel;
+import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.HeaderModel;
+import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.SwimlaneCell;
+import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.SwimlaneModel;
 
 /**
  * The edit part factory for the card wall.
@@ -27,14 +31,24 @@ public class CardwallEditPartFactory implements EditPartFactory {
 	@Override
 	public EditPart createEditPart(EditPart context, Object model) {
 		EditPart part = null;
-		if (model instanceof CardwallWrapper) {
+		if (model instanceof CardwallModel) {
 			part = new CardwallEditPart();
+		} else if (model instanceof HeaderModel) {
+			part = new HeaderEditPart();
 		} else if (model instanceof CardWrapper) {
 			part = new CardEditPart();
-		} else if (model instanceof List) {
+		} else if (model instanceof SwimlaneCell) {
 			part = new CellContentEditPart();
+		} else if (model instanceof SwimlaneModel) {
+			part = new SwimlaneEditPart();
+		} else if (model instanceof SwimlaneWrapper) {
+			part = new SwimlaneHeaderEditPart();
+		} else if (model instanceof SwimlaneItemWrapper) {
+			part = new BacklogItemCardEditPart();
+		} else if (model instanceof TaskAttribute) {
+			part = new CardFieldEditPart();
 		} else {
-			part = new CellHeadEditPart();
+			part = new ColumnHeaderEditPart();
 		}
 		part.setModel(model);
 		return part;
