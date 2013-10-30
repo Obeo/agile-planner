@@ -29,11 +29,16 @@ import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Cursor;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
@@ -273,7 +278,7 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 	private TableViewer createBacklogItemsTable(final FormToolkit toolkit, final Section section,
 			final IBacklog container, final String backlogItemTypeName) {
 		final String strMissing = MylynAgileUIMessages.getString("PlanningTaskEditorPart.MissingTextValue"); //$NON-NLS-1$
-		Table table = toolkit.createTable(section, SWT.BORDER | SWT.MULTI | SWT.FULL_SELECTION);
+		final Table table = toolkit.createTable(section, SWT.BORDER | SWT.MULTI | SWT.FULL_SELECTION);
 		section.setClient(table);
 		table.setLayoutData(new GridData(GridData.FILL_BOTH));
 		TableViewer viewer = new TableViewer(table);
@@ -283,21 +288,14 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 		TableViewerColumn colId = new TableViewerColumn(viewer, SWT.NONE);
 		colId.getColumn().setText(
 				MylynAgileUIMessages.getString("PlanningTaskEditorPart.DefaultIdColumnHeader")); //$NON-NLS-1$
-		colId.setLabelProvider(new ColumnLabelProvider() {
-			@Override
-			public String getText(Object element) {
-				String ret;
-				if (element == null) {
-					ret = strMissing;
-				} else if (element instanceof BacklogItemWrapper) {
-					ret = ((BacklogItemWrapper)element).getDisplayId();
-				} else {
-					ret = element.toString();
-				}
-				return ret;
-			}
-		});
+
+		// Set the HyperLink label provider
+		colId.setLabelProvider(new HyperlinkLabelProvider(table));
+
 		colId.getColumn().setWidth(IMylynAgileUIConstants.DEFAULT_ID_COL_WIDTH);
+
+		// Add the listener
+		viewer.getTable().addListener(SWT.MouseDown, this.getTableListener(table));
 
 		// Column "label", whose label is dynamic ("User Story" if the BacklogItem represents a UserStory)
 		TableViewerColumn colLabel = new TableViewerColumn(viewer, SWT.NONE);
@@ -384,4 +382,60 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 			wrapper.removeListener(this);
 		}
 	}
+
+	/**
+	 * Create a listener on the first table column cells.
+	 * 
+	 * @param table
+	 *            The table.
+	 * @return the listener.
+	 */
+	private Listener getTableListener(final Table table) {
+		Listener listener = new Listener() {
+			TableItem item;
+
+			@Override
+			public void handleEvent(Event event) {
+				Point point = new Point(event.x, event.y);
+				if (item != null && !item.isDisposed()) {
+					item.setBackground(-1, Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
+					item.setForeground(-1, Display.getCurrent().getSystemColor(SWT.COLOR_BLACK));
+				}
+				item = table.getItem(point);
+				if (item == null) {
+					return;
+				}
+				Rectangle rect = item.getBounds(0);
+				if (rect.contains(point)) {
+					table.deselectAll();
+					item.setBackground(0, Display.getCurrent().getSystemColor(SWT.COLOR_LIST_SELECTION));
+					item.setBackground(0, Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
+					openTask(item);
+				}
+			}
+		};
+		return listener;
+	}
+
+	/**
+	 * Open the task corresponding to the selected Item.
+	 * 
+	 * @param item
+	 *            The Item
+	 */
+	private void openTask(TableItem item) {
+		BacklogItemWrapper backlogItemwrapper = (BacklogItemWrapper)item.getData();
+		TaskRepository repository = null;
+		String repositoryUrl = PlanningTaskEditorPart.this.getTaskData().getRepositoryUrl();
+		List<TaskRepository> allRepositories = TasksUi.getRepositoryManager().getAllRepositories();
+		for (TaskRepository taskRepository : allRepositories) {
+			if (repositoryUrl.equals(taskRepository.getRepositoryUrl())) {
+				repository = taskRepository;
+			}
+		}
+		if (repository != null) {
+			TasksUiUtil.openTask(repository, backlogItemwrapper.getId());
+		}
+	}
+
 }
