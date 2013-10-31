@@ -84,9 +84,10 @@ public class CellContentFigure extends AbstractCellFigure {
 	@Override
 	public Dimension getPreferredSize(int wHint, int hHint) {
 		int h = 2 * MARGIN + 1;
+		int childHint = wHint - (2 * MARGIN + 2); // left & right margins + borders
 		for (Object child : getChildren()) {
-			if (child instanceof IFigure) {
-				h += ((IFigure)child).getPreferredSize(wHint, -1).height + MARGIN;
+			if (child instanceof IFigure && ((IFigure)child).isVisible()) {
+				h += ((IFigure)child).getPreferredSize(childHint, -1).height + MARGIN;
 			}
 		}
 		return new Dimension(1, h);
