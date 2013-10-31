@@ -10,12 +10,14 @@
  *******************************************************************************/
 package org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.policy;
 
+import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.commands.Command;
-import org.eclipse.gef.editpolicies.FlowLayoutEditPolicy;
+import org.eclipse.gef.editpolicies.ConstrainedLayoutEditPolicy;
+import org.eclipse.gef.requests.ChangeBoundsRequest;
 import org.eclipse.gef.requests.CreateRequest;
-import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.command.MoveCardInsideCellCommand;
-import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.command.MoveCardOutsideCellCommand;
+import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.command.ChangeCardStatusCommand;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.part.CardEditPart;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.part.CellContentEditPart;
 
@@ -23,31 +25,28 @@ import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.part.CellContent
  * Edit policy to manage the move of the cards in a cell.
  * 
  * @author <a href="mailto:cedric.notot@obeo.fr">Cedric Notot</a>
+ * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
  */
-public class CellContentEditPolicy extends FlowLayoutEditPolicy {
+public class CellContentEditPolicy extends ConstrainedLayoutEditPolicy {
 
 	/**
 	 * {@inheritDoc}
 	 * 
-	 * @see org.eclipse.gef.editpolicies.OrderedLayoutEditPolicy#createAddCommand(org.eclipse.gef.EditPart,
-	 *      org.eclipse.gef.EditPart)
+	 * @see org.eclipse.gef.editpolicies.ConstrainedLayoutEditPolicy#getConstraintFor(org.eclipse.draw2d.geometry.Point)
 	 */
 	@Override
-	protected Command createAddCommand(EditPart child, EditPart after) {
-		return new MoveCardOutsideCellCommand((CellContentEditPart)getHost(), (CardEditPart)child,
-				(CardEditPart)after);
+	protected Object getConstraintFor(Point point) {
+		return null;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 * 
-	 * @see org.eclipse.gef.editpolicies.OrderedLayoutEditPolicy#createMoveChildCommand(org.eclipse.gef.EditPart,
-	 *      org.eclipse.gef.EditPart)
+	 * @see org.eclipse.gef.editpolicies.ConstrainedLayoutEditPolicy#getConstraintFor(org.eclipse.draw2d.geometry.Rectangle)
 	 */
 	@Override
-	protected Command createMoveChildCommand(EditPart child, EditPart after) {
-		return new MoveCardInsideCellCommand((CellContentEditPart)getHost(), (CardEditPart)child,
-				(CardEditPart)after);
+	protected Object getConstraintFor(Rectangle rect) {
+		return null;
 	}
 
 	/**
@@ -57,7 +56,21 @@ public class CellContentEditPolicy extends FlowLayoutEditPolicy {
 	 */
 	@Override
 	protected Command getCreateCommand(CreateRequest request) {
-		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see org.eclipse.gef.editpolicies.ConstrainedLayoutEditPolicy#createAddCommand(org.eclipse.gef.requests.ChangeBoundsRequest,
+	 *      org.eclipse.gef.EditPart, java.lang.Object)
+	 */
+	@Override
+	protected Command createAddCommand(ChangeBoundsRequest request, EditPart child, Object constraint) {
+		CellContentEditPart host = (CellContentEditPart)getHost();
+		if (child.getParent().getParent() == host.getParent()) {
+			return new ChangeCardStatusCommand(host, (CardEditPart)child, null);
+		}
 		return null;
 	}
 
