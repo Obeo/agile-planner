@@ -39,9 +39,14 @@ import org.tuleap.mylyn.task.agile.core.data.planning.SubMilestoneWrapper;
 public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 
 	/**
+	 * The number of milliseconds in a day.
+	 */
+	private static final long MILLISECOND_IN_DAY = 24L * 3600L * 1000L;
+
+	/**
 	 * The number of milliseconds in a week.
 	 */
-	private static final long MILLISECOND_IN_WEEK = 7L * 24L * 3600L * 1000L;
+	private static final long MILLISECOND_IN_WEEK = 7L * MILLISECOND_IN_DAY;
 
 	/**
 	 * Capacity.
@@ -127,9 +132,10 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 
 		// First Sprint
 		Date startDate = new Date(System.currentTimeMillis() - 4 * MILLISECOND_IN_WEEK);
+		Date endDate = new Date(startDate.getTime() + (long)(DURATION * MILLISECOND_IN_DAY));
 
 		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(root);
-		this.createSprint(wrapper, milestoneId, "Sprint 1", CAPACITY, startDate, DURATION); //$NON-NLS-1$ 
+		this.createSprint(wrapper, milestoneId, "Sprint 1", CAPACITY, startDate, endDate); //$NON-NLS-1$ 
 		addNewBacklogItem(wrapper, milestoneId);
 		addNewBacklogItem(wrapper, milestoneId);
 		addNewBacklogItem(wrapper, milestoneId);
@@ -138,7 +144,8 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 
 		// Second Sprint
 		startDate = new Date(startDate.getTime() - 2 * MILLISECOND_IN_WEEK);
-		this.createSprint(wrapper, milestoneId, "Sprint 2", CAPACITY - 2, startDate, DURATION); //$NON-NLS-1$ 
+		endDate = new Date(startDate.getTime() + (long)(DURATION * MILLISECOND_IN_DAY));
+		this.createSprint(wrapper, milestoneId, "Sprint 2", CAPACITY - 2, startDate, endDate); //$NON-NLS-1$ 
 
 		addNewBacklogItem(wrapper, milestoneId);
 		addNewBacklogItem(wrapper, milestoneId);
@@ -327,16 +334,16 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 	 *            The sprint capacity
 	 * @param startDate
 	 *            The start date of the sprint
-	 * @param durationInDays
-	 *            The sprint duration
+	 * @param endDate
+	 *            The sprint's end date
 	 */
 	private void createSprint(MilestonePlanningWrapper wrapper, String id, String name, float capacity,
-			Date startDate, float durationInDays) {
+			Date startDate, Date endDate) {
 		SubMilestoneWrapper subMilestone = wrapper.addSubMilestone(id);
 		subMilestone.setLabel(name);
 		subMilestone.setCapacity(capacity);
 		subMilestone.setStartDate(startDate);
-		subMilestone.setDuration(durationInDays);
+		subMilestone.setEndDate(endDate);
 	}
 
 	/**

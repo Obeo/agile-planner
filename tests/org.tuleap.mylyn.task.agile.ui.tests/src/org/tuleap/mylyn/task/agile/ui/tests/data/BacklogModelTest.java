@@ -46,9 +46,9 @@ public class BacklogModelTest {
 
 		SubMilestoneWrapper subMilestone = wrapper.addSubMilestone("200"); //$NON-NLS-1$
 		subMilestone.setCapacity(20);
-		subMilestone.setDuration(11);
 		subMilestone.setLabel("Milestone 1"); //$NON-NLS-1$
 		subMilestone.setStartDate(new Date());
+		subMilestone.setStartDate(new Date(System.currentTimeMillis() + 11L * 1000 * 3600 * 24));
 
 		BacklogItemWrapper backlogItem = wrapper.addBacklogItem("300"); //$NON-NLS-1$
 		backlogItem.setAssignedMilestoneId("200"); //$NON-NLS-1$
@@ -77,9 +77,9 @@ public class BacklogModelTest {
 
 		SubMilestoneWrapper subMilestone = wrapper.addSubMilestone("200"); //$NON-NLS-1$
 		subMilestone.setCapacity(20);
-		subMilestone.setDuration(11);
 		subMilestone.setLabel("Milestone 1"); //$NON-NLS-1$
 		subMilestone.setStartDate(new Date());
+		subMilestone.setStartDate(new Date(System.currentTimeMillis() + 11L * 1000 * 3600 * 24));
 		SubMilestoneBacklogModel backlogModel = new SubMilestoneBacklogModel(wrapper, subMilestone);
 
 		BacklogItemWrapper backlogItem = wrapper.addBacklogItem("300"); //$NON-NLS-1$

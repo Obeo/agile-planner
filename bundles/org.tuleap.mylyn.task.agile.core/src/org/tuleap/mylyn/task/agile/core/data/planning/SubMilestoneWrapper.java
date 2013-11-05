@@ -44,7 +44,7 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 	/**
 	 * The value used to indicate that a task data represents a milestone duration.
 	 */
-	public static final String SUFFIX_MILESTONE_DURATION = "duration"; //$NON-NLS-1$
+	public static final String SUFFIX_END_DATE = "end_date"; //$NON-NLS-1$
 
 	/**
 	 * The value used to indicate that a task data represents a planned start date.
@@ -98,8 +98,8 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 	 * 
 	 * @return The unique id of the duration attribute.
 	 */
-	private String getDurationAttributeId() {
-		return root.getId() + ID_SEPARATOR + SUFFIX_MILESTONE_DURATION;
+	private String getEndDateAttributeId() {
+		return root.getId() + ID_SEPARATOR + SUFFIX_END_DATE;
 	}
 
 	/**
@@ -192,33 +192,37 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 	 * 
 	 * @return The milestone's duration, or {@code null} if not defined.
 	 */
-	public Float getDuration() {
-		Float result = null;
-		TaskAttribute attribute = root.getMappedAttribute(getDurationAttributeId());
+	public Date getEndDate() {
+		Date result = null;
+		TaskAttribute attribute = root.getMappedAttribute(getEndDateAttributeId());
 		if (attribute != null) {
-			result = Float.valueOf(attribute.getValue());
+			TaskAttributeMapper mapper = attribute.getTaskData().getAttributeMapper();
+			result = mapper.getDateValue(attribute);
 		}
 		return result;
 	}
 
 	/**
-	 * Duration setter.
+	 * Start date setter.
 	 * 
-	 * @param duration
-	 *            The milestone's duration.
+	 * @param start
+	 *            The milestone's start date. Nothing happens if it is null, and the former, if any, start
+	 *            date is left unchanged.
 	 */
-	public void setDuration(float duration) {
-		TaskAttribute attribute = root.getMappedAttribute(getDurationAttributeId());
-		String oldValue = null;
-		if (attribute == null) {
-			attribute = root.createMappedAttribute(getDurationAttributeId());
-			attribute.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
-			attribute.getMetaData().setType(TaskAttribute.TYPE_DOUBLE);
-		} else {
-			oldValue = attribute.getValue();
+	public void setEndDate(Date start) {
+		if (start == null) {
+			return;
 		}
-		if (oldValue == null || Float.parseFloat(oldValue) != duration) {
-			attribute.setValue(Float.toString(duration));
+		TaskAttribute attribute = root.getMappedAttribute(getEndDateAttributeId());
+		if (attribute == null) {
+			attribute = root.createMappedAttribute(getEndDateAttributeId());
+			attribute.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
+			attribute.getMetaData().setType(TaskAttribute.TYPE_DATETIME);
+		}
+		TaskAttributeMapper mapper = attribute.getTaskData().getAttributeMapper();
+		Date oldValue = mapper.getDateValue(attribute);
+		if (oldValue == null || !oldValue.equals(start)) {
+			mapper.setDateValue(attribute, start);
 			fireAttributeChanged(attribute);
 		}
 	}

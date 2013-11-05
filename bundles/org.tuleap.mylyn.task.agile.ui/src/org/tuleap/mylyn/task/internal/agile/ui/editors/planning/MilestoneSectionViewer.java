@@ -169,7 +169,7 @@ public class MilestoneSectionViewer extends Viewer {
 		SubMilestoneWrapper subMilestone = fInput.getSubMilestone();
 		String label = subMilestone.getLabel();
 		Date startDate = subMilestone.getStartDate();
-		Float duration = subMilestone.getDuration();
+		Date endDate = subMilestone.getEndDate();
 
 		// Compute the title of the section
 		StringBuilder titleBuilder = new StringBuilder();
@@ -188,10 +188,9 @@ public class MilestoneSectionViewer extends Viewer {
 			titleBuilder.append(formattedDate);
 		}
 		titleBuilder.append(" - "); //$NON-NLS-1$
-		if (duration == null || startDate == null) {
+		if (endDate == null) {
 			titleBuilder.append("?"); //$NON-NLS-1$
 		} else {
-			Date endDate = new Date(startDate.getTime() + (int)(MILLISECONDS_PER_DAY * duration.floatValue()));
 			String formattedDate = dateFormat.format(endDate);
 			titleBuilder.append(formattedDate);
 		}
