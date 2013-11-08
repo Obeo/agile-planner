@@ -20,7 +20,7 @@ import org.eclipse.draw2d.ToolbarLayout;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.CardWrapper;
-import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.figure.CellContentFigure;
+import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.figure.FoldableCellFigure;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.CardwallEvent;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.CardwallEvent.Type;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.IModelListener;
@@ -52,7 +52,7 @@ public class CellContentEditPart extends AbstractGraphicalEditPart {
 	 */
 	@Override
 	protected IFigure createFigure() {
-		return new CellContentFigure();
+		return new FoldableCellFigure();
 	}
 
 	/**
@@ -83,7 +83,7 @@ public class CellContentEditPart extends AbstractGraphicalEditPart {
 	 */
 	@Override
 	public IFigure getContentPane() {
-		return ((CellContentFigure)getFigure()).getCardsContainer();
+		return ((FoldableCellFigure)getFigure()).getCardsContainer();
 	}
 
 	/**
@@ -130,7 +130,7 @@ public class CellContentEditPart extends AbstractGraphicalEditPart {
 		cell.addModelListener(foldingListener);
 		cell.getColumn().addModelListener(foldingListener);
 		// And listen to the figures
-		CellContentFigure f = (CellContentFigure)getFigure();
+		FoldableCellFigure f = (FoldableCellFigure)getFigure();
 		foldingChangeListener = new ChangeListener() {
 			/**
 			 * {@inheritDoc}
@@ -140,7 +140,7 @@ public class CellContentEditPart extends AbstractGraphicalEditPart {
 			@Override
 			public void handleStateChanged(ChangeEvent event) {
 				SwimlaneCell c = (SwimlaneCell)getModel();
-				CellContentFigure cellFigure = (CellContentFigure)getFigure();
+				FoldableCellFigure cellFigure = (FoldableCellFigure)getFigure();
 				c.setFolded(cellFigure.isFolded());
 			}
 		};
@@ -157,7 +157,7 @@ public class CellContentEditPart extends AbstractGraphicalEditPart {
 		SwimlaneCell cell = (SwimlaneCell)getModel();
 		cell.removeModelListener(foldingListener);
 		foldingListener = null;
-		CellContentFigure f = (CellContentFigure)getFigure();
+		FoldableCellFigure f = (FoldableCellFigure)getFigure();
 		f.removeFoldingListener(foldingChangeListener);
 		foldingChangeListener = null;
 		super.deactivate();

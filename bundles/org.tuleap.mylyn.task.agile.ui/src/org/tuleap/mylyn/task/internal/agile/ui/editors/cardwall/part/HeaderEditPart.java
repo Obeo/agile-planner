@@ -13,13 +13,11 @@ package org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.part;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.draw2d.GridLayout;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Panel;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
-import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.figure.SwimlaneHeaderFigure;
+import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.layout.SwimlaneLayout;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.HeaderModel;
-import org.tuleap.mylyn.task.internal.agile.ui.util.IMylynAgileUIConstants;
 
 /**
  * The edit part for the cells used as heading for columns, swimlanes and the whole card wall.
@@ -37,26 +35,12 @@ public class HeaderEditPart extends AbstractGraphicalEditPart {
 	protected IFigure createFigure() {
 		Panel panel = new Panel();
 
-		GridLayout layout = new GridLayout();
-		layout.marginHeight = 0;
-		layout.marginWidth = 0;
-		layout.horizontalSpacing = IMylynAgileUIConstants.MARGIN;
-		layout.verticalSpacing = 0;
 		HeaderModel header = (HeaderModel)getModel();
-		layout.numColumns = header.getColumns().size() + 1;
-		layout.makeColumnsEqualWidth = true;
+		int nbColumns = header.getColumns().size() + 1;
+		SwimlaneLayout layout = new SwimlaneLayout(nbColumns);
 		panel.setLayoutManager(layout);
 
 		return panel;
-	}
-
-	/**
-	 * Returns the figure as a {@link SwimlaneHeaderFigure}.
-	 * 
-	 * @return the figure as a {@link SwimlaneHeaderFigure}.
-	 */
-	public SwimlaneHeaderFigure getHeaderFigure() {
-		return (SwimlaneHeaderFigure)getFigure();
 	}
 
 	/**

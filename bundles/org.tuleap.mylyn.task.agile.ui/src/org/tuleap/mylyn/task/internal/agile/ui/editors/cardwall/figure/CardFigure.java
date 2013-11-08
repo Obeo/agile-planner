@@ -156,6 +156,7 @@ public class CardFigure extends Figure {
 		contentPanel = new Panel();
 		contentPanel.setForegroundColor(ColorConstants.black);
 		// contentPanel.setLayoutManager(contentLayout);
+		// The content panel MUST have a ToolbarLayout for PageFlows to work all right.
 		ToolbarLayout contentLayout = new ToolbarLayout();
 		contentLayout.setMinorAlignment(ToolbarLayout.ALIGN_TOPLEFT);
 		contentLayout.setStretchMinorAxis(true);

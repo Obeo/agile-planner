@@ -13,12 +13,10 @@ package org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.figure;
 import org.eclipse.draw2d.BorderLayout;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
-import org.eclipse.draw2d.GridData;
 import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.text.FlowPage;
 import org.eclipse.draw2d.text.TextFlow;
 import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.swt.SWT;
 
 /**
  * Figure representing a column header.
@@ -64,7 +62,7 @@ public class ColumnHeaderFigure extends Figure {
 	@Override
 	public void paintFigure(Graphics graphics) {
 		// The cell is completely stretched according to the parent grid.
-		getParent().setConstraint(this, new GridData(SWT.FILL, SWT.FILL, true, true));
+		// getParent().setConstraint(this, new GridData(SWT.FILL, SWT.FILL, true, true));
 	}
 
 }

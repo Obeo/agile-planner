@@ -16,7 +16,7 @@ import java.util.List;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.SwimlaneWrapper;
-import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.figure.SwimlaneHeaderFigure;
+import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.figure.CellFigure;
 
 /**
  * The edit part for a swimlane header (left cell).
@@ -32,16 +32,16 @@ public class SwimlaneHeaderEditPart extends AbstractGraphicalEditPart {
 	 */
 	@Override
 	protected IFigure createFigure() {
-		return new SwimlaneHeaderFigure();
+		return new CellFigure();
 	}
 
 	/**
-	 * Returns the figure as a {@link SwimlaneHeaderFigure}.
+	 * Returns the figure as a {@link CellFigure}.
 	 * 
-	 * @return the figure as a {@link SwimlaneHeaderFigure}.
+	 * @return the figure as a {@link CellFigure}.
 	 */
-	public SwimlaneHeaderFigure getHeaderFigure() {
-		return (SwimlaneHeaderFigure)getFigure();
+	public CellFigure getCellFigure() {
+		return (CellFigure)getFigure();
 	}
 
 	/**
@@ -71,7 +71,7 @@ public class SwimlaneHeaderEditPart extends AbstractGraphicalEditPart {
 	 */
 	@Override
 	public IFigure getContentPane() {
-		return getHeaderFigure().getContentPanel();
+		return getCellFigure().getCardsContainer();
 	}
 
 }
