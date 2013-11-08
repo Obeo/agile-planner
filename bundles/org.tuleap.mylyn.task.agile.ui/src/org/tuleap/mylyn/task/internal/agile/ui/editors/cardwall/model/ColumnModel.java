@@ -11,14 +11,13 @@
 package org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model;
 
 import org.tuleap.mylyn.task.agile.core.data.cardwall.ColumnWrapper;
-import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.CardwallEvent.Type;
 
 /**
  * Model used by UI for a cardwall column.
  * 
  * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
  */
-public class ColumnModel extends AbstractModel {
+public class ColumnModel extends AbstractNotifyingModel {
 
 	/**
 	 * Column wrapper.
@@ -58,7 +57,7 @@ public class ColumnModel extends AbstractModel {
 	public void setFolded(boolean folded) {
 		if (this.folded != folded) {
 			this.folded = folded;
-			fireEvent(new CardwallEvent(Type.FOLDING_CHANGED, this));
+			mPcs.firePropertyChange(ICardwallProperties.FOLDED, !folded, folded);
 		}
 	}
 

@@ -8,29 +8,18 @@
  * Contributors:
  *     Obeo - initial API and implementation
  *******************************************************************************/
-package org.tuleap.mylyn.task.agile.ui.tests.cardwall.model;
-
-import org.junit.Test;
-import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.CardwallEvent;
-import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.CardwallEvent.Type;
-
-import static org.junit.Assert.assertEquals;
+package org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model;
 
 /**
- * Tests of {@link CardwallEvent}.
+ * Property Change constants.
  * 
  * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
  */
-public class CardwallEventTest {
+public interface ICardwallProperties {
 
 	/**
-	 * Tests.
+	 * The "folded" property is the property key used to notify {@link java.beans.PropertyChangeListener}s of
+	 * changes in a folded property..
 	 */
-	@Test
-	public void test() {
-		CardwallEvent e = new CardwallEvent(Type.FIELD_VALUE_CHANGED, "Hello");
-		assertEquals(Type.FIELD_VALUE_CHANGED, e.getType());
-		assertEquals("Hello", e.getSource());
-	}
-
+	String FOLDED = "folded"; //$NON-NLS-1$
 }

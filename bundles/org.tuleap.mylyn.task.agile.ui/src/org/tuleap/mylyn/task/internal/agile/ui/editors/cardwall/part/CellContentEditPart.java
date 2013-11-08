@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.part;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.List;
 
 import org.eclipse.draw2d.ChangeEvent;
@@ -21,9 +23,7 @@ import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.CardWrapper;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.figure.FoldableCellFigure;
-import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.CardwallEvent;
-import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.CardwallEvent.Type;
-import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.IModelListener;
+import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.ICardwallProperties;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.SwimlaneCell;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.policy.CellContentEditPolicy;
 import org.tuleap.mylyn.task.internal.agile.ui.util.IMylynAgileUIConstants;
@@ -38,7 +38,7 @@ public class CellContentEditPart extends AbstractGraphicalEditPart {
 	/**
 	 * The folding listener.
 	 */
-	private IModelListener foldingListener;
+	private PropertyChangeListener foldingListener;
 
 	/**
 	 * The mouse listener used to capture events of folding checkbox and updating the model.
@@ -119,16 +119,17 @@ public class CellContentEditPart extends AbstractGraphicalEditPart {
 		super.activate();
 		// Listen to the model
 		SwimlaneCell cell = (SwimlaneCell)getModel();
-		foldingListener = new IModelListener() {
+		foldingListener = new PropertyChangeListener() {
+
 			@Override
-			public void eventOccurred(CardwallEvent event) {
-				if (event != null && event.getType() == Type.FOLDING_CHANGED) {
+			public void propertyChange(PropertyChangeEvent evt) {
+				if (evt != null && ICardwallProperties.FOLDED.equals(evt.getPropertyName())) {
 					refreshVisuals();
 				}
 			}
 		};
-		cell.addModelListener(foldingListener);
-		cell.getColumn().addModelListener(foldingListener);
+		cell.addPropertyChangeListener(foldingListener);
+		cell.getColumn().addPropertyChangeListener(foldingListener);
 		// And listen to the figures
 		FoldableCellFigure f = (FoldableCellFigure)getFigure();
 		foldingChangeListener = new ChangeListener() {
@@ -155,7 +156,8 @@ public class CellContentEditPart extends AbstractGraphicalEditPart {
 	@Override
 	public void deactivate() {
 		SwimlaneCell cell = (SwimlaneCell)getModel();
-		cell.removeModelListener(foldingListener);
+		cell.removePropertyChangeListener(foldingListener);
+		cell.getColumn().removePropertyChangeListener(foldingListener);
 		foldingListener = null;
 		FoldableCellFigure f = (FoldableCellFigure)getFigure();
 		f.removeFoldingListener(foldingChangeListener);

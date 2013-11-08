@@ -14,14 +14,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.tuleap.mylyn.task.agile.core.data.cardwall.CardWrapper;
-import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.CardwallEvent.Type;
 
 /**
  * A cell in a swimlane with a status (not the left column), where cards can be located.
  * 
  * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
  */
-public class SwimlaneCell extends AbstractModel {
+public class SwimlaneCell extends AbstractNotifyingModel {
 
 	/**
 	 * The swimlane of this cell.
@@ -104,7 +103,7 @@ public class SwimlaneCell extends AbstractModel {
 	public void setFolded(boolean folded) {
 		if (this.folded != folded) {
 			this.folded = folded;
-			fireEvent(new CardwallEvent(Type.FOLDING_CHANGED, this));
+			mPcs.firePropertyChange(ICardwallProperties.FOLDED, !folded, folded);
 		}
 	}
 }

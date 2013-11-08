@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.tuleap.mylyn.task.agile.ui.tests.cardwall.model;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,12 +24,9 @@ import org.tuleap.mylyn.task.agile.core.data.cardwall.CardWrapper;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.CardwallWrapper;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.SwimlaneItemWrapper;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.SwimlaneWrapper;
-import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.AbstractModel;
-import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.CardwallEvent;
-import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.CardwallEvent.Type;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.CardwallModel;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.ColumnModel;
-import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.IModelListener;
+import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.ICardwallProperties;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.SwimlaneCell;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.SwimlaneModel;
 
@@ -108,7 +107,7 @@ public class CardwallModelTest {
 		SwimlaneCell cell = new SwimlaneCell(swimlane, column);
 
 		TestModelListener listener = new TestModelListener();
-		cell.addModelListener(listener);
+		cell.addPropertyChangeListener(listener);
 
 		// cell is already not folded
 		cell.setFolded(false); // should not notify
@@ -116,8 +115,10 @@ public class CardwallModelTest {
 
 		cell.setFolded(true); // should notify
 		assertEquals(1, listener.eventsReceived.size());
-		CardwallEvent event = listener.eventsReceived.get(0);
-		assertEquals(Type.FOLDING_CHANGED, event.getType());
+		PropertyChangeEvent event = listener.eventsReceived.get(0);
+		assertEquals(ICardwallProperties.FOLDED, event.getPropertyName());
+		assertEquals(Boolean.FALSE, event.getOldValue());
+		assertEquals(Boolean.TRUE, event.getNewValue());
 		assertSame(cell, event.getSource());
 		cell.setFolded(true); // should not notify
 		assertEquals(1, listener.eventsReceived.size());
@@ -125,10 +126,12 @@ public class CardwallModelTest {
 		cell.setFolded(false); // should notify
 		assertEquals(2, listener.eventsReceived.size());
 		event = listener.eventsReceived.get(1);
-		assertEquals(Type.FOLDING_CHANGED, event.getType());
+		assertEquals(ICardwallProperties.FOLDED, event.getPropertyName());
+		assertEquals(Boolean.TRUE, event.getOldValue());
+		assertEquals(Boolean.FALSE, event.getNewValue());
 		assertSame(cell, event.getSource());
 
-		cell.removeModelListener(listener);
+		cell.removePropertyChangeListener(listener);
 		cell.setFolded(true); // should notify, but not the removed listener
 		assertEquals(2, listener.eventsReceived.size());
 	}
@@ -156,7 +159,7 @@ public class CardwallModelTest {
 		ColumnModel column = m.getColumns().get(0);
 
 		TestModelListener listener = new TestModelListener();
-		column.addModelListener(listener);
+		column.addPropertyChangeListener(listener);
 
 		// cell is already not folded
 		column.setFolded(false); // should not notify
@@ -164,8 +167,10 @@ public class CardwallModelTest {
 
 		column.setFolded(true); // should notify
 		assertEquals(1, listener.eventsReceived.size());
-		CardwallEvent event = listener.eventsReceived.get(0);
-		assertEquals(Type.FOLDING_CHANGED, event.getType());
+		PropertyChangeEvent event = listener.eventsReceived.get(0);
+		assertEquals(ICardwallProperties.FOLDED, event.getPropertyName());
+		assertEquals(Boolean.FALSE, event.getOldValue());
+		assertEquals(Boolean.TRUE, event.getNewValue());
 		assertSame(column, event.getSource());
 		column.setFolded(true); // should not notify
 		assertEquals(1, listener.eventsReceived.size());
@@ -173,49 +178,14 @@ public class CardwallModelTest {
 		column.setFolded(false); // should notify
 		assertEquals(2, listener.eventsReceived.size());
 		event = listener.eventsReceived.get(1);
-		assertEquals(Type.FOLDING_CHANGED, event.getType());
+		assertEquals(ICardwallProperties.FOLDED, event.getPropertyName());
+		assertEquals(Boolean.TRUE, event.getOldValue());
+		assertEquals(Boolean.FALSE, event.getNewValue());
 		assertSame(column, event.getSource());
 
-		column.removeModelListener(listener);
+		column.removePropertyChangeListener(listener);
 		column.setFolded(true); // should notify, but not the removed listener
 		assertEquals(2, listener.eventsReceived.size());
-	}
-
-	/**
-	 * Tests the notification mechanism of {@link AbstractModel}.
-	 */
-	@Test
-	public void testAbstractModel() {
-		AbstractModel model = new AbstractModel() {
-			// For tests
-		};
-		TestModelListener listener = new TestModelListener();
-		model.addModelListener(listener);
-		CardwallEvent event = new CardwallEvent(Type.FIELD_VALUE_CHANGED, null);
-
-		model.fireEvent(event);
-		assertEquals(1, listener.eventsReceived.size());
-		assertEquals(event, listener.eventsReceived.get(0));
-
-		model.fireEvent(event);
-		assertEquals(2, listener.eventsReceived.size());
-		assertEquals(event, listener.eventsReceived.get(1));
-
-		model.removeModelListener(listener);
-		model.fireEvent(event);
-		assertEquals(2, listener.eventsReceived.size());
-
-		TestModelListener listener1 = new TestModelListener();
-		TestModelListener listener2 = new TestModelListener();
-
-		model.addModelListener(listener1);
-		model.addModelListener(listener2);
-
-		model.fireEvent(event);
-		assertEquals(1, listener1.eventsReceived.size());
-		assertEquals(event, listener1.eventsReceived.get(0));
-		assertEquals(1, listener2.eventsReceived.size());
-		assertEquals(event, listener2.eventsReceived.get(0));
 	}
 
 	/**
@@ -223,19 +193,19 @@ public class CardwallModelTest {
 	 * 
 	 * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
 	 */
-	private class TestModelListener implements IModelListener {
+	private class TestModelListener implements PropertyChangeListener {
 		/**
 		 * Cache of received events.
 		 */
-		private final List<CardwallEvent> eventsReceived = new ArrayList<CardwallEvent>();
+		private final List<PropertyChangeEvent> eventsReceived = new ArrayList<PropertyChangeEvent>();
 
 		/**
 		 * {@inheritDoc}
 		 * 
-		 * @see org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.IModelListener#eventOccurred(org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.CardwallEvent)
+		 * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
 		 */
-		public void eventOccurred(CardwallEvent event) {
-			eventsReceived.add(event);
+		public void propertyChange(PropertyChangeEvent evt) {
+			eventsReceived.add(evt);
 		}
 	}
 
