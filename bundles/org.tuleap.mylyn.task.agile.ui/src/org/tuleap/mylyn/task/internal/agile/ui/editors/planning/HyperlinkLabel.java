@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.tuleap.mylyn.task.internal.agile.ui.editors.planning;
 
+import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
@@ -18,9 +19,10 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 /**
  * The label hyper link class.
  * 
- * @author <a href="mailto:firras.bacha@obeo.fr">Firas Bacha</a>
+ * @author <a href="mailto:firas.bacha@obeo.fr">Firas Bacha</a>
  */
 class HyperlinkLabel extends Hyperlink {
+
 	/**
 	 * The HypelinkLabel constructor.
 	 * 
@@ -32,6 +34,7 @@ class HyperlinkLabel extends Hyperlink {
 	public HyperlinkLabel(Composite parent, int style) {
 		super(parent, style);
 		this.setUnderlined(true);
+		this.setForeground(ColorConstants.blue);
 	}
 
 	/**
