@@ -32,7 +32,6 @@ import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.tuleap.mylyn.task.internal.agile.ui.MylynAgileUIActivator;
-import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.figure.util.URLFigure;
 import org.tuleap.mylyn.task.internal.agile.ui.util.IMylynAgileUIConstants;
 
 /**

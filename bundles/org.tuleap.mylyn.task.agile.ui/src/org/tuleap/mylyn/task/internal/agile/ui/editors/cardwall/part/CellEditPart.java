@@ -33,7 +33,7 @@ import org.tuleap.mylyn.task.internal.agile.ui.util.IMylynAgileUIConstants;
  * 
  * @author <a href="mailto:cedric.notot@obeo.fr">Cedric Notot</a>
  */
-public class CellContentEditPart extends AbstractGraphicalEditPart {
+public class CellEditPart extends AbstractGraphicalEditPart {
 
 	/**
 	 * The folding listener.
@@ -106,7 +106,7 @@ public class CellContentEditPart extends AbstractGraphicalEditPart {
 			tl.setSpacing(IMylynAgileUIConstants.MARGIN);
 			contentPane.setLayoutManager(tl);
 		}
-		contentPane.invalidateTree();
+		contentPane.revalidate();
 	}
 
 	/**
@@ -120,7 +120,6 @@ public class CellContentEditPart extends AbstractGraphicalEditPart {
 		// Listen to the model
 		SwimlaneCell cell = (SwimlaneCell)getModel();
 		foldingListener = new PropertyChangeListener() {
-
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
 				if (evt != null && ICardwallProperties.FOLDED.equals(evt.getPropertyName())) {
@@ -133,11 +132,6 @@ public class CellContentEditPart extends AbstractGraphicalEditPart {
 		// And listen to the figures
 		FoldableCellFigure f = (FoldableCellFigure)getFigure();
 		foldingChangeListener = new ChangeListener() {
-			/**
-			 * {@inheritDoc}
-			 * 
-			 * @see org.eclipse.draw2d.ChangeListener#handleStateChanged(org.eclipse.draw2d.ChangeEvent)
-			 */
 			@Override
 			public void handleStateChanged(ChangeEvent event) {
 				SwimlaneCell c = (SwimlaneCell)getModel();

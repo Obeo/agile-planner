@@ -17,7 +17,7 @@ import org.tuleap.mylyn.task.agile.core.data.cardwall.ColumnWrapper;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.SwimlaneWrapper;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.SwimlaneCell;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.part.CardEditPart;
-import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.part.CellContentEditPart;
+import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.part.CellEditPart;
 
 /**
  * The command to move a card from a cell to another.
@@ -30,7 +30,7 @@ public class ChangeCardStatusCommand extends Command {
 	/**
 	 * The cell content edit part where the card is moved to.
 	 */
-	protected CellContentEditPart targetCell;
+	protected CellEditPart targetCell;
 
 	/**
 	 * The swimlane where the card is moved.
@@ -55,7 +55,7 @@ public class ChangeCardStatusCommand extends Command {
 	/**
 	 * Constructor.
 	 * 
-	 * @param cellContentEditPart
+	 * @param cellEditPart
 	 *            The edit part of the cell containing the card being moved.
 	 * @param moved
 	 *            The edit part of the card being moved.
@@ -63,11 +63,11 @@ public class ChangeCardStatusCommand extends Command {
 	 *            The edit part of the card which will be located after the one being moved or null if it does
 	 *            not exist.
 	 */
-	public ChangeCardStatusCommand(CellContentEditPart cellContentEditPart, CardEditPart moved,
+	public ChangeCardStatusCommand(CellEditPart cellEditPart, CardEditPart moved,
 			CardEditPart after) {
-		this.targetCell = cellContentEditPart;
+		this.targetCell = cellEditPart;
 
-		SwimlaneCell cell = (SwimlaneCell)cellContentEditPart.getModel();
+		SwimlaneCell cell = (SwimlaneCell)cellEditPart.getModel();
 		targetSwimlane = cell.getSwimlane().getWrapper();
 		targetColumn = cell.getColumn().getWrapper();
 

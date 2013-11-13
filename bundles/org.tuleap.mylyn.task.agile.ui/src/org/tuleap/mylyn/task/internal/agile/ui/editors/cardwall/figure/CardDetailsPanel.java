@@ -15,7 +15,6 @@ import org.eclipse.draw2d.Panel;
 import org.eclipse.draw2d.ToolbarLayout;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.text.TextFlow;
-import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.figure.util.URLFigure;
 
 /**
  * Foldable details panel in a card.

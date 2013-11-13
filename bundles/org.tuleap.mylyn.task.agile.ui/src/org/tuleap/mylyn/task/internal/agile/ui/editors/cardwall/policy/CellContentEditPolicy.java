@@ -21,7 +21,7 @@ import org.eclipse.gef.requests.ChangeBoundsRequest;
 import org.eclipse.gef.requests.CreateRequest;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.command.ChangeCardStatusCommand;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.part.CardEditPart;
-import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.part.CellContentEditPart;
+import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.part.CellEditPart;
 
 /**
  * Edit policy to manage the move of the cards in a cell.
@@ -69,7 +69,7 @@ public class CellContentEditPolicy extends ConstrainedLayoutEditPolicy {
 	 */
 	@Override
 	protected Command createAddCommand(ChangeBoundsRequest request, EditPart child, Object constraint) {
-		CellContentEditPart host = (CellContentEditPart)getHost();
+		CellEditPart host = (CellEditPart)getHost();
 		if (child.getParent().getParent() == host.getParent()) {
 			return new ChangeCardStatusCommand(host, (CardEditPart)child, null);
 		}

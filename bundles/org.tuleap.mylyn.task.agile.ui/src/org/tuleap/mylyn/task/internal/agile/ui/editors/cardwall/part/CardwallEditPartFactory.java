@@ -38,7 +38,7 @@ public class CardwallEditPartFactory implements EditPartFactory {
 		} else if (model instanceof CardWrapper) {
 			part = new CardEditPart();
 		} else if (model instanceof SwimlaneCell) {
-			part = new CellContentEditPart();
+			part = new CellEditPart();
 		} else if (model instanceof SwimlaneModel) {
 			part = new SwimlaneEditPart();
 		} else if (model instanceof SwimlaneWrapper) {
