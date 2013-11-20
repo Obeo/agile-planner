@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.figure;
 
+import com.google.common.collect.Lists;
+
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -39,9 +42,14 @@ public class CardFieldFigure extends Figure {
 	private final Label label;
 
 	/**
-	 * The field value.
+	 * The field label that displays the field value.
 	 */
-	private final Label valueLabel; // TODO This will have to change to support differents types of values
+	private final Label valueLabel;
+
+	/**
+	 * The actual field values.
+	 */
+	private List<String> values;
 
 	/**
 	 * Constructor.
@@ -70,11 +78,22 @@ public class CardFieldFigure extends Figure {
 	 * 
 	 * @param lbl
 	 *            The label
-	 * @param values
+	 * @param someValues
 	 *            The values
 	 */
-	public void setField(String lbl, List<String> values) {
+	public void setField(String lbl, List<String> someValues) {
 		this.label.setText(lbl);
+		setValues(someValues);
+	}
+
+	/**
+	 * Sets the values of this field.
+	 * 
+	 * @param values
+	 *            The values to set.
+	 */
+	public void setValues(List<String> values) {
+		this.values = Lists.newArrayList(values);
 		StringBuilder b = new StringBuilder();
 		if (!values.isEmpty()) {
 			Iterator<String> it = values.iterator();
@@ -84,5 +103,28 @@ public class CardFieldFigure extends Figure {
 			}
 		}
 		this.valueLabel.setText(b.toString());
+	}
+
+	/**
+	 * Provides access to the value label, for direct editing.
+	 * 
+	 * @return The value label.
+	 */
+	public Label getValueLabel() {
+		return valueLabel;
+	}
+
+	/**
+	 * Provides the actual values displayed by the field. Modifying the retruned list has no effect on this
+	 * figure.
+	 * 
+	 * @return a List, never <code>null</code> but possibly empty, which is a copy of this figure's list of
+	 *         values.
+	 */
+	public List<String> getValues() {
+		if (values == null) {
+			return Collections.emptyList();
+		}
+		return Lists.newArrayList(values);
 	}
 }

@@ -64,4 +64,9 @@ public interface IMylynAgileUIConstants {
 	 * Default background color for backlog item cards (in the left column).
 	 */
 	RGB BI_CARD_BG_COLOR = new RGB(240, 240, 255);
+
+	/**
+	 * Key of the "direct edit not supported" message.
+	 */
+	String DIRECT_EDIT_NOT_SUPPORTED = "CardFieldEditPart.DirectEditNotSupported"; //$NON-NLS-1$
 }

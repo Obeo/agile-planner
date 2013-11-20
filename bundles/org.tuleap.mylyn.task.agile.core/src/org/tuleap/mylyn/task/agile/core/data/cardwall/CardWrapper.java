@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
-import org.tuleap.mylyn.task.agile.core.data.AbstractTaskAttributeWrapper;
+import org.tuleap.mylyn.task.agile.core.data.AbstractNotifyingWrapper;
 
 /**
  * Card wall wrapper, encapsulates all the logic of writing and reading {@link TaskAttribute}s in a TaskData
@@ -24,7 +24,7 @@ import org.tuleap.mylyn.task.agile.core.data.AbstractTaskAttributeWrapper;
  * 
  * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
  */
-public class CardWrapper extends AbstractTaskAttributeWrapper {
+public class CardWrapper extends AbstractNotifyingWrapper {
 
 	// BEGIN Just used for tests with connector mock. TODO: We have to know the id of the configurable fields
 	// to display them.
@@ -97,6 +97,7 @@ public class CardWrapper extends AbstractTaskAttributeWrapper {
 	@Override
 	protected void fireAttributeChanged(TaskAttribute attribute) {
 		parent.fireAttributeChanged(attribute);
+		super.fireAttributeChanged(attribute);
 	}
 
 	/**
@@ -142,6 +143,52 @@ public class CardWrapper extends AbstractTaskAttributeWrapper {
 			}
 		}
 		return res;
+	}
+
+	/**
+	 * Provides the {@link TaskAttribute} of a configurable field contained by this card.
+	 * 
+	 * @param id
+	 *            ID of the field (without the card prefix)
+	 * @return The field {@link TaskAttribute}, or null if it does not exist.
+	 */
+	public TaskAttribute getFieldAttribute(String id) {
+		return root.getMappedAttribute(getFieldAttributeId(id));
+	}
+
+	/**
+	 * Add a configurable field by creating the relevant {@link TaskAttribute} as a child of this card's
+	 * {@link TaskAttribute}.
+	 * 
+	 * @param id
+	 *            The id of the field.
+	 * @param label
+	 *            The label of the field.
+	 * @param type
+	 *            The type of the field.
+	 * @return The newly created {@link TaskAttribute}.
+	 */
+	public TaskAttribute addField(String id, String label, String type) {
+		TaskAttribute attribute = root.createMappedAttribute(getFieldAttributeId(id));
+		attribute.getMetaData().setLabel(label);
+		attribute.getMetaData().setType(type);
+		return attribute;
+	}
+
+	/**
+	 * Returns the field id of a given {@link TaskAttribute} if it represents a field that belongs to this
+	 * card.
+	 * 
+	 * @param attribute
+	 *            The attribute, should be one fo the card's fields.
+	 * @return The external field ID, or null if the given attribute does not belong to this card.
+	 */
+	public String getFieldId(TaskAttribute attribute) {
+		String attId = attribute.getId();
+		if (attId.startsWith(getFieldAttributePrefix()) && root.getAttributes().containsKey(attId)) {
+			return attribute.getId().substring(getFieldAttributePrefix().length());
+		}
+		return null;
 	}
 
 	/**
