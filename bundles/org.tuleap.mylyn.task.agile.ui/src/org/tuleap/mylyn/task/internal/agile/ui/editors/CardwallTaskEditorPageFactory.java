@@ -11,11 +11,9 @@
 package org.tuleap.mylyn.task.internal.agile.ui.editors;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.mylyn.commons.ui.CommonImages;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
-import org.eclipse.mylyn.tasks.ui.TasksUiImages;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPageFactory;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditor;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditorInput;
@@ -28,6 +26,7 @@ import org.tuleap.mylyn.task.agile.ui.editors.ITaskEditorPageFactoryConstants;
 import org.tuleap.mylyn.task.internal.agile.ui.AgileRepositoryConnectorUiServiceTrackerCustomizer;
 import org.tuleap.mylyn.task.internal.agile.ui.MylynAgileUIActivator;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.CardwallTaskEditorPage;
+import org.tuleap.mylyn.task.internal.agile.ui.util.IMylynAgileIcons;
 import org.tuleap.mylyn.task.internal.agile.ui.util.MylynAgileUIMessages;
 
 /**
@@ -37,6 +36,11 @@ import org.tuleap.mylyn.task.internal.agile.ui.util.MylynAgileUIMessages;
  * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
  */
 public class CardwallTaskEditorPageFactory extends AbstractTaskEditorPageFactory {
+
+	/**
+	 * Used to order the tabs in Mylyn. 21 in order to be after the context (20) but before the task (30).
+	 */
+	private static final int PRIORITY_AGILE_CARDWALL = 21;
 
 	/**
 	 * {@inheritDoc}
@@ -70,8 +74,7 @@ public class CardwallTaskEditorPageFactory extends AbstractTaskEditorPageFactory
 	 */
 	@Override
 	public Image getPageImage() {
-		// TODO
-		return CommonImages.getImage(TasksUiImages.REPOSITORY_SMALL);
+		return MylynAgileUIActivator.getDefault().getImage(IMylynAgileIcons.CARDWALL_16X16);
 	}
 
 	/**
@@ -121,6 +124,16 @@ public class CardwallTaskEditorPageFactory extends AbstractTaskEditorPageFactory
 		}
 
 		return new String[] {};
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPageFactory#getPriority()
+	 */
+	@Override
+	public int getPriority() {
+		return PRIORITY_AGILE_CARDWALL;
 	}
 
 }

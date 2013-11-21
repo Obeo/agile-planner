@@ -10,16 +10,24 @@
  *******************************************************************************/
 package org.tuleap.mylyn.task.internal.agile.ui.editors.planning;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ToolBarManager;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.mylyn.internal.tasks.ui.util.TasksUiInternal;
+import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.eclipse.mylyn.tasks.core.data.AbstractTaskDataHandler;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
+import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPart;
@@ -47,10 +55,12 @@ import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.forms.widgets.TableWrapData;
+import org.tuleap.mylyn.task.agile.core.IMilestoneMapping;
 import org.tuleap.mylyn.task.agile.core.data.ITaskAttributeChangeListener;
 import org.tuleap.mylyn.task.agile.core.data.planning.BacklogItemWrapper;
 import org.tuleap.mylyn.task.agile.core.data.planning.MilestonePlanningWrapper;
 import org.tuleap.mylyn.task.agile.core.data.planning.SubMilestoneWrapper;
+import org.tuleap.mylyn.task.agile.ui.AbstractAgileRepositoryConnectorUI;
 import org.tuleap.mylyn.task.internal.agile.ui.MylynAgileUIActivator;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.FormLayoutFactory;
 import org.tuleap.mylyn.task.internal.agile.ui.util.IMylynAgileIcons;
@@ -150,6 +160,29 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 		ToolBarManager toolBarManager = new ToolBarManager(SWT.FLAT);
 		ToolBar toolbar = toolBarManager.createControl(milestoneList);
 
+		Action newSubmilestone = new Action(MylynAgileUIMessages
+				.getString("PlanningTaskEditorPart.NewSubmilestone"), MylynAgileUIActivator //$NON-NLS-1$
+				.getImageDescriptor(IMylynAgileIcons.NEW_SUBMILESTONE_16X16)) {
+			@Override
+			public void run() {
+				IRunnableWithProgress runnable = new IRunnableWithProgress() {
+					@Override
+					public void run(IProgressMonitor monitor) throws InvocationTargetException,
+							InterruptedException {
+						createNewMilestone(monitor);
+					}
+				};
+
+				try {
+					PlatformUI.getWorkbench().getProgressService().run(false, false, runnable);
+				} catch (InvocationTargetException e) {
+					MylynAgileUIActivator.log(e, true);
+				} catch (InterruptedException e) {
+					MylynAgileUIActivator.log(e, true);
+				}
+			}
+		};
+
 		// The collapse all action
 		Action collapseAll = new Action(MylynAgileUIMessages.getString("PlanningTaskEditorPart.CollapseAll"), //$NON-NLS-1$
 				MylynAgileUIActivator.getImageDescriptor(IMylynAgileIcons.COLLAPSE_ALL)) {
@@ -177,10 +210,49 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 			}
 		};
 
+		toolBarManager.add(newSubmilestone);
 		toolBarManager.add(collapseAll);
 		toolBarManager.add(expandAll);
 		toolBarManager.update(true);
 		milestoneList.setTextClient(toolbar);
+	}
+
+	/**
+	 * Creates a new milestone.
+	 * 
+	 * @param monitor
+	 *            The progress monitor
+	 */
+	private void createNewMilestone(IProgressMonitor monitor) {
+		TaskData taskData = wrapper.getWrappedAttribute().getTaskData();
+		String connectorKind = taskData.getConnectorKind();
+		AbstractAgileRepositoryConnectorUI connector = MylynAgileUIActivator.getDefault()
+				.getServiceTrackerCustomizer().getConnector(connectorKind);
+		TaskRepository taskRepository = TasksUi.getRepositoryManager().getRepository(connectorKind,
+				taskData.getRepositoryUrl());
+		if (connector != null) {
+			IMilestoneMapping mapping = connector.getNewMilestoneMapping(taskData, taskData.getTaskId(),
+					taskRepository, monitor);
+			AbstractRepositoryConnector repositoryConnector = TasksUi.getRepositoryConnector(connectorKind);
+			AbstractTaskDataHandler taskDataHandler = repositoryConnector.getTaskDataHandler();
+
+			TaskData submilestoneTaskData = new TaskData(taskDataHandler.getAttributeMapper(taskRepository),
+					connectorKind, taskRepository.getRepositoryUrl(), ""); //$NON-NLS-1$
+
+			try {
+				boolean isInitialized = taskDataHandler.initializeTaskData(taskRepository,
+						submilestoneTaskData, mapping, monitor);
+				if (isInitialized) {
+					TasksUiInternal.createAndOpenNewTask(submilestoneTaskData);
+				} else {
+					// Log error during initialization
+				}
+			} catch (CoreException e) {
+				MylynAgileUIActivator.log(e, true);
+			}
+		} else {
+			// Log no connector found!
+		}
 	}
 
 	/**
@@ -227,7 +299,7 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 
 		// Add sort edit to the tool bar
 		final String subMilestoneId = subMilestone.getId();
-		Action a = new Action(MylynAgileUIMessages
+		Action editMilestoneAction = new Action(MylynAgileUIMessages
 				.getString("PlanningTaskEditorPart.EditMilestoneActionLabel"), PlatformUI.getWorkbench() //$NON-NLS-1$
 				.getSharedImages().getImageDescriptor(ISharedImages.IMG_OBJ_FILE)) {
 			@Override
@@ -245,7 +317,7 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 				}
 			}
 		};
-		toolBarManager.add(a);
+		toolBarManager.add(editMilestoneAction);
 		toolBarManager.update(true);
 
 		milestoneSection.setTextClient(toolbar);

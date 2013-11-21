@@ -11,9 +11,9 @@
 package org.tuleap.mylyn.task.agile.ui;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
+import org.tuleap.mylyn.task.agile.core.IMilestoneMapping;
 
 /**
  * UI Connector to an Agile repository.
@@ -31,18 +31,22 @@ public abstract class AbstractAgileRepositoryConnectorUI {
 	public abstract String getConnectorKind();
 
 	/**
-	 * Provides the wizard to use for milestone creation. A milestone is created within a parent planning.
+	 * Provides the mapping for milestone creation. A milestone is created within a parent planning. This
+	 * mapping will be provided to the {@link org.eclipse.mylyn.tasks.core.data.AbstractTaskDataHandler} of
+	 * the connector in order to create the submilestone.
 	 * 
 	 * @param planningTaskData
 	 *            The task data of the parent planning where the milestone is to be created.
+	 * @param parentMilestoneId
+	 *            The identifier of the parent milestone
 	 * @param taskRepository
 	 *            The task repository of the planning that should also host the new milestone.
 	 * @param monitor
 	 *            The progress monitor to use for monitoring progress...
 	 * @return The wizard to create the task that represents the milestone.
 	 */
-	public abstract IWizard getNewMilestoneWizard(TaskData planningTaskData, TaskRepository taskRepository,
-			IProgressMonitor monitor);
+	public abstract IMilestoneMapping getNewMilestoneMapping(TaskData planningTaskData,
+			String parentMilestoneId, TaskRepository taskRepository, IProgressMonitor monitor);
 
 	/**
 	 * Indicates the list of the identifier of the task editor page factories that are in conflict with the

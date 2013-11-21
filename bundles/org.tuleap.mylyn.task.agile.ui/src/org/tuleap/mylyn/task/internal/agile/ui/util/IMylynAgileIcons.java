@@ -25,4 +25,19 @@ public interface IMylynAgileIcons {
 	 * Expand all.
 	 */
 	String EXPAND_ALL = "icons/commons/expandall.gif"; //$NON-NLS-1$
+
+	/**
+	 * The cardwall icon.
+	 */
+	String CARDWALL_16X16 = "icons/editors/cardwall_16x16.png"; //$NON-NLS-1$
+
+	/**
+	 * The planning icon.
+	 */
+	String PLANNING_16X16 = "icons/editors/planning_16x16.png"; //$NON-NLS-1$
+
+	/**
+	 * The new submilestone icon.
+	 */
+	String NEW_SUBMILESTONE_16X16 = "icons/editors/planning/new-submilestone_16x16.png"; //$NON-NLS-1$
 }
