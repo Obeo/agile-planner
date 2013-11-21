@@ -32,11 +32,6 @@ import org.tuleap.mylyn.task.internal.agile.ui.util.MylynAgileUIMessages;
 public class MilestoneSectionViewer extends Viewer {
 
 	/**
-	 * Number of millisecond per day.
-	 */
-	private static final long MILLISECONDS_PER_DAY = 1000 * 60 * 60 * 24; // FIXME
-
-	/**
 	 * The wrapped section.
 	 */
 	private final Section fSection;
