@@ -160,9 +160,9 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 		ToolBarManager toolBarManager = new ToolBarManager(SWT.FLAT);
 		ToolBar toolbar = toolBarManager.createControl(milestoneList);
 
-		Action newSubmilestone = new Action(MylynAgileUIMessages
-				.getString("PlanningTaskEditorPart.NewSubmilestone"), MylynAgileUIActivator //$NON-NLS-1$
-				.getImageDescriptor(IMylynAgileIcons.NEW_SUBMILESTONE_16X16)) {
+		Action newMilestone = new Action(MylynAgileUIMessages
+				.getString("PlanningTaskEditorPart.NewMilestone"), MylynAgileUIActivator //$NON-NLS-1$
+				.getImageDescriptor(IMylynAgileIcons.NEW_MILESTONE_16X16)) {
 			@Override
 			public void run() {
 				IRunnableWithProgress runnable = new IRunnableWithProgress() {
@@ -210,7 +210,7 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 			}
 		};
 
-		toolBarManager.add(newSubmilestone);
+		toolBarManager.add(newMilestone);
 		toolBarManager.add(collapseAll);
 		toolBarManager.add(expandAll);
 		toolBarManager.update(true);
@@ -236,22 +236,24 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 			AbstractRepositoryConnector repositoryConnector = TasksUi.getRepositoryConnector(connectorKind);
 			AbstractTaskDataHandler taskDataHandler = repositoryConnector.getTaskDataHandler();
 
-			TaskData submilestoneTaskData = new TaskData(taskDataHandler.getAttributeMapper(taskRepository),
+			TaskData newMilestoneTaskData = new TaskData(taskDataHandler.getAttributeMapper(taskRepository),
 					connectorKind, taskRepository.getRepositoryUrl(), ""); //$NON-NLS-1$
 
 			try {
 				boolean isInitialized = taskDataHandler.initializeTaskData(taskRepository,
-						submilestoneTaskData, mapping, monitor);
+						newMilestoneTaskData, mapping, monitor);
 				if (isInitialized) {
-					TasksUiInternal.createAndOpenNewTask(submilestoneTaskData);
+					TasksUiInternal.createAndOpenNewTask(newMilestoneTaskData);
 				} else {
-					// Log error during initialization
+					MylynAgileUIActivator.log(MylynAgileUIMessages.getString(
+							"PlanningTaskEditorPart.InvalidInitializationNewMilestone", connectorKind), true); //$NON-NLS-1$
 				}
 			} catch (CoreException e) {
 				MylynAgileUIActivator.log(e, true);
 			}
 		} else {
-			// Log no connector found!
+			MylynAgileUIActivator.log(MylynAgileUIMessages.getString(
+					"PlanningTaskEditorPart.NoAgileUiConnectorFoundWithKind", connectorKind), true); //$NON-NLS-1$
 		}
 	}
 
