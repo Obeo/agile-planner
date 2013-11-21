@@ -22,6 +22,7 @@ import org.eclipse.mylyn.tasks.core.data.AbstractTaskDataHandler;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.core.data.TaskAttributeMapper;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
+import org.tuleap.mylyn.task.agile.core.IMilestoneMapping;
 import org.tuleap.mylyn.task.agile.core.data.AgileTaskKindUtil;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.CardWrapper;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.CardwallWrapper;
@@ -96,8 +97,12 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 		TaskAttribute summary = root.createAttribute(TaskAttribute.SUMMARY);
 		summary.getMetaData().setType(TaskAttribute.TYPE_SHORT_RICH_TEXT);
 		summary.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
-		summary.getMetaData().setLabel("Gros label bien moche");
-		summary.setValue("Project Test"); //$NON-NLS-1$
+		summary.getMetaData().setLabel("GSome label"); //$NON-NLS-1$
+		if (initializationData instanceof IMilestoneMapping) {
+			summary.setValue("New milestone"); //$NON-NLS-1$
+		} else {
+			summary.setValue("Project Test"); //$NON-NLS-1$
+		}
 
 		TaskAttribute kindAttribute = root.createAttribute(TaskAttribute.TASK_KIND);
 		kindAttribute.getMetaData().setType(TaskAttribute.TYPE_SHORT_TEXT);

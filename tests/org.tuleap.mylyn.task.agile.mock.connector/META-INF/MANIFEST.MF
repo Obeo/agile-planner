@@ -14,3 +14,4 @@ Bundle-Localization: plugin
 Export-Package: org.tuleap.mylyn.task.agile.mock.connector.util,
  org.tuleap.mylyn.task.internal.agile.mock.connector;x-friends:="org.tuleap.mylyn.task.agile.mock.connector.ui",
  org.tuleap.mylyn.task.internal.agile.mock.connector.util;x-friends:="org.tuleap.mylyn.task.agile.mock.connector.ui"
+Service-Component: OSGI-INF/component.xml
