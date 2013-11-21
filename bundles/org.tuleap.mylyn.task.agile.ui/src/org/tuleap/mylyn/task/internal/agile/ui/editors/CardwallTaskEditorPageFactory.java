@@ -51,7 +51,6 @@ public class CardwallTaskEditorPageFactory extends AbstractTaskEditorPageFactory
 	public boolean canCreatePageFor(TaskEditorInput input) {
 		ITask task = input.getTask();
 		try {
-			@SuppressWarnings("restriction")
 			TaskData taskData = TasksUiPlugin.getTaskDataManager().getTaskData(task);
 			String taskKind = AgileTaskKindUtil.getAgileTaskKind(taskData);
 
