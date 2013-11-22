@@ -96,11 +96,6 @@ public class CardFigure extends Figure {
 	private TextFlow urlTextFlow;
 
 	/**
-	 * The detailed description of the card.
-	 */
-	private TextFlow descTextFlow;
-
-	/**
 	 * The panel containing the data of the card.
 	 */
 	private Panel contentPanel;
@@ -198,16 +193,6 @@ public class CardFigure extends Figure {
 	 */
 	public void setUrl(String url) {
 		urlTextFlow.setText(url);
-	}
-
-	/**
-	 * Setter of the description of the card.
-	 * 
-	 * @param description
-	 *            The description to set.
-	 */
-	public void setDescription(String description) {
-		descTextFlow.setText(description);
 	}
 
 	/**
