@@ -77,7 +77,7 @@ public class MilestonePlanningWrapperTest {
 		TaskAttribute id = milestone0.getAttribute(milestone0.getId() + '-'
 				+ AbstractTaskAttributeWrapper.SUFFIX_ID);
 		assertEquals("200", id.getValue()); //$NON-NLS-1$
-		assertEquals(TaskAttribute.TYPE_INTEGER, id.getMetaData().getType());
+		assertEquals(TaskAttribute.TYPE_SHORT_RICH_TEXT, id.getMetaData().getType());
 
 		TaskAttribute label = milestone0.getAttribute(milestone0.getId() + '-'
 				+ AbstractTaskAttributeWrapper.SUFFIX_LABEL);
@@ -113,7 +113,7 @@ public class MilestonePlanningWrapperTest {
 
 		TaskAttribute biIdAtt = bi0.getAttribute(bi0.getId() + '-' + AbstractTaskAttributeWrapper.SUFFIX_ID);
 		assertEquals("300", biIdAtt.getValue()); //$NON-NLS-1$
-		assertEquals(TaskAttribute.TYPE_INTEGER, biIdAtt.getMetaData().getType());
+		assertEquals(TaskAttribute.TYPE_SHORT_RICH_TEXT, biIdAtt.getMetaData().getType());
 
 		TaskAttribute biLabelAtt = bi0.getAttribute(bi0.getId() + '-'
 				+ AbstractTaskAttributeWrapper.SUFFIX_LABEL);
@@ -359,9 +359,9 @@ public class MilestonePlanningWrapperTest {
 		String end = SubMilestoneWrapper.PREFIX_MILESTONE + "0-" + SubMilestoneWrapper.SUFFIX_END_DATE;
 
 		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(end));
-		subMilestone.setEndDate(startDate); // Should not notify
+		subMilestone.setEndDate(endDate); // Should not notify
 		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(end));
-		subMilestone.setEndDate(new Date(startDate.getTime() + 1)); // Should notify
+		subMilestone.setEndDate(new Date(endDate.getTime() + 1)); // Should notify
 		assertEquals(Integer.valueOf(2), listener.getInvocationsCount(end));
 
 		// Backlog items
