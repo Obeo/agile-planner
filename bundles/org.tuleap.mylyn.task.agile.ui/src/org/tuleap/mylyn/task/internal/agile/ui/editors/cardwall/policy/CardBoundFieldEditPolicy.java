@@ -20,7 +20,6 @@ import org.eclipse.gef.requests.DirectEditRequest;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.CardWrapper;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.command.SetFieldValuesCommand;
-import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.figure.CardFieldFigure;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.part.CardEditPart;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.part.CardFieldEditPart;
 
@@ -65,10 +64,7 @@ public class CardBoundFieldEditPolicy extends DirectEditPolicy {
 	 */
 	@Override
 	protected void showCurrentEditValue(DirectEditRequest request) {
-		Integer value = (Integer)request.getCellEditor().getValue();
-		TaskAttribute attribute = (TaskAttribute)getHost().getModel();
-		((CardFieldFigure)getHostFigure()).setValues(Collections.singletonList(attribute.getOption(value
-				.toString())));
+		// Nothin to do here, we don't want to change the background value during edition
 	}
 
 }

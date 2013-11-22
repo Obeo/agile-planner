@@ -14,6 +14,7 @@ import org.eclipse.draw2d.Label;
 import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.tools.CellEditorLocator;
 import org.eclipse.gef.tools.DirectEditManager;
+import org.eclipse.jface.viewers.ICellEditorValidator;
 
 /**
  * {@link DirectEditManager} for String Field direct edting.
@@ -25,7 +26,12 @@ public class CardFieldDirectEditManager extends DirectEditManager {
 	/**
 	 * The label.
 	 */
-	private Label label;
+	private final Label label;
+
+	/**
+	 * The validator to use for the cell editor.
+	 */
+	private ICellEditorValidator validator;
 
 	/**
 	 * Constructor.
@@ -46,6 +52,27 @@ public class CardFieldDirectEditManager extends DirectEditManager {
 	}
 
 	/**
+	 * Constructor with a validator.
+	 * 
+	 * @param source
+	 *            The source
+	 * @param editorType
+	 *            The editor type
+	 * @param locator
+	 *            The locator
+	 * @param label
+	 *            The label
+	 * @param validator
+	 *            The validator to use for the cell editor, if <code>null</code> no validatin will be
+	 *            performed.
+	 */
+	public CardFieldDirectEditManager(GraphicalEditPart source, Class<?> editorType,
+			CellEditorLocator locator, Label label, ICellEditorValidator validator) {
+		this(source, editorType, locator, label);
+		this.validator = validator;
+	}
+
+	/**
 	 * {@inheritDoc}
 	 * 
 	 * @see org.eclipse.gef.tools.DirectEditManager#initCellEditor()
@@ -54,6 +81,7 @@ public class CardFieldDirectEditManager extends DirectEditManager {
 	protected void initCellEditor() {
 		String initialLabelText = label.getText();
 		getCellEditor().setValue(initialLabelText);
+		getCellEditor().setValidator(validator);
 	}
 
 }

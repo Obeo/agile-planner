@@ -33,6 +33,8 @@ import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.policy.CardBound
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.policy.CardFieldCellEditorLocator;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.policy.CardFieldDirectEditManager;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.policy.CardFieldEditPolicy;
+import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.validator.DoubleValidator;
+import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.validator.IntegerValidator;
 import org.tuleap.mylyn.task.internal.agile.ui.util.IMylynAgileUIConstants;
 import org.tuleap.mylyn.task.internal.agile.ui.util.MylynAgileUIMessages;
 
@@ -107,6 +109,8 @@ public class CardFieldEditPart extends AbstractGraphicalEditPart {
 			// manager = new CardFieldDirectEditManager(this, ComboBoxCellEditor.class,
 			// new CardFieldMultiCellEditorLocator(label), label, attribute.getValues(),
 			// attribute.getOptions());
+			MylynAgileUIActivator.log(MylynAgileUIMessages.getString(
+					IMylynAgileUIConstants.DIRECT_EDIT_NOT_SUPPORTED, "multi-selection"), false); //$NON-NLS-1$
 		} else if (TaskAttribute.TYPE_ATTACHMENT.equals(attributeType)) {
 			MylynAgileUIActivator.log(MylynAgileUIMessages.getString(
 					IMylynAgileUIConstants.DIRECT_EDIT_NOT_SUPPORTED, "attachment"), false); //$NON-NLS-1$
@@ -120,6 +124,22 @@ public class CardFieldEditPart extends AbstractGraphicalEditPart {
 		} else if (TaskAttribute.TYPE_URL.equals(attributeType)) {
 			MylynAgileUIActivator.log(MylynAgileUIMessages.getString(
 					IMylynAgileUIConstants.DIRECT_EDIT_NOT_SUPPORTED, "URL"), false); //$NON-NLS-1$
+		} else if (TaskAttribute.TYPE_INTEGER.equals(attributeType)) {
+			manager = new CardFieldDirectEditManager(this, TextCellEditor.class,
+					new CardFieldCellEditorLocator(label), label, new IntegerValidator());
+		} else if (TaskAttribute.TYPE_DOUBLE.equals(attributeType)) {
+			manager = new CardFieldDirectEditManager(this, TextCellEditor.class,
+					new CardFieldCellEditorLocator(label), label, new DoubleValidator());
+		} else if (TaskAttribute.TYPE_DATE.equals(attributeType)) {
+			// manager = new CardFieldDirectEditManager(this, TextCellEditor.class,
+			// new CardFieldCellEditorLocator(label), label, new DateValidator());
+			MylynAgileUIActivator.log(MylynAgileUIMessages.getString(
+					IMylynAgileUIConstants.DIRECT_EDIT_NOT_SUPPORTED, "date"), false); //$NON-NLS-1$
+		} else if (TaskAttribute.TYPE_DATETIME.equals(attributeType)) {
+			// manager = new CardFieldDirectEditManager(this, TextCellEditor.class,
+			// new CardFieldCellEditorLocator(label), label, new DateValidator());
+			MylynAgileUIActivator.log(MylynAgileUIMessages.getString(
+					IMylynAgileUIConstants.DIRECT_EDIT_NOT_SUPPORTED, "date+time"), false); //$NON-NLS-1$
 		} else {
 			manager = new CardFieldDirectEditManager(this, TextCellEditor.class,
 					new CardFieldCellEditorLocator(label), label);
