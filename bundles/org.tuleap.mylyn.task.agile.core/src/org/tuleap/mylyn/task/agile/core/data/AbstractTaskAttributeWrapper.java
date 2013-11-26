@@ -41,6 +41,16 @@ public abstract class AbstractTaskAttributeWrapper {
 	public static final String SUFFIX_LABEL = "lbl"; //$NON-NLS-1$
 
 	/**
+	 * The value used to indicate that a task data represents a BacklogItem parent identifier.
+	 */
+	public static final String SUFFIX_BI_PARENT_ID = "parent_id"; //$NON-NLS-1$
+
+	/**
+	 * The value used to indicate that a task data represents a BacklogItem parent display identifier.
+	 */
+	public static final String SUFFIX_BI_PARENT_DISPLAY_ID = "parent_display_id"; //$NON-NLS-1$
+
+	/**
 	 * Default value used for IDs not set.
 	 */
 	protected static final String UNSET_ID = ""; //$NON-NLS-1$
