@@ -26,15 +26,18 @@ public class IntegerValidator implements ICellEditorValidator {
 	 */
 	@Override
 	public String isValid(Object value) {
+		String result = null;
 		if (value instanceof String) {
 			try {
 				Integer.parseInt((String)value);
-				return null;
 			} catch (NumberFormatException e) {
-				// Nothing to do
+				result = "Value must be integer";
 			}
+		} else if (!(value instanceof Integer) && !(value instanceof Short) && !(value instanceof Long)
+				&& !(value instanceof Byte)) {
+			result = "Value must be integer";
 		}
-		return "Value must be integer";
+		return result;
 	}
 
 }

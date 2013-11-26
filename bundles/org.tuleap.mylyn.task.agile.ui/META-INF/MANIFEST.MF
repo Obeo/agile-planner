@@ -29,6 +29,8 @@ Export-Package: org.tuleap.mylyn.task.agile.ui,
  org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model;x-internal:=true,
  org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.part;x-internal:=true,
  org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.policy;x-internal:=true,
+ org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.util;x-internal:=true,
+ org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.validator;x-internal:=true,
  org.tuleap.mylyn.task.internal.agile.ui.editors.planning;x-friends:="org.tuleap.mylyn.task.agile.ui.tests",
  org.tuleap.mylyn.task.internal.agile.ui.util;x-internal:=true
 

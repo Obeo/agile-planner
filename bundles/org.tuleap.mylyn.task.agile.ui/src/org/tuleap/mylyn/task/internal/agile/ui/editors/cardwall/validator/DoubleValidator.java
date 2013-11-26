@@ -13,7 +13,7 @@ package org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.validator;
 import org.eclipse.jface.viewers.ICellEditorValidator;
 
 /**
- * {@link ICellEditorValidator} that checks that the value does represent an integer.
+ * {@link ICellEditorValidator} that checks that the value does represent a number.
  * 
  * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
  */
@@ -26,15 +26,17 @@ public class DoubleValidator implements ICellEditorValidator {
 	 */
 	@Override
 	public String isValid(Object value) {
+		String result = null;
 		if (value instanceof String) {
 			try {
 				Double.parseDouble((String)value);
-				return null;
 			} catch (NumberFormatException e) {
-				// Nothing to do
+				result = "Value must be numeric";
 			}
+		} else if (!(value instanceof Number)) {
+			result = "Value must be numeric";
 		}
-		return "Value must be numeric";
+		return result;
 	}
 
 }
