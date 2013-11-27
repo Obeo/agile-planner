@@ -55,11 +55,7 @@ public class URLFigure extends FlowPage {
 			Object source = me.getSource();
 			IFigure target = null;
 			if (source instanceof IFigure) {
-				if (((IFigure)source).getParent() != null) {
-					target = ((IFigure)source).getParent();
-				} else {
-					target = ((IFigure)source).getParent();
-				}
+				target = ((IFigure)source).getParent();
 			}
 			if (target != null) {
 				target.setForegroundColor(ColorConstants.black);
@@ -77,11 +73,7 @@ public class URLFigure extends FlowPage {
 			Object source = me.getSource();
 			IFigure target = null;
 			if (source instanceof IFigure) {
-				if (((IFigure)source).getParent() != null) {
-					target = ((IFigure)source).getParent();
-				} else {
-					target = ((IFigure)source).getParent();
-				}
+				target = ((IFigure)source).getParent();
 			}
 			if (target != null) {
 				target.setForegroundColor(ColorConstants.gray);
