@@ -11,6 +11,7 @@
 package org.tuleap.mylyn.task.internal.agile.mock.connector.ui;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.tuleap.mylyn.task.agile.core.IMilestoneMapping;
@@ -38,10 +39,10 @@ public class MylynMockConnectorAgileUi extends AbstractAgileRepositoryConnectorU
 	 * {@inheritDoc}
 	 * 
 	 * @see org.tuleap.mylyn.task.agile.ui.AbstractAgileRepositoryConnectorUI#getConflictingIds(java.lang.String,
-	 *      org.eclipse.mylyn.tasks.core.data.TaskData)
+	 *      org.eclipse.mylyn.tasks.core.ITask, org.eclipse.mylyn.tasks.core.TaskRepository)
 	 */
 	@Override
-	public String[] getConflictingIds(String taskEditorPageFactoryId, TaskData taskData) {
+	public String[] getConflictingIds(String taskEditorPageFactoryId, ITask task, TaskRepository repository) {
 		return new String[] {};
 	}
 
@@ -56,6 +57,39 @@ public class MylynMockConnectorAgileUi extends AbstractAgileRepositoryConnectorU
 	public IMilestoneMapping getNewMilestoneMapping(TaskData planningTaskData, String parentMilestoneId,
 			TaskRepository taskRepository, IProgressMonitor monitor) {
 		return new MylynMockMilestoneMapping();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see org.tuleap.mylyn.task.agile.ui.AbstractAgileRepositoryConnectorUI#hasCardwall(org.eclipse.mylyn.tasks.core.ITask,
+	 *      org.eclipse.mylyn.tasks.core.TaskRepository)
+	 */
+	@Override
+	public boolean hasCardwall(ITask task, TaskRepository repository) {
+		return true;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see org.tuleap.mylyn.task.agile.ui.AbstractAgileRepositoryConnectorUI#hasPlanning(org.eclipse.mylyn.tasks.core.ITask,
+	 *      org.eclipse.mylyn.tasks.core.TaskRepository)
+	 */
+	@Override
+	public boolean hasPlanning(ITask task, TaskRepository repository) {
+		return true;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see org.tuleap.mylyn.task.agile.ui.AbstractAgileRepositoryConnectorUI#mustCreateToolbarActions(org.eclipse.mylyn.tasks.core.ITask,
+	 *      org.eclipse.mylyn.tasks.core.TaskRepository)
+	 */
+	@Override
+	public boolean mustCreateToolbarActions(ITask task, TaskRepository repository) {
+		return false;
 	}
 
 }

@@ -11,6 +11,7 @@
 package org.tuleap.mylyn.task.agile.ui;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.tuleap.mylyn.task.agile.core.IMilestoneMapping;
@@ -49,17 +50,62 @@ public abstract class AbstractAgileRepositoryConnectorUI {
 			String parentMilestoneId, TaskRepository taskRepository, IProgressMonitor monitor);
 
 	/**
+	 * <p>
 	 * Indicates the list of the identifier of the task editor page factories that are in conflict with the
 	 * task editor page factory identifier provided. Every task editor page factory of the Agile UI bundle
 	 * will call this method before initialization. As a result, one can say that for a specific use case, the
 	 * planning page factory or the context page factory is in conflict with the editor.
+	 * </p>
+	 * <p>
+	 * The default implementation returns an empty array. This method is meant to be overridden by
+	 * implementors if needed.
+	 * </p>
 	 * 
 	 * @param taskEditorPageFactoryId
 	 *            The identifier of the task editor page factory that is being used
-	 * @param taskData
-	 *            The task data of the task that the editor tries to open
+	 * @param task
+	 *            The task that the editor tries to open
+	 * @param repository
+	 *            The task repository
 	 * @return The list of the identifiers of the page factories that should not be used
 	 */
-	public abstract String[] getConflictingIds(String taskEditorPageFactoryId, TaskData taskData);
+	public String[] getConflictingIds(String taskEditorPageFactoryId, ITask task, TaskRepository repository) {
+		return new String[] {};
+	}
+
+	/**
+	 * Indicates whether the given {@link ITask} should have a cardwall tab displayed.
+	 * 
+	 * @param task
+	 *            The task
+	 * @param repository
+	 *            The task repository
+	 * @return <code>true</code> if and only if a cardwall tab should be displayed in this task editor.
+	 */
+	public abstract boolean hasCardwall(ITask task, TaskRepository repository);
+
+	/**
+	 * Indicates whether the given {@link ITask} should have a planning tab displayed.
+	 * 
+	 * @param task
+	 *            The task
+	 * @param repository
+	 *            The task repository
+	 * @return <code>true</code> if and only if a planning tab should be displayed in this task editor.
+	 */
+	public abstract boolean hasPlanning(ITask task, TaskRepository repository);
+
+	/**
+	 * Indicates whether the agile editor should create the standard toolbar actions given {@link ITask}
+	 * should have a cardwall tab displayed. Implementors should return <code>true</code> only if they don't
+	 * want to display the main tab which already creates the standard actions.
+	 * 
+	 * @param task
+	 *            The task
+	 * @param repository
+	 *            The task repository
+	 * @return <code>true</code> if and only if a cardwall tab should be displayed in this task editor.
+	 */
+	public abstract boolean mustCreateToolbarActions(ITask task, TaskRepository repository);
 
 }

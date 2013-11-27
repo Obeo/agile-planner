@@ -10,16 +10,11 @@
  *******************************************************************************/
 package org.tuleap.mylyn.task.internal.agile.ui.editors;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
-import org.eclipse.mylyn.tasks.core.ITask;
-import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPageFactory;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditor;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditorInput;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.forms.editor.IFormPage;
-import org.tuleap.mylyn.task.agile.core.data.AgileTaskKindUtil;
 import org.tuleap.mylyn.task.agile.ui.AbstractAgileRepositoryConnectorUI;
 import org.tuleap.mylyn.task.agile.ui.editors.ITaskEditorPageFactoryConstants;
 import org.tuleap.mylyn.task.internal.agile.ui.AgileRepositoryConnectorUiServiceTrackerCustomizer;
@@ -48,16 +43,12 @@ public class PlanningTaskEditorPageFactory extends AbstractTaskEditorPageFactory
 	 */
 	@Override
 	public boolean canCreatePageFor(TaskEditorInput input) {
-		ITask task = input.getTask();
-		try {
-			@SuppressWarnings("restriction")
-			TaskData taskData = TasksUiPlugin.getTaskDataManager().getTaskData(task);
-			String taskKind = AgileTaskKindUtil.getAgileTaskKind(taskData);
-
-			return AgileTaskKindUtil.TASK_KIND_MILESTONE.equals(taskKind)
-					|| AgileTaskKindUtil.TASK_KIND_TOP_PLANNING.equals(taskKind);
-		} catch (CoreException e) {
-			MylynAgileUIActivator.log(e, true);
+		String connectorKind = input.getTask().getConnectorKind();
+		AgileRepositoryConnectorUiServiceTrackerCustomizer serviceTrackerCustomizer = MylynAgileUIActivator
+				.getDefault().getServiceTrackerCustomizer();
+		AbstractAgileRepositoryConnectorUI connector = serviceTrackerCustomizer.getConnector(connectorKind);
+		if (connector != null) {
+			return connector.hasPlanning(input.getTask(), input.getTaskRepository());
 		}
 		return false;
 	}
@@ -89,18 +80,14 @@ public class PlanningTaskEditorPageFactory extends AbstractTaskEditorPageFactory
 	 */
 	@Override
 	public IFormPage createPage(TaskEditor parentEditor) {
-		TaskEditorInput taskEditorInput = parentEditor.getTaskEditorInput();
-		String connectorKind = taskEditorInput.getTask().getConnectorKind();
-		try {
-			@SuppressWarnings("restriction")
-			TaskData taskData = TasksUiPlugin.getTaskDataManager().getTaskData(taskEditorInput.getTask());
-			String taskKind = AgileTaskKindUtil.getAgileTaskKind(taskData);
-			// We want to create the toolbar actions (synchronize etc.) only for top-plannings
-			// because otherwise another tab will do it.
-			return new PlanningTaskEditorPage(parentEditor, connectorKind,
-					AgileTaskKindUtil.TASK_KIND_TOP_PLANNING.equals(taskKind));
-		} catch (CoreException e) {
-			MylynAgileUIActivator.log(e, true);
+		TaskEditorInput input = parentEditor.getTaskEditorInput();
+		String connectorKind = input.getTask().getConnectorKind();
+		AgileRepositoryConnectorUiServiceTrackerCustomizer serviceTrackerCustomizer = MylynAgileUIActivator
+				.getDefault().getServiceTrackerCustomizer();
+		AbstractAgileRepositoryConnectorUI connector = serviceTrackerCustomizer.getConnector(connectorKind);
+		if (connector != null) {
+			return new PlanningTaskEditorPage(parentEditor, connectorKind, connector
+					.mustCreateToolbarActions(input.getTask(), input.getTaskRepository()));
 		}
 		return new PlanningTaskEditorPage(parentEditor, connectorKind, false);
 	}
@@ -112,24 +99,15 @@ public class PlanningTaskEditorPageFactory extends AbstractTaskEditorPageFactory
 	 */
 	@Override
 	public String[] getConflictingIds(TaskEditorInput input) {
-		ITask task = input.getTask();
 		String connectorKind = input.getTaskRepository().getConnectorKind();
-		try {
-			@SuppressWarnings("restriction")
-			TaskData taskData = TasksUiPlugin.getTaskDataManager().getTaskData(task);
-
-			AgileRepositoryConnectorUiServiceTrackerCustomizer serviceTrackerCustomizer = MylynAgileUIActivator
-					.getDefault().getServiceTrackerCustomizer();
-			AbstractAgileRepositoryConnectorUI connector = serviceTrackerCustomizer
-					.getConnector(connectorKind);
-			if (connector != null) {
-				return connector.getConflictingIds(
-						ITaskEditorPageFactoryConstants.PLANNING_TASK_EDITOR_PAGE_FACTORY_ID, taskData);
-			}
-		} catch (CoreException e) {
-			MylynAgileUIActivator.log(e, true);
+		AgileRepositoryConnectorUiServiceTrackerCustomizer serviceTrackerCustomizer = MylynAgileUIActivator
+				.getDefault().getServiceTrackerCustomizer();
+		AbstractAgileRepositoryConnectorUI connector = serviceTrackerCustomizer.getConnector(connectorKind);
+		if (connector != null) {
+			return connector.getConflictingIds(
+					ITaskEditorPageFactoryConstants.PLANNING_TASK_EDITOR_PAGE_FACTORY_ID, input.getTask(),
+					input.getTaskRepository());
 		}
-
 		return new String[] {};
 	}
 
