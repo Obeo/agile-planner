@@ -8,7 +8,7 @@
  * Contributors:
  *     Obeo - initial API and implementation
  *******************************************************************************/
-package org.tuleap.mylyn.task.agile.ui.tests.cardwall.validator;
+package org.tuleap.mylyn.task.internal.agile.ui.tests.cardwall.validator;
 
 import java.util.Date;
 
@@ -30,16 +30,25 @@ public class DateValidatorTest {
 	 */
 	private DateValidator validator = new DateValidator();
 
+	/**
+	 * Test that a Date validator accepts a date.
+	 */
 	@Test
 	public void testADateValid() {
 		assertNull(validator.isValid(new Date()));
 	}
 
+	/**
+	 * Check that a DateValidator rejects <code>null</code>.
+	 */
 	@Test
 	public void testNullIsInvalid() {
 		assertNotNull(validator.isValid(null));
 	}
 
+	/**
+	 * Check that a DateValidator rejects Strings.
+	 */
 	@Test
 	public void testAStringIsInvalid() {
 		assertNotNull(validator.isValid(new Date().toString()));

@@ -16,11 +16,11 @@ import junit.textui.TestRunner;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-import org.tuleap.mylyn.task.agile.ui.tests.cardwall.model.CardwallModelTest;
-import org.tuleap.mylyn.task.agile.ui.tests.cardwall.validator.DateValidatorTest;
-import org.tuleap.mylyn.task.agile.ui.tests.cardwall.validator.DoubleValidatorTest;
-import org.tuleap.mylyn.task.agile.ui.tests.cardwall.validator.IntegerValidatorTest;
-import org.tuleap.mylyn.task.agile.ui.tests.data.BacklogModelTest;
+import org.tuleap.mylyn.task.internal.agile.ui.tests.cardwall.model.CardwallModelTest;
+import org.tuleap.mylyn.task.internal.agile.ui.tests.cardwall.validator.DateValidatorTest;
+import org.tuleap.mylyn.task.internal.agile.ui.tests.cardwall.validator.DoubleValidatorTest;
+import org.tuleap.mylyn.task.internal.agile.ui.tests.cardwall.validator.IntegerValidatorTest;
+import org.tuleap.mylyn.task.internal.agile.ui.tests.data.BacklogModelTest;
 
 /**
  * This class should be used to launch all the unit tests.

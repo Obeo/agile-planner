@@ -8,7 +8,7 @@
  * Contributors:
  *     Obeo - initial API and implementation
  *******************************************************************************/
-package org.tuleap.mylyn.task.agile.ui.tests.data;
+package org.tuleap.mylyn.task.internal.agile.ui.tests.data;
 
 import java.util.Date;
 

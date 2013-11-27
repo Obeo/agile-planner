@@ -8,7 +8,7 @@
  * Contributors:
  *     Obeo - initial API and implementation
  *******************************************************************************/
-package org.tuleap.mylyn.task.agile.ui.tests.cardwall.model;
+package org.tuleap.mylyn.task.internal.agile.ui.tests.cardwall.model;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;

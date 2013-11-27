@@ -75,11 +75,6 @@ public class MilestonePlanningWrapperMovingBacklogItemsTest {
 	private BacklogItemWrapper backlogItem2;
 
 	/**
-	 * The BacklogItem number 3.
-	 */
-	private BacklogItemWrapper backlogItem3;
-
-	/**
 	 * The BacklogItem number 4.
 	 */
 	private BacklogItemWrapper backlogItem4;
@@ -174,7 +169,6 @@ public class MilestonePlanningWrapperMovingBacklogItemsTest {
 		backlogItem0 = wrapper.addBacklogItem("0");
 		backlogItem1 = wrapper.addBacklogItem("1");
 		backlogItem2 = wrapper.addBacklogItem("2");
-		backlogItem3 = wrapper.addBacklogItem("3");
 		backlogItem4 = wrapper.addBacklogItem("4");
 		backlogItem5 = wrapper.addBacklogItem("5");
 		backlogItem6 = wrapper.addBacklogItem("6");
