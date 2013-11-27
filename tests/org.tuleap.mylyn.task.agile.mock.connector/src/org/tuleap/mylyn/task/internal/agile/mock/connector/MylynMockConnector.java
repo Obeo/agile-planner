@@ -13,11 +13,13 @@ package org.tuleap.mylyn.task.internal.agile.mock.connector;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.data.AbstractTaskDataHandler;
+import org.eclipse.mylyn.tasks.core.data.TaskAttributeMapper;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.eclipse.mylyn.tasks.core.data.TaskDataCollector;
 import org.eclipse.mylyn.tasks.core.sync.ISynchronizationSession;
@@ -34,7 +36,7 @@ public class MylynMockConnector extends AbstractRepositoryConnector {
 	/**
 	 * The task data handler.
 	 */
-	private MylynMockTaskDataHandler mylynMockTaskDataHandler = new MylynMockTaskDataHandler();
+	private MylynMockTaskDataHandler taskDataHandler = new MylynMockTaskDataHandler();
 
 	/**
 	 * {@inheritDoc}
@@ -43,7 +45,7 @@ public class MylynMockConnector extends AbstractRepositoryConnector {
 	 */
 	@Override
 	public boolean canCreateNewTask(TaskRepository repository) {
-		return true;
+		return false;
 	}
 
 	/**
@@ -83,7 +85,7 @@ public class MylynMockConnector extends AbstractRepositoryConnector {
 	 */
 	@Override
 	public AbstractTaskDataHandler getTaskDataHandler() {
-		return this.mylynMockTaskDataHandler;
+		return this.taskDataHandler;
 	}
 
 	/**
@@ -152,7 +154,16 @@ public class MylynMockConnector extends AbstractRepositoryConnector {
 	@Override
 	public IStatus performQuery(TaskRepository repository, IRepositoryQuery query,
 			TaskDataCollector collector, ISynchronizationSession session, IProgressMonitor monitor) {
-		return null;
+		TaskAttributeMapper mapper = new TaskAttributeMapper(repository);
+		TaskData taskData = new TaskData(mapper, IMylynMockConnectorConstants.CONNECTOR_KIND, repository
+				.getUrl(), "1");
+		try {
+			taskDataHandler.initializeTaskData(repository, taskData, null, monitor);
+		} catch (CoreException e) {
+			MylynMockConnectorActivator.log(e, true);
+		}
+		collector.accept(taskData);
+		return Status.OK_STATUS;
 	}
 
 	/**

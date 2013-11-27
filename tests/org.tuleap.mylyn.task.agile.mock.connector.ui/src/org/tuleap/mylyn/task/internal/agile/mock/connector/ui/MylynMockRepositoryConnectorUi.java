@@ -18,6 +18,7 @@ import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.AbstractRepositoryConnectorUi;
 import org.eclipse.mylyn.tasks.ui.wizards.ITaskRepositoryPage;
 import org.tuleap.mylyn.task.agile.mock.connector.util.IMylynMockConnectorConstants;
+import org.tuleap.mylyn.task.internal.agile.mock.connector.ui.wizards.MockRepositoryQueryWizard;
 import org.tuleap.mylyn.task.internal.agile.mock.connector.ui.wizards.MylynMockNewTaskWizard;
 import org.tuleap.mylyn.task.internal.agile.mock.connector.ui.wizards.MylynMockRepositorySettingsPage;
 
@@ -79,7 +80,7 @@ public class MylynMockRepositoryConnectorUi extends AbstractRepositoryConnectorU
 	 */
 	@Override
 	public IWizard getQueryWizard(TaskRepository taskRepository, IRepositoryQuery queryToEdit) {
-		return null;
+		return new MockRepositoryQueryWizard(taskRepository);
 	}
 
 	/**
