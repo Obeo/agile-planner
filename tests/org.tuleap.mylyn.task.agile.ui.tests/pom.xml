@@ -13,8 +13,7 @@
   <version>1.0.0-SNAPSHOT</version>
   <packaging>eclipse-test-plugin</packaging>
   <properties>
-    <test.suite>${project.artifactId}.AllMylynAgileCoreTests</test.suite>
-    <tycho.scmUrl>scm:git:git://github.com/sbegaudeau/mylyn.tasks.git;path="org.tuleap.mylyn.task.tests";tag=R1_0_0;branch=tuleap_master</tycho.scmUrl>
+    <test.suite>${project.artifactId}.AllMylynAgileUITests</test.suite>
   </properties>
   <build>
     <!-- resources for standalone tests
