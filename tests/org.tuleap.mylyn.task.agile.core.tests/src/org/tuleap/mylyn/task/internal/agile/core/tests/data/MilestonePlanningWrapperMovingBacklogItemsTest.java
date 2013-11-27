@@ -169,6 +169,7 @@ public class MilestonePlanningWrapperMovingBacklogItemsTest {
 		backlogItem0 = wrapper.addBacklogItem("0");
 		backlogItem1 = wrapper.addBacklogItem("1");
 		backlogItem2 = wrapper.addBacklogItem("2");
+		wrapper.addBacklogItem("3"); // value not used
 		backlogItem4 = wrapper.addBacklogItem("4");
 		backlogItem5 = wrapper.addBacklogItem("5");
 		backlogItem6 = wrapper.addBacklogItem("6");
