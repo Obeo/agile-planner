@@ -51,7 +51,7 @@ public class CardFigure extends Figure {
 	 * 
 	 * @author <a href="mailto:cedric.notot@obeo.fr">Cedric Notot</a>
 	 */
-	private class ActionURLMouseListener implements MouseListener {
+	private static class ActionURLMouseListener implements MouseListener {
 		/**
 		 * {@inheritDoc}
 		 * 
