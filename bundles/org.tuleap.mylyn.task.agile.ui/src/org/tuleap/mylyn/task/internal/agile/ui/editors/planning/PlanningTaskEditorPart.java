@@ -440,7 +440,6 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 	 */
 	private MouseListener getMouseListener(final Table table) {
 		MouseListener listener = new MouseListener() {
-			TableItem item;
 
 			@Override
 			public void mouseDoubleClick(MouseEvent e) {
@@ -454,7 +453,7 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 
 			@Override
 			public void mouseUp(MouseEvent e) {
-				mouseUpAction(table, e, item);
+				mouseUpAction(table, e);
 			}
 
 		};
@@ -468,33 +467,28 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 	 *            the table.
 	 * @param e
 	 *            The event.
-	 * @param item
-	 *            The table item.
 	 */
-	private void mouseUpAction(final Table table, MouseEvent e, TableItem item) {
+	private void mouseUpAction(final Table table, MouseEvent e) {
 		Point point = new Point(e.x, e.y);
+		TableItem item = table.getItem(point);
 		if (item != null && !item.isDisposed()) {
 			item.setBackground(-1, Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
 			item.setForeground(-1, Display.getCurrent().getSystemColor(SWT.COLOR_BLACK));
 		}
-		TableItem theItem = item;
-		theItem = table.getItem(point);
-		if (theItem == null) {
+		if (item == null) {
 			return;
 		}
-		Rectangle idColumn = theItem.getBounds(0);
+		Rectangle idColumn = item.getBounds(0);
 		if (idColumn.contains(point)) {
 			table.deselectAll();
-			theItem.setBackground(0, Display.getCurrent().getSystemColor(SWT.COLOR_LIST_SELECTION));
-			theItem.setBackground(0, Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
-			openTask(theItem);
+			item.setBackground(0, Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
+			openTask(item);
 		}
-		Rectangle parentColumn = theItem.getBounds(3);
+		Rectangle parentColumn = item.getBounds(3);
 		if (parentColumn.contains(point)) {
 			table.deselectAll();
-			theItem.setBackground(0, Display.getCurrent().getSystemColor(SWT.COLOR_LIST_SELECTION));
-			theItem.setBackground(0, Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
-			openParentTask(theItem);
+			item.setBackground(0, Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
+			openParentTask(item);
 		}
 	}
 
