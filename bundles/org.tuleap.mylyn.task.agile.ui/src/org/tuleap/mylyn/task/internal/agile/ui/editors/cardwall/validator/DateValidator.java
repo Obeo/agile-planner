@@ -13,6 +13,7 @@ package org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.validator;
 import java.util.Date;
 
 import org.eclipse.jface.viewers.ICellEditorValidator;
+import org.tuleap.mylyn.task.internal.agile.ui.util.MylynAgileUIMessages;
 
 /**
  * {@link ICellEditorValidator} that checks that the value does represent an integer.
@@ -31,7 +32,7 @@ public class DateValidator implements ICellEditorValidator {
 		if (value instanceof Date) {
 			return null;
 		}
-		return "Value must be a date";
+		return MylynAgileUIMessages.getString("DateValidator.valueMustBeDate"); //$NON-NLS-1$
 	}
 
 }

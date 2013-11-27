@@ -11,6 +11,7 @@
 package org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.validator;
 
 import org.eclipse.jface.viewers.ICellEditorValidator;
+import org.tuleap.mylyn.task.internal.agile.ui.util.MylynAgileUIMessages;
 
 /**
  * {@link ICellEditorValidator} that checks that the value does represent a number.
@@ -31,10 +32,10 @@ public class DoubleValidator implements ICellEditorValidator {
 			try {
 				Double.parseDouble((String)value);
 			} catch (NumberFormatException e) {
-				result = "Value must be numeric";
+				result = MylynAgileUIMessages.getString("DoubleValidator.valueMustBeNumeric"); //$NON-NLS-1$
 			}
 		} else if (!(value instanceof Number)) {
-			result = "Value must be numeric";
+			result = MylynAgileUIMessages.getString("DoubleValidator.valueMustBeNumeric"); //$NON-NLS-1$
 		}
 		return result;
 	}

@@ -11,6 +11,7 @@
 package org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.validator;
 
 import org.eclipse.jface.viewers.ICellEditorValidator;
+import org.tuleap.mylyn.task.internal.agile.ui.util.MylynAgileUIMessages;
 
 /**
  * {@link ICellEditorValidator} that checks that the value does represent an integer.
@@ -31,11 +32,11 @@ public class IntegerValidator implements ICellEditorValidator {
 			try {
 				Integer.parseInt((String)value);
 			} catch (NumberFormatException e) {
-				result = "Value must be integer";
+				result = MylynAgileUIMessages.getString("IntegerValidator.valueMustBeInteger"); //$NON-NLS-1$
 			}
 		} else if (!(value instanceof Integer) && !(value instanceof Short) && !(value instanceof Long)
 				&& !(value instanceof Byte)) {
-			result = "Value must be integer";
+			result = MylynAgileUIMessages.getString("IntegerValidator.valueMustBeInteger"); //$NON-NLS-1$
 		}
 		return result;
 	}
