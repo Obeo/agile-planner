@@ -26,6 +26,7 @@
     <module>../../../bundles/org.tuleap.mylyn.task.agile.core</module>
     <module>../../../bundles/org.tuleap.mylyn.task.agile.ui</module>
     <module>../../../tests/org.tuleap.mylyn.task.agile.core.tests</module>
+    <module>../../../tests/org.tuleap.mylyn.task.agile.ui.tests</module>
     <module>../../../features/org.tuleap.mylyn.task.agile-feature</module>
     <module>../../../repositories/org.tuleap.mylyn.task.agile.repository</module>
   </modules>
