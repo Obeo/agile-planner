@@ -93,14 +93,20 @@ public class MilestoneSectionViewer extends Viewer {
 	@Override
 	public void refresh() {
 		fSection.setText(getMilestoneSectionHeaderText());
-		double requiredCapacity = getMilestoneSectionRequiredCapacity();
-		double capacity = getMilestoneSectionCapacity();
-		fSection.setDescription(MylynAgileUIMessages.getString("MilestoneSectionViewer.CapacityLabel", //$NON-NLS-1$
-				Double.valueOf(requiredCapacity), Double.valueOf(capacity)));
-		if (requiredCapacity > capacity) {
-			fSection.getDescriptionControl().setForeground(ColorConstants.red);
+		float requiredCapacity = getMilestoneSectionRequiredCapacity();
+		Float capacity = getMilestoneSectionCapacity();
+		if (capacity == null) {
+			fSection.setDescription(MylynAgileUIMessages.getString(
+					"MilestoneSectionViewer.CapacityLabelWithoutCapacity", //$NON-NLS-1$
+					Double.valueOf(requiredCapacity)));
 		} else {
-			fSection.getDescriptionControl().setForeground(ColorConstants.black);
+			fSection.setDescription(MylynAgileUIMessages.getString("MilestoneSectionViewer.CapacityLabel", //$NON-NLS-1$
+					Float.valueOf(requiredCapacity), capacity));
+			if (requiredCapacity > capacity.floatValue()) {
+				fSection.getDescriptionControl().setForeground(ColorConstants.red);
+			} else {
+				fSection.getDescriptionControl().setForeground(ColorConstants.black);
+			}
 		}
 	}
 
@@ -129,8 +135,8 @@ public class MilestoneSectionViewer extends Viewer {
 	 * 
 	 * @return the sum of all backlog items in <code>milestoneAtt</code>.
 	 */
-	private double getMilestoneSectionRequiredCapacity() {
-		double sumOfPoints = 0.0;
+	private float getMilestoneSectionRequiredCapacity() {
+		float sumOfPoints = 0.0F;
 		for (BacklogItemWrapper bi : fInput.getBacklogItems()) {
 			Float effort = bi.getInitialEffort();
 			if (effort != null) {
@@ -147,12 +153,8 @@ public class MilestoneSectionViewer extends Viewer {
 	 * @return the estimated milestone capacity by retrieving it from the relevant sub-attribute in the given
 	 *         TaskAttribute, or -1 if the capacity is not present
 	 */
-	private double getMilestoneSectionCapacity() {
-		Float capacity = fInput.getSubMilestone().getCapacity();
-		if (capacity != null) {
-			return capacity.doubleValue();
-		}
-		return -1;
+	private Float getMilestoneSectionCapacity() {
+		return fInput.getSubMilestone().getCapacity();
 	}
 
 	/**
