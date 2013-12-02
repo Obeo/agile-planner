@@ -39,7 +39,11 @@ public class CardEditPart extends AbstractGraphicalEditPart {
 	 */
 	@Override
 	protected IFigure createFigure() {
-		return new CardFigure();
+		CardWrapper wrapper = (CardWrapper)this.getModel();
+		if (wrapper.getColumnId() == null) {
+			return new CardFigure(false);
+		}
+		return new CardFigure(true);
 	}
 
 	/**

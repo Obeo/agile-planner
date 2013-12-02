@@ -64,7 +64,7 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 	/**
 	 * Suffix used to compute the mylyn id of the task atribute that represents the status.
 	 */
-	public static final String SUFFIX_ALLOWED_COLUMNS = "allowed_columns_ids"; //$NON-NLS-1$
+	public static final String ALLOWED_COLS = "allowed_columns_ids"; //$NON-NLS-1$
 
 	/**
 	 * The parent card wall.
@@ -134,7 +134,7 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 	 * @return The unique id of the Assigned status attribute.
 	 */
 	private String getAllowedColumnAttributeId() {
-		return root.getId() + ID_SEPARATOR + SUFFIX_ALLOWED_COLUMNS;
+		return root.getId() + ID_SEPARATOR + ALLOWED_COLS;
 	}
 
 	/**

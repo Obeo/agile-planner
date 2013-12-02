@@ -60,7 +60,7 @@ public class SwimlaneCell extends AbstractNotifyingModel {
 		List<CardWrapper> res = new ArrayList<CardWrapper>();
 		for (CardWrapper card : swimlane.getWrapper().getCards()) {
 			String columnId = column.getWrapper().getId();
-			if (columnId != null && columnId.equals(card.getStatusId())) {
+			if (columnId != null && columnId.equals(card.getColumnId())) {
 				res.add(card);
 			}
 		}

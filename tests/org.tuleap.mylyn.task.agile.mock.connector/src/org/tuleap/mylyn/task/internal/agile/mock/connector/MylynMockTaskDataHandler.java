@@ -275,7 +275,7 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 				case 0:
 					CardWrapper card00 = swimlane.addCard(Integer.toString(300) + i);
 					card00.setLabel("This is very very long title to test line wrapping, Title of " + (300 + i)); //$NON-NLS-1$
-					card00.setColumnId(Integer.toString(10 + i));
+					// card00.setColumnId(Integer.toString(10 + i));
 					card00.addField(CardWrapper.CARD_REMAINING_EFFORT_FIELD_ID,
 							"Remaining Effort", TaskAttribute.TYPE_DOUBLE); //$NON-NLS-1$
 					card00.setFieldValue(CardWrapper.CARD_REMAINING_EFFORT_FIELD_ID, "2.5"); //$NON-NLS-1$
@@ -289,11 +289,20 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 
 					CardWrapper card10 = swimlane.addCard(Integer.toString(301) + i);
 					card10.setLabel("Title of " + (301 + i)); //$NON-NLS-1$
-					card10.setColumnId(Integer.toString(10 + i));
+					// card10.setColumnId(Integer.toString(10 + i));
 					card10.setFieldLabel(CardWrapper.CARD_REMAINING_EFFORT_FIELD_ID, "Remaining Effort");
 					card10.addFieldValue(CardWrapper.CARD_REMAINING_EFFORT_FIELD_ID, "5"); //$NON-NLS-1$
 					card10.setFieldLabel(CardWrapper.CARD_ASSIGNED_TO_FIELD_ID, "Assigned to");
 					card10.addFieldValue(CardWrapper.CARD_ASSIGNED_TO_FIELD_ID, "cnotot"); //$NON-NLS-1$ 
+
+					CardWrapper card20 = swimlane.addCard(Integer.toString(321) + i);
+					card20.setLabel("Title of " + (301 + i)); //$NON-NLS-1$
+					card20.setColumnId(Integer.toString(10 + i));
+					card20.setFieldLabel(CardWrapper.CARD_REMAINING_EFFORT_FIELD_ID, "Remaining Effort");
+					card20.addFieldValue(CardWrapper.CARD_REMAINING_EFFORT_FIELD_ID, "5"); //$NON-NLS-1$
+					card20.setFieldLabel(CardWrapper.CARD_ASSIGNED_TO_FIELD_ID, "Assigned to");
+					card20.addFieldValue(CardWrapper.CARD_ASSIGNED_TO_FIELD_ID, "fbacha"); //$NON-NLS-1$ 
+
 					break;
 				case 1:
 					CardWrapper card01 = swimlane.addCard(Integer.toString(300) + i);
@@ -305,9 +314,13 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 					card01.addFieldValue(CardWrapper.CARD_ASSIGNED_TO_FIELD_ID, "ldelaigue"); //$NON-NLS-1$ 
 					break;
 				case 2:
-					// CardWrapper card02 = swimlane.addCard(Integer.toString(300 + i));
-					// CardWrapper card12 = swimlane.addCard(Integer.toString(301 + i));
-					// CardWrapper card22 = swimlane.addCard(Integer.toString(302 + i));
+					CardWrapper card02 = swimlane.addCard(Integer.toString(300) + i);
+					card02.setLabel("Title of " + (300 + i)); //$NON-NLS-1$
+					card02.setColumnId(Integer.toString(10 + i));
+					card02.setFieldLabel(CardWrapper.CARD_REMAINING_EFFORT_FIELD_ID, "Remaining Effort");
+					card02.addFieldValue(CardWrapper.CARD_REMAINING_EFFORT_FIELD_ID, "3"); //$NON-NLS-1$ 
+					card02.setFieldLabel(CardWrapper.CARD_ASSIGNED_TO_FIELD_ID, "Assigned to");
+					card02.addFieldValue(CardWrapper.CARD_ASSIGNED_TO_FIELD_ID, "ldelaigue"); //$NON-NLS-1$ 
 					break;
 				default:
 					break;

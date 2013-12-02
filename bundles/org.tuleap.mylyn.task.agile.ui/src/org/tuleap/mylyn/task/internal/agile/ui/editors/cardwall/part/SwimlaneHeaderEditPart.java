@@ -10,11 +10,12 @@
  *******************************************************************************/
 package org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.part;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
+import org.tuleap.mylyn.task.agile.core.data.cardwall.CardWrapper;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.SwimlaneWrapper;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.figure.CellFigure;
 
@@ -61,7 +62,13 @@ public class SwimlaneHeaderEditPart extends AbstractGraphicalEditPart {
 	 */
 	@Override
 	protected List<?> getModelChildren() {
-		return Collections.singletonList(((SwimlaneWrapper)getModel()).getSwimlaneItem());
+		List<CardWrapper> res = new ArrayList<CardWrapper>();
+		for (CardWrapper card : ((SwimlaneWrapper)getModel()).getCards()) {
+			if (card.getColumnId() == null) {
+				res.add(card);
+			}
+		}
+		return res;
 	}
 
 	/**

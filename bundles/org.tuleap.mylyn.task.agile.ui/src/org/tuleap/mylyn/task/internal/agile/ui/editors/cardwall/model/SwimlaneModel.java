@@ -12,9 +12,10 @@ package org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model;
 
 import com.google.common.collect.Lists;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import org.tuleap.mylyn.task.agile.core.data.cardwall.SwimlaneItemWrapper;
+import org.tuleap.mylyn.task.agile.core.data.cardwall.CardWrapper;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.SwimlaneWrapper;
 
 /**
@@ -53,12 +54,18 @@ public class SwimlaneModel {
 	}
 
 	/**
-	 * The swimlane's backlog item.
+	 * The swimlane's header cards.
 	 * 
-	 * @return The swimlane's backlog item.
+	 * @return The swimlane's header cards.
 	 */
-	public SwimlaneItemWrapper getBacklogItem() {
-		return swimlane.getSwimlaneItem();
+	public List<CardWrapper> getHeaderCards() {
+		List<CardWrapper> res = new ArrayList<CardWrapper>();
+		for (CardWrapper card : swimlane.getCards()) {
+			if (card.getColumnId() == null) {
+				res.add(card);
+			}
+		}
+		return res;
 	}
 
 	/**

@@ -22,7 +22,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.CardWrapper;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.CardwallWrapper;
-import org.tuleap.mylyn.task.agile.core.data.cardwall.SwimlaneItemWrapper;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.SwimlaneWrapper;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.CardwallModel;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.ColumnModel;
@@ -66,8 +65,6 @@ public class CardwallModelTest {
 		assertEquals(1, swimlanes.size());
 		SwimlaneModel swimlane = swimlanes.get(0);
 		assertSame(m, swimlane.getCardwall());
-		assertEquals("123", swimlane.getBacklogItem().getId());
-		assertEquals("Label item", swimlane.getBacklogItem().getLabel());
 
 		List<SwimlaneCell> cells = swimlane.getCells();
 		assertEquals(4, cells.size());
@@ -225,15 +222,11 @@ public class CardwallModelTest {
 			cardwall.addColumn(Integer.toString(10 + i), "Column" + i);
 		}
 		SwimlaneWrapper swimlane = cardwall.addSwimlane("123");
-		SwimlaneItemWrapper item = swimlane.getSwimlaneItem();
-		item.setLabel("Label item");
-		item.setInitialEffort(12.5F);
-		item.setAssignedMilestoneId("1234");
 
 		for (int i = 0; i < 4; i++) {
 			CardWrapper card = swimlane.addCard(Integer.toString(200 + i));
 			card.setLabel("Label " + (200 + i));
-			card.setStatusId(Integer.toString(10 + i));
+			card.setColumnId(Integer.toString(10 + i));
 			card.addFieldValue("100", "Value 100" + i);
 		}
 	}

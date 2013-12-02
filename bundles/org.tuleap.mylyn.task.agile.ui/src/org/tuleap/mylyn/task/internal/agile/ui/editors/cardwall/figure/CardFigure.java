@@ -40,6 +40,10 @@ import org.tuleap.mylyn.task.internal.agile.ui.util.IMylynAgileUIConstants;
  * @author <a href="mailto:cedric.notot@obeo.fr">Cedric Notot</a>
  */
 public class CardFigure extends Figure {
+	/**
+	 * The key to register the header card's background color with the plugin.
+	 */
+	public static final String BI_CARD_BG_COLOR_KEY = "BI_CARD_BG_COLOR"; //$NON-NLS-1$
 
 	/**
 	 * The key to register the card's background color with the plugin.
@@ -117,8 +121,11 @@ public class CardFigure extends Figure {
 
 	/**
 	 * Constructor.
+	 * 
+	 * @param isAssigned
+	 *            indicates if the card is assigned or not to a column.
 	 */
-	public CardFigure() {
+	public CardFigure(boolean isAssigned) {
 		// TODO make this font manipulation cleaner
 		defaultFont = JFaceResources.getDefaultFont();
 		FontData[] defaultFontData = defaultFont.getFontData();
@@ -137,7 +144,12 @@ public class CardFigure extends Figure {
 		setConstraint(cardRect, new GridData(SWT.FILL, SWT.CENTER, true, true));
 
 		cardRect.setForegroundColor(ColorConstants.lightGray); // border color
-		cardRect.setBackgroundColor(getDefaultBackgroundColor());
+		if (isAssigned) {
+			cardRect.setBackgroundColor(getDefaultBackgroundColor());
+		} else {
+			cardRect.setBackgroundColor(getHeaderBackgroundColor());
+		}
+
 		GridLayout l = new GridLayout(1, false);
 		l.verticalSpacing = 0;
 		l.marginHeight = IMylynAgileUIConstants.MARGIN;
@@ -246,6 +258,21 @@ public class CardFigure extends Figure {
 		}
 		Color c = new Color(Display.getCurrent(), IMylynAgileUIConstants.CARD_BG_COLOR);
 		activator.putColor(CARD_BG_COLOR_KEY, c);
+		return c;
+	}
+
+	/**
+	 * Provides the default background color for cards.
+	 * 
+	 * @return The default bg color for cards.
+	 */
+	public Color getHeaderBackgroundColor() {
+		MylynAgileUIActivator activator = MylynAgileUIActivator.getDefault();
+		if (activator.hasColor(BI_CARD_BG_COLOR_KEY)) {
+			return activator.getColor(BI_CARD_BG_COLOR_KEY);
+		}
+		Color c = new Color(Display.getCurrent(), IMylynAgileUIConstants.BI_CARD_BG_COLOR);
+		activator.putColor(BI_CARD_BG_COLOR_KEY, c);
 		return c;
 	}
 }
