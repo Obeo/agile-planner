@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.tuleap.mylyn.task.internal.agile.ui.editors.planning;
 
+import com.google.common.collect.Lists;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
@@ -147,7 +149,9 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 		milestoneListComp.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
 		milestoneList.setClient(milestoneListComp);
 
-		for (SubMilestoneWrapper subMilestone : wrapper.getSubMilestones()) {
+		// Sub-milestones are stored in their order of creation, we want to display them
+		// in the reverse order.
+		for (SubMilestoneWrapper subMilestone : Lists.reverse(wrapper.getSubMilestones())) {
 			createMilestoneSection(toolkit, milestoneListComp, subMilestone, backlogItemTypeName);
 		}
 
