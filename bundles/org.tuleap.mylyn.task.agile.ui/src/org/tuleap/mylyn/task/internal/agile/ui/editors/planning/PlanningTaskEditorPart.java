@@ -401,7 +401,12 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 				if (element == null) {
 					ret = MylynAgileUIMessages.getString("PlanningTaskEditorPageFactory.MissingNumericValue"); //$NON-NLS-1$;
 				} else if (element instanceof BacklogItemWrapper) {
-					ret = String.valueOf(((BacklogItemWrapper)element).getInitialEffort());
+					Float initialEffort = ((BacklogItemWrapper)element).getInitialEffort();
+					if (initialEffort == null) {
+						ret = ""; //$NON-NLS-1$
+					} else {
+						ret = String.valueOf(initialEffort);
+					}
 				} else {
 					ret = element.toString();
 				}
