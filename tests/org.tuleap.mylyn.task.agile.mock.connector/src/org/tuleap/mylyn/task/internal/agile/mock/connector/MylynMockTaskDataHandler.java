@@ -26,7 +26,6 @@ import org.tuleap.mylyn.task.agile.core.IMilestoneMapping;
 import org.tuleap.mylyn.task.agile.core.data.AgileTaskKindUtil;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.CardWrapper;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.CardwallWrapper;
-import org.tuleap.mylyn.task.agile.core.data.cardwall.SwimlaneItemWrapper;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.SwimlaneWrapper;
 import org.tuleap.mylyn.task.agile.core.data.planning.BacklogItemWrapper;
 import org.tuleap.mylyn.task.agile.core.data.planning.MilestonePlanningWrapper;
@@ -194,15 +193,11 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 			cardwallWrapper.addColumn(Integer.toString(10 + i), "Column" + i); //$NON-NLS-1$
 		}
 		SwimlaneWrapper swimlane = cardwallWrapper.addSwimlane("123"); //$NON-NLS-1$
-		SwimlaneItemWrapper item = swimlane.getSwimlaneItem();
-		item.setLabel("Label item"); //$NON-NLS-1$
-		item.setInitialEffort(12.5F);
-		item.setAssignedMilestoneId("1234"); //$NON-NLS-1$
 
 		for (int i = 0; i < 4; i++) {
 			CardWrapper card = swimlane.addCard(Integer.toString(200 + i));
 			card.setLabel("Label " + (200 + i)); //$NON-NLS-1$
-			card.setStatusId(Integer.toString(10 + i));
+			card.setColumnId(Integer.toString(10 + i));
 			card.setFieldLabel(CardWrapper.CARD_VALUE_FIELD_ID, "Value for test");
 			card.addFieldValue(CardWrapper.CARD_VALUE_FIELD_ID, "Value 100" + i); //$NON-NLS-1$
 		}
@@ -223,23 +218,19 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 		}
 		for (int i = 0; i < 3; i++) {
 			SwimlaneWrapper swimlane = cardwallWrapper.addSwimlane(Integer.toString(20 + i));
-			SwimlaneItemWrapper item = swimlane.getSwimlaneItem();
-			item.setLabel("Item " + i); //$NON-NLS-1$
-			item.setInitialEffort(5);
-			item.setAssignedMilestoneId("1234"); //$NON-NLS-1$
 
 			switch (i) {
 				case 0:
 					CardWrapper card00 = swimlane.addCard(Integer.toString(300) + i);
 					card00.setLabel("Title of " + (300 + i)); //$NON-NLS-1$
-					card00.setStatusId(Integer.toString(10 + i));
+					card00.setColumnId(Integer.toString(10 + i));
 					card00.setFieldLabel(CardWrapper.CARD_VALUE_FIELD_ID, "Value for test");
 					card00.addFieldValue(CardWrapper.CARD_VALUE_FIELD_ID,
 							"Blablafdfdjjdkeds  deffsfsrfersfrqsefhqz euofhzquofgeo zfuiegpgzfe fgpzeufg"); //$NON-NLS-1$ 
 
 					CardWrapper card10 = swimlane.addCard(Integer.toString(301) + i);
 					card10.setLabel("Title of " + (301 + i)); //$NON-NLS-1$
-					card10.setStatusId(Integer.toString(10 + i));
+					card10.setColumnId(Integer.toString(10 + i));
 					card10.setFieldLabel(CardWrapper.CARD_VALUE_FIELD_ID, "Value for test");
 					card10.addFieldValue(
 							CardWrapper.CARD_VALUE_FIELD_ID,
@@ -248,7 +239,7 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 				case 1:
 					CardWrapper card01 = swimlane.addCard(Integer.toString(300) + i);
 					card01.setLabel("Title of " + (300 + i)); //$NON-NLS-1$
-					card01.setStatusId(Integer.toString(10 + i));
+					card01.setColumnId(Integer.toString(10 + i));
 					card01.setFieldLabel(CardWrapper.CARD_VALUE_FIELD_ID, "Value for test");
 					card01.addFieldValue(CardWrapper.CARD_VALUE_FIELD_ID,
 							"Blablafdfdjjdkedsdeffsdegzufigeuofzgyoz"); //$NON-NLS-1$ 
@@ -280,16 +271,11 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 		}
 		for (int i = 0; i < 3; i++) {
 			SwimlaneWrapper swimlane = cardwallWrapper.addSwimlane(Integer.toString(20 + i));
-			SwimlaneItemWrapper item = swimlane.getSwimlaneItem();
-			item.setLabel("Item " + i); //$NON-NLS-1$
-			item.setInitialEffort(5);
-			item.setAssignedMilestoneId("1234"); //$NON-NLS-1$
-
 			switch (i) {
 				case 0:
 					CardWrapper card00 = swimlane.addCard(Integer.toString(300) + i);
 					card00.setLabel("This is very very long title to test line wrapping, Title of " + (300 + i)); //$NON-NLS-1$
-					card00.setStatusId(Integer.toString(10 + i));
+					card00.setColumnId(Integer.toString(10 + i));
 					card00.addField(CardWrapper.CARD_REMAINING_EFFORT_FIELD_ID,
 							"Remaining Effort", TaskAttribute.TYPE_DOUBLE); //$NON-NLS-1$
 					card00.setFieldValue(CardWrapper.CARD_REMAINING_EFFORT_FIELD_ID, "2.5"); //$NON-NLS-1$
@@ -303,7 +289,7 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 
 					CardWrapper card10 = swimlane.addCard(Integer.toString(301) + i);
 					card10.setLabel("Title of " + (301 + i)); //$NON-NLS-1$
-					card10.setStatusId(Integer.toString(10 + i));
+					card10.setColumnId(Integer.toString(10 + i));
 					card10.setFieldLabel(CardWrapper.CARD_REMAINING_EFFORT_FIELD_ID, "Remaining Effort");
 					card10.addFieldValue(CardWrapper.CARD_REMAINING_EFFORT_FIELD_ID, "5"); //$NON-NLS-1$
 					card10.setFieldLabel(CardWrapper.CARD_ASSIGNED_TO_FIELD_ID, "Assigned to");
@@ -312,7 +298,7 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 				case 1:
 					CardWrapper card01 = swimlane.addCard(Integer.toString(300) + i);
 					card01.setLabel("Title of " + (300 + i)); //$NON-NLS-1$
-					card01.setStatusId(Integer.toString(10 + i));
+					card01.setColumnId(Integer.toString(10 + i));
 					card01.setFieldLabel(CardWrapper.CARD_REMAINING_EFFORT_FIELD_ID, "Remaining Effort");
 					card01.addFieldValue(CardWrapper.CARD_REMAINING_EFFORT_FIELD_ID, "3"); //$NON-NLS-1$ 
 					card01.setFieldLabel(CardWrapper.CARD_ASSIGNED_TO_FIELD_ID, "Assigned to");

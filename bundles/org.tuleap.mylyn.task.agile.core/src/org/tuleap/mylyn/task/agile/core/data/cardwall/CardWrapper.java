@@ -54,7 +54,17 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 	/**
 	 * Suffix used to compute the mylyn id of the task atribute that represents the column id.
 	 */
-	public static final String SUFFIX_STATUS_ID = "status_id"; //$NON-NLS-1$
+	public static final String SUFFIX_COLUMN_ID = "column_id"; //$NON-NLS-1$
+
+	/**
+	 * Suffix used to compute the mylyn id of the task atribute that represents the status.
+	 */
+	public static final String SUFFIX_STATUS = "status"; //$NON-NLS-1$
+
+	/**
+	 * Suffix used to compute the mylyn id of the task atribute that represents the status.
+	 */
+	public static final String SUFFIX_ALLOWED_COLUMNS = "allowed_columns_ids"; //$NON-NLS-1$
 
 	/**
 	 * The parent card wall.
@@ -101,20 +111,38 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 	}
 
 	/**
-	 * Computes the unique id of the Assigned status id attribute.
+	 * Computes the unique id of the Assigned column id attribute.
 	 * 
-	 * @return The unique id of the Assigned status id attribute.
+	 * @return The unique id of the Assigned column id attribute.
 	 */
-	private String getStatusIdAttributeId() {
-		return root.getId() + ID_SEPARATOR + SUFFIX_STATUS_ID;
+	private String getColumnIdAttributeId() {
+		return root.getId() + ID_SEPARATOR + SUFFIX_COLUMN_ID;
 	}
 
 	/**
-	 * Computes the unique id of the Assigned status id attribute.
+	 * Computes the unique id of the Assigned status attribute.
+	 * 
+	 * @return The unique id of the Assigned status attribute.
+	 */
+	private String getStatusAttributeId() {
+		return root.getId() + ID_SEPARATOR + SUFFIX_STATUS;
+	}
+
+	/**
+	 * Computes the unique id of the Assigned status attribute.
+	 * 
+	 * @return The unique id of the Assigned status attribute.
+	 */
+	private String getAllowedColumnAttributeId() {
+		return root.getId() + ID_SEPARATOR + SUFFIX_ALLOWED_COLUMNS;
+	}
+
+	/**
+	 * Computes the unique id of the Assigned column id attribute.
 	 * 
 	 * @param id
 	 *            The id of the field.
-	 * @return The unique id of the Assigned status id attribute.
+	 * @return The unique id of the Assigned column id attribute.
 	 */
 	private String getFieldAttributeId(String id) {
 		return getFieldAttributePrefix() + id;
@@ -192,14 +220,49 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 	}
 
 	/**
+	 * Status getter.
+	 * 
+	 * @return The status of the card, or null if it is not set, which should not happen in an ideal world.
+	 */
+	public String getStatus() {
+		String result = null;
+		TaskAttribute attribute = root.getMappedAttribute(getStatusAttributeId());
+		if (attribute != null) {
+			result = attribute.getValue();
+		}
+		return result;
+	}
+
+	/**
+	 * Status setter.
+	 * 
+	 * @param status
+	 *            The status.
+	 */
+	public void setStatus(String status) {
+		TaskAttribute attribute = root.getMappedAttribute(getStatusAttributeId());
+		String oldValue = null;
+		if (attribute == null) {
+			attribute = root.createAttribute(getStatusAttributeId());
+			attribute.getMetaData().setType(TaskAttribute.TYPE_SHORT_RICH_TEXT);
+		} else {
+			oldValue = attribute.getValue();
+		}
+		if (oldValue == null || !oldValue.equals(status)) {
+			attribute.setValue(status);
+			fireAttributeChanged(attribute);
+		}
+	}
+
+	/**
 	 * Assigned milestone id getter.
 	 * 
-	 * @return The id of the status to which this card is assigned, or null if it is not assigned, which
+	 * @return The id of the column to which this card is assigned, or null if it is not assigned, which
 	 *         should not happen in an ideal world.
 	 */
-	public String getStatusId() {
+	public String getColumnId() {
 		String result = null;
-		TaskAttribute attribute = root.getMappedAttribute(getStatusIdAttributeId());
+		TaskAttribute attribute = root.getMappedAttribute(getColumnIdAttributeId());
 		if (attribute != null) {
 			result = attribute.getValue();
 		}
@@ -212,11 +275,11 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 	 * @param columnId
 	 *            The assigned milestone id.
 	 */
-	public void setStatusId(String columnId) {
-		TaskAttribute attribute = root.getMappedAttribute(getStatusIdAttributeId());
+	public void setColumnId(String columnId) {
+		TaskAttribute attribute = root.getMappedAttribute(getColumnIdAttributeId());
 		String oldValue = null;
 		if (attribute == null) {
-			attribute = root.createAttribute(getStatusIdAttributeId());
+			attribute = root.createAttribute(getColumnIdAttributeId());
 			attribute.getMetaData().setType(TaskAttribute.TYPE_INTEGER);
 		} else {
 			oldValue = attribute.getValue();
@@ -225,6 +288,37 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 			attribute.setValue(columnId);
 			fireAttributeChanged(attribute);
 		}
+	}
+
+	/**
+	 * Get the values of the allowed column ids.
+	 * 
+	 * @return The list of allowed colum identifiers
+	 */
+	public List<String> getAllowedColumnIds() {
+		TaskAttribute attribute = root.getMappedAttribute(getAllowedColumnAttributeId());
+		if (attribute != null) {
+			return attribute.getValues();
+		}
+		return Collections.emptyList();
+	}
+
+	/**
+	 * Add an allowed column id, after creating the relevant {@link TaskAttribute} if necessary.
+	 * 
+	 * @param columnId
+	 *            The column id to add.
+	 */
+	public void addAllowedColumn(String columnId) {
+		if (columnId == null) {
+			return;
+		}
+		TaskAttribute attribute = root.getMappedAttribute(getAllowedColumnAttributeId());
+		if (attribute == null) {
+			attribute = root.createMappedAttribute(getAllowedColumnAttributeId());
+		}
+		attribute.addValue(columnId);
+		fireAttributeChanged(attribute);
 	}
 
 	/**
@@ -324,6 +418,17 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 	 */
 	public void clearFieldValues(String id) {
 		TaskAttribute attribute = root.getMappedAttribute(getFieldAttributeId(id));
+		if (attribute != null) {
+			attribute.clearValues();
+			fireAttributeChanged(attribute);
+		}
+	}
+
+	/**
+	 * Clears the allowed column ids of a card.
+	 */
+	public void clearAllowedColumnIds() {
+		TaskAttribute attribute = root.getMappedAttribute(getAllowedColumnAttributeId());
 		if (attribute != null) {
 			attribute.clearValues();
 			fireAttributeChanged(attribute);

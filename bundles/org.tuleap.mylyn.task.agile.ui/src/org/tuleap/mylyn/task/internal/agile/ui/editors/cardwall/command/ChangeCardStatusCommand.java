@@ -72,7 +72,7 @@ public class ChangeCardStatusCommand extends Command {
 		targetColumn = cell.getColumn().getWrapper();
 
 		movedCard = (CardWrapper)moved.getModel();
-		oldStatusId = movedCard.getStatusId();
+		oldStatusId = movedCard.getColumnId();
 	}
 
 	/**
@@ -82,7 +82,7 @@ public class ChangeCardStatusCommand extends Command {
 	 */
 	@Override
 	public void execute() {
-		movedCard.setStatusId(targetColumn.getId());
+		movedCard.setColumnId(targetColumn.getId());
 		EditPart parent = targetCell.getParent();
 		for (Object child : parent.getChildren()) {
 			((EditPart)child).refresh();
@@ -96,7 +96,7 @@ public class ChangeCardStatusCommand extends Command {
 	 */
 	@Override
 	public void undo() {
-		movedCard.setStatusId(oldStatusId);
+		movedCard.setColumnId(oldStatusId);
 		EditPart parent = targetCell.getParent();
 		for (Object child : parent.getChildren()) {
 			((EditPart)child).refresh();

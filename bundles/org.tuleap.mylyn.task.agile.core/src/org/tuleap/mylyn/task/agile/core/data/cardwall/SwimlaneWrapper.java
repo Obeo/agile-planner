@@ -32,19 +32,9 @@ public class SwimlaneWrapper extends AbstractTaskAttributeWrapper {
 	public static final String SUFFIX_CARD_LIST = "cards"; //$NON-NLS-1$
 
 	/**
-	 * Suffix used for computing the swimlane item task attribute id.
-	 */
-	public static final String SUFFIX_SWIMLANE_ITEM = "item"; //$NON-NLS-1$
-
-	/**
 	 * The parent card wall.
 	 */
 	private final CardwallWrapper parent;
-
-	/**
-	 * The backlog item of this swimlane.
-	 */
-	private final SwimlaneItemWrapper swimlaneItem;
 
 	/**
 	 * The {@link TaskAttribute} that represents the list of cards in this swimlane.
@@ -64,8 +54,6 @@ public class SwimlaneWrapper extends AbstractTaskAttributeWrapper {
 		Assert.isNotNull(parent);
 		this.parent = parent;
 		this.cardList = root.getMappedAttribute(getAttributeId(root, SUFFIX_CARD_LIST));
-		TaskAttribute swimlaneItemAtt = root.getAttribute(getAttributeId(root, SUFFIX_SWIMLANE_ITEM));
-		swimlaneItem = new SwimlaneItemWrapper(this, swimlaneItemAtt);
 	}
 
 	/**
@@ -76,26 +64,13 @@ public class SwimlaneWrapper extends AbstractTaskAttributeWrapper {
 	 * @param root
 	 *            The {@link TaskAttribute} that represents the swimlane list.
 	 * @param id
-	 *            The id of the swimlane's backlog item.
+	 *            The id of the swimlane.
 	 */
 	protected SwimlaneWrapper(CardwallWrapper parent, TaskAttribute root, String id) {
-		super(root);
+		super(root, id);
 		Assert.isNotNull(parent);
 		this.parent = parent;
 		cardList = root.createMappedAttribute(getAttributeId(root, SUFFIX_CARD_LIST));
-		TaskAttribute swimlaneItemAtt = root
-				.createMappedAttribute(getAttributeId(root, SUFFIX_SWIMLANE_ITEM));
-		swimlaneItem = new SwimlaneItemWrapper(this, swimlaneItemAtt, id);
-	}
-
-	/**
-	 * Creates a new task attribute to represent a BacklogItem and returns a wrapper for this new
-	 * TaskAttribute. The created TaskAttribute is inserted in the given parent, that must be non-null.
-	 * 
-	 * @return A wrapper for a newly created TaskAttribute representing a BacklogItem in the given parent.
-	 */
-	public SwimlaneItemWrapper getSwimlaneItem() {
-		return swimlaneItem;
 	}
 
 	/**
