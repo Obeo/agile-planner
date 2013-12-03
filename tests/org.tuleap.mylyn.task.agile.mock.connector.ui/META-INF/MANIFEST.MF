@@ -13,11 +13,13 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.forms,
  org.tuleap.mylyn.task.agile.ui;bundle-version="1.0.0",
  org.tuleap.mylyn.task.agile.core;bundle-version="1.0.0",
- org.eclipse.mylyn.commons.workbench
+ org.eclipse.mylyn.commons.workbench,
+ org.eclipse.mylyn.commons.ui
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Bundle-Localization: plugin
 Export-Package: org.tuleap.mylyn.task.internal.agile.mock.connector.ui;x-internal:=true,
+ org.tuleap.mylyn.task.internal.agile.mock.connector.ui.editors;x-internal:=true,
  org.tuleap.mylyn.task.internal.agile.mock.connector.ui.util;x-internal:=true,
  org.tuleap.mylyn.task.internal.agile.mock.connector.ui.wizards;x-internal:=true
 Service-Component: OSGI-INF/component.xml

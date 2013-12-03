@@ -13,5 +13,12 @@
             name="%MylynMockConnectorUi.Name">
       </connectorUi>
    </extension>
+   <extension
+         point="org.eclipse.mylyn.tasks.ui.editors">
+      <pageFactory
+            class="org.tuleap.mylyn.task.internal.agile.mock.connector.ui.editors.MylynMockTaskEditorPageFactory"
+            id="org.tuleap.mylyn.task.agile.mock.connector.ui.pageFactory">
+      </pageFactory>
+   </extension>
 
 </plugin>
