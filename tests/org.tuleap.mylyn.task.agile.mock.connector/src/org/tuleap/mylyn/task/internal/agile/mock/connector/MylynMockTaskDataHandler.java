@@ -23,7 +23,6 @@ import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.core.data.TaskAttributeMapper;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.tuleap.mylyn.task.agile.core.IMilestoneMapping;
-import org.tuleap.mylyn.task.agile.core.data.AgileTaskKindUtil;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.CardWrapper;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.CardwallWrapper;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.SwimlaneWrapper;
@@ -105,11 +104,9 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 
 		TaskAttribute kindAttribute = root.createAttribute(TaskAttribute.TASK_KIND);
 		kindAttribute.getMetaData().setType(TaskAttribute.TYPE_SHORT_TEXT);
-		kindAttribute.setValue(AgileTaskKindUtil.TASK_KIND_TOP_PLANNING);
 
 		kindAttribute = root.createAttribute("mta_kind"); // TODO use constant
 		kindAttribute.getMetaData().setType(TaskAttribute.TYPE_SHORT_TEXT);
-		kindAttribute.setValue(AgileTaskKindUtil.TASK_KIND_TOP_PLANNING);
 
 		TaskAttribute urlAttribute = root.createAttribute(TaskAttribute.TASK_URL);
 		urlAttribute.getMetaData().setType(TaskAttribute.TYPE_URL);
