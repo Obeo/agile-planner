@@ -158,6 +158,68 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 		ToolBarManager toolBarManager = new ToolBarManager(SWT.FLAT);
 		ToolBar toolbar = toolBarManager.createControl(milestoneList);
 
+		addNewMilestoneAction(toolBarManager);
+		addCollapseAllAction(milestoneListComp, toolBarManager);
+		addExpandAllAction(milestoneListComp, toolBarManager);
+
+		toolBarManager.update(true);
+		milestoneList.setTextClient(toolbar);
+	}
+
+	/**
+	 * Add the expand all action.
+	 * 
+	 * @param milestoneList
+	 *            Milestones
+	 * @param toolBarManager
+	 *            Manager
+	 */
+	private void addExpandAllAction(final Composite milestoneList, ToolBarManager toolBarManager) {
+		Action expandAll = new Action(MylynAgileUIMessages.getString("PlanningTaskEditorPart.ExpandAll"), //$NON-NLS-1$
+				MylynAgileUIActivator.getImageDescriptor(IMylynAgileIcons.EXPAND_ALL)) {
+
+			@Override
+			public void run() {
+				for (Control control : milestoneList.getChildren()) {
+					if (control instanceof Section) {
+						((ExpandableComposite)control).setExpanded(true);
+					}
+				}
+			}
+		};
+		toolBarManager.add(expandAll);
+	}
+
+	/**
+	 * Add the collapse all action.
+	 * 
+	 * @param milestoneList
+	 *            Milestones
+	 * @param toolBarManager
+	 *            Manager
+	 */
+	private void addCollapseAllAction(final Composite milestoneList, ToolBarManager toolBarManager) {
+		Action collapseAll = new Action(MylynAgileUIMessages.getString("PlanningTaskEditorPart.CollapseAll"), //$NON-NLS-1$
+				MylynAgileUIActivator.getImageDescriptor(IMylynAgileIcons.COLLAPSE_ALL)) {
+			@Override
+			public void run() {
+				for (Control control : milestoneList.getChildren()) {
+					if (control instanceof Section) {
+						((ExpandableComposite)control).setExpanded(false);
+					}
+				}
+			}
+		};
+		toolBarManager.add(collapseAll);
+	}
+
+	/**
+	 * Add the new milestone action.
+	 * 
+	 * @param toolBarManager
+	 *            The manager.
+	 */
+	private void addNewMilestoneAction(ToolBarManager toolBarManager) {
 		Action newMilestone = new Action(MylynAgileUIMessages
 				.getString("PlanningTaskEditorPart.NewMilestone"), MylynAgileUIActivator //$NON-NLS-1$
 				.getImageDescriptor(IMylynAgileIcons.NEW_MILESTONE_16X16)) {
@@ -180,39 +242,7 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 				}
 			}
 		};
-
-		// The collapse all action
-		Action collapseAll = new Action(MylynAgileUIMessages.getString("PlanningTaskEditorPart.CollapseAll"), //$NON-NLS-1$
-				MylynAgileUIActivator.getImageDescriptor(IMylynAgileIcons.COLLAPSE_ALL)) {
-			@Override
-			public void run() {
-				for (Control control : milestoneListComp.getChildren()) {
-					if (control instanceof Section) {
-						((ExpandableComposite)control).setExpanded(false);
-					}
-				}
-			}
-		};
-
-		// The expand all action
-		Action expandAll = new Action(MylynAgileUIMessages.getString("PlanningTaskEditorPart.ExpandAll"), //$NON-NLS-1$
-				MylynAgileUIActivator.getImageDescriptor(IMylynAgileIcons.EXPAND_ALL)) {
-
-			@Override
-			public void run() {
-				for (Control control : milestoneListComp.getChildren()) {
-					if (control instanceof Section) {
-						((ExpandableComposite)control).setExpanded(true);
-					}
-				}
-			}
-		};
-
 		toolBarManager.add(newMilestone);
-		toolBarManager.add(collapseAll);
-		toolBarManager.add(expandAll);
-		toolBarManager.update(true);
-		milestoneList.setTextClient(toolbar);
 	}
 
 	/**
