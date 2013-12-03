@@ -13,12 +13,30 @@ package org.tuleap.mylyn.task.internal.agile.ui.editors.planning;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.draw2d.ColorConstants;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.ToolBarManager;
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.eclipse.mylyn.tasks.ui.TasksUi;
+import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.graphics.Cursor;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.widgets.Section;
 import org.tuleap.mylyn.task.agile.core.data.planning.BacklogItemWrapper;
 import org.tuleap.mylyn.task.agile.core.data.planning.SubMilestoneWrapper;
@@ -42,6 +60,11 @@ public class MilestoneSectionViewer extends Viewer {
 	private SubMilestoneBacklogModel fInput;
 
 	/**
+	 * The fakse action used to display the status value label.
+	 */
+	private Label statusLabel;
+
+	/**
 	 * Constructor receiving an existing section.
 	 * 
 	 * @param section
@@ -50,6 +73,48 @@ public class MilestoneSectionViewer extends Viewer {
 	public MilestoneSectionViewer(final Section section) {
 		Assert.isNotNull(section);
 		fSection = section;
+		Composite c = new Composite(fSection, SWT.NONE);
+		GridLayout gl = new GridLayout(2, false);
+		gl.marginHeight = 0;
+		c.setLayout(gl);
+		statusLabel = new Label(c, SWT.NONE);
+		GridDataFactory.swtDefaults().applyTo(statusLabel);
+		ToolBarManager toolBarManager = new ToolBarManager(SWT.FLAT);
+		ToolBar toolbar = toolBarManager.createControl(c);
+		final Cursor handCursor = new Cursor(Display.getCurrent(), SWT.CURSOR_HAND);
+		toolbar.setCursor(handCursor);
+
+		// Cursor needs to be explicitly disposed
+		toolbar.addDisposeListener(new DisposeListener() {
+			@Override
+			public void widgetDisposed(DisposeEvent e) {
+				handCursor.dispose();
+			}
+		});
+
+		Action editMilestoneAction = new Action(MylynAgileUIMessages
+				.getString("PlanningTaskEditorPart.EditMilestoneActionLabel"), PlatformUI.getWorkbench() //$NON-NLS-1$
+				.getSharedImages().getImageDescriptor(ISharedImages.IMG_OBJ_FILE)) {
+			@Override
+			public void run() {
+				TaskRepository repository = null;
+				String repositoryUrl = fInput.getMilestonePlanning().getWrappedAttribute().getTaskData()
+						.getRepositoryUrl();
+				List<TaskRepository> allRepositories = TasksUi.getRepositoryManager().getAllRepositories();
+				for (TaskRepository taskRepository : allRepositories) {
+					if (repositoryUrl.equals(taskRepository.getRepositoryUrl())) {
+						repository = taskRepository;
+					}
+				}
+				if (repository != null) {
+					TasksUiUtil.openTask(repository, fInput.getSubMilestone().getId());
+				}
+			}
+		};
+		toolBarManager.add(editMilestoneAction);
+		toolBarManager.update(true);
+
+		fSection.setTextClient(c);
 	}
 
 	/**
@@ -81,8 +146,7 @@ public class MilestoneSectionViewer extends Viewer {
 	public void setInput(Object input) {
 		Assert.isNotNull(input);
 		Assert.isTrue(input instanceof SubMilestoneBacklogModel);
-		SubMilestoneBacklogModel model = (SubMilestoneBacklogModel)input;
-		this.fInput = model;
+		this.fInput = (SubMilestoneBacklogModel)input;
 	}
 
 	/**
@@ -93,6 +157,12 @@ public class MilestoneSectionViewer extends Viewer {
 	@Override
 	public void refresh() {
 		fSection.setText(getMilestoneSectionHeaderText());
+		String statusValue = fInput.getSubMilestone().getStatusValue();
+		if (statusValue != null) {
+			statusLabel.setText("[" + statusValue + "]"); //$NON-NLS-1$//$NON-NLS-2$
+		} else {
+			statusLabel.setText("[unknown]"); //$NON-NLS-1$
+		}
 		float requiredCapacity = getMilestoneSectionRequiredCapacity();
 		Float capacity = getMilestoneSectionCapacity();
 		if (capacity == null) {
