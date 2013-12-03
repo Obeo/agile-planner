@@ -42,14 +42,20 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 	public static final String PREFIX_MILESTONE = "mta_ms-"; //$NON-NLS-1$
 
 	/**
-	 * The value used to indicate that a task data represents a milestone duration.
+	 * The suffix used to indicate that a task attribute represents a milestone duration.
 	 */
 	public static final String SUFFIX_END_DATE = "end_date"; //$NON-NLS-1$
 
 	/**
-	 * The value used to indicate that a task data represents a planned start date.
+	 * The suffix used to indicate that a task attribute represents a planned start date.
 	 */
 	public static final String SUFFIX_START_DATE = "start_date"; //$NON-NLS-1$
+
+	/**
+	 * The suffix used to indicate that a task attribute represents a sub-milestone status value (which is a
+	 * free label without specific semantics attached).
+	 */
+	public static final String SUFFIX_STATUS_VALUE = "status_value"; //$NON-NLS-1$
 
 	/**
 	 * The parent planning.
@@ -109,6 +115,15 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 	 */
 	private String getStartDateAttributeId() {
 		return root.getId() + ID_SEPARATOR + SUFFIX_START_DATE;
+	}
+
+	/**
+	 * Computes the unique id of the status value attribute.
+	 * 
+	 * @return The unique id of the status value attribute.
+	 */
+	private String getStatusValueAttributeId() {
+		return root.getId() + ID_SEPARATOR + SUFFIX_STATUS_VALUE;
 	}
 
 	/**
@@ -245,6 +260,43 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 			}
 		}
 		return result;
+	}
+
+	/**
+	 * Capacity getter.
+	 * 
+	 * @return The milestone's capacity, or {@code null} if not defined.
+	 */
+	public String getStatusValue() {
+		String result = null;
+		TaskAttribute attribute = root.getMappedAttribute(getStatusValueAttributeId());
+		if (attribute != null) {
+			result = attribute.getValue();
+		}
+		return result;
+	}
+
+	/**
+	 * Status value setter.
+	 * 
+	 * @param statusValue
+	 *            The milestone's status value (i.e. label).
+	 */
+	public void setStatusValue(String statusValue) {
+		TaskAttribute attribute = root.getMappedAttribute(getStatusValueAttributeId());
+		String oldValue = null;
+		if (attribute == null) {
+			attribute = root.createMappedAttribute(getStatusValueAttributeId());
+			attribute.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
+			attribute.getMetaData().setType(TaskAttribute.TYPE_SHORT_RICH_TEXT);
+			attribute.getMetaData().setReadOnly(true);
+		} else {
+			oldValue = attribute.getValue();
+		}
+		if (oldValue == null || !oldValue.equals(statusValue)) {
+			attribute.setValue(statusValue);
+			fireAttributeChanged(attribute);
+		}
 	}
 
 	/**

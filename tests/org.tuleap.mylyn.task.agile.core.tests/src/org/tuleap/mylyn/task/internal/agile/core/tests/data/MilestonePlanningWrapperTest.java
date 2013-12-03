@@ -60,6 +60,7 @@ public class MilestonePlanningWrapperTest {
 		subMilestone.setStartDate(testDate);
 		Date endDate = new Date(testDate.getTime() + 1000 * 60 * 60 * 24 * 11);
 		subMilestone.setEndDate(endDate);
+		subMilestone.setStatusValue("current");
 
 		TaskAttribute root = taskData.getRoot();
 		TaskAttribute planningAtt = root.getAttribute(MilestonePlanningWrapper.MILESTONE_PLANNING);
@@ -93,6 +94,11 @@ public class MilestonePlanningWrapperTest {
 				+ SubMilestoneWrapper.SUFFIX_END_DATE);
 		assertEquals(Long.toString(endDate.getTime()), end.getValue());
 		assertEquals(TaskAttribute.TYPE_DATETIME, end.getMetaData().getType());
+
+		TaskAttribute status = milestone0.getAttribute(milestone0.getId() + '-'
+				+ SubMilestoneWrapper.SUFFIX_STATUS_VALUE);
+		assertEquals("current", status.getValue());
+		assertEquals(TaskAttribute.TYPE_SHORT_RICH_TEXT, status.getMetaData().getType());
 
 		String label1 = "label of backlog item 300"; //$NON-NLS-1$
 
