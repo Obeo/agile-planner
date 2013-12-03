@@ -39,7 +39,8 @@ public class TopPlanningMapper extends AbstractTaskMapper {
 		TaskAttribute attribute = getWriteableAttribute(TaskAttribute.TASK_KEY, TaskAttribute.TYPE_SHORT_TEXT);
 		attribute.getMetaData().setReadOnly(true);
 
-		attribute = getWriteableAttribute(TaskAttribute.TASK_KIND, TaskAttribute.TYPE_SHORT_TEXT);
+		// TASK_KIND is a SINGLE_SELECT anyway
+		attribute = getWriteableAttribute(TaskAttribute.TASK_KIND, TaskAttribute.TYPE_SINGLE_SELECT);
 		attribute.getMetaData().setReadOnly(true);
 		attribute.setValue(MylynAgileCoreMessages.getString("TopPlanningMapper.GeneralPlanningOf")); //$NON-NLS-1$
 
