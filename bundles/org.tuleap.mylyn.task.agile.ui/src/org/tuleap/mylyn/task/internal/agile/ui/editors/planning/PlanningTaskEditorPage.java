@@ -14,10 +14,16 @@ import com.google.common.collect.Sets;
 
 import java.util.Set;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.mylyn.tasks.core.data.TaskDataModel;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPage;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditor;
+import org.eclipse.mylyn.tasks.ui.editors.TaskEditorInput;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditorPartDescriptor;
+import org.tuleap.mylyn.task.agile.ui.AbstractAgileRepositoryConnectorUI;
+import org.tuleap.mylyn.task.internal.agile.ui.AgileRepositoryConnectorUiServiceTrackerCustomizer;
+import org.tuleap.mylyn.task.internal.agile.ui.MylynAgileUIActivator;
 
 /**
  * The Page for the PlanningTaskEditor. This page parameterizes the editor to display only the relevant tabs
@@ -71,5 +77,50 @@ public class PlanningTaskEditorPage extends AbstractTaskEditorPage {
 		if (createActionsInToolbar) {
 			super.fillToolBar(toolBarManager);
 		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPage#createModel(org.eclipse.mylyn.tasks.ui.editors.TaskEditorInput)
+	 */
+	@Override
+	protected TaskDataModel createModel(TaskEditorInput input) throws CoreException {
+		String connectorKind = input.getTaskRepository().getConnectorKind();
+		AgileRepositoryConnectorUiServiceTrackerCustomizer serviceTrackerCustomizer = MylynAgileUIActivator
+				.getDefault().getServiceTrackerCustomizer();
+		AbstractAgileRepositoryConnectorUI connector = serviceTrackerCustomizer.getConnector(connectorKind);
+		TaskDataModel taskDataModel;
+		if (connector != null) {
+			taskDataModel = connector.getModelRegistry().getRegisteredModel(getEditor());
+			if (taskDataModel == null) {
+				taskDataModel = super.createModel(input);
+				connector.getModelRegistry().registerModel(getEditor(), taskDataModel);
+			}
+		} else {
+			taskDataModel = super.createModel(input);
+		}
+		return taskDataModel;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPage#dispose()
+	 */
+	@Override
+	public void dispose() {
+		TaskDataModel taskDataModel = getModel();
+		if (taskDataModel != null) {
+			String connectorKind = taskDataModel.getTaskRepository().getConnectorKind();
+			AgileRepositoryConnectorUiServiceTrackerCustomizer serviceTrackerCustomizer = MylynAgileUIActivator
+					.getDefault().getServiceTrackerCustomizer();
+			AbstractAgileRepositoryConnectorUI connector = serviceTrackerCustomizer
+					.getConnector(connectorKind);
+			if (connector != null) {
+				connector.getModelRegistry().deregisterModel(getEditor());
+			}
+		}
+		super.dispose();
 	}
 }

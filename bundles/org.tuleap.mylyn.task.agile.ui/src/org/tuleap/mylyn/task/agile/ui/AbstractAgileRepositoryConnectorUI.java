@@ -15,6 +15,8 @@ import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.tuleap.mylyn.task.agile.core.IMilestoneMapping;
+import org.tuleap.mylyn.task.agile.ui.task.IModelRegistry;
+import org.tuleap.mylyn.task.internal.agile.ui.task.ModelRegistry;
 
 /**
  * UI Connector to an Agile repository.
@@ -23,6 +25,11 @@ import org.tuleap.mylyn.task.agile.core.IMilestoneMapping;
  * @since 1.0
  */
 public abstract class AbstractAgileRepositoryConnectorUI {
+
+	/**
+	 * The model register.
+	 */
+	private IModelRegistry modelRegistry;
 
 	/**
 	 * Provides the type of connector supported by this connector.
@@ -107,5 +114,17 @@ public abstract class AbstractAgileRepositoryConnectorUI {
 	 * @return <code>true</code> if and only if a cardwall tab should be displayed in this task editor.
 	 */
 	public abstract boolean mustCreateToolbarActions(ITask task, TaskRepository repository);
+
+	/**
+	 * Provides the model register that keeps track of shared models.
+	 * 
+	 * @return The model register
+	 */
+	public IModelRegistry getModelRegistry() {
+		if (modelRegistry == null) {
+			modelRegistry = new ModelRegistry();
+		}
+		return modelRegistry;
+	}
 
 }
