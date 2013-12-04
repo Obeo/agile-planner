@@ -81,6 +81,11 @@ public class BacklogItemWrapper extends AbstractTaskAttributeWrapper {
 	public static final String MILESTONE_BACKLOG_ITEMS_KIND = "mta_ms_bi_kind"; //$NON-NLS-1$
 
 	/**
+	 * Suffix appended to the ids of Task Attributes representing types.
+	 */
+	public static final String SUFFIX_TYPE = "type"; //$NON-NLS-1$
+
+	/**
 	 * The parent planning.
 	 */
 	private final MilestonePlanningWrapper parent;
@@ -315,5 +320,52 @@ public class BacklogItemWrapper extends AbstractTaskAttributeWrapper {
 			result = attribute.getValue();
 		}
 		return result;
+	}
+
+	/**
+	 * type getter.
+	 * 
+	 * @return The item's type, or {@code null} if not defined.
+	 */
+	public String getType() {
+		String result = null;
+		TaskAttribute attribute = root.getMappedAttribute(getTypeAttributeId());
+		if (attribute != null) {
+			result = attribute.getValue();
+		}
+		return result;
+	}
+
+	/**
+	 * Type setter.
+	 * 
+	 * @param type
+	 *            The item's type. If it is null, nothing happens and the former type, if present, remains
+	 *            unchanged.
+	 */
+	public void setType(String type) {
+		if (type == null) {
+			return;
+		}
+		TaskAttribute attribute = root.getMappedAttribute(getTypeAttributeId());
+		if (attribute == null) {
+			attribute = root.createMappedAttribute(getTypeAttributeId());
+			attribute.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
+			attribute.getMetaData().setType(TaskAttribute.TYPE_SHORT_RICH_TEXT);
+		}
+		String oldValue = attribute.getValue();
+		if (!type.equals(oldValue)) {
+			attribute.setValue(type);
+			fireAttributeChanged(attribute);
+		}
+	}
+
+	/**
+	 * Computes the unique id of the type attribute.
+	 * 
+	 * @return The unique id of the type attribute.
+	 */
+	private String getTypeAttributeId() {
+		return getAttributeId(root, SUFFIX_TYPE);
 	}
 }

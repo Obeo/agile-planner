@@ -41,6 +41,11 @@ public interface IMylynAgileUIConstants {
 	int DEFAULT_ID_COL_WIDTH = 40;
 
 	/**
+	 * Default width of column "Type".
+	 */
+	int DEFAULT_TYPE_COL_WIDTH = 80;
+
+	/**
 	 * Default width of column "Label".
 	 */
 	int DEFAULT_LABEL_COL_WIDTH = 250;

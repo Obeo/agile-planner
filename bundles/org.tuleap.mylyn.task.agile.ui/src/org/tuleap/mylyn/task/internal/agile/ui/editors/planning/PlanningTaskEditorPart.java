@@ -361,6 +361,25 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 		viewer.getTable().addMouseListener(this.getMouseListener(table));
 		viewer.getTable().addMouseMoveListener(this.getMouseMoveListener(table));
 
+		// Column type
+		TableViewerColumn colType = new TableViewerColumn(viewer, SWT.NONE);
+		colType.getColumn().setText("Type"); //$NON-NLS-1$
+		colType.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				String ret;
+				if (element == null) {
+					ret = strMissing;
+				} else if (element instanceof BacklogItemWrapper) {
+					ret = ((BacklogItemWrapper)element).getType();
+				} else {
+					ret = element.toString();
+				}
+				return ret;
+			}
+		});
+		colType.getColumn().setWidth(IMylynAgileUIConstants.DEFAULT_TYPE_COL_WIDTH);
+
 		// Column "label", whose label is dynamic ("User Story" if the BacklogItem represents a UserStory)
 		TableViewerColumn colLabel = new TableViewerColumn(viewer, SWT.NONE);
 		colLabel.getColumn().setText(backlogItemTypeName);
