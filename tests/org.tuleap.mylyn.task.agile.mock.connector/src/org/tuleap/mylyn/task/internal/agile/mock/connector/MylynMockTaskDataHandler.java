@@ -50,7 +50,7 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 	/**
 	 * Capacity.
 	 */
-	private static final float CAPACITY = 20F;
+	private static final String CAPACITY = "20";
 
 	/**
 	 * Duration.
@@ -146,7 +146,7 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 		// Second Sprint
 		startDate = new Date(startDate.getTime() - 2 * MILLISECOND_IN_WEEK);
 		endDate = new Date(startDate.getTime() + (long)(DURATION * MILLISECOND_IN_DAY));
-		this.createSprint(wrapper, milestoneId, "Sprint 2", CAPACITY - 2, startDate, endDate); //$NON-NLS-1$ 
+		this.createSprint(wrapper, milestoneId, "Sprint 2", "18", startDate, endDate); //$NON-NLS-1$ 
 
 		addNewBacklogItem(wrapper, milestoneId);
 		addNewBacklogItem(wrapper, milestoneId);
@@ -343,7 +343,7 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 	 * @param endDate
 	 *            The sprint's end date
 	 */
-	private void createSprint(MilestonePlanningWrapper wrapper, String id, String name, float capacity,
+	private void createSprint(MilestonePlanningWrapper wrapper, String id, String name, String capacity,
 			Date startDate, Date endDate) {
 		SubMilestoneWrapper subMilestone = wrapper.addSubMilestone(id);
 		subMilestone.setLabel(name);
@@ -361,7 +361,7 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 	 */
 	private BacklogItemWrapper addNewBacklogItem(MilestonePlanningWrapper wrapper) {
 		BacklogItemWrapper bi = wrapper.addBacklogItem(Integer.toString(backlogItemIndex));
-		bi.setInitialEffort(4F);
+		bi.setInitialEffort("4");
 		bi.setLabel("User Story " + backlogItemIndex); //$NON-NLS-1$
 		bi.setParent("3:809#" + (backlogItemIndex + 1), Integer.toString(backlogItemIndex + 1)); //$NON-NLS-1$
 		backlogItemIndex++;

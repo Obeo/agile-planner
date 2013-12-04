@@ -131,11 +131,11 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 	 * 
 	 * @return The milestone's capacity, or {@code null} if not defined.
 	 */
-	public Float getCapacity() {
-		Float result = null;
+	public String getCapacity() {
+		String result = null;
 		TaskAttribute attribute = root.getMappedAttribute(getCapacityAttributeId());
 		if (attribute != null) {
-			result = Float.valueOf(attribute.getValue());
+			result = attribute.getValue();
 		}
 		return result;
 	}
@@ -146,18 +146,21 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 	 * @param capacity
 	 *            The milestone's capacity.
 	 */
-	public void setCapacity(float capacity) {
+	public void setCapacity(String capacity) {
+		if (capacity == null) {
+			return;
+		}
 		TaskAttribute attribute = root.getMappedAttribute(getCapacityAttributeId());
 		String oldValue = null;
 		if (attribute == null) {
 			attribute = root.createMappedAttribute(getCapacityAttributeId());
 			attribute.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
-			attribute.getMetaData().setType(TaskAttribute.TYPE_DOUBLE);
+			attribute.getMetaData().setType(TaskAttribute.TYPE_SHORT_TEXT);
 		} else {
 			oldValue = attribute.getValue();
 		}
-		if (oldValue == null || Float.parseFloat(oldValue) != capacity) {
-			attribute.setValue(Float.toString(capacity));
+		if (oldValue == null || !oldValue.equals(capacity)) {
+			attribute.setValue(capacity);
 			fireAttributeChanged(attribute);
 		}
 	}

@@ -208,9 +208,13 @@ public class MilestoneSectionViewer extends Viewer {
 	private float getMilestoneSectionRequiredCapacity() {
 		float sumOfPoints = 0.0F;
 		for (BacklogItemWrapper bi : fInput.getBacklogItems()) {
-			Float effort = bi.getInitialEffort();
+			String effort = bi.getInitialEffort();
 			if (effort != null) {
-				sumOfPoints += effort.floatValue();
+				try {
+					sumOfPoints += Float.parseFloat(effort);
+				} catch (NumberFormatException e) {
+					// Nothing to do, discard silently
+				}
 			}
 		}
 		return sumOfPoints;
@@ -224,7 +228,13 @@ public class MilestoneSectionViewer extends Viewer {
 	 *         TaskAttribute, or -1 if the capacity is not present
 	 */
 	private Float getMilestoneSectionCapacity() {
-		return fInput.getSubMilestone().getCapacity();
+		Float result = null;
+		try {
+			result = Float.valueOf(fInput.getSubMilestone().getCapacity());
+		} catch (NumberFormatException e) {
+			// Nothing to do, discard silently
+		}
+		return result;
 	}
 
 	/**
