@@ -286,6 +286,9 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 	 *            The milestone's status value (i.e. label).
 	 */
 	public void setStatusValue(String statusValue) {
+		if (statusValue == null) {
+			return;
+		}
 		TaskAttribute attribute = root.getMappedAttribute(getStatusValueAttributeId());
 		String oldValue = null;
 		if (attribute == null) {
