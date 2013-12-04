@@ -16,6 +16,7 @@ import org.eclipse.mylyn.tasks.ui.editors.TaskEditor;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditorInput;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.forms.editor.IFormPage;
+import org.tuleap.mylyn.task.agile.mock.connector.util.IMylynMockConnectorConstants;
 import org.tuleap.mylyn.task.internal.agile.mock.connector.ui.util.MylynMockConnectorUIMessages;
 
 /**
@@ -32,7 +33,7 @@ public class MylynMockTaskEditorPageFactory extends AbstractTaskEditorPageFactor
 	 */
 	@Override
 	public boolean canCreatePageFor(TaskEditorInput input) {
-		return true;
+		return IMylynMockConnectorConstants.CONNECTOR_KIND.equals(input.getTask().getConnectorKind());
 	}
 
 	/**
