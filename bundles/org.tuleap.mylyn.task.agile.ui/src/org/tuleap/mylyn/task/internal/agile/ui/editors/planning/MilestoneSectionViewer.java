@@ -230,7 +230,10 @@ public class MilestoneSectionViewer extends Viewer {
 	private Float getMilestoneSectionCapacity() {
 		Float result = null;
 		try {
-			result = Float.valueOf(fInput.getSubMilestone().getCapacity());
+			String cap = fInput.getSubMilestone().getCapacity();
+			if (cap != null) {
+				result = Float.valueOf(cap);
+			}
 		} catch (NumberFormatException e) {
 			// Nothing to do, discard silently
 		}
