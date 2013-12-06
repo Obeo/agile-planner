@@ -170,8 +170,7 @@ public class CardwallWrapperTest {
 		// Modification of the cards created previously
 		for (int i = 0; i < 4; i++) {
 			String id = Integer.toString(200 + i);
-			String cardPrefix = CardwallWrapper.SWIMLANE_LIST + "-0-" + SwimlaneWrapper.SUFFIX_CARD_LIST
-					+ '-' + id;
+			String cardPrefix = SwimlaneWrapper.PREFIX_SWIMLANE + "123" + '-' + id;
 			CardWrapper card = swimlane.getCard(id);
 
 			String labelKey = cardPrefix + '-' + SwimlaneWrapper.SUFFIX_LABEL;
@@ -181,14 +180,7 @@ public class CardwallWrapperTest {
 			card.setLabel("Other " + (200 + i)); // Should notify
 			assertEquals(2, listener.getInvocationsCount(labelKey).intValue());
 
-			String statusKey = cardPrefix + '-' + CardWrapper.SUFFIX_COLUMN_ID;
-			assertEquals(1, listener.getInvocationsCount(statusKey).intValue());
-			card.setColumnId(Integer.toString(10 + i));
-			assertEquals(1, listener.getInvocationsCount(statusKey).intValue());
-			card.setColumnId(Integer.toString(13 - i));
-			assertEquals(2, listener.getInvocationsCount(statusKey).intValue());
-
-			String fieldKey = cardPrefix + CardWrapper.FIELD_SEPARATOR + "100";
+			String fieldKey = cardPrefix + '-' + CardWrapper.FIELD_SEPARATOR + "100";
 			assertEquals(1, listener.getInvocationsCount(fieldKey).intValue());
 			card.setFieldValue("100", "Value 100" + i); // Should not notify
 			assertEquals(1, listener.getInvocationsCount(fieldKey).intValue());
@@ -249,12 +241,11 @@ public class CardwallWrapperTest {
 		// Modification of the cards created previously
 		for (int i = 0; i < 4; i++) {
 			String id = Integer.toString(200 + i);
-			String cardPrefix = CardwallWrapper.SWIMLANE_LIST + "-0-" + SwimlaneWrapper.SUFFIX_CARD_LIST
-					+ '-' + id;
+			String cardPrefix = SwimlaneWrapper.PREFIX_SWIMLANE + "123" + '-' + id;
 			CardWrapper card = swimlane.getCard(id);
 
 			assertEquals("Value 100" + i, card.getFieldValue("100"));
-			String fieldKey = cardPrefix + CardWrapper.FIELD_SEPARATOR + "100";
+			String fieldKey = cardPrefix + '-' + CardWrapper.FIELD_SEPARATOR + "100";
 			assertEquals(1, listener.getInvocationsCount(fieldKey).intValue());
 
 			card.setFieldValue("100", "Value 100" + i); // Should not notify

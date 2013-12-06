@@ -96,7 +96,7 @@ public class CardwallTaskEditorPart extends AbstractTaskEditorPart implements IT
 	 */
 	@Override
 	public void attributeChanged(TaskAttribute attribute) {
-		getModel().attributeChanged(wrapper.getSwimlaneListAttribute());
+		getModel().attributeChanged(wrapper.getWrappedAttribute());
 	}
 
 	/**

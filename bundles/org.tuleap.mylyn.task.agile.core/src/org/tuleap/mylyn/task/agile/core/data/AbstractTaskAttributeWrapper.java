@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.tuleap.mylyn.task.agile.core.data;
 
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 
 /**
@@ -56,38 +55,35 @@ public abstract class AbstractTaskAttributeWrapper {
 	protected static final String UNSET_ID = ""; //$NON-NLS-1$
 
 	/**
-	 * The wrapped task attribute.
+	 * The root task attribute.
 	 */
 	protected final TaskAttribute root;
 
 	/**
-	 * Constructor that receives the taskAttribute to wrap.
-	 * 
-	 * @param root
-	 *            The task attribute to wrap
+	 * The id.
 	 */
-	public AbstractTaskAttributeWrapper(TaskAttribute root) {
-		Assert.isNotNull(root);
-		this.root = root;
-	}
+	protected final TaskAttribute attribute;
 
 	/**
 	 * Constructor that receives the taskAttribute to wrap.
 	 * 
 	 * @param root
-	 *            The task attribute to wrap
+	 *            The root task attribute.
+	 * @param prefix
+	 *            The prefix to use
 	 * @param id
-	 *            The functional ID of the wrapped element.
+	 *            The task attribute id of the wrapped element
 	 */
-	public AbstractTaskAttributeWrapper(TaskAttribute root, String id) {
-		this(root);
-		TaskAttribute attribute = root.getMappedAttribute(getIdAttributeId());
-		if (attribute == null) {
-			attribute = root.createMappedAttribute(getIdAttributeId());
-			attribute.getMetaData().setReadOnly(true);
-			attribute.getMetaData().setType(TaskAttribute.TYPE_SHORT_RICH_TEXT);
+	public AbstractTaskAttributeWrapper(TaskAttribute root, String prefix, String id) {
+		this.root = root;
+		TaskAttribute att = root.getMappedAttribute(prefix + id);
+		if (att == null) {
+			att = root.createMappedAttribute(prefix + id);
+			att.getMetaData().setReadOnly(true);
+			att.getMetaData().setType(TaskAttribute.TYPE_SHORT_TEXT);
+			att.setValue(id);
 		}
-		attribute.setValue(id);
+		attribute = att;
 	}
 
 	/**
@@ -109,7 +105,7 @@ public abstract class AbstractTaskAttributeWrapper {
 	 * @return The unique id of the id attribute.
 	 */
 	protected String getIdAttributeId() {
-		return getAttributeId(root, SUFFIX_ID);
+		return getAttributeId(attribute, SUFFIX_ID);
 	}
 
 	/**
@@ -118,7 +114,7 @@ public abstract class AbstractTaskAttributeWrapper {
 	 * @return The unique id of the id attribute.
 	 */
 	protected String getDisplayIdAttributeId() {
-		return getAttributeId(root, SUFFIX_DISPLAY_ID);
+		return getAttributeId(attribute, SUFFIX_DISPLAY_ID);
 	}
 
 	/**
@@ -127,7 +123,7 @@ public abstract class AbstractTaskAttributeWrapper {
 	 * @return The unique id of the label attribute.
 	 */
 	protected String getLabelAttributeId() {
-		return getAttributeId(root, SUFFIX_LABEL);
+		return getAttributeId(attribute, SUFFIX_LABEL);
 	}
 
 	/**
@@ -136,11 +132,16 @@ public abstract class AbstractTaskAttributeWrapper {
 	 * @return The item's id.
 	 */
 	public String getId() {
-		TaskAttribute attribute = root.getMappedAttribute(getIdAttributeId());
-		if (attribute != null) {
-			return attribute.getValue();
-		}
-		return UNSET_ID;
+		return attribute.getValue();
+	}
+
+	/**
+	 * Root {@link TaskAttribute} getter.
+	 * 
+	 * @return The root {@link TaskAttribute}.
+	 */
+	public TaskAttribute getRoot() {
+		return root;
 	}
 
 	/**
@@ -150,11 +151,11 @@ public abstract class AbstractTaskAttributeWrapper {
 	 *            The item's display id.
 	 */
 	public void setDisplayId(String displayId) {
-		TaskAttribute attribute = root.getMappedAttribute(getDisplayIdAttributeId());
-		if (attribute == null) {
-			attribute = root.createMappedAttribute(getDisplayIdAttributeId());
+		TaskAttribute att = root.getMappedAttribute(getDisplayIdAttributeId());
+		if (att == null) {
+			att = root.createMappedAttribute(getDisplayIdAttributeId());
 		}
-		attribute.setValue(displayId);
+		att.setValue(displayId);
 	}
 
 	/**
@@ -163,9 +164,9 @@ public abstract class AbstractTaskAttributeWrapper {
 	 * @return The item's display id, or the item's id if the display id is not set.
 	 */
 	public String getDisplayId() {
-		TaskAttribute attribute = root.getMappedAttribute(getDisplayIdAttributeId());
-		if (attribute != null) {
-			return attribute.getValue();
+		TaskAttribute att = root.getMappedAttribute(getDisplayIdAttributeId());
+		if (att != null) {
+			return att.getValue();
 		}
 		return getId();
 	}
@@ -177,9 +178,9 @@ public abstract class AbstractTaskAttributeWrapper {
 	 */
 	public String getLabel() {
 		String result = null;
-		TaskAttribute attribute = root.getMappedAttribute(getLabelAttributeId());
-		if (attribute != null) {
-			result = attribute.getValue();
+		TaskAttribute att = root.getMappedAttribute(getLabelAttributeId());
+		if (att != null) {
+			result = att.getValue();
 		}
 		return result;
 	}
@@ -195,16 +196,16 @@ public abstract class AbstractTaskAttributeWrapper {
 		if (label == null) {
 			return;
 		}
-		TaskAttribute attribute = root.getMappedAttribute(getLabelAttributeId());
-		if (attribute == null) {
-			attribute = root.createMappedAttribute(getLabelAttributeId());
-			attribute.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
-			attribute.getMetaData().setType(TaskAttribute.TYPE_SHORT_RICH_TEXT);
+		TaskAttribute att = root.getMappedAttribute(getLabelAttributeId());
+		if (att == null) {
+			att = root.createMappedAttribute(getLabelAttributeId());
+			att.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
+			att.getMetaData().setType(TaskAttribute.TYPE_SHORT_RICH_TEXT);
 		}
-		String oldValue = attribute.getValue();
+		String oldValue = att.getValue();
 		if (!label.equals(oldValue)) {
-			attribute.setValue(label);
-			fireAttributeChanged(attribute);
+			att.setValue(label);
+			fireAttributeChanged(att);
 		}
 	}
 
@@ -214,14 +215,14 @@ public abstract class AbstractTaskAttributeWrapper {
 	 * @return The wrapped attribute, never null.
 	 */
 	public TaskAttribute getWrappedAttribute() {
-		return root;
+		return attribute;
 	}
 
 	/**
 	 * Informs the listeners of the given attribute's modification.
 	 * 
-	 * @param attribute
+	 * @param att
 	 *            The modified attribute.
 	 */
-	protected abstract void fireAttributeChanged(TaskAttribute attribute);
+	protected abstract void fireAttributeChanged(TaskAttribute att);
 }

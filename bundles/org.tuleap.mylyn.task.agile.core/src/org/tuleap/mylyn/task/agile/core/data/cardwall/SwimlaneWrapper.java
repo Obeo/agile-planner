@@ -27,9 +27,9 @@ import org.tuleap.mylyn.task.agile.core.data.AbstractTaskAttributeWrapper;
 public class SwimlaneWrapper extends AbstractTaskAttributeWrapper {
 
 	/**
-	 * Suffix used for computing the card list task attribute id.
+	 * Prefix used for swimlanes.
 	 */
-	public static final String SUFFIX_CARD_LIST = "cards"; //$NON-NLS-1$
+	public static final String PREFIX_SWIMLANE = "mta_swi-"; //$NON-NLS-1$
 
 	/**
 	 * The parent card wall.
@@ -37,23 +37,17 @@ public class SwimlaneWrapper extends AbstractTaskAttributeWrapper {
 	private final CardwallWrapper parent;
 
 	/**
-	 * The {@link TaskAttribute} that represents the list of cards in this swimlane.
-	 */
-	private final TaskAttribute cardList;
-
-	/**
 	 * Constructor.
 	 * 
 	 * @param parent
 	 *            The parent.
-	 * @param root
+	 * @param att
 	 *            The {@link TaskAttribute} that represents the swimlane.
 	 */
-	protected SwimlaneWrapper(CardwallWrapper parent, TaskAttribute root) {
-		super(root);
+	protected SwimlaneWrapper(CardwallWrapper parent, TaskAttribute att) {
+		super(parent.getRoot(), PREFIX_SWIMLANE, att.getValue());
 		Assert.isNotNull(parent);
 		this.parent = parent;
-		this.cardList = root.getMappedAttribute(getAttributeId(root, SUFFIX_CARD_LIST));
 	}
 
 	/**
@@ -61,16 +55,12 @@ public class SwimlaneWrapper extends AbstractTaskAttributeWrapper {
 	 * 
 	 * @param parent
 	 *            The parent.
-	 * @param root
-	 *            The {@link TaskAttribute} that represents the swimlane list.
 	 * @param id
 	 *            The id of the swimlane.
 	 */
-	protected SwimlaneWrapper(CardwallWrapper parent, TaskAttribute root, String id) {
-		super(root, id);
-		Assert.isNotNull(parent);
+	protected SwimlaneWrapper(CardwallWrapper parent, String id) {
+		super(parent.getRoot(), PREFIX_SWIMLANE, id);
 		this.parent = parent;
-		cardList = root.createMappedAttribute(getAttributeId(root, SUFFIX_CARD_LIST));
 	}
 
 	/**
@@ -81,10 +71,7 @@ public class SwimlaneWrapper extends AbstractTaskAttributeWrapper {
 	 * @return A new wrapper. No control is made as to existing card with this id.
 	 */
 	public CardWrapper addCard(String id) {
-		TaskAttribute cardAtt = cardList.createMappedAttribute(getCardAttributeId(id));
-		cardAtt.getMetaData().setReadOnly(true);
-		fireAttributeChanged(cardList);
-		return new CardWrapper(this, cardAtt, id);
+		return new CardWrapper(this, id);
 	}
 
 	/**
@@ -106,7 +93,7 @@ public class SwimlaneWrapper extends AbstractTaskAttributeWrapper {
 	 * @return The unique ID of the {@link TaskAttribute} that represents a card in this swimlane.
 	 */
 	private String getCardAttributeId(String id) {
-		return cardList.getId() + ID_SEPARATOR + id;
+		return getAttributeId(attribute, id);
 	}
 
 	/**
@@ -117,7 +104,7 @@ public class SwimlaneWrapper extends AbstractTaskAttributeWrapper {
 	 * @return A new wrapper, or null if the card with this id doesn't exist.
 	 */
 	public CardWrapper getCard(String id) {
-		TaskAttribute cardAtt = cardList.getAttribute(getCardAttributeId(id));
+		TaskAttribute cardAtt = root.getAttribute(getCardAttributeId(id));
 		return wrapCard(cardAtt);
 	}
 
@@ -128,8 +115,11 @@ public class SwimlaneWrapper extends AbstractTaskAttributeWrapper {
 	 */
 	public List<CardWrapper> getCards() {
 		List<CardWrapper> cards = Lists.newArrayList();
-		for (TaskAttribute cardAtt : cardList.getAttributes().values()) {
-			cards.add(wrapCard(cardAtt));
+		String prefix = attribute.getId() + '-';
+		for (TaskAttribute att : root.getAttributes().values()) {
+			if (att.getId().startsWith(prefix) && att.getId().indexOf('-', prefix.length()) == -1) {
+				cards.add(wrapCard(att));
+			}
 		}
 		return cards;
 	}

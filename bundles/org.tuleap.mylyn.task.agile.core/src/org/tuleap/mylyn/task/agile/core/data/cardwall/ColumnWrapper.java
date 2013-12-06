@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.tuleap.mylyn.task.agile.core.data.cardwall;
 
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.tuleap.mylyn.task.agile.core.data.AbstractTaskAttributeWrapper;
 
@@ -23,22 +22,29 @@ import org.tuleap.mylyn.task.agile.core.data.AbstractTaskAttributeWrapper;
 public class ColumnWrapper extends AbstractTaskAttributeWrapper {
 
 	/**
+	 * Prefix to use for column {@link TaskAttribute}s.
+	 */
+	public static final String PREFIX_COLUMN = "mta_col-"; //$NON-NLS-1$
+
+	/**
 	 * The parent card wall.
 	 */
 	private final CardwallWrapper parent;
 
 	/**
-	 * Constructor to use to wrap an existing {@link TaskAttribute}.
+	 * Constructor to use while creating a {@link TaskAttribute}.
 	 * 
 	 * @param parent
 	 *            The parent.
-	 * @param root
-	 *            The {@link TaskAttribute} that contains the columns
+	 * @param id
+	 *            The id of the column
+	 * @param label
+	 *            The label of the column
 	 */
-	protected ColumnWrapper(CardwallWrapper parent, TaskAttribute root) {
-		super(root);
-		Assert.isNotNull(parent);
+	protected ColumnWrapper(CardwallWrapper parent, String id, String label) {
+		super(parent.getRoot(), PREFIX_COLUMN, id);
 		this.parent = parent;
+		setLabel(label);
 	}
 
 	/**
@@ -46,18 +52,12 @@ public class ColumnWrapper extends AbstractTaskAttributeWrapper {
 	 * 
 	 * @param parent
 	 *            The parent.
-	 * @param root
-	 *            The {@link TaskAttribute} that contains the columns
-	 * @param id
-	 *            The id of the column
-	 * @param label
-	 *            The label of the column
+	 * @param att
+	 *            The {@link TaskAttribute} that should represent a column.
 	 */
-	protected ColumnWrapper(CardwallWrapper parent, TaskAttribute root, String id, String label) {
-		super(root, id);
-		Assert.isNotNull(parent);
+	protected ColumnWrapper(CardwallWrapper parent, TaskAttribute att) {
+		super(parent.getRoot(), PREFIX_COLUMN, att.getValue());
 		this.parent = parent;
-		setLabel(label);
 	}
 
 	/**
@@ -66,7 +66,7 @@ public class ColumnWrapper extends AbstractTaskAttributeWrapper {
 	 * @see org.tuleap.mylyn.task.agile.core.data.AbstractTaskAttributeWrapper#fireAttributeChanged(org.eclipse.mylyn.tasks.core.data.TaskAttribute)
 	 */
 	@Override
-	protected void fireAttributeChanged(TaskAttribute attribute) {
-		parent.fireAttributeChanged(attribute);
+	protected void fireAttributeChanged(TaskAttribute att) {
+		parent.fireAttributeChanged(att);
 	}
 }

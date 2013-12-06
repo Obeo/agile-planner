@@ -34,21 +34,13 @@ public abstract class AbstractNotifyingWrapper extends AbstractTaskAttributeWrap
 	 * 
 	 * @param root
 	 *            The task attribute to wrap
-	 */
-	public AbstractNotifyingWrapper(TaskAttribute root) {
-		super(root);
-	}
-
-	/**
-	 * Constructor that receives the taskAttribute to wrap.
-	 * 
-	 * @param root
-	 *            The task attribute to wrap
+	 * @param prefix
+	 *            the prefix to use
 	 * @param id
 	 *            The functional ID of the wrapped element.
 	 */
-	public AbstractNotifyingWrapper(TaskAttribute root, String id) {
-		super(root, id);
+	public AbstractNotifyingWrapper(TaskAttribute root, String prefix, String id) {
+		super(root, prefix, id);
 	}
 
 	/**
@@ -86,13 +78,13 @@ public abstract class AbstractNotifyingWrapper extends AbstractTaskAttributeWrap
 	/**
 	 * Informs the listeners of the given attribute's modification.
 	 * 
-	 * @param attribute
+	 * @param att
 	 *            The modified attribute.
 	 */
 	@Override
-	protected void fireAttributeChanged(TaskAttribute attribute) {
+	protected void fireAttributeChanged(TaskAttribute att) {
 		for (ITaskAttributeChangeListener l : listeners) {
-			l.attributeChanged(attribute);
+			l.attributeChanged(att);
 		}
 	}
 

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.tuleap.mylyn.task.agile.core.data.planning;
 
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.tuleap.mylyn.task.agile.core.data.AbstractTaskAttributeWrapper;
 
@@ -95,29 +94,11 @@ public class BacklogItemWrapper extends AbstractTaskAttributeWrapper {
 	 * 
 	 * @param parent
 	 *            The parent planning
-	 * @param root
-	 *            The non-null task attribute that represents a backlog item to wrap.
 	 * @param id
 	 *            The backlog item's functional id
 	 */
-	protected BacklogItemWrapper(final MilestonePlanningWrapper parent, final TaskAttribute root, String id) {
-		super(root, id);
-		Assert.isNotNull(parent);
-		this.parent = parent;
-		parent.getBacklogTaskAttribute().addValue(root.getId());
-	}
-
-	/**
-	 * Constructor to use to wrap an existing instance that already has sub-attributes.
-	 * 
-	 * @param parent
-	 *            The parent planning
-	 * @param root
-	 *            The non-null task attribute that represents a backlog item to wrap.
-	 */
-	protected BacklogItemWrapper(final MilestonePlanningWrapper parent, final TaskAttribute root) {
-		super(root);
-		Assert.isNotNull(parent);
+	protected BacklogItemWrapper(final MilestonePlanningWrapper parent, String id) {
+		super(parent.getRoot(), PREFIX_BACKLOG_ITEM, id);
 		this.parent = parent;
 	}
 
@@ -127,7 +108,7 @@ public class BacklogItemWrapper extends AbstractTaskAttributeWrapper {
 	 * @return The unique id of the initial effort attribute.
 	 */
 	private String getInitialEffortAttributeId() {
-		return root.getId() + ID_SEPARATOR + SUFFIX_BACKLOG_ITEM_POINTS;
+		return getAttributeId(attribute, SUFFIX_BACKLOG_ITEM_POINTS);
 	}
 
 	/**
@@ -136,7 +117,7 @@ public class BacklogItemWrapper extends AbstractTaskAttributeWrapper {
 	 * @return The unique id of the Assigned milestone id attribute.
 	 */
 	private String getAssignedIdAttributeId() {
-		return root.getId() + ID_SEPARATOR + SUFFIX_ASSIGNED_MILESTONE_ID;
+		return getAttributeId(attribute, SUFFIX_ASSIGNED_MILESTONE_ID);
 	}
 
 	/**
@@ -146,9 +127,9 @@ public class BacklogItemWrapper extends AbstractTaskAttributeWrapper {
 	 */
 	public String getInitialEffort() {
 		String result = null;
-		TaskAttribute attribute = root.getMappedAttribute(getInitialEffortAttributeId());
-		if (attribute != null) {
-			result = attribute.getValue();
+		TaskAttribute att = root.getMappedAttribute(getInitialEffortAttributeId());
+		if (att != null) {
+			result = att.getValue();
 		}
 		return result;
 	}
@@ -163,18 +144,18 @@ public class BacklogItemWrapper extends AbstractTaskAttributeWrapper {
 		if (initialEffort == null) {
 			return;
 		}
-		TaskAttribute attribute = root.getMappedAttribute(getInitialEffortAttributeId());
+		TaskAttribute att = root.getMappedAttribute(getInitialEffortAttributeId());
 		String oldValue = null;
-		if (attribute == null) {
-			attribute = root.createMappedAttribute(getInitialEffortAttributeId());
-			attribute.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
-			attribute.getMetaData().setType(TaskAttribute.TYPE_SHORT_TEXT);
+		if (att == null) {
+			att = root.createMappedAttribute(getInitialEffortAttributeId());
+			att.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
+			att.getMetaData().setType(TaskAttribute.TYPE_SHORT_TEXT);
 		} else {
-			oldValue = attribute.getValue();
+			oldValue = att.getValue();
 		}
 		if (oldValue == null || !oldValue.equals(initialEffort)) {
-			attribute.setValue(initialEffort);
-			fireAttributeChanged(attribute);
+			att.setValue(initialEffort);
+			fireAttributeChanged(att);
 		}
 	}
 
@@ -186,9 +167,9 @@ public class BacklogItemWrapper extends AbstractTaskAttributeWrapper {
 	 */
 	public String getAssignedMilestoneId() {
 		String result = null;
-		TaskAttribute attribute = root.getMappedAttribute(getAssignedIdAttributeId());
-		if (attribute != null) {
-			result = attribute.getValue();
+		TaskAttribute att = root.getMappedAttribute(getAssignedIdAttributeId());
+		if (att != null) {
+			result = att.getValue();
 		}
 		return result;
 	}
@@ -200,17 +181,17 @@ public class BacklogItemWrapper extends AbstractTaskAttributeWrapper {
 	 *            The assigned milestone id.
 	 */
 	public void setAssignedMilestoneId(String milestoneId) {
-		TaskAttribute attribute = root.getMappedAttribute(getAssignedIdAttributeId());
+		TaskAttribute att = root.getMappedAttribute(getAssignedIdAttributeId());
 		String oldValue = null;
-		if (attribute == null) {
-			attribute = root.createAttribute(getAssignedIdAttributeId());
-			attribute.getMetaData().setType(TaskAttribute.TYPE_INTEGER);
+		if (att == null) {
+			att = root.createAttribute(getAssignedIdAttributeId());
+			att.getMetaData().setType(TaskAttribute.TYPE_INTEGER);
 		} else {
-			oldValue = attribute.getValue();
+			oldValue = att.getValue();
 		}
 		if (oldValue == null || !oldValue.equals(milestoneId)) {
-			attribute.setValue(milestoneId);
-			fireAttributeChanged(attribute);
+			att.setValue(milestoneId);
+			fireAttributeChanged(att);
 		}
 	}
 
@@ -272,8 +253,8 @@ public class BacklogItemWrapper extends AbstractTaskAttributeWrapper {
 	 * @see org.tuleap.mylyn.task.agile.core.data.AbstractTaskAttributeWrapper#fireAttributeChanged(org.eclipse.mylyn.tasks.core.data.TaskAttribute)
 	 */
 	@Override
-	protected void fireAttributeChanged(TaskAttribute attribute) {
-		parent.fireAttributeChanged(attribute);
+	protected void fireAttributeChanged(TaskAttribute att) {
+		parent.fireAttributeChanged(att);
 	}
 
 	/**
@@ -301,9 +282,9 @@ public class BacklogItemWrapper extends AbstractTaskAttributeWrapper {
 	 */
 	public String getParentId() {
 		String result = null;
-		TaskAttribute attribute = root.getMappedAttribute(getParentIdSuffix());
-		if (attribute != null) {
-			result = attribute.getValue();
+		TaskAttribute att = root.getMappedAttribute(getParentIdSuffix());
+		if (att != null) {
+			result = att.getValue();
 		}
 		return result;
 	}
@@ -315,9 +296,9 @@ public class BacklogItemWrapper extends AbstractTaskAttributeWrapper {
 	 */
 	public String getParentDisplayId() {
 		String result = null;
-		TaskAttribute attribute = root.getMappedAttribute(getParentDisplayIdSuffix());
-		if (attribute != null) {
-			result = attribute.getValue();
+		TaskAttribute att = root.getMappedAttribute(getParentDisplayIdSuffix());
+		if (att != null) {
+			result = att.getValue();
 		}
 		return result;
 	}
@@ -329,9 +310,9 @@ public class BacklogItemWrapper extends AbstractTaskAttributeWrapper {
 	 */
 	public String getType() {
 		String result = null;
-		TaskAttribute attribute = root.getMappedAttribute(getTypeAttributeId());
-		if (attribute != null) {
-			result = attribute.getValue();
+		TaskAttribute att = root.getMappedAttribute(getTypeAttributeId());
+		if (att != null) {
+			result = att.getValue();
 		}
 		return result;
 	}
@@ -347,16 +328,16 @@ public class BacklogItemWrapper extends AbstractTaskAttributeWrapper {
 		if (type == null) {
 			return;
 		}
-		TaskAttribute attribute = root.getMappedAttribute(getTypeAttributeId());
-		if (attribute == null) {
-			attribute = root.createMappedAttribute(getTypeAttributeId());
-			attribute.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
-			attribute.getMetaData().setType(TaskAttribute.TYPE_SHORT_RICH_TEXT);
+		TaskAttribute att = root.getMappedAttribute(getTypeAttributeId());
+		if (att == null) {
+			att = root.createMappedAttribute(getTypeAttributeId());
+			att.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
+			att.getMetaData().setType(TaskAttribute.TYPE_SHORT_RICH_TEXT);
 		}
-		String oldValue = attribute.getValue();
+		String oldValue = att.getValue();
 		if (!type.equals(oldValue)) {
-			attribute.setValue(type);
-			fireAttributeChanged(attribute);
+			att.setValue(type);
+			fireAttributeChanged(att);
 		}
 	}
 

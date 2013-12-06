@@ -26,24 +26,9 @@ import org.tuleap.mylyn.task.agile.core.data.AbstractNotifyingWrapper;
 public class CardwallWrapper extends AbstractNotifyingWrapper {
 
 	/**
-	 * Id of the milestone list task attribute.
+	 * Id of the cardwall task attribute.
 	 */
-	public static final String COLUMN_LIST = "mta_cols"; //$NON-NLS-1$
-
-	/**
-	 * Id of the milestone list task attribute.
-	 */
-	public static final String SWIMLANE_LIST = "mta_lanes"; //$NON-NLS-1$
-
-	/**
-	 * The attribute that represents the list of the columns.
-	 */
-	private final TaskAttribute columnList;
-
-	/**
-	 * The attribute that represents the list of the swimlanes.
-	 */
-	private final TaskAttribute swimlaneList;
+	public static final String CARDWALL = "mta_cardwall"; //$NON-NLS-1$
 
 	/**
 	 * Constructor.
@@ -52,19 +37,7 @@ public class CardwallWrapper extends AbstractNotifyingWrapper {
 	 *            the root task attribute of the task data.
 	 */
 	public CardwallWrapper(TaskAttribute root) {
-		super(root);
-		TaskAttribute att = root.getAttribute(COLUMN_LIST);
-		if (att == null) {
-			att = root.createMappedAttribute(COLUMN_LIST);
-			att.getMetaData().setReadOnly(true);
-		}
-		columnList = att;
-		att = root.getAttribute(SWIMLANE_LIST);
-		if (att == null) {
-			att = root.createMappedAttribute(SWIMLANE_LIST);
-			att.getMetaData().setReadOnly(true);
-		}
-		swimlaneList = att;
+		super(root, CARDWALL, ""); //$NON-NLS-1$
 	}
 
 	/**
@@ -77,10 +50,7 @@ public class CardwallWrapper extends AbstractNotifyingWrapper {
 	 * @return The created wrapper.
 	 */
 	public ColumnWrapper addColumn(String id, String label) {
-		TaskAttribute columnAtt = columnList.createMappedAttribute(getAttributeId(columnList, String
-				.valueOf(columnList.getAttributes().size())));
-		fireAttributeChanged(columnList);
-		return new ColumnWrapper(this, columnAtt, id, label);
+		return new ColumnWrapper(this, id, label);
 	}
 
 	/**
@@ -90,8 +60,11 @@ public class CardwallWrapper extends AbstractNotifyingWrapper {
 	 */
 	public List<ColumnWrapper> getColumns() {
 		List<ColumnWrapper> result = Lists.newArrayList();
-		for (TaskAttribute att : columnList.getAttributes().values()) {
-			result.add(wrapColumn(att));
+		for (TaskAttribute att : root.getAttributes().values()) {
+			if (att.getId().startsWith(ColumnWrapper.PREFIX_COLUMN)
+					&& att.getId().indexOf('-', ColumnWrapper.PREFIX_COLUMN.length()) == -1) {
+				result.add(wrapColumn(att));
+			}
 		}
 		return result;
 	}
@@ -99,12 +72,12 @@ public class CardwallWrapper extends AbstractNotifyingWrapper {
 	/**
 	 * Returns a {@link ColumnWrapper} for an existing task attribute.
 	 * 
-	 * @param attribute
+	 * @param att
 	 *            the task attribute to wrap, should represent a cardwall column.
 	 * @return a new {@link ColumnWrapper} for the given task attribute.
 	 */
-	public ColumnWrapper wrapColumn(TaskAttribute attribute) {
-		return new ColumnWrapper(this, attribute);
+	public ColumnWrapper wrapColumn(TaskAttribute att) {
+		return new ColumnWrapper(this, att);
 	}
 
 	/**
@@ -114,8 +87,11 @@ public class CardwallWrapper extends AbstractNotifyingWrapper {
 	 */
 	public List<SwimlaneWrapper> getSwimlanes() {
 		List<SwimlaneWrapper> result = Lists.newArrayList();
-		for (TaskAttribute att : swimlaneList.getAttributes().values()) {
-			result.add(wrapSwimlane(att));
+		for (TaskAttribute att : root.getAttributes().values()) {
+			if (att.getId().startsWith(SwimlaneWrapper.PREFIX_SWIMLANE)
+					&& att.getId().indexOf('-', SwimlaneWrapper.PREFIX_SWIMLANE.length()) == -1) {
+				result.add(wrapSwimlane(att));
+			}
 		}
 		return result;
 	}
@@ -123,26 +99,23 @@ public class CardwallWrapper extends AbstractNotifyingWrapper {
 	/**
 	 * Returns a {@link SwimlaneWrapper} for an existing task attribute.
 	 * 
-	 * @param attribute
+	 * @param att
 	 *            the task attribute to wrap, should represent a swimlane.
 	 * @return a new {@link SwimlaneWrapper} for the given task attribute.
 	 */
-	public SwimlaneWrapper wrapSwimlane(TaskAttribute attribute) {
-		return new SwimlaneWrapper(this, attribute);
+	public SwimlaneWrapper wrapSwimlane(TaskAttribute att) {
+		return new SwimlaneWrapper(this, att);
 	}
 
 	/**
 	 * Add a new swimlane to the card wall.
 	 * 
-	 * @param itemId
-	 *            The id of the swimlane's backlog ite.
+	 * @param swimlaneId
+	 *            The id of the swimlane.
 	 * @return The created wrapper.
 	 */
-	public SwimlaneWrapper addSwimlane(String itemId) {
-		TaskAttribute swimlaneAtt = swimlaneList.createMappedAttribute(getAttributeId(swimlaneList, String
-				.valueOf(swimlaneList.getAttributes().size())));
-		fireAttributeChanged(swimlaneList);
-		return new SwimlaneWrapper(this, swimlaneAtt, itemId);
+	public SwimlaneWrapper addSwimlane(String swimlaneId) {
+		return new SwimlaneWrapper(this, swimlaneId);
 	}
 
 	/**
@@ -151,17 +124,8 @@ public class CardwallWrapper extends AbstractNotifyingWrapper {
 	 * @see org.tuleap.mylyn.task.agile.core.data.AbstractNotifyingWrapper#fireAttributeChanged(org.eclipse.mylyn.tasks.core.data.TaskAttribute)
 	 */
 	@Override
-	protected void fireAttributeChanged(TaskAttribute attribute) {
+	protected void fireAttributeChanged(TaskAttribute att) {
 		// Required for delegation from other classes of this package
-		super.fireAttributeChanged(attribute);
-	}
-
-	/**
-	 * Provides the {@link TaskAttribute} that represents the swimlane list.
-	 * 
-	 * @return The {@link TaskAttribute} that represents the swimlane list, never null.
-	 */
-	public TaskAttribute getSwimlaneListAttribute() {
-		return swimlaneList;
+		super.fireAttributeChanged(att);
 	}
 }

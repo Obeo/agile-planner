@@ -76,11 +76,6 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 	private final TaskAttribute backlog;
 
 	/**
-	 * The attribute that represents the milestone.
-	 */
-	private final TaskAttribute planning;
-
-	/**
 	 * Constructor.
 	 * 
 	 * @param root
@@ -88,21 +83,15 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 	 *            milestone.
 	 */
 	public MilestonePlanningWrapper(final TaskAttribute root) {
-		super(root);
-		TaskAttribute milestoneAtt = root.getAttribute(MILESTONE_PLANNING);
-		if (milestoneAtt == null) {
-			milestoneAtt = root.createAttribute(MILESTONE_PLANNING);
-			milestoneAtt.getMetaData().setReadOnly(true);
-		}
-		planning = milestoneAtt;
-		TaskAttribute milestonesAtt = milestoneAtt.getAttribute(MILESTONE_LIST);
+		super(root, MILESTONE_PLANNING, ""); //$NON-NLS-1$
+		TaskAttribute milestonesAtt = root.getAttribute(MILESTONE_LIST);
 		if (milestonesAtt == null) {
-			milestonesAtt = milestoneAtt.createAttribute(MILESTONE_LIST);
+			milestonesAtt = root.createAttribute(MILESTONE_LIST);
 			milestonesAtt.getMetaData().setReadOnly(true);
 		}
-		TaskAttribute backlogAtt = milestoneAtt.getAttribute(BACKLOG);
+		TaskAttribute backlogAtt = root.getAttribute(BACKLOG);
 		if (backlogAtt == null) {
-			backlogAtt = milestoneAtt.createAttribute(BACKLOG);
+			backlogAtt = root.createAttribute(BACKLOG);
 			backlogAtt.getMetaData().setReadOnly(true);
 		}
 		backlog = backlogAtt;
@@ -144,11 +133,9 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 	 * @return A new wrapper for a new task attribute that is created by invoking this method.
 	 */
 	public SubMilestoneWrapper addSubMilestone(String id) {
-		TaskAttribute smAtt = submilestoneList.createAttribute(SubMilestoneWrapper.PREFIX_MILESTONE
-				+ submilestoneList.getAttributes().size());
-		smAtt.getMetaData().setReadOnly(true);
-		SubMilestoneWrapper sub = new SubMilestoneWrapper(this, smAtt, id);
-		return sub;
+		SubMilestoneWrapper w = wrapSubMilestone(id);
+		submilestoneList.addValue(id);
+		return w;
 	}
 
 	/**
@@ -158,8 +145,8 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 	 */
 	public List<SubMilestoneWrapper> getSubMilestones() {
 		List<SubMilestoneWrapper> result = newArrayList();
-		for (TaskAttribute att : submilestoneList.getAttributes().values()) {
-			result.add(wrapSubMilestone(att));
+		for (String milestoneId : submilestoneList.getValues()) {
+			result.add(wrapSubMilestone(milestoneId));
 		}
 		return result;
 	}
@@ -170,7 +157,7 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 	 * @return the number of sub-milestones in this planning.
 	 */
 	public int submilestonesCount() {
-		return submilestoneList.getAttributes().size();
+		return submilestoneList.getValues().size();
 	}
 
 	/**
@@ -182,11 +169,9 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 	 * @return A wrapper for a newly created TaskAttribute representing a BacklogItem in the given parent.
 	 */
 	public BacklogItemWrapper addBacklogItem(String id) {
-		TaskAttribute biAtt = backlog.createAttribute(BacklogItemWrapper.PREFIX_BACKLOG_ITEM
-				+ backlog.getAttributes().size());
-		biAtt.getMetaData().setReadOnly(true);
-		BacklogItemWrapper backlogItemWrapper = new BacklogItemWrapper(this, biAtt, id);
-		return backlogItemWrapper;
+		BacklogItemWrapper w = wrapBacklogItem(id);
+		backlog.addValue(id);
+		return w;
 	}
 
 	/**
@@ -195,7 +180,7 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 	 * @return the number of backlog items in the backlog.
 	 */
 	public int backlogItemsCount() {
-		return backlog.getAttributes().size();
+		return backlog.getValues().size();
 	}
 
 	/**
@@ -205,8 +190,8 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 	 */
 	public List<BacklogItemWrapper> getAllBacklogItems() {
 		List<BacklogItemWrapper> result = newArrayList();
-		for (String attributeId : backlog.getValues()) {
-			result.add(wrapBacklogItem(backlog.getAttribute(attributeId)));
+		for (String backlogItemId : backlog.getValues()) {
+			result.add(wrapBacklogItem(backlogItemId));
 		}
 		return result;
 	}
@@ -219,8 +204,8 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 	 */
 	public List<BacklogItemWrapper> getOrderedUnassignedBacklogItems() {
 		List<BacklogItemWrapper> result = newArrayList();
-		for (String attributeId : backlog.getValues()) {
-			BacklogItemWrapper bi = wrapBacklogItem(backlog.getAttribute(attributeId));
+		for (String backlogItemId : backlog.getValues()) {
+			BacklogItemWrapper bi = wrapBacklogItem(backlogItemId);
 			if (bi.getAssignedMilestoneId() == null) {
 				result.add(bi);
 			}
@@ -257,23 +242,23 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 	/**
 	 * Returns a sub-milestone wrapper for an existing task attribute.
 	 * 
-	 * @param attribute
-	 *            the task attribute to wrap, should represent a sub-milestone.
+	 * @param milestoneId
+	 *            The sub-milestone ID.
 	 * @return a new sub-milestone wrapper for the given task attribute.
 	 */
-	public SubMilestoneWrapper wrapSubMilestone(TaskAttribute attribute) {
-		return new SubMilestoneWrapper(this, attribute);
+	public SubMilestoneWrapper wrapSubMilestone(String milestoneId) {
+		return new SubMilestoneWrapper(this, milestoneId);
 	}
 
 	/**
 	 * Returns a backlog item wrapper for an existing task attribute.
 	 * 
-	 * @param attribute
-	 *            the task attribute to wrap, should represent a backlog item.
+	 * @param backlogItemId
+	 *            The ID of the BI.
 	 * @return a new backlog wrapper for the given task attribute.
 	 */
-	public BacklogItemWrapper wrapBacklogItem(TaskAttribute attribute) {
-		return new BacklogItemWrapper(this, attribute);
+	public BacklogItemWrapper wrapBacklogItem(String backlogItemId) {
+		return new BacklogItemWrapper(this, backlogItemId);
 	}
 
 	/**
@@ -292,36 +277,36 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 		}
 		String targetId = null;
 		if (target != null) {
-			targetId = target.getWrappedAttribute().getId();
+			targetId = target.getWrappedAttribute().getValue();
 		}
 		int insertPosition = -1;
-		List<String> formerIds = newArrayList();
-		formerIds.addAll(backlog.getValues()); // Modifiable copy of ordered ids
+		List<String> ids = newArrayList();
+		ids.addAll(backlog.getValues()); // Modifiable copy of ordered ids
 
 		List<String> movedIds = newArrayList();
 		for (BacklogItemWrapper bi : items) {
 			TaskAttribute wrappedAtt = bi.getWrappedAttribute();
 			bi.removeAssignedMilestoneId();
-			if (wrappedAtt.getId().equals(targetId)) {
+			if (wrappedAtt.getValue().equals(targetId)) {
 				// If the target element is among the moved elements,
 				// Elements already treated must be moved before it,
 				// and the remaining elements must be moved after it.
-				insertPosition = formerIds.indexOf(targetId);
+				insertPosition = ids.indexOf(targetId);
 			}
-			String movedId = wrappedAtt.getId();
+			String movedId = wrappedAtt.getValue();
 			// Security : we only move elements that are present in the original list
-			if (formerIds.remove(movedId)) {
+			if (ids.remove(movedId)) {
 				movedIds.add(movedId);
 			}
 		}
 		if (insertPosition == -1) {
-			insertPosition = computeInsertPosition(before, targetId, formerIds);
+			insertPosition = computeInsertPosition(before, targetId, ids);
 		}
 		for (String movedId : movedIds) {
-			formerIds.add(insertPosition++, movedId);
+			ids.add(insertPosition++, movedId);
 		}
 		backlog.clearValues();
-		backlog.setValues(formerIds);
+		backlog.setValues(ids);
 		fireAttributeChanged(backlog);
 	}
 
@@ -345,7 +330,7 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 		}
 		String targetId = null;
 		if (target != null) {
-			targetId = target.getWrappedAttribute().getId();
+			targetId = target.getWrappedAttribute().getValue();
 		}
 		int insertPosition = -1;
 		List<String> formerIds = newArrayList();
@@ -355,13 +340,13 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 		for (BacklogItemWrapper bi : items) {
 			TaskAttribute wrappedAtt = bi.getWrappedAttribute();
 			bi.setAssignedMilestoneId(subMilestone.getId());
-			if (wrappedAtt.getId().equals(targetId)) {
+			if (wrappedAtt.getValue().equals(targetId)) {
 				// If the target element is among the moved elements,
 				// Elements already treated must be moved before it,
 				// and the remaining elements must be moved after it.
 				insertPosition = formerIds.indexOf(targetId);
 			}
-			String movedId = wrappedAtt.getId();
+			String movedId = wrappedAtt.getValue();
 			// Security : we only move elements that are present in the original list
 			if (formerIds.remove(movedId)) {
 				movedIds.add(movedId);
@@ -409,15 +394,15 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 	 *            The milestones list title
 	 */
 	public void setMilestonesTitle(String title) {
-		TaskAttribute attribute = root.getMappedAttribute(MILESTONES_TITLE);
-		if (attribute == null) {
-			attribute = root.createMappedAttribute(MILESTONES_TITLE);
-			attribute.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
-			attribute.getMetaData().setType(TaskAttribute.TYPE_SHORT_RICH_TEXT);
-			attribute.getMetaData().setReadOnly(true);
+		TaskAttribute att = root.getMappedAttribute(MILESTONES_TITLE);
+		if (att == null) {
+			att = root.createMappedAttribute(MILESTONES_TITLE);
+			att.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
+			att.getMetaData().setType(TaskAttribute.TYPE_SHORT_RICH_TEXT);
+			att.getMetaData().setReadOnly(true);
 		}
 		// No notification needed, read-only
-		attribute.setValue(title);
+		att.setValue(title);
 	}
 
 	/**
@@ -426,9 +411,9 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 	 * @return The backlog title, or <code>null</code> if unset.
 	 */
 	public String getMilestonesTitle() {
-		TaskAttribute attribute = root.getMappedAttribute(MILESTONES_TITLE);
-		if (attribute != null) {
-			return attribute.getValue();
+		TaskAttribute att = root.getMappedAttribute(MILESTONES_TITLE);
+		if (att != null) {
+			return att.getValue();
 		}
 		return null;
 	}
@@ -440,15 +425,15 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 	 *            The backlog title
 	 */
 	public void setBacklogTitle(String title) {
-		TaskAttribute attribute = root.getMappedAttribute(BACKLOG_TITLE);
-		if (attribute == null) {
-			attribute = root.createMappedAttribute(BACKLOG_TITLE);
-			attribute.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
-			attribute.getMetaData().setType(TaskAttribute.TYPE_SHORT_RICH_TEXT);
-			attribute.getMetaData().setReadOnly(true);
+		TaskAttribute att = root.getMappedAttribute(BACKLOG_TITLE);
+		if (att == null) {
+			att = root.createMappedAttribute(BACKLOG_TITLE);
+			att.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
+			att.getMetaData().setType(TaskAttribute.TYPE_SHORT_RICH_TEXT);
+			att.getMetaData().setReadOnly(true);
 		}
 		// No notification needed, read-only
-		attribute.setValue(title);
+		att.setValue(title);
 	}
 
 	/**
@@ -457,20 +442,11 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 	 * @return The backlog title, or <code>null</code> if unset.
 	 */
 	public String getBacklogTitle() {
-		TaskAttribute attribute = root.getMappedAttribute(BACKLOG_TITLE);
-		if (attribute != null) {
-			return attribute.getValue();
+		TaskAttribute att = root.getMappedAttribute(BACKLOG_TITLE);
+		if (att != null) {
+			return att.getValue();
 		}
 		return null;
-	}
-
-	/**
-	 * Provides the wrapped task attribute that represents the planning.
-	 * 
-	 * @return The wrapped task attribute that represents the planning.
-	 */
-	public TaskAttribute getPlanningTaskAttribute() {
-		return planning;
 	}
 
 	/**
@@ -494,21 +470,11 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 	/**
 	 * {@inheritDoc}
 	 * 
-	 * @see org.tuleap.mylyn.task.agile.core.data.AbstractTaskAttributeWrapper#getWrappedAttribute()
-	 */
-	@Override
-	public TaskAttribute getWrappedAttribute() {
-		return planning;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * 
 	 * @see org.tuleap.mylyn.task.agile.core.data.AbstractNotifyingWrapper#fireAttributeChanged(org.eclipse.mylyn.tasks.core.data.TaskAttribute)
 	 */
 	@Override
-	protected void fireAttributeChanged(TaskAttribute attribute) {
+	protected void fireAttributeChanged(TaskAttribute att) {
 		// Required for delegation from other classes of this package
-		super.fireAttributeChanged(attribute);
+		super.fireAttributeChanged(att);
 	}
 }

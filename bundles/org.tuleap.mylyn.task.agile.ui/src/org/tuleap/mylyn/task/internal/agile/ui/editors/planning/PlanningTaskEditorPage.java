@@ -15,8 +15,13 @@ import com.google.common.collect.Sets;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.mylyn.tasks.core.ITask;
+import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.eclipse.mylyn.tasks.core.data.ITaskDataWorkingCopy;
 import org.eclipse.mylyn.tasks.core.data.TaskDataModel;
+import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPage;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditor;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditorInput;
@@ -80,6 +85,32 @@ public class PlanningTaskEditorPage extends AbstractTaskEditorPage {
 	}
 
 	/**
+	 * Creates the TaskDataModel.
+	 * 
+	 * @param task
+	 *            the task
+	 * @param workingCopy
+	 *            The working copy
+	 * @return The newly created TaskDataModel, which uses the given workingCopy.
+	 */
+	protected TaskDataModel doCreateModel(ITask task, ITaskDataWorkingCopy workingCopy) {
+		TaskRepository taskRepository = TasksUi.getRepositoryManager().getRepository(
+				workingCopy.getConnectorKind(), workingCopy.getRepositoryUrl());
+		return new TaskDataModel(taskRepository, task, workingCopy) {
+			/**
+			 * {@inheritDoc}
+			 * 
+			 * @see org.eclipse.mylyn.tasks.core.data.TaskDataModel#refresh(org.eclipse.core.runtime.IProgressMonitor)
+			 */
+			@Override
+			public void refresh(IProgressMonitor monitor) throws CoreException {
+				super.refresh(monitor);
+			}
+
+		};
+	}
+
+	/**
 	 * {@inheritDoc}
 	 * 
 	 * @see org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPage#createModel(org.eclipse.mylyn.tasks.ui.editors.TaskEditorInput)
@@ -91,14 +122,15 @@ public class PlanningTaskEditorPage extends AbstractTaskEditorPage {
 				.getDefault().getServiceTrackerCustomizer();
 		AbstractAgileRepositoryConnectorUI connector = serviceTrackerCustomizer.getConnector(connectorKind);
 		TaskDataModel taskDataModel;
+		ITaskDataWorkingCopy workingCopy = TasksUi.getTaskDataManager().getWorkingCopy(input.getTask());
 		if (connector != null) {
 			taskDataModel = connector.getModelRegistry().getRegisteredModel(getEditor());
 			if (taskDataModel == null) {
-				taskDataModel = super.createModel(input);
+				taskDataModel = doCreateModel(input.getTask(), workingCopy);
 				connector.getModelRegistry().registerModel(getEditor(), taskDataModel);
 			}
 		} else {
-			taskDataModel = super.createModel(input);
+			taskDataModel = doCreateModel(input.getTask(), workingCopy);
 		}
 		return taskDataModel;
 	}

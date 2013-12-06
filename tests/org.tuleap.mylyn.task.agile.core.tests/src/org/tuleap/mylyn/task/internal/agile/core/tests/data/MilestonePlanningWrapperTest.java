@@ -66,36 +66,35 @@ public class MilestonePlanningWrapperTest {
 		TaskAttribute planningAtt = root.getAttribute(MilestonePlanningWrapper.MILESTONE_PLANNING);
 
 		// Milestones
-		TaskAttribute milestoneListAtt = planningAtt.getAttribute(MilestonePlanningWrapper.MILESTONE_LIST);
-		TaskAttribute milestone0 = milestoneListAtt.getAttribute(SubMilestoneWrapper.PREFIX_MILESTONE + "0"); //$NON-NLS-1$
+		TaskAttribute milestoneListAtt = root.getAttribute(MilestonePlanningWrapper.MILESTONE_LIST);
+		assertNotNull(milestoneListAtt);
+		TaskAttribute milestone0 = root.getAttribute(SubMilestoneWrapper.PREFIX_MILESTONE + "200"); //$NON-NLS-1$
 		assertTrue(milestone0.getMetaData().isReadOnly());
 
-		TaskAttribute capacity = milestone0.getAttribute(milestone0.getId() + '-'
+		TaskAttribute capacity = root.getAttribute(milestone0.getId() + '-'
 				+ SubMilestoneWrapper.SUFFIX_MILESTONE_CAPACITY);
 		assertEquals("20", capacity.getValue());
 		assertEquals(TaskAttribute.TYPE_SHORT_TEXT, capacity.getMetaData().getType());
 
-		TaskAttribute id = milestone0.getAttribute(milestone0.getId() + '-'
-				+ AbstractTaskAttributeWrapper.SUFFIX_ID);
+		TaskAttribute id = root.getAttribute(milestone0.getId());
 		assertEquals("200", id.getValue()); //$NON-NLS-1$
-		assertEquals(TaskAttribute.TYPE_SHORT_RICH_TEXT, id.getMetaData().getType());
+		assertEquals(TaskAttribute.TYPE_SHORT_TEXT, id.getMetaData().getType());
 
-		TaskAttribute label = milestone0.getAttribute(milestone0.getId() + '-'
+		TaskAttribute label = root.getAttribute(milestone0.getId() + '-'
 				+ AbstractTaskAttributeWrapper.SUFFIX_LABEL);
 		assertEquals("Milestone 1", label.getValue()); //$NON-NLS-1$
 		assertEquals(TaskAttribute.TYPE_SHORT_RICH_TEXT, label.getMetaData().getType());
 
-		TaskAttribute start = milestone0.getAttribute(milestone0.getId() + '-'
+		TaskAttribute start = root.getAttribute(milestone0.getId() + '-'
 				+ SubMilestoneWrapper.SUFFIX_START_DATE);
 		assertEquals(Long.toString(testDate.getTime()), start.getValue());
 		assertEquals(TaskAttribute.TYPE_DATETIME, start.getMetaData().getType());
 
-		TaskAttribute end = milestone0.getAttribute(milestone0.getId() + '-'
-				+ SubMilestoneWrapper.SUFFIX_END_DATE);
+		TaskAttribute end = root.getAttribute(milestone0.getId() + '-' + SubMilestoneWrapper.SUFFIX_END_DATE);
 		assertEquals(Long.toString(endDate.getTime()), end.getValue());
 		assertEquals(TaskAttribute.TYPE_DATETIME, end.getMetaData().getType());
 
-		TaskAttribute status = milestone0.getAttribute(milestone0.getId() + '-'
+		TaskAttribute status = root.getAttribute(milestone0.getId() + '-'
 				+ SubMilestoneWrapper.SUFFIX_STATUS_VALUE);
 		assertEquals("current", status.getValue());
 		assertEquals(TaskAttribute.TYPE_SHORT_RICH_TEXT, status.getMetaData().getType());
@@ -108,25 +107,25 @@ public class MilestonePlanningWrapperTest {
 		backlogItem.setInitialEffort("5");
 		backlogItem.setAssignedMilestoneId("200");
 
-		TaskAttribute backlogAtt = planningAtt.getAttribute(MilestonePlanningWrapper.BACKLOG);
-		TaskAttribute bi0 = backlogAtt.getAttribute(BacklogItemWrapper.PREFIX_BACKLOG_ITEM + "0"); //$NON-NLS-1$
+		TaskAttribute backlogAtt = root.getAttribute(MilestonePlanningWrapper.BACKLOG);
+		TaskAttribute bi0 = root.getAttribute(BacklogItemWrapper.PREFIX_BACKLOG_ITEM + "300"); //$NON-NLS-1$
 		assertTrue(bi0.getMetaData().isReadOnly());
 
-		TaskAttribute pointsAtt = bi0.getAttribute(bi0.getId() + '-'
+		TaskAttribute pointsAtt = root.getAttribute(bi0.getId() + '-'
 				+ BacklogItemWrapper.SUFFIX_BACKLOG_ITEM_POINTS);
 		assertEquals("5", pointsAtt.getValue());
 		assertEquals(TaskAttribute.TYPE_SHORT_TEXT, pointsAtt.getMetaData().getType());
 
-		TaskAttribute biIdAtt = bi0.getAttribute(bi0.getId() + '-' + AbstractTaskAttributeWrapper.SUFFIX_ID);
+		TaskAttribute biIdAtt = root.getAttribute(bi0.getId());
 		assertEquals("300", biIdAtt.getValue()); //$NON-NLS-1$
-		assertEquals(TaskAttribute.TYPE_SHORT_RICH_TEXT, biIdAtt.getMetaData().getType());
+		assertEquals(TaskAttribute.TYPE_SHORT_TEXT, biIdAtt.getMetaData().getType());
 
-		TaskAttribute biLabelAtt = bi0.getAttribute(bi0.getId() + '-'
+		TaskAttribute biLabelAtt = root.getAttribute(bi0.getId() + '-'
 				+ AbstractTaskAttributeWrapper.SUFFIX_LABEL);
 		assertEquals(label1, biLabelAtt.getValue());
 		assertEquals(TaskAttribute.TYPE_SHORT_RICH_TEXT, biLabelAtt.getMetaData().getType());
 
-		TaskAttribute assignedIdAtt = bi0.getAttribute(bi0.getId() + '-'
+		TaskAttribute assignedIdAtt = root.getAttribute(bi0.getId() + '-'
 				+ BacklogItemWrapper.SUFFIX_ASSIGNED_MILESTONE_ID);
 		assertEquals("200", assignedIdAtt.getValue()); //$NON-NLS-1$
 		assertEquals(TaskAttribute.TYPE_INTEGER, assignedIdAtt.getMetaData().getType());
@@ -330,7 +329,7 @@ public class MilestonePlanningWrapperTest {
 		SubMilestoneWrapper subMilestone = wrapper.addSubMilestone("200");
 		subMilestone.setCapacity("12");
 
-		String capacityKey = SubMilestoneWrapper.PREFIX_MILESTONE + "0-"
+		String capacityKey = SubMilestoneWrapper.PREFIX_MILESTONE + "200-"
 				+ SubMilestoneWrapper.SUFFIX_MILESTONE_CAPACITY;
 		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(capacityKey));
 		subMilestone.setCapacity("12"); // Should not notify
@@ -339,7 +338,7 @@ public class MilestonePlanningWrapperTest {
 		assertEquals(Integer.valueOf(2), listener.getInvocationsCount(capacityKey));
 
 		subMilestone.setLabel("Label"); //$NON-NLS-1$
-		String labelKey = SubMilestoneWrapper.PREFIX_MILESTONE + "0-"
+		String labelKey = SubMilestoneWrapper.PREFIX_MILESTONE + "200-"
 				+ AbstractTaskAttributeWrapper.SUFFIX_LABEL;
 
 		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(labelKey));
@@ -351,7 +350,7 @@ public class MilestonePlanningWrapperTest {
 		Date startDate = new Date();
 		subMilestone.setStartDate(startDate);
 
-		String start = SubMilestoneWrapper.PREFIX_MILESTONE + "0-" + SubMilestoneWrapper.SUFFIX_START_DATE;
+		String start = SubMilestoneWrapper.PREFIX_MILESTONE + "200-" + SubMilestoneWrapper.SUFFIX_START_DATE;
 
 		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(start));
 		subMilestone.setStartDate(startDate); // Should not notify
@@ -362,7 +361,7 @@ public class MilestonePlanningWrapperTest {
 		Date endDate = new Date();
 		subMilestone.setEndDate(endDate);
 
-		String end = SubMilestoneWrapper.PREFIX_MILESTONE + "0-" + SubMilestoneWrapper.SUFFIX_END_DATE;
+		String end = SubMilestoneWrapper.PREFIX_MILESTONE + "200-" + SubMilestoneWrapper.SUFFIX_END_DATE;
 
 		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(end));
 		subMilestone.setEndDate(endDate); // Should not notify
@@ -371,10 +370,10 @@ public class MilestonePlanningWrapperTest {
 		assertEquals(Integer.valueOf(2), listener.getInvocationsCount(end));
 
 		// Backlog items
-		BacklogItemWrapper backlogItem = wrapper.addBacklogItem("200");
+		BacklogItemWrapper backlogItem = wrapper.addBacklogItem("123");
 
 		backlogItem.setInitialEffort("5");
-		String pointsKey = BacklogItemWrapper.PREFIX_BACKLOG_ITEM + "0-"
+		String pointsKey = BacklogItemWrapper.PREFIX_BACKLOG_ITEM + "123-"
 				+ BacklogItemWrapper.SUFFIX_BACKLOG_ITEM_POINTS;
 
 		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(pointsKey));
@@ -384,7 +383,7 @@ public class MilestonePlanningWrapperTest {
 		assertEquals(Integer.valueOf(2), listener.getInvocationsCount(pointsKey));
 
 		backlogItem.setLabel("label of backlog item 300"); //$NON-NLS-1$
-		String biLabelKey = BacklogItemWrapper.PREFIX_BACKLOG_ITEM + "0-"
+		String biLabelKey = BacklogItemWrapper.PREFIX_BACKLOG_ITEM + "123-"
 				+ AbstractTaskAttributeWrapper.SUFFIX_LABEL;
 
 		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(biLabelKey));
@@ -394,7 +393,7 @@ public class MilestonePlanningWrapperTest {
 		assertEquals(Integer.valueOf(2), listener.getInvocationsCount(biLabelKey));
 
 		backlogItem.setAssignedMilestoneId("200");
-		String assignedIdKey = BacklogItemWrapper.PREFIX_BACKLOG_ITEM + "0-"
+		String assignedIdKey = BacklogItemWrapper.PREFIX_BACKLOG_ITEM + "123-"
 				+ BacklogItemWrapper.SUFFIX_ASSIGNED_MILESTONE_ID;
 
 		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(assignedIdKey));
