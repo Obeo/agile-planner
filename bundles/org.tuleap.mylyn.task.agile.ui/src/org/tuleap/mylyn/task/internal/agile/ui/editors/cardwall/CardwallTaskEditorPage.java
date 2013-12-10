@@ -21,6 +21,7 @@ import org.eclipse.mylyn.tasks.ui.editors.TaskEditor;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditorInput;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditorPartDescriptor;
 import org.tuleap.mylyn.task.agile.ui.AbstractAgileRepositoryConnectorUI;
+import org.tuleap.mylyn.task.agile.ui.task.SharedTaskDataModel;
 import org.tuleap.mylyn.task.internal.agile.ui.AgileRepositoryConnectorUiServiceTrackerCustomizer;
 import org.tuleap.mylyn.task.internal.agile.ui.MylynAgileUIActivator;
 
@@ -92,21 +93,8 @@ public class CardwallTaskEditorPage extends AbstractTaskEditorPage {
 	 */
 	@Override
 	protected TaskDataModel createModel(TaskEditorInput input) throws CoreException {
-		String connectorKind = input.getTaskRepository().getConnectorKind();
-		AgileRepositoryConnectorUiServiceTrackerCustomizer serviceTrackerCustomizer = MylynAgileUIActivator
-				.getDefault().getServiceTrackerCustomizer();
-		AbstractAgileRepositoryConnectorUI connector = serviceTrackerCustomizer.getConnector(connectorKind);
-		TaskDataModel taskDataModel;
-		if (connector != null) {
-			taskDataModel = connector.getModelRegistry().getRegisteredModel(getEditor());
-			if (taskDataModel == null) {
-				taskDataModel = super.createModel(input);
-				connector.getModelRegistry().registerModel(getEditor(), taskDataModel);
-			}
-		} else {
-			taskDataModel = super.createModel(input);
-		}
-		return taskDataModel;
+		TaskDataModel taskDataModel = super.createModel(input);
+		return SharedTaskDataModel.shareModel(input, getEditor(), taskDataModel);
 	}
 
 	/**
