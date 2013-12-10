@@ -290,6 +290,7 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 	@Override
 	public void attributeChanged(TaskAttribute attribute) {
 		getModel().attributeChanged(wrapper.getWrappedAttribute());
+		getModel().attributeChanged(attribute);
 	}
 
 	/**
