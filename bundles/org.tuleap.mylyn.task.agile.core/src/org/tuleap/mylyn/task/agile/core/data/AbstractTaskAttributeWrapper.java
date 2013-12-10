@@ -83,7 +83,7 @@ public abstract class AbstractTaskAttributeWrapper {
 		this.root = root;
 		TaskAttribute att = root.getMappedAttribute(prefix + id);
 		if (att == null) {
-			att = root.createMappedAttribute(prefix + id);
+			att = createAgileAttribute(prefix + id);
 			att.getMetaData().setReadOnly(true);
 			att.getMetaData().setType(TaskAttribute.TYPE_SHORT_TEXT);
 			att.setValue(id);
