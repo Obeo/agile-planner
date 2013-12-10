@@ -268,7 +268,7 @@ public class BacklogItemWrapper extends AbstractTaskAttributeWrapper {
 	 * @return The unique parent identifier attribute.
 	 */
 	private String getParentIdId() {
-		return root.getId() + ID_SEPARATOR + SUFFIX_BI_PARENT_ID;
+		return getAttributeId(attribute, SUFFIX_BI_PARENT_ID);
 	}
 
 	/**
@@ -277,7 +277,7 @@ public class BacklogItemWrapper extends AbstractTaskAttributeWrapper {
 	 * @return The unique parent displayed identifier attribute.
 	 */
 	private String getParentDisplayIdId() {
-		return root.getId() + ID_SEPARATOR + SUFFIX_BI_PARENT_DISPLAY_ID;
+		return getAttributeId(attribute, SUFFIX_BI_PARENT_DISPLAY_ID);
 	}
 
 	/**
@@ -351,6 +351,6 @@ public class BacklogItemWrapper extends AbstractTaskAttributeWrapper {
 	 * @return The unique id of the type attribute.
 	 */
 	private String getTypeAttributeId() {
-		return getAttributeId(root, SUFFIX_TYPE);
+		return getAttributeId(attribute, SUFFIX_TYPE);
 	}
 }
