@@ -107,6 +107,11 @@ public class ColumnHeaderEditPart extends AbstractGraphicalEditPart {
 		Object model = getModel();
 		if (model instanceof ColumnModel) {
 			FoldableColumnHeaderFigure f = (FoldableColumnHeaderFigure)getFigure();
+			ColumnModel c = (ColumnModel)getModel();
+			if (c.getCardwall().getColumns().get(c.getCardwall().getColumns().size() - 1) == c) {
+				c.setFolded(true);
+				f.setFolded(true);
+			}
 			foldingChangeListener = new ChangeListener() {
 				/**
 				 * {@inheritDoc}
@@ -115,9 +120,9 @@ public class ColumnHeaderEditPart extends AbstractGraphicalEditPart {
 				 */
 				@Override
 				public void handleStateChanged(ChangeEvent event) {
-					ColumnModel c = (ColumnModel)getModel();
+					ColumnModel column = (ColumnModel)getModel();
 					FoldableColumnHeaderFigure fig = (FoldableColumnHeaderFigure)getFigure();
-					c.setFolded(fig.isFolded());
+					column.setFolded(fig.isFolded());
 				}
 			};
 			f.addFoldingListener(foldingChangeListener);

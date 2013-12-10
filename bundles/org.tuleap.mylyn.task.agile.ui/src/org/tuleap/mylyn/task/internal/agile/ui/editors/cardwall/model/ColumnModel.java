@@ -20,6 +20,11 @@ import org.tuleap.mylyn.task.agile.core.data.cardwall.ColumnWrapper;
 public class ColumnModel extends AbstractNotifyingModel {
 
 	/**
+	 * The card wall.
+	 */
+	private CardwallModel cardwall;
+
+	/**
 	 * Column wrapper.
 	 */
 	private final ColumnWrapper column;
@@ -79,4 +84,22 @@ public class ColumnModel extends AbstractNotifyingModel {
 		return column.getLabel();
 	}
 
+	/**
+	 * The cardwall.
+	 * 
+	 * @return The cardwall.
+	 */
+	public CardwallModel getCardwall() {
+		return cardwall;
+	}
+
+	/**
+	 * Cardwall setter.
+	 * 
+	 * @param cardwall
+	 *            The cardwall model
+	 */
+	public void setCardwall(CardwallModel cardwall) {
+		this.cardwall = cardwall;
+	}
 }

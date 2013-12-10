@@ -309,10 +309,13 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 					CardWrapper card20 = swimlane.addCard(Integer.toString(321) + i);
 					card20.setLabel("Title of " + (301 + i)); //$NON-NLS-1$
 					card20.setColumnId(Integer.toString(10 + i));
+
 					card20.setFieldLabel(CARD_REMAINING_EFFORT_FIELD_ID, "Remaining Effort");
 					card20.addFieldValue(CARD_REMAINING_EFFORT_FIELD_ID, "5"); //$NON-NLS-1$
 					card20.setFieldLabel(CARD_ASSIGNED_TO_FIELD_ID, "Assigned to");
 					card20.addFieldValue(CARD_ASSIGNED_TO_FIELD_ID, "fbacha"); //$NON-NLS-1$ 
+					card20.addAllowedColumn("11");
+					card20.addAllowedColumn("10");
 
 					break;
 				case 1:

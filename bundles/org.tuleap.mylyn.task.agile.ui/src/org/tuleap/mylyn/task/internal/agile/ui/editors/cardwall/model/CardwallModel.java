@@ -68,7 +68,9 @@ public class CardwallModel {
 		if (columns == null) {
 			columns = Lists.newArrayList();
 			for (ColumnWrapper col : cardwall.getColumns()) {
-				columns.add(new ColumnModel(col));
+				ColumnModel columModel = new ColumnModel(col);
+				columModel.setCardwall(this);
+				columns.add(columModel);
 			}
 		}
 		return columns;
