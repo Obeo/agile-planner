@@ -167,7 +167,7 @@ public class BacklogItemWrapper extends AbstractTaskAttributeWrapper {
 	public String getAssignedMilestoneId() {
 		String result = null;
 		TaskAttribute att = root.getMappedAttribute(getAssignedIdAttributeId());
-		if (att != null) {
+		if (att != null && att.hasValue()) {
 			result = att.getValue();
 		}
 		return result;
@@ -198,8 +198,13 @@ public class BacklogItemWrapper extends AbstractTaskAttributeWrapper {
 	 * Remove the milestone assignment of this backlog item.
 	 */
 	public void removeAssignedMilestoneId() {
-		// FIXME Attribute must not be removed, its value must be cleared
-		root.removeAttribute(getAssignedIdAttributeId());
+		TaskAttribute att = root.getMappedAttribute(getAssignedIdAttributeId());
+		if (att != null) {
+			if (att.hasValue()) {
+				att.clearValues();
+				fireAttributeChanged(att);
+			}
+		}
 	}
 
 	/**
