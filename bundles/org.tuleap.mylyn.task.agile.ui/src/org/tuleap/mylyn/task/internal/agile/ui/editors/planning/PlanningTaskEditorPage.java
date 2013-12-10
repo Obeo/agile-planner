@@ -53,6 +53,7 @@ public class PlanningTaskEditorPage extends AbstractTaskEditorPage {
 	public PlanningTaskEditorPage(TaskEditor editor, String connectorKind, boolean createActionsInToolbar) {
 		super(editor, connectorKind);
 		this.createActionsInToolbar = createActionsInToolbar;
+		this.setNeedsSubmitButton(true);
 	}
 
 	/**

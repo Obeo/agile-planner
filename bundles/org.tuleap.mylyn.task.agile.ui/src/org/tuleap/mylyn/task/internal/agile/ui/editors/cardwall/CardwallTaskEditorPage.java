@@ -43,6 +43,7 @@ public class CardwallTaskEditorPage extends AbstractTaskEditorPage {
 	 */
 	public CardwallTaskEditorPage(TaskEditor editor, String connectorKind) {
 		super(editor, connectorKind);
+		this.setNeedsSubmitButton(true);
 	}
 
 	/**
