@@ -147,8 +147,7 @@ public class BacklogItemWrapper extends AbstractTaskAttributeWrapper {
 		TaskAttribute att = root.getMappedAttribute(getInitialEffortAttributeId());
 		String oldValue = null;
 		if (att == null) {
-			att = root.createMappedAttribute(getInitialEffortAttributeId());
-			att.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
+			att = createAgileAttribute(getInitialEffortAttributeId());
 			att.getMetaData().setType(TaskAttribute.TYPE_SHORT_TEXT);
 		} else {
 			oldValue = att.getValue();
@@ -184,7 +183,7 @@ public class BacklogItemWrapper extends AbstractTaskAttributeWrapper {
 		TaskAttribute att = root.getMappedAttribute(getAssignedIdAttributeId());
 		String oldValue = null;
 		if (att == null) {
-			att = root.createAttribute(getAssignedIdAttributeId());
+			att = createAgileAttribute(getAssignedIdAttributeId());
 			att.getMetaData().setType(TaskAttribute.TYPE_INTEGER);
 		} else {
 			oldValue = att.getValue();
@@ -199,6 +198,7 @@ public class BacklogItemWrapper extends AbstractTaskAttributeWrapper {
 	 * Remove the milestone assignment of this backlog item.
 	 */
 	public void removeAssignedMilestoneId() {
+		// FIXME Attribute must not be removed, its value must be cleared
 		root.removeAttribute(getAssignedIdAttributeId());
 	}
 
@@ -220,10 +220,10 @@ public class BacklogItemWrapper extends AbstractTaskAttributeWrapper {
 	 *            The parent displayed identifier.
 	 */
 	public void setParent(String parentId, String parentDisplayId) {
-		TaskAttribute idAttribute = root.getMappedAttribute(getParentIdSuffix());
+		TaskAttribute idAttribute = root.getMappedAttribute(getParentIdId());
 		String oldIdValue = null;
 		if (idAttribute == null) {
-			idAttribute = root.createAttribute(getParentIdSuffix());
+			idAttribute = createAgileAttribute(getParentIdId());
 			idAttribute.getMetaData().setType(TaskAttribute.TYPE_SHORT_RICH_TEXT);
 		} else {
 			oldIdValue = idAttribute.getValue();
@@ -233,10 +233,10 @@ public class BacklogItemWrapper extends AbstractTaskAttributeWrapper {
 			fireAttributeChanged(idAttribute);
 		}
 
-		TaskAttribute displayedIdAttribute = root.getMappedAttribute(getParentDisplayIdSuffix());
+		TaskAttribute displayedIdAttribute = root.getMappedAttribute(getParentDisplayIdId());
 		String oldDisplayedIdValue = null;
 		if (displayedIdAttribute == null) {
-			displayedIdAttribute = root.createAttribute(getParentDisplayIdSuffix());
+			displayedIdAttribute = createAgileAttribute(getParentDisplayIdId());
 			displayedIdAttribute.getMetaData().setType(TaskAttribute.TYPE_SHORT_RICH_TEXT);
 		} else {
 			oldDisplayedIdValue = displayedIdAttribute.getValue();
@@ -262,7 +262,7 @@ public class BacklogItemWrapper extends AbstractTaskAttributeWrapper {
 	 * 
 	 * @return The unique parent identifier attribute.
 	 */
-	public String getParentIdSuffix() {
+	private String getParentIdId() {
 		return root.getId() + ID_SEPARATOR + SUFFIX_BI_PARENT_ID;
 	}
 
@@ -271,7 +271,7 @@ public class BacklogItemWrapper extends AbstractTaskAttributeWrapper {
 	 * 
 	 * @return The unique parent displayed identifier attribute.
 	 */
-	public String getParentDisplayIdSuffix() {
+	private String getParentDisplayIdId() {
 		return root.getId() + ID_SEPARATOR + SUFFIX_BI_PARENT_DISPLAY_ID;
 	}
 
@@ -282,7 +282,7 @@ public class BacklogItemWrapper extends AbstractTaskAttributeWrapper {
 	 */
 	public String getParentId() {
 		String result = null;
-		TaskAttribute att = root.getMappedAttribute(getParentIdSuffix());
+		TaskAttribute att = root.getMappedAttribute(getParentIdId());
 		if (att != null) {
 			result = att.getValue();
 		}
@@ -296,7 +296,7 @@ public class BacklogItemWrapper extends AbstractTaskAttributeWrapper {
 	 */
 	public String getParentDisplayId() {
 		String result = null;
-		TaskAttribute att = root.getMappedAttribute(getParentDisplayIdSuffix());
+		TaskAttribute att = root.getMappedAttribute(getParentDisplayIdId());
 		if (att != null) {
 			result = att.getValue();
 		}
@@ -330,8 +330,7 @@ public class BacklogItemWrapper extends AbstractTaskAttributeWrapper {
 		}
 		TaskAttribute att = root.getMappedAttribute(getTypeAttributeId());
 		if (att == null) {
-			att = root.createMappedAttribute(getTypeAttributeId());
-			att.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
+			att = createAgileAttribute(getTypeAttributeId());
 			att.getMetaData().setType(TaskAttribute.TYPE_SHORT_RICH_TEXT);
 		}
 		String oldValue = att.getValue();

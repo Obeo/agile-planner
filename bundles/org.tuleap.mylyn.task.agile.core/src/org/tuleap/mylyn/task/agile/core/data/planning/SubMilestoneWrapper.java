@@ -138,8 +138,7 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 		TaskAttribute att = root.getMappedAttribute(getCapacityAttributeId());
 		String oldValue = null;
 		if (att == null) {
-			att = root.createMappedAttribute(getCapacityAttributeId());
-			att.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
+			att = createAgileAttribute(getCapacityAttributeId());
 			att.getMetaData().setType(TaskAttribute.TYPE_SHORT_TEXT);
 		} else {
 			oldValue = att.getValue();
@@ -178,8 +177,7 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 		}
 		TaskAttribute att = root.getMappedAttribute(getStartDateAttributeId());
 		if (att == null) {
-			att = root.createMappedAttribute(getStartDateAttributeId());
-			att.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
+			att = createAgileAttribute(getStartDateAttributeId());
 			att.getMetaData().setType(TaskAttribute.TYPE_DATETIME);
 		}
 		TaskAttributeMapper mapper = att.getTaskData().getAttributeMapper();
@@ -218,8 +216,7 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 		}
 		TaskAttribute att = root.getMappedAttribute(getEndDateAttributeId());
 		if (att == null) {
-			att = root.createMappedAttribute(getEndDateAttributeId());
-			att.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
+			att = createAgileAttribute(getEndDateAttributeId());
 			att.getMetaData().setType(TaskAttribute.TYPE_DATETIME);
 		}
 		TaskAttributeMapper mapper = att.getTaskData().getAttributeMapper();
@@ -277,8 +274,7 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 		TaskAttribute att = root.getMappedAttribute(getStatusValueAttributeId());
 		String oldValue = null;
 		if (att == null) {
-			att = root.createMappedAttribute(getStatusValueAttributeId());
-			att.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
+			att = createAgileAttribute(getStatusValueAttributeId());
 			att.getMetaData().setType(TaskAttribute.TYPE_SHORT_RICH_TEXT);
 			att.getMetaData().setReadOnly(true);
 		} else {

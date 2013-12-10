@@ -25,6 +25,11 @@ public abstract class AbstractTaskAttributeWrapper {
 	public static final char ID_SEPARATOR = '-';
 
 	/**
+	 * Constant representing the kind of task attribute "agile".
+	 */
+	public static final String KIND_AGILE = "mylyn.kind.mta"; //$NON-NLS-1$
+
+	/**
 	 * Suffix appended to the ids of Task Attributes representing internal IDs.
 	 */
 	public static final String SUFFIX_ID = "id"; //$NON-NLS-1$
@@ -153,9 +158,22 @@ public abstract class AbstractTaskAttributeWrapper {
 	public void setDisplayId(String displayId) {
 		TaskAttribute att = root.getMappedAttribute(getDisplayIdAttributeId());
 		if (att == null) {
-			att = root.createMappedAttribute(getDisplayIdAttributeId());
+			att = createAgileAttribute(getDisplayIdAttributeId());
 		}
 		att.setValue(displayId);
+	}
+
+	/**
+	 * Creates an agile task attribute.
+	 * 
+	 * @param id
+	 *            The id of the attribute
+	 * @return The newly created attribute.
+	 */
+	protected TaskAttribute createAgileAttribute(String id) {
+		TaskAttribute att = root.createMappedAttribute(id);
+		att.getMetaData().setKind(KIND_AGILE);
+		return att;
 	}
 
 	/**
@@ -198,8 +216,7 @@ public abstract class AbstractTaskAttributeWrapper {
 		}
 		TaskAttribute att = root.getMappedAttribute(getLabelAttributeId());
 		if (att == null) {
-			att = root.createMappedAttribute(getLabelAttributeId());
-			att.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
+			att = createAgileAttribute(getLabelAttributeId());
 			att.getMetaData().setType(TaskAttribute.TYPE_SHORT_RICH_TEXT);
 		}
 		String oldValue = att.getValue();

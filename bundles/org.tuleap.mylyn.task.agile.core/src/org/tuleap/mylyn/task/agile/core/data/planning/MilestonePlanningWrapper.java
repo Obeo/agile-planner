@@ -118,9 +118,9 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 	 *            The cardwall flag.
 	 */
 	public void setHasCardwall(boolean hasCardwall) {
-		TaskAttribute att = backlog.getParentAttribute().getMappedAttribute(HAS_CARDWALL);
+		TaskAttribute att = root.getMappedAttribute(HAS_CARDWALL);
 		if (att == null) {
-			att = backlog.getParentAttribute().createMappedAttribute(HAS_CARDWALL);
+			att = createAgileAttribute(HAS_CARDWALL);
 		}
 		att.getTaskData().getAttributeMapper().setBooleanValue(att, Boolean.valueOf(hasCardwall));
 	}
@@ -396,8 +396,7 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 	public void setMilestonesTitle(String title) {
 		TaskAttribute att = root.getMappedAttribute(MILESTONES_TITLE);
 		if (att == null) {
-			att = root.createMappedAttribute(MILESTONES_TITLE);
-			att.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
+			att = createAgileAttribute(MILESTONES_TITLE);
 			att.getMetaData().setType(TaskAttribute.TYPE_SHORT_RICH_TEXT);
 			att.getMetaData().setReadOnly(true);
 		}
@@ -427,8 +426,7 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 	public void setBacklogTitle(String title) {
 		TaskAttribute att = root.getMappedAttribute(BACKLOG_TITLE);
 		if (att == null) {
-			att = root.createMappedAttribute(BACKLOG_TITLE);
-			att.getMetaData().setKind(TaskAttribute.KIND_DEFAULT);
+			att = createAgileAttribute(BACKLOG_TITLE);
 			att.getMetaData().setType(TaskAttribute.TYPE_SHORT_RICH_TEXT);
 			att.getMetaData().setReadOnly(true);
 		}
