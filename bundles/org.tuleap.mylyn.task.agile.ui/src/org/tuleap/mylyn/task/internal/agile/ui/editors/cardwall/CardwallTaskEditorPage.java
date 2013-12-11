@@ -21,9 +21,10 @@ import org.eclipse.mylyn.tasks.ui.editors.TaskEditor;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditorInput;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditorPartDescriptor;
 import org.tuleap.mylyn.task.agile.ui.AbstractAgileRepositoryConnectorUI;
-import org.tuleap.mylyn.task.agile.ui.task.SharedTaskDataModel;
+import org.tuleap.mylyn.task.agile.ui.task.IModelRegistry;
 import org.tuleap.mylyn.task.internal.agile.ui.AgileRepositoryConnectorUiServiceTrackerCustomizer;
 import org.tuleap.mylyn.task.internal.agile.ui.MylynAgileUIActivator;
+import org.tuleap.mylyn.task.internal.agile.ui.util.MylynAgileUIMessages;
 
 /**
  * The Page for the CardwallTaskEditor. This page parameterizes the editor to display only the relevant tabs
@@ -94,8 +95,21 @@ public class CardwallTaskEditorPage extends AbstractTaskEditorPage {
 	 */
 	@Override
 	protected TaskDataModel createModel(TaskEditorInput input) throws CoreException {
-		TaskDataModel taskDataModel = super.createModel(input);
-		return SharedTaskDataModel.shareModel(input, getEditor(), taskDataModel);
+		String connectorKind = input.getTaskRepository().getConnectorKind();
+		AgileRepositoryConnectorUiServiceTrackerCustomizer serviceTrackerCustomizer = MylynAgileUIActivator
+				.getDefault().getServiceTrackerCustomizer();
+		AbstractAgileRepositoryConnectorUI connector = serviceTrackerCustomizer.getConnector(connectorKind);
+		if (connector != null) {
+			IModelRegistry registry = connector.getModelRegistry();
+			TaskDataModel model = registry.getRegisteredModel(getEditor());
+			if (model == null) {
+				model = super.createModel(input);
+				registry.registerModel(getEditor(), model);
+			}
+			return model;
+		}
+		throw new IllegalStateException(MylynAgileUIMessages
+				.getString("SharedTaskDataModel.agileConnectorRequired")); //$NON-NLS-1$
 	}
 
 	/**

@@ -24,6 +24,7 @@ import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.mylyn.commons.ui.CommonUiUtil;
 import org.eclipse.mylyn.internal.tasks.ui.util.TasksUiInternal;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
@@ -46,10 +47,12 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.forms.IFormPart;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -84,6 +87,31 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 	private MilestonePlanningWrapper wrapper;
 
 	/**
+	 * The backlog section.
+	 */
+	private Section backlogSection;
+
+	/**
+	 * The backlog teable viewer.
+	 */
+	private TableViewer backlogViewer;
+
+	/**
+	 * The milestone list section.
+	 */
+	private Section milestoneList;
+
+	/**
+	 * The milestone list client.
+	 */
+	private Composite milestoneListClient;
+
+	/**
+	 * The milestone list toolbar manager.
+	 */
+	private ToolBarManager milestoneListToolbarManager;
+
+	/**
 	 * {@inheritDoc}
 	 * 
 	 * @see org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPart#createControl(org.eclipse.swt.widgets.Composite,
@@ -91,6 +119,12 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 	 */
 	@Override
 	public void createControl(Composite parent, FormToolkit toolkit) {
+		// This method can be called to refresh the part on a TaskDataModel refresh() event
+		// In such a case, the content is not disposed before, so it needs to be disposed here
+		// otherwise all controls woul appear twice.
+		if (!hasDisposedContent(parent)) {
+			disposeContent(parent);
+		}
 		Form form = toolkit.createForm(parent);
 		form.setLayout(FormLayoutFactory.createClearGridLayout(false, 1));
 		form.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -103,75 +137,55 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 		backlog.setLayout(FormLayoutFactory.createFormPaneTableWrapLayout(false, 1));
 		backlog.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
 
-		Section backlogSection = toolkit.createSection(backlog, ExpandableComposite.TITLE_BAR
-				| Section.DESCRIPTION);
-		wrapper = new MilestonePlanningWrapper(getTaskData().getRoot());
-		wrapper.addListener(this);
-		String backlogTitle = wrapper.getBacklogTitle();
-		if (backlogTitle == null) {
-			backlogSection.setText(MylynAgileUIMessages
-					.getString("PlanningTaskEditorPart.DefaulBacklogLabel")); //$NON-NLS-1$
-		} else {
-			backlogSection.setText(backlogTitle);
-		}
+		backlogSection = toolkit.createSection(backlog, ExpandableComposite.TITLE_BAR | Section.DESCRIPTION);
+		backlogSection.setText(MylynAgileUIMessages.getString("PlanningTaskEditorPart.DefaulBacklogLabel")); //$NON-NLS-1$
 		backlogSection.setLayout(FormLayoutFactory.createClearTableWrapLayout(false, 1));
 		TableWrapData data = new TableWrapData(TableWrapData.FILL_GRAB);
 		backlogSection.setLayoutData(data);
-		String backlogItemTypeName;
-		backlogItemTypeName = MylynAgileUIMessages
-				.getString("PlanningTaskEditorPart.DefaulLabelColumnHeader"); //$NON-NLS-1$
-		TableViewer viewer = createBacklogItemsTable(toolkit, backlogSection, new MilestoneBacklogModel(
-				wrapper), backlogItemTypeName);
 
-		// Drag'n drop
-		viewer.addDragSupport(DND.DROP_MOVE, new Transfer[] {LocalSelectionTransfer.getTransfer() },
-				new BacklogItemDragListener(viewer));
-		viewer.addDropSupport(DND.DROP_MOVE, new Transfer[] {LocalSelectionTransfer.getTransfer() },
-				new BacklogItemDropAdapter(viewer));
-
-		final Section milestoneList = toolkit.createSection(body, ExpandableComposite.TITLE_BAR
-				| Section.EXPANDED);
-		String milestonesTitle = wrapper.getMilestonesTitle();
-		if (milestonesTitle == null) {
-			milestoneList.setText(MylynAgileUIMessages
-					.getString("PlanningTaskEditorPart.DefaulMilestonesTitle")); //$NON-NLS-1$
-		} else {
-			milestoneList.setText(milestonesTitle);
-		}
+		milestoneList = toolkit.createSection(body, ExpandableComposite.TITLE_BAR | Section.EXPANDED);
 		milestoneList.setLayout(FormLayoutFactory.createFormPaneTableWrapLayout(false, 1));
 		milestoneList.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
+		milestoneList.setText(MylynAgileUIMessages.getString("PlanningTaskEditorPart.DefaulMilestonesTitle")); //$NON-NLS-1$
 
-		final Composite milestoneListComp = toolkit.createComposite(milestoneList);
-		milestoneListComp.setLayout(FormLayoutFactory.createFormPaneTableWrapLayout(false, 1));
-		milestoneListComp.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
-		milestoneList.setClient(milestoneListComp);
+		milestoneListToolbarManager = new ToolBarManager(SWT.FLAT);
+		ToolBar toolbar = milestoneListToolbarManager.createControl(milestoneList);
+		milestoneListToolbarManager.update(true);
+		milestoneList.setTextClient(toolbar);
+		if (wrapper != null) {
+			wrapper.removeListener(this);
+		}
+		wrapper = new MilestonePlanningWrapper(getTaskData().getRoot());
+		wrapper.addListener(this);
+		backlogViewer = createBacklogItemsTable(toolkit, backlogSection);
+
+		// Drag'n drop
+		backlogViewer.addDragSupport(DND.DROP_MOVE, new Transfer[] {LocalSelectionTransfer.getTransfer() },
+				new BacklogItemDragListener(backlogViewer));
+		backlogViewer.addDropSupport(DND.DROP_MOVE, new Transfer[] {LocalSelectionTransfer.getTransfer() },
+				new BacklogItemDropAdapter(backlogViewer));
+		backlogViewer.setInput(new MilestoneBacklogModel(wrapper));
 
 		// Sub-milestones are stored in their order of creation, we want to display them
 		// in the reverse order.
+		milestoneListClient = toolkit.createComposite(milestoneList);
+		milestoneListClient.setLayout(FormLayoutFactory.createFormPaneTableWrapLayout(false, 1));
+		milestoneListClient.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
+		milestoneList.setClient(milestoneListClient);
 		for (SubMilestoneWrapper subMilestone : Lists.reverse(wrapper.getSubMilestones())) {
-			createMilestoneSection(toolkit, milestoneListComp, subMilestone, backlogItemTypeName);
+			createMilestoneSection(toolkit, subMilestone);
 		}
+		addNewMilestoneAction();
+		addCollapseAllAction();
+		addExpandAllAction();
 
-		ToolBarManager toolBarManager = new ToolBarManager(SWT.FLAT);
-		ToolBar toolbar = toolBarManager.createControl(milestoneList);
-
-		addNewMilestoneAction(toolBarManager);
-		addCollapseAllAction(milestoneListComp, toolBarManager);
-		addExpandAllAction(milestoneListComp, toolBarManager);
-
-		toolBarManager.update(true);
-		milestoneList.setTextClient(toolbar);
+		milestoneListToolbarManager.update(true);
 	}
 
 	/**
 	 * Add the expand all action.
-	 * 
-	 * @param milestoneList
-	 *            Milestones
-	 * @param toolBarManager
-	 *            Manager
 	 */
-	private void addExpandAllAction(final Composite milestoneList, ToolBarManager toolBarManager) {
+	private void addExpandAllAction() {
 		Action expandAll = new Action(MylynAgileUIMessages.getString("PlanningTaskEditorPart.ExpandAll"), //$NON-NLS-1$
 				MylynAgileUIActivator.getImageDescriptor(IMylynAgileIcons.EXPAND_ALL)) {
 
@@ -184,18 +198,13 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 				}
 			}
 		};
-		toolBarManager.add(expandAll);
+		milestoneListToolbarManager.add(expandAll);
 	}
 
 	/**
 	 * Add the collapse all action.
-	 * 
-	 * @param milestoneList
-	 *            Milestones
-	 * @param toolBarManager
-	 *            Manager
 	 */
-	private void addCollapseAllAction(final Composite milestoneList, ToolBarManager toolBarManager) {
+	private void addCollapseAllAction() {
 		Action collapseAll = new Action(MylynAgileUIMessages.getString("PlanningTaskEditorPart.CollapseAll"), //$NON-NLS-1$
 				MylynAgileUIActivator.getImageDescriptor(IMylynAgileIcons.COLLAPSE_ALL)) {
 			@Override
@@ -207,16 +216,13 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 				}
 			}
 		};
-		toolBarManager.add(collapseAll);
+		milestoneListToolbarManager.add(collapseAll);
 	}
 
 	/**
 	 * Add the new milestone action.
-	 * 
-	 * @param toolBarManager
-	 *            The manager.
 	 */
-	private void addNewMilestoneAction(ToolBarManager toolBarManager) {
+	private void addNewMilestoneAction() {
 		Action newMilestone = new Action(MylynAgileUIMessages
 				.getString("PlanningTaskEditorPart.NewMilestone"), MylynAgileUIActivator //$NON-NLS-1$
 				.getImageDescriptor(IMylynAgileIcons.NEW_MILESTONE_16X16)) {
@@ -239,7 +245,7 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 				}
 			}
 		};
-		toolBarManager.add(newMilestone);
+		milestoneListToolbarManager.add(newMilestone);
 	}
 
 	/**
@@ -298,16 +304,11 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 	 * 
 	 * @param toolkit
 	 *            The toolkit to use.
-	 * @param parentComposite
-	 *            The parent composite that will contain the created section.
 	 * @param subMilestone
 	 *            The sub-milestone wrapper.
-	 * @param backlogItemTypeName
-	 *            The label to use for the milestone's backlog items type.
 	 */
-	private void createMilestoneSection(FormToolkit toolkit, Composite parentComposite,
-			SubMilestoneWrapper subMilestone, String backlogItemTypeName) {
-		Section milestoneSection = toolkit.createSection(parentComposite, ExpandableComposite.TITLE_BAR
+	private void createMilestoneSection(FormToolkit toolkit, SubMilestoneWrapper subMilestone) {
+		Section milestoneSection = toolkit.createSection(milestoneListClient, ExpandableComposite.TITLE_BAR
 				| Section.DESCRIPTION | Section.TWISTIE | Section.EXPANDED);
 		milestoneSection.setLayout(FormLayoutFactory.createClearTableWrapLayout(false, 1));
 		TableWrapData milestoneLayoutData = new TableWrapData(TableWrapData.FILL_GRAB);
@@ -315,8 +316,8 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 		MilestoneSectionViewer milestoneViewer = new MilestoneSectionViewer(milestoneSection);
 		milestoneViewer.setInput(new SubMilestoneBacklogModel(wrapper, subMilestone));
 		milestoneViewer.refresh();
-		TableViewer viewer = createBacklogItemsTable(toolkit, milestoneSection, new SubMilestoneBacklogModel(
-				wrapper, subMilestone), backlogItemTypeName);
+		TableViewer viewer = createBacklogItemsTable(toolkit, milestoneSection);
+		viewer.setInput(new SubMilestoneBacklogModel(wrapper, subMilestone));
 
 		// Drag'n drop
 		viewer.addDragSupport(DND.DROP_MOVE, new Transfer[] {LocalSelectionTransfer.getTransfer() },
@@ -332,14 +333,9 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 	 *            The form toolkit to use
 	 * @param section
 	 *            The parent section which will contain the table and use it as its client
-	 * @param container
-	 *            The container of the backlog items
-	 * @param backlogItemTypeName
-	 *            The label to use for the type of the backlog items (used as header for one of the columns
 	 * @return The TableViewer that displays the milestone's backlog items.
 	 */
-	private TableViewer createBacklogItemsTable(final FormToolkit toolkit, final Section section,
-			final IBacklog container, final String backlogItemTypeName) {
+	private TableViewer createBacklogItemsTable(final FormToolkit toolkit, final Section section) {
 		final String strMissing = MylynAgileUIMessages.getString("PlanningTaskEditorPart.MissingTextValue"); //$NON-NLS-1$
 		final Table table = toolkit.createTable(section, SWT.BORDER | SWT.MULTI | SWT.FULL_SELECTION);
 		section.setClient(table);
@@ -402,7 +398,8 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 
 		// Column "label", whose label is dynamic ("User Story" if the BacklogItem represents a UserStory)
 		TableViewerColumn colLabel = new TableViewerColumn(viewer, SWT.NONE);
-		colLabel.getColumn().setText(backlogItemTypeName);
+		colLabel.getColumn().setText(
+				MylynAgileUIMessages.getString("PlanningTaskEditorPart.DefaulBacklogLabel")); //$NON-NLS-1$
 		colLabel.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
@@ -445,7 +442,6 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 		colParent.setLabelProvider(new ParentLabelProvider(table));
 		colParent.getColumn().setWidth(IMylynAgileUIConstants.DEFAULT_PARENT_COL_WIDTH);
 
-		viewer.setInput(container);
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
 		return viewer;
@@ -600,6 +596,49 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 		if (repository != null) {
 			TasksUiUtil.openTask(repository, backlogItemwrapper.getParentDisplayId());
 		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPart#getPartId()
+	 */
+	@Override
+	public String getPartId() {
+		return IMylynAgileUIConstants.PLANNING_TASK_EDITOR_PART_DESC_ID;
+	}
+
+	/**
+	 * Disposes the widgets.
+	 * 
+	 * @param parent
+	 *            the parent.
+	 */
+	private void disposeContent(Composite parent) {
+		Menu menu = parent.getMenu();
+		CommonUiUtil.setMenu(parent, null);
+		// clear old controls and parts
+		for (Control control : parent.getChildren()) {
+			control.dispose();
+		}
+		for (IFormPart part : getManagedForm().getParts()) {
+			part.dispose();
+			getManagedForm().removePart(part);
+		}
+		// restore menu
+		parent.setMenu(menu);
+	}
+
+	/**
+	 * Indicates whether createControl() can be called.
+	 * 
+	 * @param parent
+	 *            the parent.
+	 * @return <code>true</code> if and only if internal controls are disposed and need to be re-created.
+	 */
+	private boolean hasDisposedContent(Composite parent) {
+		Control[] controls = parent.getChildren();
+		return controls == null || controls.length == 0 || controls[0].isDisposed();
 	}
 
 }
