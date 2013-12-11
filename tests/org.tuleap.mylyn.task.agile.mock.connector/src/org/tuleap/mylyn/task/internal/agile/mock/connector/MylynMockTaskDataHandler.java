@@ -50,7 +50,7 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 	/**
 	 * Capacity.
 	 */
-	private static final String CAPACITY = "20";
+	private static final String CAPACITY = "20"; //$NON-NLS-1$
 
 	/**
 	 * Duration.
@@ -378,10 +378,11 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 	 */
 	private BacklogItemWrapper addNewBacklogItem(MilestonePlanningWrapper wrapper) {
 		BacklogItemWrapper bi = wrapper.addBacklogItem(Integer.toString(backlogItemIndex));
-		bi.setInitialEffort("4");
+		bi.setInitialEffort("4"); //$NON-NLS-1$
 		bi.setLabel("User Story " + backlogItemIndex); //$NON-NLS-1$
 		bi.setParent("3:809#" + (backlogItemIndex + 1), Integer.toString(backlogItemIndex + 1)); //$NON-NLS-1$
 		bi.setType("User stories"); //$NON-NLS-1$
+		bi.setStatus("Closed"); //$NON-NLS-1$
 		backlogItemIndex++;
 		return bi;
 	}

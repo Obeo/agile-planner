@@ -56,6 +56,11 @@ public interface IMylynAgileUIConstants {
 	int DEFAULT_PARENT_COL_WIDTH = 80;
 
 	/**
+	 * Default width of column "Status".
+	 */
+	int DEFAULT_STATUS_COL_WIDTH = 80;
+
+	/**
 	 * Default margin used in cardwall.
 	 */
 	int MARGIN = 3;

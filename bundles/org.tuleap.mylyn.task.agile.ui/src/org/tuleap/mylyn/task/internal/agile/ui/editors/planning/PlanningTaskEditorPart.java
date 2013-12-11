@@ -381,6 +381,25 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 		});
 		colType.getColumn().setWidth(IMylynAgileUIConstants.DEFAULT_TYPE_COL_WIDTH);
 
+		// Column status
+		TableViewerColumn colStatus = new TableViewerColumn(viewer, SWT.NONE);
+		colStatus.getColumn().setText("Status"); //$NON-NLS-1$
+		colStatus.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				String ret;
+				if (element == null) {
+					ret = strMissing;
+				} else if (element instanceof BacklogItemWrapper) {
+					ret = ((BacklogItemWrapper)element).getStatus();
+				} else {
+					ret = element.toString();
+				}
+				return ret;
+			}
+		});
+		colStatus.getColumn().setWidth(IMylynAgileUIConstants.DEFAULT_TYPE_COL_WIDTH);
+
 		// Column "label", whose label is dynamic ("User Story" if the BacklogItem represents a UserStory)
 		TableViewerColumn colLabel = new TableViewerColumn(viewer, SWT.NONE);
 		colLabel.getColumn().setText(backlogItemTypeName);
@@ -498,7 +517,8 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 			item.setBackground(0, Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
 			openTask(item);
 		}
-		Rectangle parentColumn = item.getBounds(3);
+		Rectangle parentColumn = item.getBounds(5);
+
 		if (parentColumn.contains(point)) {
 			table.deselectAll();
 			item.setBackground(0, Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
@@ -525,7 +545,8 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 					return;
 				}
 				Rectangle idColumn = item.getBounds(0);
-				Rectangle parentColumn = item.getBounds(3);
+				Rectangle parentColumn = item.getBounds(5);
+
 				Cursor handCursor = new Cursor(table.getShell().getDisplay(), SWT.CURSOR_HAND);
 				Cursor arrowCursor = new Cursor(table.getShell().getDisplay(), SWT.CURSOR_ARROW);
 				if (idColumn.contains(point) || parentColumn.contains(point)) {

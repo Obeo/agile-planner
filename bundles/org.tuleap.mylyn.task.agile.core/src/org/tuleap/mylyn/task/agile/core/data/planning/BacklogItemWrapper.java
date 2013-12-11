@@ -85,6 +85,11 @@ public class BacklogItemWrapper extends AbstractTaskAttributeWrapper {
 	public static final String SUFFIX_TYPE = "type"; //$NON-NLS-1$
 
 	/**
+	 * Suffix appended to the ids of Task Attributes representing statuses.
+	 */
+	public static final String SUFFIX_STATUS = "status"; //$NON-NLS-1$
+
+	/**
 	 * The parent planning.
 	 */
 	private final MilestonePlanningWrapper parent;
@@ -352,5 +357,51 @@ public class BacklogItemWrapper extends AbstractTaskAttributeWrapper {
 	 */
 	private String getTypeAttributeId() {
 		return getAttributeId(attribute, SUFFIX_TYPE);
+	}
+
+	/**
+	 * Status getter.
+	 * 
+	 * @return The item's status, or {@code null} if not defined.
+	 */
+	public String getStatus() {
+		String result = null;
+		TaskAttribute statusAttribute = root.getMappedAttribute(getStatusAttributeId());
+		if (statusAttribute != null) {
+			result = statusAttribute.getValue();
+		}
+		return result;
+	}
+
+	/**
+	 * Status setter.
+	 * 
+	 * @param status
+	 *            The item's status. If it is null, nothing happens and the former status, if present, remains
+	 *            unchanged.
+	 */
+	public void setStatus(String status) {
+		if (status == null) {
+			return;
+		}
+		TaskAttribute statusAttribute = root.getMappedAttribute(getStatusAttributeId());
+		if (statusAttribute == null) {
+			statusAttribute = createAgileAttribute(getStatusAttributeId());
+			statusAttribute.getMetaData().setType(TaskAttribute.TYPE_SHORT_RICH_TEXT);
+		}
+		String oldValue = statusAttribute.getValue();
+		if (!status.equals(oldValue)) {
+			statusAttribute.setValue(status);
+			fireAttributeChanged(statusAttribute);
+		}
+	}
+
+	/**
+	 * Computes the unique id of the type attribute.
+	 * 
+	 * @return The unique id of the type attribute.
+	 */
+	private String getStatusAttributeId() {
+		return getAttributeId(attribute, SUFFIX_STATUS);
 	}
 }
