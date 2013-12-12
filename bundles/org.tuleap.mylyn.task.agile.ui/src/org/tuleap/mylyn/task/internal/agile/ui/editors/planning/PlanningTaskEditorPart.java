@@ -595,7 +595,7 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 			}
 		}
 		if (repository != null) {
-			TasksUiUtil.openTask(repository, backlogItemwrapper.getParentDisplayId());
+			TasksUiUtil.openTask(repository, backlogItemwrapper.getParentId());
 		}
 	}
 
