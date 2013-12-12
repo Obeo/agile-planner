@@ -172,7 +172,8 @@ public class BacklogItemWrapper extends AbstractTaskAttributeWrapper {
 	public String getAssignedMilestoneId() {
 		String result = null;
 		TaskAttribute att = root.getMappedAttribute(getAssignedIdAttributeId());
-		if (att != null && att.hasValue()) {
+		// Replace with hasValue() when depends on Mylyn 3.9
+		if (att != null && att.getValues().size() > 0) {
 			result = att.getValue();
 		}
 		return result;
@@ -205,7 +206,8 @@ public class BacklogItemWrapper extends AbstractTaskAttributeWrapper {
 	public void removeAssignedMilestoneId() {
 		TaskAttribute att = root.getMappedAttribute(getAssignedIdAttributeId());
 		if (att != null) {
-			if (att.hasValue()) {
+			// Replace with hasValue() when depends on Mylyn 3.9
+			if (att.getValues().size() > 0) {
 				att.clearValues();
 				fireAttributeChanged(att);
 			}
