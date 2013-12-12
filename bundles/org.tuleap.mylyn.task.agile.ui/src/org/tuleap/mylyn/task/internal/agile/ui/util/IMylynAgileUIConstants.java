@@ -33,7 +33,7 @@ public interface IMylynAgileUIConstants {
 	/**
 	 * Default width of column "Points".
 	 */
-	int DEFAULT_POINTS_COL_WIDTH = 80;
+	int DEFAULT_POINTS_COL_WIDTH = 50;
 
 	/**
 	 * Default width of column "Id".
@@ -48,17 +48,17 @@ public interface IMylynAgileUIConstants {
 	/**
 	 * Default width of column "Label".
 	 */
-	int DEFAULT_LABEL_COL_WIDTH = 250;
+	int DEFAULT_LABEL_COL_WIDTH = 180;
 
 	/**
 	 * Default width of column "Parent".
 	 */
-	int DEFAULT_PARENT_COL_WIDTH = 80;
+	int DEFAULT_PARENT_COL_WIDTH = 60;
 
 	/**
 	 * Default width of column "Status".
 	 */
-	int DEFAULT_STATUS_COL_WIDTH = 80;
+	int DEFAULT_STATUS_COL_WIDTH = 50;
 
 	/**
 	 * Default margin used in cardwall.

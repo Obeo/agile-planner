@@ -82,34 +82,14 @@ import org.tuleap.mylyn.task.internal.agile.ui.util.MylynAgileUIMessages;
 public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements ITaskAttributeChangeListener {
 
 	/**
+	 * The index of the parent column.
+	 */
+	private static final int PARENT_COLUMN_INDEX = 4;
+
+	/**
 	 * The edited planning wrapper.
 	 */
 	private MilestonePlanningWrapper wrapper;
-
-	/**
-	 * The backlog section.
-	 */
-	private Section backlogSection;
-
-	/**
-	 * The backlog teable viewer.
-	 */
-	private TableViewer backlogViewer;
-
-	/**
-	 * The milestone list section.
-	 */
-	private Section milestoneList;
-
-	/**
-	 * The milestone list client.
-	 */
-	private Composite milestoneListClient;
-
-	/**
-	 * The milestone list toolbar manager.
-	 */
-	private ToolBarManager milestoneListToolbarManager;
 
 	/**
 	 * {@inheritDoc}
@@ -130,34 +110,35 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 		form.setLayoutData(new GridData(GridData.FILL_BOTH));
 
 		Composite body = form.getBody();
-		body.setLayout(FormLayoutFactory.createFormTableWrapLayout(true, 2));
+		body.setLayout(FormLayoutFactory.createFormPaneTableWrapLayout(false, 2));
 		body.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
 
 		Composite backlog = toolkit.createComposite(body);
 		backlog.setLayout(FormLayoutFactory.createFormPaneTableWrapLayout(false, 1));
 		backlog.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
 
-		backlogSection = toolkit.createSection(backlog, ExpandableComposite.TITLE_BAR | Section.DESCRIPTION);
+		Section backlogSection = toolkit.createSection(backlog, ExpandableComposite.TITLE_BAR
+				| Section.DESCRIPTION);
 		backlogSection.setText(MylynAgileUIMessages.getString("PlanningTaskEditorPart.DefaulBacklogLabel")); //$NON-NLS-1$
 		backlogSection.setLayout(FormLayoutFactory.createClearTableWrapLayout(false, 1));
 		TableWrapData data = new TableWrapData(TableWrapData.FILL_GRAB);
 		backlogSection.setLayoutData(data);
 
-		milestoneList = toolkit.createSection(body, ExpandableComposite.TITLE_BAR | Section.EXPANDED);
+		Section milestoneList = toolkit.createSection(body, ExpandableComposite.TITLE_BAR | Section.EXPANDED);
 		milestoneList.setLayout(FormLayoutFactory.createFormPaneTableWrapLayout(false, 1));
 		milestoneList.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
 		milestoneList.setText(MylynAgileUIMessages.getString("PlanningTaskEditorPart.DefaulMilestonesTitle")); //$NON-NLS-1$
 
-		milestoneListToolbarManager = new ToolBarManager(SWT.FLAT);
-		ToolBar toolbar = milestoneListToolbarManager.createControl(milestoneList);
-		milestoneListToolbarManager.update(true);
+		ToolBarManager toolbarManager = new ToolBarManager(SWT.FLAT);
+		ToolBar toolbar = toolbarManager.createControl(milestoneList);
+		toolbarManager.update(true);
 		milestoneList.setTextClient(toolbar);
 		if (wrapper != null) {
 			wrapper.removeListener(this);
 		}
 		wrapper = new MilestonePlanningWrapper(getTaskData().getRoot());
 		wrapper.addListener(this);
-		backlogViewer = createBacklogItemsTable(toolkit, backlogSection);
+		TableViewer backlogViewer = createBacklogItemsTable(toolkit, backlogSection);
 
 		// Drag'n drop
 		backlogViewer.addDragSupport(DND.DROP_MOVE, new Transfer[] {LocalSelectionTransfer.getTransfer() },
@@ -168,24 +149,29 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 
 		// Sub-milestones are stored in their order of creation, we want to display them
 		// in the reverse order.
-		milestoneListClient = toolkit.createComposite(milestoneList);
+		Composite milestoneListClient = toolkit.createComposite(milestoneList);
 		milestoneListClient.setLayout(FormLayoutFactory.createFormPaneTableWrapLayout(false, 1));
 		milestoneListClient.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
 		milestoneList.setClient(milestoneListClient);
 		for (SubMilestoneWrapper subMilestone : Lists.reverse(wrapper.getSubMilestones())) {
-			createMilestoneSection(toolkit, subMilestone);
+			createMilestoneSection(toolkit, subMilestone, milestoneListClient);
 		}
-		addNewMilestoneAction();
-		addCollapseAllAction();
-		addExpandAllAction();
+		addNewMilestoneAction(milestoneList, toolbarManager);
+		addCollapseAllAction(milestoneList, toolbarManager);
+		addExpandAllAction(milestoneList, toolbarManager);
 
-		milestoneListToolbarManager.update(true);
+		toolbarManager.update(true);
 	}
 
 	/**
 	 * Add the expand all action.
+	 * 
+	 * @param milestoneList
+	 *            the milestone list section
+	 * @param toolbarManager
+	 *            The toolbar manager
 	 */
-	private void addExpandAllAction() {
+	private void addExpandAllAction(final Section milestoneList, ToolBarManager toolbarManager) {
 		Action expandAll = new Action(MylynAgileUIMessages.getString("PlanningTaskEditorPart.ExpandAll"), //$NON-NLS-1$
 				MylynAgileUIActivator.getImageDescriptor(IMylynAgileIcons.EXPAND_ALL)) {
 
@@ -198,13 +184,18 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 				}
 			}
 		};
-		milestoneListToolbarManager.add(expandAll);
+		toolbarManager.add(expandAll);
 	}
 
 	/**
 	 * Add the collapse all action.
+	 * 
+	 * @param milestoneList
+	 *            the milestone list section
+	 * @param toolbarManager
+	 *            The toolbar manager
 	 */
-	private void addCollapseAllAction() {
+	private void addCollapseAllAction(final Section milestoneList, ToolBarManager toolbarManager) {
 		Action collapseAll = new Action(MylynAgileUIMessages.getString("PlanningTaskEditorPart.CollapseAll"), //$NON-NLS-1$
 				MylynAgileUIActivator.getImageDescriptor(IMylynAgileIcons.COLLAPSE_ALL)) {
 			@Override
@@ -216,13 +207,18 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 				}
 			}
 		};
-		milestoneListToolbarManager.add(collapseAll);
+		toolbarManager.add(collapseAll);
 	}
 
 	/**
 	 * Add the new milestone action.
+	 * 
+	 * @param milestoneList
+	 *            the milestone list section
+	 * @param toolbarManager
+	 *            The toolbar manager
 	 */
-	private void addNewMilestoneAction() {
+	private void addNewMilestoneAction(final Section milestoneList, ToolBarManager toolbarManager) {
 		Action newMilestone = new Action(MylynAgileUIMessages
 				.getString("PlanningTaskEditorPart.NewMilestone"), MylynAgileUIActivator //$NON-NLS-1$
 				.getImageDescriptor(IMylynAgileIcons.NEW_MILESTONE_16X16)) {
@@ -245,7 +241,7 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 				}
 			}
 		};
-		milestoneListToolbarManager.add(newMilestone);
+		toolbarManager.add(newMilestone);
 	}
 
 	/**
@@ -306,8 +302,11 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 	 *            The toolkit to use.
 	 * @param subMilestone
 	 *            The sub-milestone wrapper.
+	 * @param milestoneListClient
+	 *            The milestone list client composite
 	 */
-	private void createMilestoneSection(FormToolkit toolkit, SubMilestoneWrapper subMilestone) {
+	private void createMilestoneSection(FormToolkit toolkit, SubMilestoneWrapper subMilestone,
+			Composite milestoneListClient) {
 		Section milestoneSection = toolkit.createSection(milestoneListClient, ExpandableComposite.TITLE_BAR
 				| Section.DESCRIPTION | Section.TWISTIE | Section.EXPANDED);
 		milestoneSection.setLayout(FormLayoutFactory.createClearTableWrapLayout(false, 1));
@@ -344,23 +343,22 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 		viewer.setContentProvider(new BacklogItemListContentProvider());
 
 		// Column "id"
-		TableViewerColumn colId = new TableViewerColumn(viewer, SWT.NONE);
+		final TableViewerColumn colId = new TableViewerColumn(viewer, SWT.NONE);
 		colId.getColumn().setText(
 				MylynAgileUIMessages.getString("PlanningTaskEditorPart.DefaultIdColumnHeader")); //$NON-NLS-1$
 
 		// Set the HyperLink label provider
 		colId.setLabelProvider(new HyperlinkLabelProvider(table));
-
 		colId.getColumn().setWidth(IMylynAgileUIConstants.DEFAULT_ID_COL_WIDTH);
 
 		// Add the listener
-
 		viewer.getTable().addMouseListener(this.getMouseListener(table));
 		viewer.getTable().addMouseMoveListener(this.getMouseMoveListener(table));
 
 		// Column type
-		TableViewerColumn colType = new TableViewerColumn(viewer, SWT.NONE);
-		colType.getColumn().setText("Type"); //$NON-NLS-1$
+		final TableViewerColumn colType = new TableViewerColumn(viewer, SWT.NONE);
+		colType.getColumn().setText(
+				MylynAgileUIMessages.getString("PlanningTaskEditorPart.DefaultTypeColumnHeader")); //$NON-NLS-1$
 		colType.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
@@ -377,27 +375,8 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 		});
 		colType.getColumn().setWidth(IMylynAgileUIConstants.DEFAULT_TYPE_COL_WIDTH);
 
-		// Column status
-		TableViewerColumn colStatus = new TableViewerColumn(viewer, SWT.NONE);
-		colStatus.getColumn().setText("Status"); //$NON-NLS-1$
-		colStatus.setLabelProvider(new ColumnLabelProvider() {
-			@Override
-			public String getText(Object element) {
-				String ret;
-				if (element == null) {
-					ret = strMissing;
-				} else if (element instanceof BacklogItemWrapper) {
-					ret = ((BacklogItemWrapper)element).getStatus();
-				} else {
-					ret = element.toString();
-				}
-				return ret;
-			}
-		});
-		colStatus.getColumn().setWidth(IMylynAgileUIConstants.DEFAULT_TYPE_COL_WIDTH);
-
 		// Column "label", whose label is dynamic ("User Story" if the BacklogItem represents a UserStory)
-		TableViewerColumn colLabel = new TableViewerColumn(viewer, SWT.NONE);
+		final TableViewerColumn colLabel = new TableViewerColumn(viewer, SWT.NONE);
 		colLabel.getColumn().setText(
 				MylynAgileUIMessages.getString("PlanningTaskEditorPart.DefaulBacklogLabel")); //$NON-NLS-1$
 		colLabel.setLabelProvider(new ColumnLabelProvider() {
@@ -416,7 +395,7 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 		});
 		colLabel.getColumn().setWidth(IMylynAgileUIConstants.DEFAULT_LABEL_COL_WIDTH);
 
-		TableViewerColumn colPoints = new TableViewerColumn(viewer, SWT.NONE);
+		final TableViewerColumn colPoints = new TableViewerColumn(viewer, SWT.NONE);
 		String backlogItemPointLabel = MylynAgileUIMessages
 				.getString("PlanningTaskEditorPart.DefaultPointsColumnHeader"); //$NON-NLS-1$
 		colPoints.getColumn().setText(backlogItemPointLabel);
@@ -437,10 +416,31 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 		colPoints.getColumn().setWidth(IMylynAgileUIConstants.DEFAULT_POINTS_COL_WIDTH);
 
 		// Column "parent"
-		TableViewerColumn colParent = new TableViewerColumn(viewer, SWT.NONE);
-		colParent.getColumn().setText(MylynAgileUIMessages.getString("PlanningTaskEditorPart.ParentHeader")); //$NON-NLS-1$
+		final TableViewerColumn colParent = new TableViewerColumn(viewer, SWT.NONE);
+		colParent.getColumn().setText(
+				MylynAgileUIMessages.getString("PlanningTaskEditorPart.DefaultParentColumnHeader")); //$NON-NLS-1$
 		colParent.setLabelProvider(new ParentLabelProvider(table));
 		colParent.getColumn().setWidth(IMylynAgileUIConstants.DEFAULT_PARENT_COL_WIDTH);
+
+		// Column status
+		final TableViewerColumn colStatus = new TableViewerColumn(viewer, SWT.NONE);
+		colStatus.getColumn().setText(
+				MylynAgileUIMessages.getString("PlanningTaskEditorPart.DefaultStatusColumnHeader")); //$NON-NLS-1$
+		colStatus.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				String ret;
+				if (element == null) {
+					ret = strMissing;
+				} else if (element instanceof BacklogItemWrapper) {
+					ret = ((BacklogItemWrapper)element).getStatus();
+				} else {
+					ret = element.toString();
+				}
+				return ret;
+			}
+		});
+		colStatus.getColumn().setWidth(IMylynAgileUIConstants.DEFAULT_STATUS_COL_WIDTH);
 
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
@@ -512,13 +512,14 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 			table.deselectAll();
 			item.setBackground(0, Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
 			openTask(item);
-		}
-		Rectangle parentColumn = item.getBounds(5);
+		} else {
+			Rectangle parentColumn = item.getBounds(PARENT_COLUMN_INDEX);
 
-		if (parentColumn.contains(point)) {
-			table.deselectAll();
-			item.setBackground(0, Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
-			openParentTask(item);
+			if (parentColumn.contains(point)) {
+				table.deselectAll();
+				item.setBackground(0, Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
+				openParentTask(item);
+			}
 		}
 	}
 
@@ -541,7 +542,7 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 					return;
 				}
 				Rectangle idColumn = item.getBounds(0);
-				Rectangle parentColumn = item.getBounds(5);
+				Rectangle parentColumn = item.getBounds(PARENT_COLUMN_INDEX);
 
 				Cursor handCursor = new Cursor(table.getShell().getDisplay(), SWT.CURSOR_HAND);
 				Cursor arrowCursor = new Cursor(table.getShell().getDisplay(), SWT.CURSOR_ARROW);
