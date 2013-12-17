@@ -13,6 +13,7 @@ package org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.part;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartFactory;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
+import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPart;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.CardWrapper;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.SwimlaneWrapper;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.CardwallModel;
@@ -21,11 +22,26 @@ import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.SwimlaneCe
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.SwimlaneModel;
 
 /**
- * The edit part factory for the card wall.
+ * The edit taskEditorPart factory for the card wall.
  * 
  * @author <a href="mailto:cedric.notot@obeo.fr">Cedric Notot</a>
  */
 public class CardwallEditPartFactory implements EditPartFactory {
+
+	/**
+	 * The task editor taskEditorPart displaying the cardwall.
+	 */
+	private AbstractTaskEditorPart taskEditorPart;
+
+	/**
+	 * Constructor.
+	 * 
+	 * @param taskEditorPart
+	 *            THe task editor taskEditorPart that displays the cardwall.
+	 */
+	public CardwallEditPartFactory(AbstractTaskEditorPart taskEditorPart) {
+		this.taskEditorPart = taskEditorPart;
+	}
 
 	@Override
 	public EditPart createEditPart(EditPart context, Object model) {
@@ -35,11 +51,9 @@ public class CardwallEditPartFactory implements EditPartFactory {
 		} else if (model instanceof HeaderModel) {
 			part = new HeaderEditPart();
 		} else if (model instanceof CardWrapper) {
-			part = new CardEditPart();
-		} else if (model instanceof CardWrapper) {
-			part = new CardEditPart();
+			part = new CardEditPart(taskEditorPart);
 		} else if (model instanceof SwimlaneCell) {
-			part = new CellEditPart();
+			part = new CellEditPart(taskEditorPart);
 		} else if (model instanceof SwimlaneModel) {
 			part = new SwimlaneEditPart();
 		} else if (model instanceof SwimlaneWrapper) {
@@ -47,7 +61,7 @@ public class CardwallEditPartFactory implements EditPartFactory {
 		} else if (model instanceof TaskAttribute) {
 			part = new CardFieldEditPart();
 		} else {
-			part = new ColumnHeaderEditPart();
+			part = new ColumnHeaderEditPart(taskEditorPart);
 		}
 		part.setModel(model);
 		return part;

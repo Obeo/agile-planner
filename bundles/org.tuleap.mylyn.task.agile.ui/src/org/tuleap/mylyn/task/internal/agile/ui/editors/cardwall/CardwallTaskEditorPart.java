@@ -99,7 +99,7 @@ public class CardwallTaskEditorPart extends AbstractTaskEditorPart implements IT
 		editDomain.addViewer(viewer);
 
 		viewer.getControl().setBackground(ColorConstants.listBackground);
-		viewer.setEditPartFactory(new CardwallEditPartFactory());
+		viewer.setEditPartFactory(new CardwallEditPartFactory(this));
 
 		synchronizer = new SelectionSynchronizer();
 		synchronizer.addViewer(viewer);
@@ -159,6 +159,7 @@ public class CardwallTaskEditorPart extends AbstractTaskEditorPart implements IT
 				cardwallModel.setFilter(text.getText());
 			}
 		};
+		// FIXME It'd be better not to pass the listener to the constructor...
 		FilterCardsContributionItem item = new FilterCardsContributionItem(filterModifyListener);
 		toolBarManager.add(item);
 	}

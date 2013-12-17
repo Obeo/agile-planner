@@ -14,6 +14,7 @@ import org.eclipse.draw2d.ChangeEvent;
 import org.eclipse.draw2d.ChangeListener;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
+import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPart;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.figure.ColumnHeaderFigure;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.figure.FoldableColumnHeaderFigure;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.ColumnModel;
@@ -29,6 +30,21 @@ public class ColumnHeaderEditPart extends AbstractGraphicalEditPart {
 	 * Listener for folding the card's details.
 	 */
 	private ChangeListener foldingChangeListener;
+
+	/**
+	 * The task editor taskEditorPart displaying the cardwall.
+	 */
+	private AbstractTaskEditorPart taskEditorPart;
+
+	/**
+	 * Constructor.
+	 * 
+	 * @param taskEditorPart
+	 *            THe task editor taskEditorPart that displays the cardwall.
+	 */
+	public ColumnHeaderEditPart(AbstractTaskEditorPart taskEditorPart) {
+		this.taskEditorPart = taskEditorPart;
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -123,6 +139,8 @@ public class ColumnHeaderEditPart extends AbstractGraphicalEditPart {
 					ColumnModel column = (ColumnModel)getModel();
 					FoldableColumnHeaderFigure fig = (FoldableColumnHeaderFigure)getFigure();
 					column.setFolded(fig.isFolded());
+					// The wrapping page needs to reflow so that scrollabrs don't appear where they shouldn't
+					taskEditorPart.getTaskEditorPage().reflow();
 				}
 			};
 			f.addFoldingListener(foldingChangeListener);

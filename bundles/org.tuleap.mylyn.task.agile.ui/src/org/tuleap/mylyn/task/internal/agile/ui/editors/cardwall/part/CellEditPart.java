@@ -21,6 +21,7 @@ import org.eclipse.draw2d.StackLayout;
 import org.eclipse.draw2d.ToolbarLayout;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
+import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPart;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.CardWrapper;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.figure.FoldableCellFigure;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.ICardwallProperties;
@@ -49,6 +50,21 @@ public class CellEditPart extends AbstractGraphicalEditPart {
 	 * The filter listener.
 	 */
 	private PropertyChangeListener filterListener;
+
+	/**
+	 * The task editor taskEditorPart displaying the cardwall.
+	 */
+	private AbstractTaskEditorPart taskEditorPart;
+
+	/**
+	 * Constructor.
+	 * 
+	 * @param taskEditorPart
+	 *            THe task editor taskEditorPart that displays the cardwall.
+	 */
+	public CellEditPart(AbstractTaskEditorPart taskEditorPart) {
+		this.taskEditorPart = taskEditorPart;
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -129,6 +145,8 @@ public class CellEditPart extends AbstractGraphicalEditPart {
 			public void propertyChange(PropertyChangeEvent evt) {
 				if (evt != null && ICardwallProperties.FOLDED.equals(evt.getPropertyName())) {
 					refreshVisuals();
+					// The wrapping page needs to reflow so that scrollabrs don't appear where they shouldn't
+					taskEditorPart.getTaskEditorPage().reflow();
 				}
 			}
 		};

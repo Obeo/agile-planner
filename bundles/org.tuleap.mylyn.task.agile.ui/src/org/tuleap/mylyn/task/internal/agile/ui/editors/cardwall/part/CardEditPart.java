@@ -19,6 +19,7 @@ import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
+import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPart;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.CardWrapper;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.figure.CardDetailsPanel;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.figure.CardFigure;
@@ -39,6 +40,21 @@ public class CardEditPart extends AbstractGraphicalEditPart {
 	 * Listener for clicking on the card's ID.
 	 */
 	private MouseListener urlMouseListener;
+
+	/**
+	 * The task editor taskEditorPart displaying the cardwall.
+	 */
+	private AbstractTaskEditorPart taskEditorPart;
+
+	/**
+	 * Constructor.
+	 * 
+	 * @param taskEditorPart
+	 *            THe task editor taskEditorPart that displays the cardwall.
+	 */
+	public CardEditPart(AbstractTaskEditorPart taskEditorPart) {
+		this.taskEditorPart = taskEditorPart;
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -145,6 +161,8 @@ public class CardEditPart extends AbstractGraphicalEditPart {
 				getDetailsPanel().toggleDetails();
 				getDetailsPanel().invalidateTree();
 				refreshVisuals();
+				// The wrapping page needs to reflow so that scrollabrs don't appear where they shouldn't
+				taskEditorPart.getTaskEditorPage().reflow();
 			}
 
 			@Override
