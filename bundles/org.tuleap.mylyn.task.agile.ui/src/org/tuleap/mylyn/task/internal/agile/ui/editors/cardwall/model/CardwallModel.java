@@ -23,7 +23,7 @@ import org.tuleap.mylyn.task.agile.core.data.cardwall.SwimlaneWrapper;
  * 
  * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
  */
-public class CardwallModel {
+public class CardwallModel extends AbstractNotifyingModel {
 
 	/**
 	 * The cardwall wrapper.
@@ -39,6 +39,11 @@ public class CardwallModel {
 	 * The cardwall's swimlanes.
 	 */
 	private List<SwimlaneModel> swimlanes;
+
+	/**
+	 * The filter criterion.
+	 */
+	private String filter;
 
 	/**
 	 * The UI model of a cardwall.
@@ -89,6 +94,30 @@ public class CardwallModel {
 			}
 		}
 		return swimlanes;
+	}
+
+	/**
+	 * Filter getter.
+	 * 
+	 * @return The filter.
+	 */
+	public String getFilter() {
+		return filter;
+	}
+
+	/**
+	 * Filter setter.
+	 * 
+	 * @param filter
+	 *            the filter value.
+	 */
+	public void setFilter(String filter) {
+		if (this.filter == null && filter != null || this.filter != null
+				&& !this.filter.equalsIgnoreCase(filter)) {
+			String oldFilter = this.filter;
+			this.filter = filter;
+			mPcs.firePropertyChange(ICardwallProperties.FILTER, oldFilter, filter);
+		}
 	}
 
 }

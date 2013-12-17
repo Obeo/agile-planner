@@ -19,7 +19,13 @@ public interface ICardwallProperties {
 
 	/**
 	 * The "folded" property is the property key used to notify {@link java.beans.PropertyChangeListener}s of
-	 * changes in a folded property..
+	 * changes in a folded property.
 	 */
 	String FOLDED = "folded"; //$NON-NLS-1$
+
+	/**
+	 * The "filter" property is the property key used to notify {@link java.beans.PropertyChangeListener}s of
+	 * changes in a filter property.
+	 */
+	String FILTER = "filter"; //$NON-NLS-1$
 }

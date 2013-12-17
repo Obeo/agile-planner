@@ -46,6 +46,11 @@ public class CellEditPart extends AbstractGraphicalEditPart {
 	private ChangeListener foldingChangeListener;
 
 	/**
+	 * The filter listener.
+	 */
+	private PropertyChangeListener filterListener;
+
+	/**
 	 * {@inheritDoc}
 	 * 
 	 * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#createFigure()
@@ -129,6 +134,16 @@ public class CellEditPart extends AbstractGraphicalEditPart {
 		};
 		cell.addPropertyChangeListener(foldingListener);
 		cell.getColumn().addPropertyChangeListener(foldingListener);
+		// Listen to the filter
+		filterListener = new PropertyChangeListener() {
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				if (evt != null && ICardwallProperties.FILTER.equals(evt.getPropertyName())) {
+					refresh();
+				}
+			}
+		};
+		cell.getSwimlane().getCardwall().addPropertyChangeListener(filterListener);
 		// And listen to the figures
 		FoldableCellFigure f = (FoldableCellFigure)getFigure();
 		foldingChangeListener = new ChangeListener() {
@@ -153,6 +168,8 @@ public class CellEditPart extends AbstractGraphicalEditPart {
 		cell.removePropertyChangeListener(foldingListener);
 		cell.getColumn().removePropertyChangeListener(foldingListener);
 		foldingListener = null;
+		cell.getSwimlane().getCardwall().removePropertyChangeListener(filterListener);
+		filterListener = null;
 		FoldableCellFigure f = (FoldableCellFigure)getFigure();
 		f.removeFoldingListener(foldingChangeListener);
 		foldingChangeListener = null;

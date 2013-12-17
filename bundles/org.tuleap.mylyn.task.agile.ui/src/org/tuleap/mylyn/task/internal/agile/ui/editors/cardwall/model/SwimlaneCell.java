@@ -13,6 +13,7 @@ package org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.CardWrapper;
 
 /**
@@ -57,14 +58,77 @@ public class SwimlaneCell extends AbstractNotifyingModel {
 	 * @return The cell's cards
 	 */
 	public List<CardWrapper> getCards() {
+		String filterLowerCase = swimlane.getCardwall().getFilter();
+		if (filterLowerCase != null && !filterLowerCase.isEmpty()) {
+			filterLowerCase = filterLowerCase.toLowerCase();
+		} else {
+			filterLowerCase = null;
+		}
 		List<CardWrapper> res = new ArrayList<CardWrapper>();
 		for (CardWrapper card : swimlane.getWrapper().getCards()) {
 			String columnId = column.getWrapper().getId();
 			if (columnId != null && columnId.equals(card.getColumnId())) {
-				res.add(card);
+				if (filterLowerCase == null) {
+					res.add(card);
+				} else if (filterCard(card, filterLowerCase)) {
+					res.add(card);
+				}
 			}
 		}
 		return res;
+	}
+
+	/**
+	 * Indicates whether the given card passes the given filter.
+	 * 
+	 * @param card
+	 *            Card to filter
+	 * @param filterLowerCase
+	 *            Filter criterion
+	 * @return <code>true</code> if and only if the card passes the filter.
+	 */
+	private boolean filterCard(CardWrapper card, String filterLowerCase) {
+		if (card.getLabel().toLowerCase().contains(filterLowerCase)) {
+			return true;
+		}
+		boolean result = false;
+		for (TaskAttribute att : card.getFieldAttributes()) {
+			result = filterAttribute(att, filterLowerCase);
+		}
+		return result;
+	}
+
+	/**
+	 * Filter the given attribute.
+	 * 
+	 * @param att
+	 *            Attribute to filter
+	 * @param filterLowerCase
+	 *            Filter criterion
+	 * @return <code>true</code> if and only if the attribute passes the given filter.
+	 */
+	private boolean filterAttribute(TaskAttribute att, String filterLowerCase) {
+		boolean result = false;
+		String type = att.getMetaData().getType();
+		if (TaskAttribute.TYPE_SINGLE_SELECT.equals(type)) {
+			String option = att.getOption(att.getValue());
+			if (option.toLowerCase().contains(filterLowerCase)) {
+				result = true;
+			}
+		} else if (TaskAttribute.TYPE_MULTI_SELECT.equals(type)) {
+			for (String val : att.getValues()) {
+				String option = att.getOption(val);
+				if (option.toLowerCase().contains(filterLowerCase)) {
+					result = true;
+					break;
+				}
+			}
+		} else if (TaskAttribute.TYPE_DATE.equals(type) || TaskAttribute.TYPE_DATETIME.equals(type)) {
+			// Compare formatted date value to filter
+		} else if (att.getValue().toLowerCase().contains(filterLowerCase)) {
+			result = true;
+		}
+		return result;
 	}
 
 	/**
