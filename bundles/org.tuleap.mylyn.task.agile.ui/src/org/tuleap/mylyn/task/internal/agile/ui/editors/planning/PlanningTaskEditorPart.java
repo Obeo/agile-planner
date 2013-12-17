@@ -571,6 +571,7 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 		for (TaskRepository taskRepository : allRepositories) {
 			if (repositoryUrl.equals(taskRepository.getRepositoryUrl())) {
 				repository = taskRepository;
+				break;
 			}
 		}
 		if (repository != null) {
