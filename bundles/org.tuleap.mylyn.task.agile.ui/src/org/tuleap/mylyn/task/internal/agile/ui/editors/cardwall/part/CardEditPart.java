@@ -16,6 +16,9 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseListener;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
+import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.eclipse.mylyn.tasks.ui.TasksUi;
+import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.CardWrapper;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.figure.CardDetailsPanel;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.figure.CardFigure;
@@ -31,6 +34,11 @@ public class CardEditPart extends AbstractGraphicalEditPart {
 	 * Listener for folding the card's details.
 	 */
 	private MouseListener mouseFoldingListener;
+
+	/**
+	 * Listener for clicking on the card's ID.
+	 */
+	private MouseListener urlMouseListener;
 
 	/**
 	 * {@inheritDoc}
@@ -145,6 +153,23 @@ public class CardEditPart extends AbstractGraphicalEditPart {
 			}
 		};
 		getCardFigure().getDetailsPanel().addFoldingListener(mouseFoldingListener);
+		urlMouseListener = new MouseListener() {
+			@Override
+			public void mouseReleased(MouseEvent me) {
+				//
+			}
+
+			@Override
+			public void mousePressed(MouseEvent me) {
+				openTask();
+			}
+
+			@Override
+			public void mouseDoubleClicked(MouseEvent me) {
+				//
+			}
+		};
+		getCardFigure().getUrl().addMouseListener(urlMouseListener);
 	}
 
 	/**
@@ -157,5 +182,24 @@ public class CardEditPart extends AbstractGraphicalEditPart {
 		getCardFigure().getDetailsPanel().removeFoldingListener(mouseFoldingListener);
 		mouseFoldingListener = null;
 		super.deactivate();
+	}
+
+	/**
+	 * Open the task corresponding to the card.
+	 */
+	private void openTask() {
+		List<TaskRepository> allRepositories = TasksUi.getRepositoryManager().getAllRepositories();
+		CardWrapper card = (CardWrapper)getModel();
+		String repositoryUrl = card.getWrappedAttribute().getTaskData().getRepositoryUrl();
+		TaskRepository repository = null;
+		for (TaskRepository taskRepository : allRepositories) {
+			if (repositoryUrl.equals(taskRepository.getRepositoryUrl())) {
+				repository = taskRepository;
+				break;
+			}
+		}
+		if (repository != null) {
+			TasksUiUtil.openTask(repository, card.getId());
+		}
 	}
 }

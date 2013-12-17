@@ -14,8 +14,6 @@ import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.GridData;
 import org.eclipse.draw2d.GridLayout;
-import org.eclipse.draw2d.MouseEvent;
-import org.eclipse.draw2d.MouseListener;
 import org.eclipse.draw2d.Panel;
 import org.eclipse.draw2d.RoundedRectangle;
 import org.eclipse.draw2d.ToolbarLayout;
@@ -23,14 +21,12 @@ import org.eclipse.draw2d.text.FlowContext;
 import org.eclipse.draw2d.text.FlowPage;
 import org.eclipse.draw2d.text.ParagraphTextLayout;
 import org.eclipse.draw2d.text.TextFlow;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.PlatformUI;
 import org.tuleap.mylyn.task.internal.agile.ui.MylynAgileUIActivator;
 import org.tuleap.mylyn.task.internal.agile.ui.util.IMylynAgileUIConstants;
 
@@ -49,45 +45,6 @@ public class CardFigure extends Figure {
 	 * The key to register the card's background color with the plugin.
 	 */
 	public static final String CARD_BG_COLOR_KEY = "CARD_BG_COLOR"; //$NON-NLS-1$
-
-	/**
-	 * Listener to launch action on click on a URL.
-	 * 
-	 * @author <a href="mailto:cedric.notot@obeo.fr">Cedric Notot</a>
-	 */
-	private static class ActionURLMouseListener implements MouseListener {
-		/**
-		 * {@inheritDoc}
-		 * 
-		 * @see org.eclipse.draw2d.MouseListener#mouseReleased(org.eclipse.draw2d.MouseEvent)
-		 */
-		@Override
-		public void mouseReleased(MouseEvent me) {
-			// nothing
-		}
-
-		/**
-		 * {@inheritDoc}
-		 * 
-		 * @see org.eclipse.draw2d.MouseListener#mousePressed(org.eclipse.draw2d.MouseEvent)
-		 */
-		@Override
-		public void mousePressed(MouseEvent me) {
-			// TODO Action from the URL id
-			MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-					"TODO", "TODO: We should open the details of the relative item");
-		}
-
-		/**
-		 * {@inheritDoc}
-		 * 
-		 * @see org.eclipse.draw2d.MouseListener#mouseDoubleClicked(org.eclipse.draw2d.MouseEvent)
-		 */
-		@Override
-		public void mouseDoubleClicked(MouseEvent me) {
-			// nothing
-		}
-	}
 
 	/**
 	 * The title of the card.
@@ -231,10 +188,16 @@ public class CardFigure extends Figure {
 	private void addUrl() {
 		urlTextFlow = new TextFlow();
 		URLFigure urlFigure = new URLFigure(urlTextFlow);
-
-		urlFigure.addMouseListener(new ActionURLMouseListener());
-
 		contentPanel.add(urlFigure);
+	}
+
+	/**
+	 * URL text flow.
+	 * 
+	 * @return The URL text flow.
+	 */
+	public TextFlow getUrl() {
+		return this.urlTextFlow;
 	}
 
 	/**
