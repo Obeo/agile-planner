@@ -263,7 +263,7 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 	/**
 	 * Get the values of the allowed column ids.
 	 * 
-	 * @return The list of allowed colum identifiers
+	 * @return The list of allowed column identifiers. Never null but possibly empty.
 	 */
 	public List<String> getAllowedColumnIds() {
 		TaskAttribute att = root.getMappedAttribute(getAllowedColumnAttributeId());

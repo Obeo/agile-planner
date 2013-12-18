@@ -62,6 +62,12 @@ public class MilestonePlanningWrapperTest {
 		subMilestone.setEndDate(endDate);
 		subMilestone.setStatusValue("current");
 
+		assertEquals("20", subMilestone.getCapacity());
+		assertEquals("Milestone 1", subMilestone.getLabel());
+		assertEquals(testDate, subMilestone.getStartDate());
+		assertEquals(endDate, subMilestone.getEndDate());
+		assertEquals("current", subMilestone.getStatusValue());
+
 		TaskAttribute root = taskData.getRoot();
 		TaskAttribute planningAtt = root.getAttribute(MilestonePlanningWrapper.MILESTONE_PLANNING);
 
@@ -420,5 +426,84 @@ public class MilestonePlanningWrapperTest {
 		backlogItem.setDisplayId(displayId);
 		assertEquals(displayId, backlogItem.getDisplayId());
 		assertEquals(id, backlogItem.getId()); // id must not have changed
+	}
+
+	@Test
+	public void testAddBacklogItem() {
+		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(taskData.getRoot());
+		BacklogItemWrapper backlogItem = wrapper.addBacklogItem("987");
+		backlogItem.setParent("parentId", "parentDisplayId");
+		assertEquals("parentId", backlogItem.getParentId());
+		assertEquals("parentDisplayId", backlogItem.getParentDisplayId());
+		TaskAttribute att = taskData.getRoot().getAttribute("mta_backlog");
+		assertNotNull(att);
+		assertEquals("987", att.getValue());
+		assertEquals(1, att.getValues().size());
+		att = taskData.getRoot().getAttribute("mta_bi-987");
+		assertNotNull(att);
+		assertEquals("987", att.getValue());
+		assertEquals(1, att.getValues().size());
+	}
+
+	@Test
+	public void testSetBacklogItemParent() {
+		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(taskData.getRoot());
+		BacklogItemWrapper backlogItem = wrapper.addBacklogItem("987");
+		backlogItem.setParent("parentId", "parentDisplayId");
+		assertEquals("parentId", backlogItem.getParentId());
+		assertEquals("parentDisplayId", backlogItem.getParentDisplayId());
+		TaskAttribute att = taskData.getRoot().getAttribute("mta_bi-987-parent_id");
+		assertNotNull(att);
+		assertEquals("parentId", att.getValue());
+		assertEquals(1, att.getValues().size());
+		att = taskData.getRoot().getAttribute("mta_bi-987-parent_display_id");
+		assertNotNull(att);
+		assertEquals("parentDisplayId", att.getValue());
+		assertEquals(1, att.getValues().size());
+
+		backlogItem.setParent(null, null); // Must not change the value
+		assertEquals("parentId", backlogItem.getParentId());
+		assertEquals("parentDisplayId", backlogItem.getParentDisplayId());
+	}
+
+	@Test
+	public void testSetBacklogItemStatus() {
+		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(taskData.getRoot());
+		BacklogItemWrapper backlogItem = wrapper.addBacklogItem("987");
+		backlogItem.setStatus("Open");
+		assertEquals("Open", backlogItem.getStatus());
+		TaskAttribute att = taskData.getRoot().getAttribute("mta_bi-987-status");
+		assertNotNull(att);
+		assertEquals("Open", att.getValue());
+		assertEquals(1, att.getValues().size());
+
+		backlogItem.setStatus(null); // Must not change the value
+		assertEquals("Open", backlogItem.getStatus());
+	}
+
+	@Test
+	public void testSetBacklogItemType() {
+		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(taskData.getRoot());
+		BacklogItemWrapper backlogItem = wrapper.addBacklogItem("987");
+		backlogItem.setType("User Story");
+		assertEquals("User Story", backlogItem.getType());
+		TaskAttribute att = taskData.getRoot().getAttribute("mta_bi-987-type");
+		assertNotNull(att);
+		assertEquals("User Story", att.getValue());
+		assertEquals(1, att.getValues().size());
+
+		backlogItem.setType(null); // Must not change the value
+		assertEquals("User Story", backlogItem.getType());
+	}
+
+	@Test
+	public void testSetHasCardwall() {
+		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(taskData.getRoot());
+		assertFalse(wrapper.getHasCardwall());
+		wrapper.setHasCardwall(true);
+		assertTrue(wrapper.getHasCardwall());
+		TaskAttribute att = taskData.getRoot().getAttribute(MilestonePlanningWrapper.HAS_CARDWALL);
+		assertNotNull(att);
+		assertEquals("true", att.getValue());
 	}
 }

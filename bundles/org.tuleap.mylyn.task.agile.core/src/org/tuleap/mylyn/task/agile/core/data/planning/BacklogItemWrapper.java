@@ -215,11 +215,11 @@ public class BacklogItemWrapper extends AbstractTaskAttributeWrapper {
 	}
 
 	/**
-	 * Return the parent planning as a wrapper.
+	 * Return the parent milestone planning as a wrapper.
 	 * 
 	 * @return The (never null) parent planning, as a wrapper.
 	 */
-	public MilestonePlanningWrapper getParent() {
+	public MilestonePlanningWrapper getParentMilestone() {
 		return parent;
 	}
 
@@ -232,30 +232,33 @@ public class BacklogItemWrapper extends AbstractTaskAttributeWrapper {
 	 *            The parent displayed identifier.
 	 */
 	public void setParent(String parentId, String parentDisplayId) {
-		TaskAttribute idAttribute = root.getMappedAttribute(getParentIdId());
-		String oldIdValue = null;
-		if (idAttribute == null) {
-			idAttribute = createAgileAttribute(getParentIdId());
-			idAttribute.getMetaData().setType(TaskAttribute.TYPE_SHORT_RICH_TEXT);
-		} else {
-			oldIdValue = idAttribute.getValue();
+		if (parentId != null) {
+			TaskAttribute idAttribute = root.getMappedAttribute(getParentIdId());
+			String oldIdValue = null;
+			if (idAttribute == null) {
+				idAttribute = createAgileAttribute(getParentIdId());
+				idAttribute.getMetaData().setType(TaskAttribute.TYPE_SHORT_RICH_TEXT);
+			} else {
+				oldIdValue = idAttribute.getValue();
+			}
+			if (oldIdValue == null || !oldIdValue.equals(parentId)) {
+				idAttribute.setValue(parentId);
+				fireAttributeChanged(idAttribute);
+			}
 		}
-		if (oldIdValue == null || !oldIdValue.equals(parentId)) {
-			idAttribute.setValue(parentId);
-			fireAttributeChanged(idAttribute);
-		}
-
-		TaskAttribute displayedIdAttribute = root.getMappedAttribute(getParentDisplayIdId());
-		String oldDisplayedIdValue = null;
-		if (displayedIdAttribute == null) {
-			displayedIdAttribute = createAgileAttribute(getParentDisplayIdId());
-			displayedIdAttribute.getMetaData().setType(TaskAttribute.TYPE_SHORT_RICH_TEXT);
-		} else {
-			oldDisplayedIdValue = displayedIdAttribute.getValue();
-		}
-		if (oldDisplayedIdValue == null || !oldDisplayedIdValue.equals(parentDisplayId)) {
-			displayedIdAttribute.setValue(parentDisplayId);
-			fireAttributeChanged(displayedIdAttribute);
+		if (parentDisplayId != null) {
+			TaskAttribute displayedIdAttribute = root.getMappedAttribute(getParentDisplayIdId());
+			String oldDisplayedIdValue = null;
+			if (displayedIdAttribute == null) {
+				displayedIdAttribute = createAgileAttribute(getParentDisplayIdId());
+				displayedIdAttribute.getMetaData().setType(TaskAttribute.TYPE_SHORT_RICH_TEXT);
+			} else {
+				oldDisplayedIdValue = displayedIdAttribute.getValue();
+			}
+			if (oldDisplayedIdValue == null || !oldDisplayedIdValue.equals(parentDisplayId)) {
+				displayedIdAttribute.setValue(parentDisplayId);
+				fireAttributeChanged(displayedIdAttribute);
+			}
 		}
 	}
 

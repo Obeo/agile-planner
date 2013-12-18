@@ -10,10 +10,13 @@
  *******************************************************************************/
 package org.tuleap.mylyn.task.internal.agile.core.tests.data;
 
+import com.google.common.collect.Lists;
+
 import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.core.data.TaskAttributeMapper;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.junit.Before;
@@ -24,7 +27,9 @@ import org.tuleap.mylyn.task.agile.core.data.cardwall.ColumnWrapper;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.SwimlaneWrapper;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 
 /**
  * Tests of the cardwall wrapper.
@@ -327,6 +332,118 @@ public class CardwallWrapperTest {
 		TaskRepository taskRepository = new TaskRepository(connectorKind, repositoryUrl);
 		TaskAttributeMapper mapper = new TaskAttributeMapper(taskRepository);
 		taskData = new TaskData(mapper, connectorKind, repositoryUrl, taskId);
+	}
+
+	/**
+	 * Tests card wall setFieldValues() method.
+	 */
+	@Test
+	public void testSetFieldValues() {
+		CardwallWrapper wrapper = new CardwallWrapper(taskData.getRoot());
+		for (int i = 0; i < 4; i++) {
+			wrapper.addColumn(Integer.toString(10 + i), "Column" + i);
+		}
+		SwimlaneWrapper swimlane = wrapper.addSwimlane("123");
+		CardWrapper card = swimlane.addCard("456");
+		card.setFieldValues("100", Lists.newArrayList("1", "2", "3"));
+
+		// Retrieval of swimlane item from the cardwall to modify it
+		swimlane = wrapper.getSwimlanes().get(0);
+
+		// Modification of the cards created previously
+		card = swimlane.getCard("456");
+
+		assertEquals("1", card.getFieldValue("100"));
+		List<String> fieldValues = card.getFieldValues("100");
+		assertEquals(3, fieldValues.size());
+		assertEquals("1", fieldValues.get(0));
+		assertEquals("2", fieldValues.get(1));
+		assertEquals("3", fieldValues.get(2));
+	}
+
+	/**
+	 * Tests card wall setFieldAttributes() method.
+	 */
+	@Test
+	public void testGetFieldAttributes() {
+		CardwallWrapper wrapper = new CardwallWrapper(taskData.getRoot());
+		for (int i = 0; i < 4; i++) {
+			wrapper.addColumn(Integer.toString(10 + i), "Column" + i);
+		}
+		SwimlaneWrapper swimlane = wrapper.addSwimlane("123");
+		CardWrapper card = swimlane.addCard("456");
+		card.setFieldValues("100", Lists.newArrayList("1", "2", "3"));
+
+		// Retrieval of swimlane item from the cardwall to modify it
+		swimlane = wrapper.getSwimlanes().get(0);
+
+		// Modification of the cards created previously
+		card = swimlane.getCard("456");
+
+		TaskAttribute fieldAttribute = card.getFieldAttribute("100");
+		assertNotNull(fieldAttribute);
+		assertSame(taskData.getRoot(), fieldAttribute.getParentAttribute());
+		assertEquals(3, fieldAttribute.getValues().size());
+
+		List<TaskAttribute> fieldAttributes = card.getFieldAttributes();
+		assertEquals(1, fieldAttributes.size());
+	}
+
+	/**
+	 * Tests card wall addField method.
+	 */
+	@Test
+	public void testAddField() {
+		CardwallWrapper wrapper = new CardwallWrapper(taskData.getRoot());
+		for (int i = 0; i < 4; i++) {
+			wrapper.addColumn(Integer.toString(10 + i), "Column" + i);
+		}
+		SwimlaneWrapper swimlane = wrapper.addSwimlane("123");
+		CardWrapper card = swimlane.addCard("456");
+		card.addField("100", "Field 100", TaskAttribute.TYPE_SHORT_RICH_TEXT);
+
+		// Retrieval of swimlane item from the cardwall to modify it
+		swimlane = wrapper.getSwimlanes().get(0);
+
+		// Modification of the cards created previously
+		card = swimlane.getCard("456");
+
+		TaskAttribute fieldAttribute = card.getFieldAttribute("100");
+		assertNotNull(fieldAttribute);
+		assertSame(taskData.getRoot(), fieldAttribute.getParentAttribute());
+		assertEquals(0, fieldAttribute.getValues().size());
+		assertEquals("Field 100", card.getFieldLabel("100"));
+		assertEquals(TaskAttribute.TYPE_SHORT_RICH_TEXT, fieldAttribute.getMetaData().getType());
+
+		// Check that setting the value after having created the field works right
+		card.setFieldValue("100", "Some value");
+		fieldAttribute = card.getFieldAttribute("100");
+		assertNotNull(fieldAttribute);
+		assertEquals(1, fieldAttribute.getValues().size());
+		assertEquals("Some value", fieldAttribute.getValue());
+		assertEquals("Field 100", card.getFieldLabel("100"));
+		assertEquals(TaskAttribute.TYPE_SHORT_RICH_TEXT, fieldAttribute.getMetaData().getType());
+	}
+
+	@Test
+	public void testAllowedColumnIds() {
+		CardwallWrapper wrapper = new CardwallWrapper(taskData.getRoot());
+		for (int i = 0; i < 4; i++) {
+			wrapper.addColumn(Integer.toString(10 + i), "Column" + i);
+		}
+		SwimlaneWrapper swimlane = wrapper.addSwimlane("123");
+		CardWrapper card = swimlane.addCard("456");
+
+		assertEquals(0, card.getAllowedColumnIds().size());
+
+		card.addAllowedColumn("10");
+		assertEquals(1, card.getAllowedColumnIds().size());
+		assertEquals("10", card.getAllowedColumnIds().get(0));
+
+		card.addAllowedColumn("11");
+		assertEquals(2, card.getAllowedColumnIds().size());
+		assertEquals("10", card.getAllowedColumnIds().get(0));
+		assertEquals("11", card.getAllowedColumnIds().get(1));
 	}
 
 }
