@@ -101,6 +101,7 @@ public class CardEditPart extends AbstractGraphicalEditPart {
 
 		fig.setTitle(card.getLabel());
 		fig.setUrl(card.getDisplayId());
+		fig.setAccentColor(card.getAccentColor());
 
 		CardDetailsPanel panel = getDetailsPanel();
 		if (panel.isFolded()) {

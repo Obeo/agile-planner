@@ -33,8 +33,8 @@ public class FoldableColumnHeaderFigure extends ColumnHeaderFigure {
 		super();
 		// Add the checkbox that will fold/unfold cards in this cell
 		foldCheckbox = new CheckBox();
-		add(foldCheckbox);
-		setConstraint(foldCheckbox, Integer.valueOf(PositionConstants.RIGHT));
+		panel.add(foldCheckbox);
+		panel.setConstraint(foldCheckbox, Integer.valueOf(PositionConstants.RIGHT));
 	}
 
 	/**

@@ -13,6 +13,8 @@ package org.tuleap.mylyn.task.internal.agile.ui;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
@@ -20,6 +22,8 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
@@ -59,9 +63,14 @@ public class MylynAgileUIActivator extends AbstractUIPlugin {
 	private Map<String, Image> imageMap = new HashMap<String, Image>();
 
 	/**
-	 * cache of colors by arbitrary id.
+	 * Cache of colors by arbitrary id.
 	 */
 	private Map<String, Color> colorsById = new HashMap<String, Color>();
+
+	/**
+	 * Pattern to match RGB colors.
+	 */
+	private Pattern rgbPattern = Pattern.compile("#([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})"); //$NON-NLS-1$
 
 	/**
 	 * Returns the sole instance of the activator.
@@ -268,15 +277,55 @@ public class MylynAgileUIActivator extends AbstractUIPlugin {
 	}
 
 	/**
-	 * Caches the given color for the given key.
+	 * Caches the given color for the given key and returns the cached color. If the given color was already
+	 * present in the cache, this method returns the cached color which is different from the given color. It
+	 * is the client's responsibility to dispose the given color properly. The cached color (the one that is
+	 * returned) must not be disposed of.
 	 * 
 	 * @param key
 	 *            The key
 	 * @param color
 	 *            The color.
+	 * @return The given color if a color was not already cached for the given key, or the cached color if
+	 *         here already was one in the cache. If the returned color is different from the given color, the
+	 *         caller should dispose the given color.
 	 */
-	public void putColor(String key, Color color) {
+	public synchronized Color putColor(String key, Color color) {
+		if (colorsById.containsKey(key)) {
+			return colorsById.get(key);
+		}
 		colorsById.put(key, color);
+		return color;
 	}
 
+	/**
+	 * Provides the color for the given RGB code, after creating it if necessary.
+	 * 
+	 * @param rgb
+	 *            The RGB code in CSS format, #rrggbb with exactly 6 hexadecimal digits.
+	 * @return The relevant color or null if the given RGB code has an invalid format or is null.
+	 */
+	public synchronized Color forColorName(String rgb) {
+		if (rgb == null) {
+			return null;
+		}
+		Color c = null;
+		if (colorsById.containsKey(rgb)) {
+			c = colorsById.get(rgb);
+		} else {
+			Matcher rgbMatcher = rgbPattern.matcher(rgb);
+			try {
+				if (rgbMatcher.matches()) {
+					int r = Integer.parseInt(rgbMatcher.group(1), Short.SIZE);
+					int g = Integer.parseInt(rgbMatcher.group(2), Short.SIZE);
+					int b = Integer.parseInt(rgbMatcher.group(3), Short.SIZE);
+					c = new Color(Display.getCurrent(), new RGB(r, g, b));
+					colorsById.put(rgb, c);
+				}
+			} catch (NumberFormatException e) {
+				MylynAgileUIActivator.log(e, false);
+			}
+		}
+		return c;
+	}
 }

@@ -16,6 +16,7 @@ import junit.textui.TestRunner;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+import org.tuleap.mylyn.task.internal.agile.ui.tests.MylynAgileUIActivatorTest;
 import org.tuleap.mylyn.task.internal.agile.ui.tests.cardwall.model.CardwallModelTest;
 import org.tuleap.mylyn.task.internal.agile.ui.tests.cardwall.validator.DateValidatorTest;
 import org.tuleap.mylyn.task.internal.agile.ui.tests.cardwall.validator.DoubleValidatorTest;
@@ -29,7 +30,7 @@ import org.tuleap.mylyn.task.internal.agile.ui.tests.data.BacklogModelTest;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({BacklogModelTest.class, CardwallModelTest.class, DoubleValidatorTest.class,
-		IntegerValidatorTest.class, DateValidatorTest.class })
+		IntegerValidatorTest.class, DateValidatorTest.class, MylynAgileUIActivatorTest.class })
 public final class AllMylynAgileUITests {
 
 	/**

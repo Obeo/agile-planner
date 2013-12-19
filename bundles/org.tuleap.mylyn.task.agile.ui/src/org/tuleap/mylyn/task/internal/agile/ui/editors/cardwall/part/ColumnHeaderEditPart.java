@@ -91,6 +91,7 @@ public class ColumnHeaderEditPart extends AbstractGraphicalEditPart {
 		cell.setLabel(getText(model));
 		if (model instanceof ColumnModel) {
 			((FoldableColumnHeaderFigure)cell).setFolded(((ColumnModel)model).isFolded());
+			cell.setHeaderBandColor(getHeaderBandColor(model));
 		}
 	}
 
@@ -107,6 +108,21 @@ public class ColumnHeaderEditPart extends AbstractGraphicalEditPart {
 			result = ((ColumnModel)model).getLabel();
 		} else if (model instanceof String) {
 			result = (String)model;
+		}
+		return result;
+	}
+
+	/**
+	 * Get the color to use.
+	 * 
+	 * @param model
+	 *            The model object to manage.
+	 * @return The color to use, or null.
+	 */
+	private String getHeaderBandColor(Object model) {
+		String result = null;
+		if (model instanceof ColumnModel) {
+			result = ((ColumnModel)model).getWrapper().getColor();
 		}
 		return result;
 	}

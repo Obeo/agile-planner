@@ -25,6 +25,7 @@ import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.tuleap.mylyn.task.agile.core.IMilestoneMapping;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.CardWrapper;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.CardwallWrapper;
+import org.tuleap.mylyn.task.agile.core.data.cardwall.ColumnWrapper;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.SwimlaneWrapper;
 import org.tuleap.mylyn.task.agile.core.data.planning.BacklogItemWrapper;
 import org.tuleap.mylyn.task.agile.core.data.planning.MilestonePlanningWrapper;
@@ -284,7 +285,10 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 
 		CardwallWrapper cardwallWrapper = new CardwallWrapper(root);
 		for (int i = 0; i < 3; i++) {
-			cardwallWrapper.addColumn(Integer.toString(10 + i), "Column " + i); //$NON-NLS-1$
+			ColumnWrapper column = cardwallWrapper.addColumn(Integer.toString(10 + i), "Column " + i); //$NON-NLS-1$
+			if (i != 0) {
+				column.setColor("#ff" + 49 * i + "00");
+			}
 		}
 		for (int i = 0; i < 3; i++) {
 			SwimlaneWrapper swimlane = cardwallWrapper.addSwimlane(Integer.toString(20 + i));
@@ -334,6 +338,8 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 					card20.getFieldAttribute(CARD_DATE_FIELD_ID).getMetaData().setType(
 							TaskAttribute.TYPE_DATETIME);
 
+					card20.setAccentColor("#6699aa");
+
 					card20.addAllowedColumn("11");
 					card20.addAllowedColumn("10");
 
@@ -357,6 +363,7 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 					card30.setFieldValue(CARD_DATE_FIELD_ID, "1220227200"); //$NON-NLS-1$
 					card30.getFieldAttribute(CARD_DATE_FIELD_ID).getMetaData().setType(
 							TaskAttribute.TYPE_DATETIME);
+
 					CardWrapper card01 = swimlane.addCard(Integer.toString(301) + i);
 					card01.setLabel("Title of " + (300 + i)); //$NON-NLS-1$
 					card01.setColumnId(Integer.toString(10 + i));

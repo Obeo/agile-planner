@@ -32,22 +32,27 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 	public static final String FIELD_SEPARATOR = "f-"; //$NON-NLS-1$
 
 	/**
-	 * Suffix used to compute the mylyn id of the task atribute that represents the column id.
+	 * Suffix used to compute the mylyn id of the task attribute that represents the column id.
 	 */
 	public static final String SUFFIX_COLUMN_ID = "col_id"; //$NON-NLS-1$
 
 	/**
-	 * Suffix used to compute the mylyn id of the task atribute that represents the card's artifact id.
+	 * Suffix used to compute the mylyn id of the task attribute that represents the card's artifact id.
 	 */
 	public static final String SUFFIX_ARTIFACT_ID = "art_id"; //$NON-NLS-1$
 
 	/**
-	 * Suffix used to compute the mylyn id of the task atribute that represents the status.
+	 * Suffix used to compute the mylyn id of the task attribute that represents the status.
 	 */
 	public static final String SUFFIX_STATUS = "status"; //$NON-NLS-1$
 
 	/**
-	 * Suffix used to compute the mylyn id of the task atribute that represents the status.
+	 * Suffix used to compute the mylyn id of the task attribute that represents the color.
+	 */
+	public static final String SUFFIX_COLOR = "color"; //$NON-NLS-1$
+
+	/**
+	 * Suffix used to compute the mylyn id of the task attribute that represents the status.
 	 */
 	public static final String ALLOWED_COLS = "allowed_cols"; //$NON-NLS-1$
 
@@ -118,6 +123,15 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 	 */
 	private String getStatusAttributeId() {
 		return getAttributeId(attribute, SUFFIX_STATUS);
+	}
+
+	/**
+	 * Computes the unique id of the color attribute.
+	 * 
+	 * @return The unique id of the color attribute.
+	 */
+	private String getColorAttributeId() {
+		return getAttributeId(attribute, SUFFIX_COLOR);
 	}
 
 	/**
@@ -206,7 +220,8 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 	/**
 	 * Status getter.
 	 * 
-	 * @return The status of the card, or null if it is not set, which should not happen in an ideal world.
+	 * @return The status of the card, or null if it is not set, which happens for card that go to the
+	 *         left-most implicit column.
 	 */
 	public String getStatus() {
 		String result = null;
@@ -224,6 +239,9 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 	 *            The status.
 	 */
 	public void setStatus(String status) {
+		if (status == null) {
+			return;
+		}
 		TaskAttribute att = root.getMappedAttribute(getStatusAttributeId());
 		String oldValue = null;
 		if (att == null) {
@@ -236,6 +254,38 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 			att.setValue(status);
 			fireAttributeChanged(att);
 		}
+	}
+
+	/**
+	 * Color getter.
+	 * 
+	 * @return The color of the card, or null if it is not set.
+	 */
+	public String getAccentColor() {
+		String result = null;
+		TaskAttribute att = root.getMappedAttribute(getColorAttributeId());
+		if (att != null) {
+			result = att.getValue();
+		}
+		return result;
+	}
+
+	/**
+	 * Color setter.
+	 * 
+	 * @param color
+	 *            The color.
+	 */
+	public void setAccentColor(String color) {
+		if (color == null) {
+			return;
+		}
+		TaskAttribute att = root.getMappedAttribute(getColorAttributeId());
+		if (att == null) {
+			att = root.createAttribute(getColorAttributeId());
+			att.getMetaData().setType(TaskAttribute.TYPE_SHORT_TEXT);
+		}
+		att.setValue(color); // No need to notify color changes, not editable!
 	}
 
 	/**

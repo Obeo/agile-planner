@@ -69,4 +69,45 @@ public class ColumnWrapper extends AbstractTaskAttributeWrapper {
 	protected void fireAttributeChanged(TaskAttribute att) {
 		parent.fireAttributeChanged(att);
 	}
+
+	/**
+	 * Computes the unique id of the color attribute.
+	 * 
+	 * @return The unique id of the color attribute.
+	 */
+	private String getColorAttributeId() {
+		return getAttributeId(attribute, CardWrapper.SUFFIX_COLOR);
+	}
+
+	/**
+	 * Color getter.
+	 * 
+	 * @return The color of the column, or null if it is not set.
+	 */
+	public String getColor() {
+		String result = null;
+		TaskAttribute att = root.getMappedAttribute(getColorAttributeId());
+		if (att != null) {
+			result = att.getValue();
+		}
+		return result;
+	}
+
+	/**
+	 * Color setter.
+	 * 
+	 * @param color
+	 *            The color.
+	 */
+	public void setColor(String color) {
+		if (color == null) {
+			return;
+		}
+		TaskAttribute att = root.getMappedAttribute(getColorAttributeId());
+		if (att == null) {
+			att = root.createAttribute(getColorAttributeId());
+			att.getMetaData().setType(TaskAttribute.TYPE_SHORT_TEXT);
+		}
+		att.setValue(color); // No need to notify color changes, not editable!
+	}
 }

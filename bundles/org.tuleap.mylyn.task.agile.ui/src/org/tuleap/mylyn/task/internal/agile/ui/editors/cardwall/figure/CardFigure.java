@@ -47,6 +47,11 @@ public class CardFigure extends Figure {
 	public static final String CARD_BG_COLOR_KEY = "CARD_BG_COLOR"; //$NON-NLS-1$
 
 	/**
+	 * The corner size of cards.
+	 */
+	public static final int CARD_CORNER_SIZE = 5;
+
+	/**
 	 * The title of the card.
 	 */
 	private TextFlow titleTextFlow;
@@ -75,6 +80,11 @@ public class CardFigure extends Figure {
 	 * The font to use for details.
 	 */
 	private final Font detailsFont;
+
+	/**
+	 * The line border.
+	 */
+	private final AccentedRoundedLineBorder lineBorder;
 
 	/**
 	 * Constructor.
@@ -116,9 +126,13 @@ public class CardFigure extends Figure {
 		cardRect.setLineWidth(1);
 		cardRect.setOpaque(true);
 
+		lineBorder = new AccentedRoundedLineBorder();
+		lineBorder.setVertical(true);
+		lineBorder.setCornerRadius(CARD_CORNER_SIZE);
+		cardRect.setBorder(lineBorder);
+
 		contentPanel = new Panel();
 		contentPanel.setForegroundColor(ColorConstants.black);
-		// contentPanel.setLayoutManager(contentLayout);
 		// The content panel MUST have a ToolbarLayout for PageFlows to work all right.
 		ToolbarLayout contentLayout = new ToolbarLayout();
 		contentLayout.setMinorAlignment(ToolbarLayout.ALIGN_TOPLEFT);
@@ -237,5 +251,18 @@ public class CardFigure extends Figure {
 		Color c = new Color(Display.getCurrent(), IMylynAgileUIConstants.BI_CARD_BG_COLOR);
 		activator.putColor(BI_CARD_BG_COLOR_KEY, c);
 		return c;
+	}
+
+	/**
+	 * Sets the header band color.
+	 * 
+	 * @param rgb
+	 *            The color representation as a string #rrggbb
+	 */
+	public void setAccentColor(String rgb) {
+		Color color = MylynAgileUIActivator.getDefault().forColorName(rgb);
+		if (color != null) {
+			lineBorder.setAccentColor(color);
+		}
 	}
 }
