@@ -12,7 +12,10 @@ package org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.part;
 
 import com.google.common.collect.Lists;
 
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
@@ -30,9 +33,14 @@ import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.figure.CardField
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.policy.CardBoundFieldCellEditorLocator;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.policy.CardBoundFieldDirectEditManager;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.policy.CardBoundFieldEditPolicy;
+import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.policy.CardDateFieldCellEditorLocator;
+import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.policy.CardDateFieldDirectEditManager;
+import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.policy.CardDateFieldEditPolicy;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.policy.CardFieldCellEditorLocator;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.policy.CardFieldDirectEditManager;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.policy.CardFieldEditPolicy;
+import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.util.CardDateCellEditor;
+import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.util.CardDateTimeCellEditor;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.validator.DoubleValidator;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.validator.IntegerValidator;
 import org.tuleap.mylyn.task.internal.agile.ui.util.IMylynAgileUIConstants;
@@ -44,6 +52,11 @@ import org.tuleap.mylyn.task.internal.agile.ui.util.MylynAgileUIMessages;
  * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
  */
 public class CardFieldEditPart extends AbstractGraphicalEditPart {
+
+	/**
+	 * The time length string.
+	 */
+	private static final int TIME_LENGTH = 8;
 
 	/**
 	 * The task attribute listener.
@@ -79,6 +92,10 @@ public class CardFieldEditPart extends AbstractGraphicalEditPart {
 			if (TaskAttribute.TYPE_SINGLE_SELECT.equals(type) || TaskAttribute.TYPE_MULTI_SELECT.equals(type)) {
 				// bound field
 				installEditPolicy(REQ_DIRECT_EDIT, new CardBoundFieldEditPolicy());
+			} else if (TaskAttribute.TYPE_DATE.equals(type)) {
+				installEditPolicy(REQ_DIRECT_EDIT, new CardDateFieldEditPolicy());
+			} else if (TaskAttribute.TYPE_DATETIME.equals(type)) {
+				installEditPolicy(REQ_DIRECT_EDIT, new CardDateFieldEditPolicy());
 			} else {
 				installEditPolicy(REQ_DIRECT_EDIT, new CardFieldEditPolicy());
 			}
@@ -131,15 +148,11 @@ public class CardFieldEditPart extends AbstractGraphicalEditPart {
 			manager = new CardFieldDirectEditManager(this, TextCellEditor.class,
 					new CardFieldCellEditorLocator(label), label, new DoubleValidator());
 		} else if (TaskAttribute.TYPE_DATE.equals(attributeType)) {
-			// manager = new CardFieldDirectEditManager(this, TextCellEditor.class,
-			// new CardFieldCellEditorLocator(label), label, new DateValidator());
-			MylynAgileUIActivator.log(MylynAgileUIMessages.getString(
-					IMylynAgileUIConstants.DIRECT_EDIT_NOT_SUPPORTED, "date"), false); //$NON-NLS-1$
+			manager = new CardDateFieldDirectEditManager(this, CardDateCellEditor.class,
+					new CardDateFieldCellEditorLocator(label), attribute);
 		} else if (TaskAttribute.TYPE_DATETIME.equals(attributeType)) {
-			// manager = new CardFieldDirectEditManager(this, TextCellEditor.class,
-			// new CardFieldCellEditorLocator(label), label, new DateValidator());
-			MylynAgileUIActivator.log(MylynAgileUIMessages.getString(
-					IMylynAgileUIConstants.DIRECT_EDIT_NOT_SUPPORTED, "date+time"), false); //$NON-NLS-1$
+			manager = new CardDateFieldDirectEditManager(this, CardDateTimeCellEditor.class,
+					new CardDateFieldCellEditorLocator(label), attribute);
 		} else {
 			manager = new CardFieldDirectEditManager(this, TextCellEditor.class,
 					new CardFieldCellEditorLocator(label), label);
@@ -196,6 +209,23 @@ public class CardFieldEditPart extends AbstractGraphicalEditPart {
 			for (String key : attribute.getValues()) {
 				values.add(attribute.getOption(key));
 			}
+			f.setField(attribute.getMetaData().getLabel(), values);
+		} else if (TaskAttribute.TYPE_DATETIME.equals(type)) {
+			List<String> values = Lists.newArrayList();
+			long longDate = Long.parseLong(attribute.getValue());
+			Date date = new Date(longDate);
+
+			DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);
+			values.add(dateFormat.format(date));
+			f.setField(attribute.getMetaData().getLabel(), values);
+		} else if (TaskAttribute.TYPE_DATE.equals(type)) {
+			List<String> values = Lists.newArrayList();
+			Long longDate = Long.valueOf(attribute.getValue());
+			Date date = new Date(longDate.longValue());
+
+			DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);
+			dateFormat.setTimeZone(TimeZone.getTimeZone("Europe/Paris")); //$NON-NLS-1$
+			values.add(dateFormat.format(date).substring(0, dateFormat.format(date).length() - TIME_LENGTH));
 			f.setField(attribute.getMetaData().getLabel(), values);
 		} else {
 			f.setField(attribute.getMetaData().getLabel(), attribute.getValues());

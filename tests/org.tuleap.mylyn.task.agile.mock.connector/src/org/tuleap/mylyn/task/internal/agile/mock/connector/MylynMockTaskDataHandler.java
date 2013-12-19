@@ -73,6 +73,11 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 	private static final String CARD_REMAINING_EFFORT_FIELD_ID = "3002"; //$NON-NLS-1$
 
 	/**
+	 * id of field date.
+	 */
+	private static final String CARD_DATE_FIELD_ID = "3003"; //$NON-NLS-1$
+
+	/**
 	 * The backlog item index.
 	 */
 	private int backlogItemIndex = 100;
@@ -297,6 +302,10 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 					assignedToAtt.putOption("103", "fbacha");
 					assignedToAtt.putOption("104", "sbegaudeau");
 					card00.setFieldValue(CARD_ASSIGNED_TO_FIELD_ID, "101"); //$NON-NLS-1$ 
+					card00.setFieldLabel(CARD_DATE_FIELD_ID, "Date"); //$NON-NLS-1$
+					card00.setFieldValue(CARD_DATE_FIELD_ID, "1220227200"); //$NON-NLS-1$
+					card00.getFieldAttribute(CARD_DATE_FIELD_ID).getMetaData().setType(
+							TaskAttribute.TYPE_DATE);
 
 					CardWrapper card10 = swimlane.addCard(Integer.toString(301) + i);
 					card10.setLabel("Title of " + (301 + i)); //$NON-NLS-1$
@@ -305,6 +314,10 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 					card10.addFieldValue(CARD_REMAINING_EFFORT_FIELD_ID, "5"); //$NON-NLS-1$
 					card10.setFieldLabel(CARD_ASSIGNED_TO_FIELD_ID, "Assigned to");
 					card10.addFieldValue(CARD_ASSIGNED_TO_FIELD_ID, "cnotot"); //$NON-NLS-1$ 
+					card10.setFieldLabel(CARD_DATE_FIELD_ID, "Date"); //$NON-NLS-1$
+					card10.setFieldValue(CARD_DATE_FIELD_ID, "1220227200"); //$NON-NLS-1$
+					card10.getFieldAttribute(CARD_DATE_FIELD_ID).getMetaData().setType(
+							TaskAttribute.TYPE_DATE);
 
 					CardWrapper card20 = swimlane.addCard(Integer.toString(321) + i);
 					card20.setLabel("Title of " + (301 + i)); //$NON-NLS-1$
@@ -314,6 +327,12 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 					card20.addFieldValue(CARD_REMAINING_EFFORT_FIELD_ID, "5"); //$NON-NLS-1$
 					card20.setFieldLabel(CARD_ASSIGNED_TO_FIELD_ID, "Assigned to");
 					card20.addFieldValue(CARD_ASSIGNED_TO_FIELD_ID, "fbacha"); //$NON-NLS-1$ 
+
+					card20.setFieldLabel(CARD_DATE_FIELD_ID, "Date"); //$NON-NLS-1$
+					card20.setFieldValue(CARD_DATE_FIELD_ID, "1220227200"); //$NON-NLS-1$
+					card20.getFieldAttribute(CARD_DATE_FIELD_ID).getMetaData().setType(
+							TaskAttribute.TYPE_DATETIME);
+
 					card20.addAllowedColumn("11");
 					card20.addAllowedColumn("10");
 
@@ -326,6 +345,10 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 					card01.addFieldValue(CARD_REMAINING_EFFORT_FIELD_ID, "3"); //$NON-NLS-1$ 
 					card01.setFieldLabel(CARD_ASSIGNED_TO_FIELD_ID, "Assigned to");
 					card01.addFieldValue(CARD_ASSIGNED_TO_FIELD_ID, "ldelaigue"); //$NON-NLS-1$ 
+					card01.setFieldLabel(CARD_DATE_FIELD_ID, "Date"); //$NON-NLS-1$
+					card01.setFieldValue(CARD_DATE_FIELD_ID, "1220227200"); //$NON-NLS-1$
+					card01.getFieldAttribute(CARD_DATE_FIELD_ID).getMetaData().setType(
+							TaskAttribute.TYPE_DATE);
 					break;
 				case 2:
 					CardWrapper card02 = swimlane.addCard(Integer.toString(300) + i);
@@ -335,6 +358,10 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 					card02.addFieldValue(CARD_REMAINING_EFFORT_FIELD_ID, "3"); //$NON-NLS-1$ 
 					card02.setFieldLabel(CARD_ASSIGNED_TO_FIELD_ID, "Assigned to");
 					card02.addFieldValue(CARD_ASSIGNED_TO_FIELD_ID, "ldelaigue"); //$NON-NLS-1$ 
+					card02.setFieldLabel(CARD_DATE_FIELD_ID, "Date"); //$NON-NLS-1$
+					card02.setFieldValue(CARD_DATE_FIELD_ID, "1220227200"); //$NON-NLS-1$
+					card02.getFieldAttribute(CARD_DATE_FIELD_ID).getMetaData().setType(
+							TaskAttribute.TYPE_DATE);
 					break;
 				default:
 					break;

@@ -35,4 +35,5 @@ Export-Package: org.tuleap.mylyn.task.agile.ui,
  org.tuleap.mylyn.task.internal.agile.ui.editors.planning;x-friends:="org.tuleap.mylyn.task.agile.ui.tests",
  org.tuleap.mylyn.task.internal.agile.ui.task;x-internal:=true,
  org.tuleap.mylyn.task.internal.agile.ui.util;x-internal:=true
+Import-Package: org.eclipse.mylyn.commons.workbench.forms
 
