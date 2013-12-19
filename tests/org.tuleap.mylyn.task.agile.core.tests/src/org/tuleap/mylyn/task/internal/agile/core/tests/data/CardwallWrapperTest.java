@@ -425,6 +425,9 @@ public class CardwallWrapperTest {
 		assertEquals(TaskAttribute.TYPE_SHORT_RICH_TEXT, fieldAttribute.getMetaData().getType());
 	}
 
+	/**
+	 * Test the behaviour fo set & get Allowed column ids.
+	 */
 	@Test
 	public void testAllowedColumnIds() {
 		CardwallWrapper wrapper = new CardwallWrapper(taskData.getRoot());
@@ -444,6 +447,24 @@ public class CardwallWrapperTest {
 		assertEquals(2, card.getAllowedColumnIds().size());
 		assertEquals("10", card.getAllowedColumnIds().get(0));
 		assertEquals("11", card.getAllowedColumnIds().get(1));
+	}
+
+	@Test
+	public void testCardArtifactId() {
+		CardwallWrapper wrapper = new CardwallWrapper(taskData.getRoot());
+		for (int i = 0; i < 4; i++) {
+			wrapper.addColumn(Integer.toString(10 + i), "Column" + i);
+		}
+		SwimlaneWrapper swimlane = wrapper.addSwimlane("123");
+		CardWrapper card = swimlane.addCard("456");
+
+		card.setArtifactId("ArtId");
+		assertEquals("ArtId", card.getArtifactId());
+
+		TaskAttribute att = taskData.getRoot().getAttribute("mta_swi-123-456-art_id");
+		assertNotNull(att);
+		assertEquals(1, att.getValues().size());
+		assertEquals("ArtId", att.getValue());
 	}
 
 }

@@ -37,6 +37,11 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 	public static final String SUFFIX_COLUMN_ID = "col_id"; //$NON-NLS-1$
 
 	/**
+	 * Suffix used to compute the mylyn id of the task atribute that represents the card's artifact id.
+	 */
+	public static final String SUFFIX_ARTIFACT_ID = "art_id"; //$NON-NLS-1$
+
+	/**
 	 * Suffix used to compute the mylyn id of the task atribute that represents the status.
 	 */
 	public static final String SUFFIX_STATUS = "status"; //$NON-NLS-1$
@@ -95,6 +100,15 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 	 */
 	private String getColumnIdAttributeId() {
 		return getAttributeId(attribute, SUFFIX_COLUMN_ID);
+	}
+
+	/**
+	 * Computes the unique id of the Assigned column id attribute.
+	 * 
+	 * @return The unique id of the Assigned column id attribute.
+	 */
+	private String getArtifactIdAttributeId() {
+		return getAttributeId(attribute, SUFFIX_ARTIFACT_ID);
 	}
 
 	/**
@@ -243,9 +257,12 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 	 * Assigned milestone id setter.
 	 * 
 	 * @param columnId
-	 *            The assigned milestone id.
+	 *            The assigned milestone id. No effect if columnId is null.
 	 */
 	public void setColumnId(String columnId) {
+		if (columnId == null) {
+			return;
+		}
 		TaskAttribute att = root.getMappedAttribute(getColumnIdAttributeId());
 		String oldValue = null;
 		if (att == null) {
@@ -256,6 +273,45 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 		}
 		if (oldValue == null || !oldValue.equals(columnId)) {
 			att.setValue(columnId);
+			fireAttributeChanged(att);
+		}
+	}
+
+	/**
+	 * Assigned milestone id getter.
+	 * 
+	 * @return The id of the column to which this card is assigned, or null if it is not assigned, which
+	 *         should not happen in an ideal world.
+	 */
+	public String getArtifactId() {
+		String result = null;
+		TaskAttribute att = root.getMappedAttribute(getArtifactIdAttributeId());
+		if (att != null) {
+			result = att.getValue();
+		}
+		return result;
+	}
+
+	/**
+	 * Assigned milestone id setter.
+	 * 
+	 * @param artifactId
+	 *            The assigned milestone id. No effect if artifactId is null.
+	 */
+	public void setArtifactId(String artifactId) {
+		if (artifactId == null) {
+			return;
+		}
+		TaskAttribute att = root.getMappedAttribute(getArtifactIdAttributeId());
+		String oldValue = null;
+		if (att == null) {
+			att = root.createAttribute(getArtifactIdAttributeId());
+			att.getMetaData().setType(TaskAttribute.TYPE_SHORT_TEXT);
+		} else {
+			oldValue = att.getValue();
+		}
+		if (oldValue == null || !oldValue.equals(artifactId)) {
+			att.setValue(artifactId);
 			fireAttributeChanged(att);
 		}
 	}
