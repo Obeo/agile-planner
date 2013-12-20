@@ -273,6 +273,7 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 		// CHECKSTYLE:ON
 	}
 
+	// CHECKSTYLE:OFF
 	/**
 	 * Data set 3 for an example of cardwall.
 	 * 
@@ -280,7 +281,7 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 	 *            The task attribute
 	 */
 	private void cardwall3(TaskAttribute root) {
-		// CHECKSTYLE:OFF
+
 		CardwallWrapper cardwallWrapper = new CardwallWrapper(root);
 		for (int i = 0; i < 3; i++) {
 			cardwallWrapper.addColumn(Integer.toString(10 + i), "Column " + i); //$NON-NLS-1$
@@ -338,7 +339,25 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 
 					break;
 				case 1:
-					CardWrapper card01 = swimlane.addCard(Integer.toString(300) + i);
+
+					CardWrapper card30 = swimlane.addCard(Integer.toString(300) + i);
+					card30.setLabel("This is very very long title to test line wrapping, Title of " + (300 + i)); //$NON-NLS-1$
+
+					card30.addField(CARD_REMAINING_EFFORT_FIELD_ID,
+							"Remaining Effort", TaskAttribute.TYPE_DOUBLE); //$NON-NLS-1$
+					card30.setFieldValue(CARD_REMAINING_EFFORT_FIELD_ID, "2.5"); //$NON-NLS-1$
+					TaskAttribute assignedToAttribute = card30.addField(CARD_ASSIGNED_TO_FIELD_ID,
+							"Assigned to", TaskAttribute.TYPE_SINGLE_SELECT); //$NON-NLS-1$
+					assignedToAttribute.putOption("101", "cnotot");
+					assignedToAttribute.putOption("102", "ldelaigue");
+					assignedToAttribute.putOption("103", "fbacha");
+					assignedToAttribute.putOption("104", "sbegaudeau");
+					card30.setFieldValue(CARD_ASSIGNED_TO_FIELD_ID, "101"); //$NON-NLS-1$ 
+					card30.setFieldLabel(CARD_DATE_FIELD_ID, "Date"); //$NON-NLS-1$
+					card30.setFieldValue(CARD_DATE_FIELD_ID, "1220227200"); //$NON-NLS-1$
+					card30.getFieldAttribute(CARD_DATE_FIELD_ID).getMetaData().setType(
+							TaskAttribute.TYPE_DATETIME);
+					CardWrapper card01 = swimlane.addCard(Integer.toString(301) + i);
 					card01.setLabel("Title of " + (300 + i)); //$NON-NLS-1$
 					card01.setColumnId(Integer.toString(10 + i));
 					card01.setFieldLabel(CARD_REMAINING_EFFORT_FIELD_ID, "Remaining Effort");
@@ -348,20 +367,157 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 					card01.setFieldLabel(CARD_DATE_FIELD_ID, "Date"); //$NON-NLS-1$
 					card01.setFieldValue(CARD_DATE_FIELD_ID, "1220227200"); //$NON-NLS-1$
 					card01.getFieldAttribute(CARD_DATE_FIELD_ID).getMetaData().setType(
-							TaskAttribute.TYPE_DATE);
+							TaskAttribute.TYPE_DATETIME);
+
+					CardWrapper card31 = swimlane.addCard(Integer.toString(302) + i);
+					card31.setLabel("Title of " + (300 + i)); //$NON-NLS-1$
+					card31.setColumnId(Integer.toString(10 + i));
+					card31.setFieldLabel(CARD_REMAINING_EFFORT_FIELD_ID, "Remaining Effort");
+					card31.addFieldValue(CARD_REMAINING_EFFORT_FIELD_ID, "3"); //$NON-NLS-1$ 
+					card31.setFieldLabel(CARD_ASSIGNED_TO_FIELD_ID, "Assigned to");
+					card31.addFieldValue(CARD_ASSIGNED_TO_FIELD_ID, "fbacha"); //$NON-NLS-1$ 
+					card31.setFieldLabel(CARD_DATE_FIELD_ID, "Date"); //$NON-NLS-1$
+					card31.setFieldValue(CARD_DATE_FIELD_ID, "1220227200"); //$NON-NLS-1$
+					card31.getFieldAttribute(CARD_DATE_FIELD_ID).getMetaData().setType(
+							TaskAttribute.TYPE_DATETIME);
+
+					CardWrapper card32 = swimlane.addCard(Integer.toString(303) + i);
+					card32.setLabel("Title of " + (300 + i)); //$NON-NLS-1$
+					card32.setColumnId(Integer.toString(10));
+					card32.setFieldLabel(CARD_REMAINING_EFFORT_FIELD_ID, "Remaining Effort");
+					card32.addFieldValue(CARD_REMAINING_EFFORT_FIELD_ID, "3"); //$NON-NLS-1$ 
+					card32.setFieldLabel(CARD_ASSIGNED_TO_FIELD_ID, "Assigned to");
+					card32.addFieldValue(CARD_ASSIGNED_TO_FIELD_ID, "fbacha"); //$NON-NLS-1$ 
+					card32.setFieldLabel(CARD_DATE_FIELD_ID, "Date"); //$NON-NLS-1$
+					card32.setFieldValue(CARD_DATE_FIELD_ID, "1220227200"); //$NON-NLS-1$
+					card32.getFieldAttribute(CARD_DATE_FIELD_ID).getMetaData().setType(
+							TaskAttribute.TYPE_DATETIME);
+
+					CardWrapper card33 = swimlane.addCard(Integer.toString(304) + i);
+					card33.setLabel("Title of " + (300 + i)); //$NON-NLS-1$
+					card33.setColumnId(Integer.toString(11 + i));
+					card33.setFieldLabel(CARD_REMAINING_EFFORT_FIELD_ID, "Remaining Effort");
+					card33.addFieldValue(CARD_REMAINING_EFFORT_FIELD_ID, "3"); //$NON-NLS-1$ 
+					card33.setFieldLabel(CARD_ASSIGNED_TO_FIELD_ID, "Assigned to");
+					card33.addFieldValue(CARD_ASSIGNED_TO_FIELD_ID, "fbacha"); //$NON-NLS-1$ 
+					card33.setFieldLabel(CARD_DATE_FIELD_ID, "Date"); //$NON-NLS-1$
+					card33.setFieldValue(CARD_DATE_FIELD_ID, "1220227200"); //$NON-NLS-1$
+					card33.getFieldAttribute(CARD_DATE_FIELD_ID).getMetaData().setType(
+							TaskAttribute.TYPE_DATETIME);
+
+					CardWrapper card34 = swimlane.addCard(Integer.toString(305) + i);
+					card34.setLabel("Title of " + (300 + i)); //$NON-NLS-1$
+					card34.setColumnId(Integer.toString(11 + i));
+					card34.setFieldLabel(CARD_REMAINING_EFFORT_FIELD_ID, "Remaining Effort");
+					card34.addFieldValue(CARD_REMAINING_EFFORT_FIELD_ID, "3"); //$NON-NLS-1$ 
+					card34.setFieldLabel(CARD_ASSIGNED_TO_FIELD_ID, "Assigned to");
+					card34.addFieldValue(CARD_ASSIGNED_TO_FIELD_ID, "sbegaudeau"); //$NON-NLS-1$ 
+					card34.setFieldLabel(CARD_DATE_FIELD_ID, "Date"); //$NON-NLS-1$
+					card34.setFieldValue(CARD_DATE_FIELD_ID, "1220227200"); //$NON-NLS-1$
+					card34.getFieldAttribute(CARD_DATE_FIELD_ID).getMetaData().setType(
+							TaskAttribute.TYPE_DATETIME);
+
+					CardWrapper card35 = swimlane.addCard(Integer.toString(306) + i);
+					card35.setLabel("Title of " + (300 + i)); //$NON-NLS-1$
+					card35.setColumnId(Integer.toString(11 + i));
+					card35.setFieldLabel(CARD_REMAINING_EFFORT_FIELD_ID, "Remaining Effort");
+					card35.addFieldValue(CARD_REMAINING_EFFORT_FIELD_ID, "3"); //$NON-NLS-1$ 
+					card35.setFieldLabel(CARD_ASSIGNED_TO_FIELD_ID, "Assigned to");
+					card35.addFieldValue(CARD_ASSIGNED_TO_FIELD_ID, "ldelaigue"); //$NON-NLS-1$ 
+					card35.setFieldLabel(CARD_DATE_FIELD_ID, "Date"); //$NON-NLS-1$
+					card35.setFieldValue(CARD_DATE_FIELD_ID, "1220227200"); //$NON-NLS-1$
+					card35.getFieldAttribute(CARD_DATE_FIELD_ID).getMetaData().setType(
+							TaskAttribute.TYPE_DATETIME);
 					break;
 				case 2:
-					CardWrapper card02 = swimlane.addCard(Integer.toString(300) + i);
-					card02.setLabel("Title of " + (300 + i)); //$NON-NLS-1$
-					card02.setColumnId(Integer.toString(10 + i));
-					card02.setFieldLabel(CARD_REMAINING_EFFORT_FIELD_ID, "Remaining Effort");
-					card02.addFieldValue(CARD_REMAINING_EFFORT_FIELD_ID, "3"); //$NON-NLS-1$ 
-					card02.setFieldLabel(CARD_ASSIGNED_TO_FIELD_ID, "Assigned to");
-					card02.addFieldValue(CARD_ASSIGNED_TO_FIELD_ID, "ldelaigue"); //$NON-NLS-1$ 
-					card02.setFieldLabel(CARD_DATE_FIELD_ID, "Date"); //$NON-NLS-1$
-					card02.setFieldValue(CARD_DATE_FIELD_ID, "1220227200"); //$NON-NLS-1$
-					card02.getFieldAttribute(CARD_DATE_FIELD_ID).getMetaData().setType(
-							TaskAttribute.TYPE_DATE);
+					CardWrapper card36 = swimlane.addCard(Integer.toString(300) + i);
+					card36.setLabel("This is very very long title to test line wrapping, Title of " + (300 + i)); //$NON-NLS-1$
+
+					card36.addField(CARD_REMAINING_EFFORT_FIELD_ID,
+							"Remaining Effort", TaskAttribute.TYPE_DOUBLE); //$NON-NLS-1$
+					card36.setFieldValue(CARD_REMAINING_EFFORT_FIELD_ID, "2.5"); //$NON-NLS-1$
+					TaskAttribute assignedTo = card36.addField(CARD_ASSIGNED_TO_FIELD_ID,
+							"Assigned to", TaskAttribute.TYPE_SINGLE_SELECT); //$NON-NLS-1$
+					assignedTo.putOption("101", "cnotot");
+					assignedTo.putOption("102", "ldelaigue");
+					assignedTo.putOption("103", "fbacha");
+					assignedTo.putOption("104", "sbegaudeau");
+					card36.setFieldValue(CARD_ASSIGNED_TO_FIELD_ID, "101"); //$NON-NLS-1$ 
+					card36.setFieldLabel(CARD_DATE_FIELD_ID, "Date"); //$NON-NLS-1$
+					card36.setFieldValue(CARD_DATE_FIELD_ID, "1220227200"); //$NON-NLS-1$
+					card36.getFieldAttribute(CARD_DATE_FIELD_ID).getMetaData().setType(
+							TaskAttribute.TYPE_DATETIME);
+					CardWrapper card37 = swimlane.addCard(Integer.toString(301) + i);
+					card37.setLabel("Title of " + (300 + i)); //$NON-NLS-1$
+					card37.setColumnId(Integer.toString(10 + i));
+					card37.setFieldLabel(CARD_REMAINING_EFFORT_FIELD_ID, "Remaining Effort");
+					card37.addFieldValue(CARD_REMAINING_EFFORT_FIELD_ID, "3"); //$NON-NLS-1$ 
+					card37.setFieldLabel(CARD_ASSIGNED_TO_FIELD_ID, "Assigned to");
+					card37.addFieldValue(CARD_ASSIGNED_TO_FIELD_ID, "ldelaigue"); //$NON-NLS-1$ 
+					card37.setFieldLabel(CARD_DATE_FIELD_ID, "Date"); //$NON-NLS-1$
+					card37.setFieldValue(CARD_DATE_FIELD_ID, "1220227200"); //$NON-NLS-1$
+					card37.getFieldAttribute(CARD_DATE_FIELD_ID).getMetaData().setType(
+							TaskAttribute.TYPE_DATETIME);
+
+					CardWrapper card38 = swimlane.addCard(Integer.toString(302) + i);
+					card38.setLabel("Title of " + (300 + i)); //$NON-NLS-1$
+					card38.setColumnId(Integer.toString(10 + i));
+					card38.setFieldLabel(CARD_REMAINING_EFFORT_FIELD_ID, "Remaining Effort");
+					card38.addFieldValue(CARD_REMAINING_EFFORT_FIELD_ID, "3"); //$NON-NLS-1$ 
+					card38.setFieldLabel(CARD_ASSIGNED_TO_FIELD_ID, "Assigned to");
+					card38.addFieldValue(CARD_ASSIGNED_TO_FIELD_ID, "fbacha"); //$NON-NLS-1$ 
+					card38.setFieldLabel(CARD_DATE_FIELD_ID, "Date"); //$NON-NLS-1$
+					card38.setFieldValue(CARD_DATE_FIELD_ID, "1220227200"); //$NON-NLS-1$
+					card38.getFieldAttribute(CARD_DATE_FIELD_ID).getMetaData().setType(
+							TaskAttribute.TYPE_DATETIME);
+
+					CardWrapper card39 = swimlane.addCard(Integer.toString(303) + i);
+					card39.setLabel("Title of " + (300 + i)); //$NON-NLS-1$
+					card39.setColumnId(Integer.toString(11));
+					card39.setFieldLabel(CARD_REMAINING_EFFORT_FIELD_ID, "Remaining Effort");
+					card39.addFieldValue(CARD_REMAINING_EFFORT_FIELD_ID, "3"); //$NON-NLS-1$ 
+					card39.setFieldLabel(CARD_ASSIGNED_TO_FIELD_ID, "Assigned to");
+					card39.addFieldValue(CARD_ASSIGNED_TO_FIELD_ID, "fbacha"); //$NON-NLS-1$ 
+					card39.setFieldLabel(CARD_DATE_FIELD_ID, "Date"); //$NON-NLS-1$
+					card39.setFieldValue(CARD_DATE_FIELD_ID, "1220227200"); //$NON-NLS-1$
+					card39.getFieldAttribute(CARD_DATE_FIELD_ID).getMetaData().setType(
+							TaskAttribute.TYPE_DATETIME);
+
+					CardWrapper card40 = swimlane.addCard(Integer.toString(304) + i);
+					card40.setLabel("Title of " + (300 + i)); //$NON-NLS-1$
+					card40.setColumnId(Integer.toString(10));
+					card40.setFieldLabel(CARD_REMAINING_EFFORT_FIELD_ID, "Remaining Effort");
+					card40.addFieldValue(CARD_REMAINING_EFFORT_FIELD_ID, "3"); //$NON-NLS-1$ 
+					card40.setFieldLabel(CARD_ASSIGNED_TO_FIELD_ID, "Assigned to");
+					card40.addFieldValue(CARD_ASSIGNED_TO_FIELD_ID, "fbacha"); //$NON-NLS-1$ 
+					card40.setFieldLabel(CARD_DATE_FIELD_ID, "Date"); //$NON-NLS-1$
+					card40.setFieldValue(CARD_DATE_FIELD_ID, "1220227200"); //$NON-NLS-1$
+					card40.getFieldAttribute(CARD_DATE_FIELD_ID).getMetaData().setType(
+							TaskAttribute.TYPE_DATETIME);
+
+					CardWrapper card41 = swimlane.addCard(Integer.toString(305) + i);
+					card41.setLabel("Title of " + (300 + i)); //$NON-NLS-1$
+					card41.setColumnId(Integer.toString(10 + i));
+					card41.setFieldLabel(CARD_REMAINING_EFFORT_FIELD_ID, "Remaining Effort");
+					card41.addFieldValue(CARD_REMAINING_EFFORT_FIELD_ID, "3"); //$NON-NLS-1$ 
+					card41.setFieldLabel(CARD_ASSIGNED_TO_FIELD_ID, "Assigned to");
+					card41.addFieldValue(CARD_ASSIGNED_TO_FIELD_ID, "sbegaudeau"); //$NON-NLS-1$ 
+					card41.setFieldLabel(CARD_DATE_FIELD_ID, "Date"); //$NON-NLS-1$
+					card41.setFieldValue(CARD_DATE_FIELD_ID, "1220227200"); //$NON-NLS-1$
+					card41.getFieldAttribute(CARD_DATE_FIELD_ID).getMetaData().setType(
+							TaskAttribute.TYPE_DATETIME);
+
+					CardWrapper card42 = swimlane.addCard(Integer.toString(306) + i);
+					card42.setLabel("Title of " + (300 + i)); //$NON-NLS-1$
+					card42.setColumnId(Integer.toString(10 + i));
+					card42.setFieldLabel(CARD_REMAINING_EFFORT_FIELD_ID, "Remaining Effort"); //$NON-NLS-1$
+					card42.addFieldValue(CARD_REMAINING_EFFORT_FIELD_ID, "3"); //$NON-NLS-1$ 
+					card42.setFieldLabel(CARD_ASSIGNED_TO_FIELD_ID, "Assigned to");
+					card42.addFieldValue(CARD_ASSIGNED_TO_FIELD_ID, "ldelaigue"); //$NON-NLS-1$ 
+					card42.setFieldLabel(CARD_DATE_FIELD_ID, "Date"); //$NON-NLS-1$
+					card42.setFieldValue(CARD_DATE_FIELD_ID, "1220227200"); //$NON-NLS-1$
+					card42.getFieldAttribute(CARD_DATE_FIELD_ID).getMetaData().setType(
+							TaskAttribute.TYPE_DATETIME);
 					break;
 				default:
 					break;
