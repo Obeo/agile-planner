@@ -130,7 +130,7 @@ public class SwimlaneWrapper extends AbstractTaskAttributeWrapper {
 	 * @see org.tuleap.mylyn.task.agile.core.data.AbstractTaskAttributeWrapper#fireAttributeChanged(org.eclipse.mylyn.tasks.core.data.TaskAttribute)
 	 */
 	@Override
-	protected void fireAttributeChanged(TaskAttribute attribute) {
-		parent.fireAttributeChanged(attribute);
+	protected void fireAttributeChanged(TaskAttribute att) {
+		parent.fireAttributeChanged(att);
 	}
 }
