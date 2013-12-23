@@ -23,7 +23,9 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 /**
- * @author <a href="mailto:stephane.begaudeau@obeo.fr">Stephane Begaudeau</a>
+ * Tests of Agile UI Activator.
+ * 
+ * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
  */
 @Ignore("Waiting for xvnc setup in continuous integration")
 public class MylynAgileUIActivatorTest {
