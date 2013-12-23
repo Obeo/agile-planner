@@ -12,6 +12,7 @@ package org.tuleap.mylyn.task.internal.agile.ui.tests;
 
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.tuleap.mylyn.task.internal.agile.ui.MylynAgileUIActivator;
 
@@ -24,6 +25,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * @author <a href="mailto:stephane.begaudeau@obeo.fr">Stephane Begaudeau</a>
  */
+@Ignore("Waiting for xvnc setup in continuous integration")
 public class MylynAgileUIActivatorTest {
 
 	/**
