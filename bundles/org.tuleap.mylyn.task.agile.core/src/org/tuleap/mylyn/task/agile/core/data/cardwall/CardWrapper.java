@@ -70,7 +70,7 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 	 *            The {@link TaskAttribute} that represents the card
 	 */
 	protected CardWrapper(SwimlaneWrapper parent, TaskAttribute cardAtt) {
-		super(parent.getRoot(), parent.getWrappedAttribute().getId() + '-', cardAtt.getValue());
+		super(parent.getRoot(), parent.getCardPrefix(), cardAtt.getValue());
 		this.parent = parent;
 	}
 
@@ -83,7 +83,7 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 	 *            The id of the column
 	 */
 	protected CardWrapper(SwimlaneWrapper parent, String id) {
-		super(parent.getRoot(), parent.getWrappedAttribute().getId() + '-', id);
+		super(parent.getRoot(), parent.getCardPrefix(), id);
 		this.parent = parent;
 	}
 

@@ -32,6 +32,11 @@ public class SwimlaneWrapper extends AbstractTaskAttributeWrapper {
 	public static final String PREFIX_SWIMLANE = "mta_swi-"; //$NON-NLS-1$
 
 	/**
+	 * Separator to use to compute the mylyn id of a configurable field {@link TaskAttribute}.
+	 */
+	public static final String CARD_SEPARATOR = "-c-"; //$NON-NLS-1$
+
+	/**
 	 * The parent card wall.
 	 */
 	private final CardwallWrapper parent;
@@ -92,8 +97,17 @@ public class SwimlaneWrapper extends AbstractTaskAttributeWrapper {
 	 *            The card's ID.
 	 * @return The unique ID of the {@link TaskAttribute} that represents a card in this swimlane.
 	 */
-	private String getCardAttributeId(String id) {
-		return getAttributeId(attribute, id);
+	protected String getCardAttributeId(String id) {
+		return attribute.getId() + CARD_SEPARATOR + id;
+	}
+
+	/**
+	 * Computes the prefix to use for cards of a given swimlane.
+	 * 
+	 * @return The prefix to use for this card's {@link TaskAttribute} IDs.
+	 */
+	protected String getCardPrefix() {
+		return attribute.getId() + CARD_SEPARATOR;
 	}
 
 	/**
@@ -115,9 +129,9 @@ public class SwimlaneWrapper extends AbstractTaskAttributeWrapper {
 	 */
 	public List<CardWrapper> getCards() {
 		List<CardWrapper> cards = Lists.newArrayList();
-		String prefix = attribute.getId() + '-';
+		String prefix = getCardPrefix();
 		for (TaskAttribute att : root.getAttributes().values()) {
-			if (att.getId().startsWith(prefix) && att.getId().indexOf('-', prefix.length()) == -1) {
+			if (att.getId().startsWith(prefix) && att.getId().indexOf('-', prefix.length() + 1) == -1) {
 				cards.add(wrapCard(att));
 			}
 		}

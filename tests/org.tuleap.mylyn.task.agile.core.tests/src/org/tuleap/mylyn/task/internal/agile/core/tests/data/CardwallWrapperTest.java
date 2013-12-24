@@ -94,6 +94,82 @@ public class CardwallWrapperTest {
 	}
 
 	/**
+	 * Tests swimlane.getCards() return the cards of the right swimlane.
+	 */
+	@Test
+	public void testGetCardsOfSwimlane() {
+		CardwallWrapper wrapper = new CardwallWrapper(taskData.getRoot());
+		for (int i = 0; i < 4; i++) {
+			wrapper.addColumn(Integer.toString(10 + i), "Column" + i);
+		}
+		SwimlaneWrapper swimlane = wrapper.addSwimlane("123");
+		for (int i = 0; i < 4; i++) {
+			CardWrapper card = swimlane.addCard(Integer.toString(200 + i));
+			card.setLabel("Label " + (200 + i));
+			card.setColumnId(Integer.toString(10 + i));
+			card.addFieldValue("100", "Value 100" + i);
+			card.setStatus("Open");
+			for (int j = 0; j < 3; j++) {
+				card.addAllowedColumn(Integer.toString(10 + i + j));
+			}
+		}
+		swimlane = wrapper.addSwimlane("456");
+		for (int i = 0; i < 4; i++) {
+			CardWrapper card = swimlane.addCard(Integer.toString(300 + i));
+			card.setLabel("Label " + (300 + i));
+			card.setColumnId(Integer.toString(10 + i));
+			card.addFieldValue("100", "Value 100" + i);
+			card.setStatus("Open");
+			for (int j = 0; j < 3; j++) {
+				card.addAllowedColumn(Integer.toString(10 + i + j));
+			}
+		}
+
+		swimlane = wrapper.getSwimlanes().get(0);
+
+		List<ColumnWrapper> columns = wrapper.getColumns();
+		for (int i = 0; i < 4; i++) {
+			assertEquals(Integer.toString(10 + i), columns.get(i).getId());
+			assertEquals("Column" + i, columns.get(i).getLabel());
+			// assertEquals()
+		}
+		List<SwimlaneWrapper> swimlanes = wrapper.getSwimlanes();
+		assertEquals(2, swimlanes.size());
+		swimlane = swimlanes.get(0);
+		assertEquals("123", swimlane.getId());
+
+		List<CardWrapper> cards = swimlane.getCards();
+		assertEquals(4, cards.size());
+		for (int i = 0; i < 4; i++) {
+			assertEquals(Integer.toString(200 + i), cards.get(i).getId());
+			assertEquals("Label " + (200 + i), cards.get(i).getLabel());
+			assertEquals(Integer.toString(10 + i), cards.get(i).getColumnId());
+			assertEquals("Value 100" + i, cards.get(i).getFieldValue("100"));
+			assertEquals("Open", cards.get(i).getStatus());
+			List<String> allowedColumns = cards.get(i).getAllowedColumnIds();
+			for (int j = 0; j < allowedColumns.size(); j++) {
+				assertEquals(Integer.toString(10 + i + j), allowedColumns.get(j));
+			}
+		}
+
+		swimlane = swimlanes.get(1);
+		assertEquals("456", swimlane.getId());
+		cards = swimlane.getCards();
+		assertEquals(4, cards.size());
+		for (int i = 0; i < 4; i++) {
+			assertEquals(Integer.toString(300 + i), cards.get(i).getId());
+			assertEquals("Label " + (300 + i), cards.get(i).getLabel());
+			assertEquals(Integer.toString(10 + i), cards.get(i).getColumnId());
+			assertEquals("Value 100" + i, cards.get(i).getFieldValue("100"));
+			assertEquals("Open", cards.get(i).getStatus());
+			List<String> allowedColumns = cards.get(i).getAllowedColumnIds();
+			for (int j = 0; j < allowedColumns.size(); j++) {
+				assertEquals(Integer.toString(10 + i + j), allowedColumns.get(j));
+			}
+		}
+	}
+
+	/**
 	 * Tests basic card wall modifications.
 	 */
 	@Test
@@ -175,7 +251,7 @@ public class CardwallWrapperTest {
 		// Modification of the cards created previously
 		for (int i = 0; i < 4; i++) {
 			String id = Integer.toString(200 + i);
-			String cardPrefix = SwimlaneWrapper.PREFIX_SWIMLANE + "123" + '-' + id;
+			String cardPrefix = SwimlaneWrapper.PREFIX_SWIMLANE + "123-c-" + id;
 			CardWrapper card = swimlane.getCard(id);
 
 			String labelKey = cardPrefix + '-' + SwimlaneWrapper.SUFFIX_LABEL;
@@ -246,7 +322,7 @@ public class CardwallWrapperTest {
 		// Modification of the cards created previously
 		for (int i = 0; i < 4; i++) {
 			String id = Integer.toString(200 + i);
-			String cardPrefix = SwimlaneWrapper.PREFIX_SWIMLANE + "123" + '-' + id;
+			String cardPrefix = SwimlaneWrapper.PREFIX_SWIMLANE + "123" + "-c-" + id;
 			CardWrapper card = swimlane.getCard(id);
 
 			assertEquals("Value 100" + i, card.getFieldValue("100"));
@@ -461,7 +537,7 @@ public class CardwallWrapperTest {
 		card.setArtifactId("ArtId");
 		assertEquals("ArtId", card.getArtifactId());
 
-		TaskAttribute att = taskData.getRoot().getAttribute("mta_swi-123-456-art_id");
+		TaskAttribute att = taskData.getRoot().getAttribute("mta_swi-123-c-456-art_id");
 		assertNotNull(att);
 		assertEquals(1, att.getValues().size());
 		assertEquals("ArtId", att.getValue());
