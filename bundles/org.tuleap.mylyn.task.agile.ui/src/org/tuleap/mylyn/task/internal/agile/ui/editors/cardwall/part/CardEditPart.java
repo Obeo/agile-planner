@@ -218,7 +218,7 @@ public class CardEditPart extends AbstractGraphicalEditPart {
 			}
 		}
 		if (repository != null) {
-			TasksUiUtil.openTask(repository, card.getId());
+			TasksUiUtil.openTask(repository, card.getArtifactId());
 		}
 	}
 }
