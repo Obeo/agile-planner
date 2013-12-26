@@ -15,7 +15,6 @@ import com.google.common.collect.Lists;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
@@ -39,8 +38,12 @@ import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.policy.CardDateF
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.policy.CardFieldCellEditorLocator;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.policy.CardFieldDirectEditManager;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.policy.CardFieldEditPolicy;
+import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.policy.CardMultiSelectionFieldCellEditorLocator;
+import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.policy.CardMultiSelectionFieldDirectEditManager;
+import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.policy.CardMultiSelectionFieldEditPolicy;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.util.CardDateCellEditor;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.util.CardDateTimeCellEditor;
+import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.util.CardMultiSelectionFieldEditor;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.validator.DoubleValidator;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.validator.IntegerValidator;
 import org.tuleap.mylyn.task.internal.agile.ui.util.IMylynAgileUIConstants;
@@ -89,13 +92,15 @@ public class CardFieldEditPart extends AbstractGraphicalEditPart {
 		TaskAttributeMetaData metaData = attribute.getMetaData();
 		if (!metaData.isReadOnly() && !metaData.isDisabled()) {
 			String type = metaData.getType();
-			if (TaskAttribute.TYPE_SINGLE_SELECT.equals(type) || TaskAttribute.TYPE_MULTI_SELECT.equals(type)) {
+			if (TaskAttribute.TYPE_SINGLE_SELECT.equals(type)) {
 				// bound field
 				installEditPolicy(REQ_DIRECT_EDIT, new CardBoundFieldEditPolicy());
 			} else if (TaskAttribute.TYPE_DATE.equals(type)) {
 				installEditPolicy(REQ_DIRECT_EDIT, new CardDateFieldEditPolicy());
 			} else if (TaskAttribute.TYPE_DATETIME.equals(type)) {
 				installEditPolicy(REQ_DIRECT_EDIT, new CardDateFieldEditPolicy());
+			} else if (TaskAttribute.TYPE_MULTI_SELECT.equals(type)) {
+				installEditPolicy(REQ_DIRECT_EDIT, new CardMultiSelectionFieldEditPolicy());
 			} else {
 				installEditPolicy(REQ_DIRECT_EDIT, new CardFieldEditPolicy());
 			}
@@ -123,11 +128,8 @@ public class CardFieldEditPart extends AbstractGraphicalEditPart {
 			manager = new CardBoundFieldDirectEditManager(this, ComboBoxCellEditor.class,
 					new CardBoundFieldCellEditorLocator(label), attribute);
 		} else if (TaskAttribute.TYPE_MULTI_SELECT.equals(attributeType)) {
-			// manager = new CardFieldDirectEditManager(this, ComboBoxCellEditor.class,
-			// new CardFieldMultiCellEditorLocator(label), label, attribute.getValues(),
-			// attribute.getOptions());
-			MylynAgileUIActivator.log(MylynAgileUIMessages.getString(
-					IMylynAgileUIConstants.DIRECT_EDIT_NOT_SUPPORTED, "multi-selection"), false); //$NON-NLS-1$
+			manager = new CardMultiSelectionFieldDirectEditManager(this, CardMultiSelectionFieldEditor.class,
+					new CardMultiSelectionFieldCellEditorLocator(label), attribute);
 		} else if (TaskAttribute.TYPE_ATTACHMENT.equals(attributeType)) {
 			MylynAgileUIActivator.log(MylynAgileUIMessages.getString(
 					IMylynAgileUIConstants.DIRECT_EDIT_NOT_SUPPORTED, "attachment"), false); //$NON-NLS-1$
@@ -204,29 +206,48 @@ public class CardFieldEditPart extends AbstractGraphicalEditPart {
 		CardFieldFigure f = getCardFieldFigure();
 		TaskAttribute attribute = (TaskAttribute)getModel();
 		String type = attribute.getMetaData().getType();
-		if (TaskAttribute.TYPE_SINGLE_SELECT.equals(type) || TaskAttribute.TYPE_MULTI_SELECT.equals(type)) {
+
+		// Indicates if the attributes' values are null or not
+		boolean isNull = false;
+		if (TaskAttribute.TYPE_SINGLE_SELECT.equals(type)) {
 			List<String> values = Lists.newArrayList();
 			for (String key : attribute.getValues()) {
 				values.add(attribute.getOption(key));
 			}
 			f.setField(attribute.getMetaData().getLabel(), values);
+
+		} else if (TaskAttribute.TYPE_MULTI_SELECT.equals(type)) {
+			List<String> values = Lists.newArrayList();
+			for (String key : attribute.getValues()) {
+				if (attribute.getOption(key) == null) {
+					isNull = true;
+				}
+				values.add(attribute.getOption(key));
+			}
+
+			if (isNull) {
+				values.clear();
+				values.add(""); //$NON-NLS-1$
+			}
+			f.setField(attribute.getMetaData().getLabel(), values);
+
 		} else if (TaskAttribute.TYPE_DATETIME.equals(type)) {
 			List<String> values = Lists.newArrayList();
 			long longDate = Long.parseLong(attribute.getValue());
 			Date date = new Date(longDate);
-
 			DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);
 			values.add(dateFormat.format(date));
 			f.setField(attribute.getMetaData().getLabel(), values);
+
 		} else if (TaskAttribute.TYPE_DATE.equals(type)) {
 			List<String> values = Lists.newArrayList();
 			Long longDate = Long.valueOf(attribute.getValue());
 			Date date = new Date(longDate.longValue());
 
 			DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);
-			dateFormat.setTimeZone(TimeZone.getTimeZone("Europe/Paris")); //$NON-NLS-1$
 			values.add(dateFormat.format(date).substring(0, dateFormat.format(date).length() - TIME_LENGTH));
 			f.setField(attribute.getMetaData().getLabel(), values);
+
 		} else {
 			f.setField(attribute.getMetaData().getLabel(), attribute.getValues());
 		}
