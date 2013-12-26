@@ -106,6 +106,7 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 			disposeContent(parent);
 		}
 		Form form = toolkit.createForm(parent);
+		setControl(form);
 		form.setLayout(FormLayoutFactory.createClearGridLayout(false, 1));
 		form.setLayoutData(new GridData(GridData.FILL_BOTH));
 
