@@ -10,16 +10,21 @@
  *******************************************************************************/
 package org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall;
 
-import java.util.Iterator;
+import com.google.common.collect.Sets;
+
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.mylyn.tasks.core.data.TaskDataModel;
+import org.eclipse.mylyn.tasks.core.data.TaskDataModelEvent;
+import org.eclipse.mylyn.tasks.core.data.TaskDataModelListener;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPage;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditor;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditorInput;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditorPartDescriptor;
+import org.eclipse.swt.SWT;
 import org.tuleap.mylyn.task.agile.ui.AbstractAgileRepositoryConnectorUI;
 import org.tuleap.mylyn.task.agile.ui.task.IModelRegistry;
 import org.tuleap.mylyn.task.internal.agile.ui.AgileRepositoryConnectorUiServiceTrackerCustomizer;
@@ -35,6 +40,16 @@ import org.tuleap.mylyn.task.internal.agile.ui.util.MylynAgileUIMessages;
 public class CardwallTaskEditorPage extends AbstractTaskEditorPage {
 
 	/**
+	 * The editor part.
+	 */
+	private CardwallTaskEditorPart part;
+
+	/**
+	 * The model listener.
+	 */
+	private final TaskDataModelListener modelListener;
+
+	/**
 	 * Constructor, which delegates to the matching super constructor.
 	 * 
 	 * @param editor
@@ -45,6 +60,19 @@ public class CardwallTaskEditorPage extends AbstractTaskEditorPage {
 	public CardwallTaskEditorPage(TaskEditor editor, String connectorKind) {
 		super(editor, connectorKind);
 		this.setNeedsSubmitButton(true);
+		modelListener = new TaskDataModelListener() {
+			@Override
+			public void attributeChanged(TaskDataModelEvent event) {
+				// Nothing
+			}
+
+			@Override
+			public void modelRefreshed() {
+				if (part != null) {
+					part.createControl(getManagedForm().getForm().getBody(), getManagedForm().getToolkit());
+				}
+			}
+		};
 	}
 
 	/**
@@ -54,27 +82,24 @@ public class CardwallTaskEditorPage extends AbstractTaskEditorPage {
 	 */
 	@Override
 	protected Set<TaskEditorPartDescriptor> createPartDescriptors() {
-		Set<TaskEditorPartDescriptor> descriptors = super.createPartDescriptors();
-
-		this.removeAllParts(descriptors);
-
+		// We just want to display the planning editor in this tab
+		Set<TaskEditorPartDescriptor> descriptors = Sets.newLinkedHashSet();
 		descriptors.add(new CardwallTaskEditorPartDescriptor());
-
 		return descriptors;
 	}
 
 	/**
-	 * Removes the parts from the set of part descriptors.
+	 * {@inheritDoc}
 	 * 
-	 * @param parts
-	 *            the part descriptors.
+	 * @see org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPage#createParts()
 	 */
-	private void removeAllParts(Set<TaskEditorPartDescriptor> parts) {
-		Iterator<TaskEditorPartDescriptor> iterator = parts.iterator();
-		while (iterator.hasNext()) {
-			iterator.next();
-			iterator.remove();
-		}
+	@Override
+	protected void createParts() {
+		part = new CardwallTaskEditorPart();
+		getManagedForm().addPart(part);
+		part.initialize(this);
+		part.createControl(getManagedForm().getForm().getBody(), getManagedForm().getToolkit());
+		GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(part.getControl());
 	}
 
 	/**
@@ -121,6 +146,7 @@ public class CardwallTaskEditorPage extends AbstractTaskEditorPage {
 	public void dispose() {
 		TaskDataModel taskDataModel = getModel();
 		if (taskDataModel != null) {
+			taskDataModel.removeModelListener(modelListener);
 			String connectorKind = taskDataModel.getTaskRepository().getConnectorKind();
 			AgileRepositoryConnectorUiServiceTrackerCustomizer serviceTrackerCustomizer = MylynAgileUIActivator
 					.getDefault().getServiceTrackerCustomizer();
