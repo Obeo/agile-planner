@@ -53,7 +53,7 @@ public class SwimlaneCell extends AbstractNotifyingModel {
 	}
 
 	/**
-	 * Provides the cards located in this cell.
+	 * Provides the cards located in this cell, filtered according to the cardwall filter criterion.
 	 * 
 	 * @return The cell's cards
 	 */
@@ -88,7 +88,8 @@ public class SwimlaneCell extends AbstractNotifyingModel {
 	 * @return <code>true</code> if and only if the card passes the filter.
 	 */
 	private boolean filterCard(CardWrapper card, String filterLowerCase) {
-		if (card.getLabel().toLowerCase().contains(filterLowerCase)) {
+		if (card.getLabel().toLowerCase().contains(filterLowerCase)
+				|| card.getDisplayId().toLowerCase().contains(filterLowerCase)) {
 			return true;
 		}
 		boolean result = false;
