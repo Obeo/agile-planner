@@ -27,9 +27,11 @@ import org.tuleap.mylyn.task.agile.core.data.cardwall.ColumnWrapper;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.SwimlaneWrapper;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests of the cardwall wrapper.
@@ -59,7 +61,7 @@ public class CardwallWrapperTest {
 			card.setLabel("Label " + (200 + i));
 			card.setColumnId(Integer.toString(10 + i));
 			card.addFieldValue("100", "Value 100" + i);
-			card.setStatus("Open");
+			card.setComplete(false);
 			for (int j = 0; j < 3; j++) {
 				card.addAllowedColumn(Integer.toString(10 + i + j));
 			}
@@ -84,7 +86,7 @@ public class CardwallWrapperTest {
 			assertEquals("Label " + (200 + i), cards.get(i).getLabel());
 			assertEquals(Integer.toString(10 + i), cards.get(i).getColumnId());
 			assertEquals("Value 100" + i, cards.get(i).getFieldValue("100"));
-			assertEquals("Open", cards.get(i).getStatus());
+			assertFalse(cards.get(i).isComplete());
 			List<String> allowedColumns = cards.get(i).getAllowedColumnIds();
 			for (int j = 0; j < allowedColumns.size(); j++) {
 				assertEquals(Integer.toString(10 + i + j), allowedColumns.get(j));
@@ -108,7 +110,7 @@ public class CardwallWrapperTest {
 			card.setLabel("Label " + (200 + i));
 			card.setColumnId(Integer.toString(10 + i));
 			card.addFieldValue("100", "Value 100" + i);
-			card.setStatus("Open");
+			card.setComplete(false);
 			for (int j = 0; j < 3; j++) {
 				card.addAllowedColumn(Integer.toString(10 + i + j));
 			}
@@ -119,7 +121,7 @@ public class CardwallWrapperTest {
 			card.setLabel("Label " + (300 + i));
 			card.setColumnId(Integer.toString(10 + i));
 			card.addFieldValue("100", "Value 100" + i);
-			card.setStatus("Open");
+			card.setComplete(false);
 			for (int j = 0; j < 3; j++) {
 				card.addAllowedColumn(Integer.toString(10 + i + j));
 			}
@@ -145,7 +147,7 @@ public class CardwallWrapperTest {
 			assertEquals("Label " + (200 + i), cards.get(i).getLabel());
 			assertEquals(Integer.toString(10 + i), cards.get(i).getColumnId());
 			assertEquals("Value 100" + i, cards.get(i).getFieldValue("100"));
-			assertEquals("Open", cards.get(i).getStatus());
+			assertFalse(cards.get(i).isComplete());
 			List<String> allowedColumns = cards.get(i).getAllowedColumnIds();
 			for (int j = 0; j < allowedColumns.size(); j++) {
 				assertEquals(Integer.toString(10 + i + j), allowedColumns.get(j));
@@ -161,7 +163,7 @@ public class CardwallWrapperTest {
 			assertEquals("Label " + (300 + i), cards.get(i).getLabel());
 			assertEquals(Integer.toString(10 + i), cards.get(i).getColumnId());
 			assertEquals("Value 100" + i, cards.get(i).getFieldValue("100"));
-			assertEquals("Open", cards.get(i).getStatus());
+			assertFalse(cards.get(i).isComplete());
 			List<String> allowedColumns = cards.get(i).getAllowedColumnIds();
 			for (int j = 0; j < allowedColumns.size(); j++) {
 				assertEquals(Integer.toString(10 + i + j), allowedColumns.get(j));
@@ -188,7 +190,7 @@ public class CardwallWrapperTest {
 			card.setLabel("Label " + (200 + i));
 			card.setColumnId(Integer.toString(10 + i));
 			card.addFieldValue("100", "Value 100" + i);
-			card.setStatus("Open");
+			card.setComplete(false);
 			for (int j = 0; j < 3; j++) {
 				card.addAllowedColumn(Integer.toString(10 + i + j));
 			}
@@ -200,7 +202,7 @@ public class CardwallWrapperTest {
 			card.setLabel("Other " + (200 + i));
 			card.setColumnId(Integer.toString(13 - i));
 			card.setFieldValue("100", "Other 100" + i);
-			card.setStatus("Closed");
+			card.setComplete(true);
 			card.clearAllowedColumnIds();
 			for (int j = 0; j < 3; j++) {
 				card.addAllowedColumn(Integer.toString(13 - i + j));
@@ -215,7 +217,7 @@ public class CardwallWrapperTest {
 			assertEquals("Other " + (200 + i), card.getLabel());
 			assertEquals(Integer.toString(13 - i), card.getColumnId());
 			assertEquals("Other 100" + i, card.getFieldValue("100"));
-			assertEquals("Closed", cards.get(i).getStatus());
+			assertTrue(cards.get(i).isComplete());
 			List<String> allowedColumns = cards.get(i).getAllowedColumnIds();
 			for (int j = 0; j < allowedColumns.size(); j++) {
 				assertEquals(Integer.toString(13 - i + j), allowedColumns.get(j));
@@ -525,6 +527,9 @@ public class CardwallWrapperTest {
 		assertEquals("11", card.getAllowedColumnIds().get(1));
 	}
 
+	/**
+	 * Tests the manipulation of the card artifact id.
+	 */
 	@Test
 	public void testCardArtifactId() {
 		CardwallWrapper wrapper = new CardwallWrapper(taskData.getRoot());
@@ -541,6 +546,199 @@ public class CardwallWrapperTest {
 		assertNotNull(att);
 		assertEquals(1, att.getValues().size());
 		assertEquals("ArtId", att.getValue());
+	}
+
+	/**
+	 * Tests the getNumberOfCards() method of {@link SwimlaneWrapper} for an empty swimlane.
+	 */
+	@Test
+	public void testSwimlaneNumberOfCardsEmpty() {
+		CardwallWrapper wrapper = new CardwallWrapper(taskData.getRoot());
+		for (int i = 0; i < 4; i++) {
+			wrapper.addColumn(Integer.toString(10 + i), "Column" + i);
+		}
+		SwimlaneWrapper swimlane = wrapper.addSwimlane("123");
+		assertEquals(0, swimlane.getNumberOfCards());
+		assertEquals(0, swimlane.getNumberOfAssignedCards());
+		assertEquals(0, swimlane.getNumberOfCards(true));
+		assertEquals(0, swimlane.getNumberOfCards(false));
+	}
+
+	/**
+	 * Tests the getNumberOfCards() method of {@link SwimlaneWrapper} for swimlane with assigned incomplete
+	 * cards.
+	 */
+	@Test
+	public void testSwimlaneNumberOfCardsAssignedIncompleteCards() {
+		CardwallWrapper wrapper = new CardwallWrapper(taskData.getRoot());
+		for (int i = 0; i < 4; i++) {
+			wrapper.addColumn(Integer.toString(10 + i), "Column" + i);
+		}
+		SwimlaneWrapper swimlane = wrapper.addSwimlane("123");
+		for (int i = 0; i < 4; i++) {
+			CardWrapper card = swimlane.addCard(Integer.toString(200 + i));
+			card.setLabel("Label " + (200 + i));
+			card.setColumnId(Integer.toString(10 + i));
+			card.setComplete(false);
+		}
+		assertEquals(4, swimlane.getNumberOfCards());
+		assertEquals(4, swimlane.getNumberOfAssignedCards());
+		assertEquals(0, swimlane.getNumberOfCards(true));
+		assertEquals(4, swimlane.getNumberOfCards(false));
+		assertEquals(0, swimlane.getNumberOfAssignedCards(true));
+		assertEquals(4, swimlane.getNumberOfAssignedCards(false));
+	}
+
+	/**
+	 * Tests the getNumberOfCards() method of {@link SwimlaneWrapper} for swimlane with assigned incomplete
+	 * cards.
+	 */
+	@Test
+	public void testSwimlaneNumberOfCardsAssignedCompleteCards() {
+		CardwallWrapper wrapper = new CardwallWrapper(taskData.getRoot());
+		for (int i = 0; i < 4; i++) {
+			wrapper.addColumn(Integer.toString(10 + i), "Column" + i);
+		}
+		SwimlaneWrapper swimlane = wrapper.addSwimlane("123");
+		for (int i = 0; i < 4; i++) {
+			CardWrapper card = swimlane.addCard(Integer.toString(200 + i));
+			card.setLabel("Label " + (200 + i));
+			card.setColumnId(Integer.toString(10 + i));
+			card.setComplete(true);
+		}
+		assertEquals(4, swimlane.getNumberOfCards());
+		assertEquals(4, swimlane.getNumberOfAssignedCards());
+		assertEquals(4, swimlane.getNumberOfCards(true));
+		assertEquals(0, swimlane.getNumberOfCards(false));
+		assertEquals(4, swimlane.getNumberOfAssignedCards(true));
+		assertEquals(0, swimlane.getNumberOfAssignedCards(false));
+	}
+
+	/**
+	 * Tests the getNumberOfCards() method of {@link SwimlaneWrapper} for swimlane with unassigned incomplete
+	 * cards.
+	 */
+	@Test
+	public void testSwimlaneNumberOfCardsUnassignedIncompleteCards() {
+		CardwallWrapper wrapper = new CardwallWrapper(taskData.getRoot());
+		for (int i = 0; i < 4; i++) {
+			wrapper.addColumn(Integer.toString(10 + i), "Column" + i);
+		}
+		SwimlaneWrapper swimlane = wrapper.addSwimlane("123");
+		for (int i = 0; i < 4; i++) {
+			CardWrapper card = swimlane.addCard(Integer.toString(200 + i));
+			card.setLabel("Label " + (200 + i));
+			// card.setColumnId(Integer.toString(10 + i));
+			card.setComplete(false);
+		}
+		assertEquals(4, swimlane.getNumberOfCards());
+		assertEquals(0, swimlane.getNumberOfAssignedCards());
+		assertEquals(0, swimlane.getNumberOfCards(true));
+		assertEquals(4, swimlane.getNumberOfCards(false));
+		assertEquals(0, swimlane.getNumberOfAssignedCards(true));
+		assertEquals(0, swimlane.getNumberOfAssignedCards(false));
+	}
+
+	/**
+	 * Tests the getNumberOfCards() method of {@link SwimlaneWrapper} for swimlane with unassigned and
+	 * implicitely incomplete cards.
+	 */
+	@Test
+	public void testSwimlaneNumberOfCardsUnassignedImplicitelyIncompleteCards() {
+		CardwallWrapper wrapper = new CardwallWrapper(taskData.getRoot());
+		for (int i = 0; i < 4; i++) {
+			wrapper.addColumn(Integer.toString(10 + i), "Column" + i);
+		}
+		SwimlaneWrapper swimlane = wrapper.addSwimlane("123");
+		for (int i = 0; i < 4; i++) {
+			CardWrapper card = swimlane.addCard(Integer.toString(200 + i));
+			card.setLabel("Label " + (200 + i));
+			// card.setColumnId(Integer.toString(10 + i));
+			// if complete is not set on a card, it should be like setting false
+			// card.setComplete(false);
+		}
+		assertEquals(4, swimlane.getNumberOfCards());
+		assertEquals(0, swimlane.getNumberOfAssignedCards());
+		assertEquals(0, swimlane.getNumberOfCards(true));
+		assertEquals(4, swimlane.getNumberOfCards(false));
+		assertEquals(0, swimlane.getNumberOfAssignedCards(true));
+		assertEquals(0, swimlane.getNumberOfAssignedCards(false));
+	}
+
+	/**
+	 * Tests the getNumberOfCards() method of {@link SwimlaneWrapper} for swimlane with unassigned complete
+	 * cards.
+	 */
+	@Test
+	public void testSwimlaneNumberOfCardsUnassignedCompleteCards() {
+		CardwallWrapper wrapper = new CardwallWrapper(taskData.getRoot());
+		for (int i = 0; i < 4; i++) {
+			wrapper.addColumn(Integer.toString(10 + i), "Column" + i);
+		}
+		SwimlaneWrapper swimlane = wrapper.addSwimlane("123");
+		for (int i = 0; i < 4; i++) {
+			CardWrapper card = swimlane.addCard(Integer.toString(200 + i));
+			card.setLabel("Label " + (200 + i));
+			// card.setColumnId(Integer.toString(10 + i));
+			card.setComplete(true);
+		}
+		assertEquals(4, swimlane.getNumberOfCards());
+		assertEquals(0, swimlane.getNumberOfAssignedCards());
+		assertEquals(4, swimlane.getNumberOfCards(true));
+		assertEquals(0, swimlane.getNumberOfCards(false));
+		assertEquals(0, swimlane.getNumberOfAssignedCards(true));
+		assertEquals(0, swimlane.getNumberOfAssignedCards(false));
+	}
+
+	/**
+	 * Tests the getNumberOfCards() method of {@link SwimlaneWrapper} for swimlane with different cards.
+	 */
+	@Test
+	public void testSwimlaneNumberOfCardsMix() {
+		CardwallWrapper wrapper = new CardwallWrapper(taskData.getRoot());
+		for (int i = 0; i < 4; i++) {
+			wrapper.addColumn(Integer.toString(10 + i), "Column" + i);
+		}
+		SwimlaneWrapper swimlane = wrapper.addSwimlane("123");
+
+		// One card assigned true
+		int i = 0;
+		CardWrapper card = swimlane.addCard(Integer.toString(200 + i));
+		card.setLabel("Label " + (200 + i));
+		card.setColumnId(Integer.toString(10 + i));
+		card.setComplete(true);
+		i++;
+
+		// One card assigned false
+		card = swimlane.addCard(Integer.toString(200 + i));
+		card.setLabel("Label " + (200 + i));
+		card.setColumnId(Integer.toString(10 + i));
+		card.setComplete(false);
+		i++;
+
+		// One card unassigned true
+		card = swimlane.addCard(Integer.toString(200 + i));
+		card.setLabel("Label " + (200 + i));
+		card.setComplete(true);
+		i++;
+
+		// One card unassigned false
+		card = swimlane.addCard(Integer.toString(200 + i));
+		card.setLabel("Label " + (200 + i));
+		card.setComplete(false);
+		i++;
+
+		// One card assigned false implicitely
+		card = swimlane.addCard(Integer.toString(200 + i));
+		card.setLabel("Label " + (200 + i));
+		card.setColumnId(Integer.toString(10));
+
+		assertEquals(5, swimlane.getNumberOfCards());
+		assertEquals(3, swimlane.getNumberOfAssignedCards());
+		assertEquals(2, swimlane.getNumberOfCards(true));
+		assertEquals(3, swimlane.getNumberOfCards(false));
+		assertEquals(1, swimlane.getNumberOfAssignedCards(true));
+		assertEquals(2, swimlane.getNumberOfAssignedCards(false));
 	}
 
 }

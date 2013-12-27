@@ -147,4 +147,65 @@ public class SwimlaneWrapper extends AbstractTaskAttributeWrapper {
 	protected void fireAttributeChanged(TaskAttribute att) {
 		parent.fireAttributeChanged(att);
 	}
+
+	/**
+	 * Provides the number of cards with the given status.
+	 * 
+	 * @param complete
+	 *            the Status to take into account.
+	 * @return The number of cards with the given status, including hidden cards.
+	 */
+	public int getNumberOfCards(boolean complete) {
+		int count = 0;
+		for (CardWrapper card : getCards()) {
+			if (complete == card.isComplete()) {
+				count++;
+			}
+		}
+		return count;
+	}
+
+	/**
+	 * Provides the number of assigned cards with the given status.
+	 * 
+	 * @param complete
+	 *            the Status to take into account.
+	 * @return The number of cards with the given status, including hidden cards, but excluding cards that
+	 *         have no assigned column.
+	 */
+	public int getNumberOfAssignedCards(boolean complete) {
+		int count = 0;
+		for (CardWrapper card : getCards()) {
+			if (card.getColumnId() != null && complete == card.isComplete()) {
+				count++;
+			}
+		}
+		return count;
+	}
+
+	/**
+	 * Returns the total number of cards in this swimlane, including the cards without a column.
+	 * 
+	 * @return The total number of cards in this swimlane, including the cards without a column and hidden
+	 *         cards.
+	 */
+	public int getNumberOfCards() {
+		return getCards().size();
+	}
+
+	/**
+	 * Returns the total number of cards in this swimlane except unassigned cards (i.e. except cards in the
+	 * left-most column).
+	 * 
+	 * @return The total number of cards in this swimlane, including hidden cards, except unassigned cards.
+	 */
+	public int getNumberOfAssignedCards() {
+		int count = 0;
+		for (CardWrapper card : getCards()) {
+			if (card.getColumnId() != null) {
+				count++;
+			}
+		}
+		return count;
+	}
 }

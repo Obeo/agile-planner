@@ -178,7 +178,7 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 	 * @return The field {@link TaskAttribute}, or null if it does not exist.
 	 */
 	public TaskAttribute getFieldAttribute(String id) {
-		return root.getMappedAttribute(getFieldAttributeId(id));
+		return root.getAttribute(getFieldAttributeId(id));
 	}
 
 	/**
@@ -194,7 +194,7 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 	 * @return The newly created {@link TaskAttribute}.
 	 */
 	public TaskAttribute addField(String id, String label, String type) {
-		TaskAttribute att = root.createMappedAttribute(getFieldAttributeId(id));
+		TaskAttribute att = root.createAttribute(getFieldAttributeId(id));
 		att.getMetaData().setLabel(label);
 		att.getMetaData().setType(type);
 		return att;
@@ -220,38 +220,34 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 	/**
 	 * Status getter.
 	 * 
-	 * @return The status of the card, or null if it is not set, which happens for card that go to the
-	 *         left-most implicit column.
+	 * @return The status of the card, or <code>false</code> if it is not set.
 	 */
-	public String getStatus() {
-		String result = null;
-		TaskAttribute att = root.getMappedAttribute(getStatusAttributeId());
+	public boolean isComplete() {
+		boolean result = false;
+		TaskAttribute att = root.getAttribute(getStatusAttributeId());
 		if (att != null) {
-			result = att.getValue();
+			result = Boolean.parseBoolean(att.getValue());
 		}
 		return result;
 	}
 
 	/**
-	 * Status setter.
+	 * Complete setter.
 	 * 
-	 * @param status
+	 * @param complete
 	 *            The status.
 	 */
-	public void setStatus(String status) {
-		if (status == null) {
-			return;
-		}
-		TaskAttribute att = root.getMappedAttribute(getStatusAttributeId());
+	public void setComplete(boolean complete) {
+		TaskAttribute att = root.getAttribute(getStatusAttributeId());
 		String oldValue = null;
 		if (att == null) {
 			att = root.createAttribute(getStatusAttributeId());
-			att.getMetaData().setType(TaskAttribute.TYPE_SHORT_RICH_TEXT);
+			att.getMetaData().setType(TaskAttribute.TYPE_BOOLEAN);
 		} else {
 			oldValue = att.getValue();
 		}
-		if (oldValue == null || !oldValue.equals(status)) {
-			att.setValue(status);
+		if (oldValue == null || oldValue != Boolean.toString(complete)) {
+			att.setValue(Boolean.toString(complete));
 			fireAttributeChanged(att);
 		}
 	}
@@ -263,7 +259,7 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 	 */
 	public String getAccentColor() {
 		String result = null;
-		TaskAttribute att = root.getMappedAttribute(getColorAttributeId());
+		TaskAttribute att = root.getAttribute(getColorAttributeId());
 		if (att != null) {
 			result = att.getValue();
 		}
@@ -280,7 +276,7 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 		if (color == null) {
 			return;
 		}
-		TaskAttribute att = root.getMappedAttribute(getColorAttributeId());
+		TaskAttribute att = root.getAttribute(getColorAttributeId());
 		if (att == null) {
 			att = root.createAttribute(getColorAttributeId());
 			att.getMetaData().setType(TaskAttribute.TYPE_SHORT_TEXT);
@@ -296,7 +292,7 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 	 */
 	public String getColumnId() {
 		String result = null;
-		TaskAttribute att = root.getMappedAttribute(getColumnIdAttributeId());
+		TaskAttribute att = root.getAttribute(getColumnIdAttributeId());
 		if (att != null) {
 			result = att.getValue();
 		}
@@ -313,7 +309,7 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 		if (columnId == null) {
 			return;
 		}
-		TaskAttribute att = root.getMappedAttribute(getColumnIdAttributeId());
+		TaskAttribute att = root.getAttribute(getColumnIdAttributeId());
 		String oldValue = null;
 		if (att == null) {
 			att = root.createAttribute(getColumnIdAttributeId());
@@ -335,7 +331,7 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 	 */
 	public String getArtifactId() {
 		String result = null;
-		TaskAttribute att = root.getMappedAttribute(getArtifactIdAttributeId());
+		TaskAttribute att = root.getAttribute(getArtifactIdAttributeId());
 		if (att != null) {
 			result = att.getValue();
 		}
@@ -352,7 +348,7 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 		if (artifactId == null) {
 			return;
 		}
-		TaskAttribute att = root.getMappedAttribute(getArtifactIdAttributeId());
+		TaskAttribute att = root.getAttribute(getArtifactIdAttributeId());
 		String oldValue = null;
 		if (att == null) {
 			att = root.createAttribute(getArtifactIdAttributeId());
@@ -372,7 +368,7 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 	 * @return The list of allowed column identifiers. Never null but possibly empty.
 	 */
 	public List<String> getAllowedColumnIds() {
-		TaskAttribute att = root.getMappedAttribute(getAllowedColumnAttributeId());
+		TaskAttribute att = root.getAttribute(getAllowedColumnAttributeId());
 		if (att != null) {
 			return att.getValues();
 		}
@@ -389,9 +385,9 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 		if (columnId == null) {
 			return;
 		}
-		TaskAttribute att = root.getMappedAttribute(getAllowedColumnAttributeId());
+		TaskAttribute att = root.getAttribute(getAllowedColumnAttributeId());
 		if (att == null) {
-			att = root.createMappedAttribute(getAllowedColumnAttributeId());
+			att = root.createAttribute(getAllowedColumnAttributeId());
 		}
 		att.addValue(columnId);
 		fireAttributeChanged(att);
@@ -405,7 +401,7 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 	 * @return The value of the field with this id, or null if cannot be found.
 	 */
 	public String getFieldLabel(String id) {
-		TaskAttribute att = root.getMappedAttribute(getFieldAttributeId(id));
+		TaskAttribute att = root.getAttribute(getFieldAttributeId(id));
 		if (att != null) {
 			return att.getMetaData().getLabel();
 		}
@@ -420,7 +416,7 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 	 * @return The value of the field with this id, or null if cannot be found.
 	 */
 	public String getFieldValue(String id) {
-		TaskAttribute att = root.getMappedAttribute(getFieldAttributeId(id));
+		TaskAttribute att = root.getAttribute(getFieldAttributeId(id));
 		if (att != null) {
 			return att.getValue();
 		}
@@ -435,7 +431,7 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 	 * @return The list of values, never null but possibly empty;
 	 */
 	public List<String> getFieldValues(String id) {
-		TaskAttribute att = root.getMappedAttribute(getFieldAttributeId(id));
+		TaskAttribute att = root.getAttribute(getFieldAttributeId(id));
 		if (att != null) {
 			return att.getValues();
 		}
@@ -454,9 +450,9 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 		if (label == null) {
 			return;
 		}
-		TaskAttribute att = root.getMappedAttribute(getFieldAttributeId(id));
+		TaskAttribute att = root.getAttribute(getFieldAttributeId(id));
 		if (att == null) {
-			att = root.createMappedAttribute(getFieldAttributeId(id));
+			att = root.createAttribute(getFieldAttributeId(id));
 		}
 		att.getMetaData().setLabel(label);
 	}
@@ -473,10 +469,10 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 		if (value == null) {
 			return;
 		}
-		TaskAttribute att = root.getMappedAttribute(getFieldAttributeId(id));
+		TaskAttribute att = root.getAttribute(getFieldAttributeId(id));
 		String oldValue = null;
 		if (att == null) {
-			att = root.createMappedAttribute(getFieldAttributeId(id));
+			att = root.createAttribute(getFieldAttributeId(id));
 		} else {
 			oldValue = att.getValue();
 		}
@@ -493,7 +489,7 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 	 *            the id of the field.
 	 */
 	public void clearFieldValues(String id) {
-		TaskAttribute att = root.getMappedAttribute(getFieldAttributeId(id));
+		TaskAttribute att = root.getAttribute(getFieldAttributeId(id));
 		if (att != null) {
 			att.clearValues();
 			fireAttributeChanged(att);
@@ -504,7 +500,7 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 	 * Clears the allowed column ids of a card.
 	 */
 	public void clearAllowedColumnIds() {
-		TaskAttribute att = root.getMappedAttribute(getAllowedColumnAttributeId());
+		TaskAttribute att = root.getAttribute(getAllowedColumnAttributeId());
 		if (att != null) {
 			att.clearValues();
 			fireAttributeChanged(att);
@@ -524,9 +520,9 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 		if (values == null || values.isEmpty()) {
 			return;
 		}
-		TaskAttribute att = root.getMappedAttribute(getFieldAttributeId(id));
+		TaskAttribute att = root.getAttribute(getFieldAttributeId(id));
 		if (att == null) {
-			att = root.createMappedAttribute(getFieldAttributeId(id));
+			att = root.createAttribute(getFieldAttributeId(id));
 		}
 		att.setValues(values);
 		// TODO Refine this
@@ -545,9 +541,9 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 		if (value == null) {
 			return;
 		}
-		TaskAttribute att = root.getMappedAttribute(getFieldAttributeId(id));
+		TaskAttribute att = root.getAttribute(getFieldAttributeId(id));
 		if (att == null) {
-			att = root.createMappedAttribute(getFieldAttributeId(id));
+			att = root.createAttribute(getFieldAttributeId(id));
 		}
 		att.addValue(value);
 		fireAttributeChanged(att);
@@ -566,9 +562,9 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 		if (values == null || values.isEmpty()) {
 			return;
 		}
-		TaskAttribute att = root.getMappedAttribute(getFieldAttributeId(id));
+		TaskAttribute att = root.getAttribute(getFieldAttributeId(id));
 		if (att == null) {
-			att = root.createMappedAttribute(getFieldAttributeId(id));
+			att = root.createAttribute(getFieldAttributeId(id));
 		}
 		for (String value : values) {
 			att.addValue(value);
