@@ -12,7 +12,9 @@ package org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.figure;
 
 import org.eclipse.draw2d.ChangeListener;
 import org.eclipse.draw2d.CheckBox;
+import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.PositionConstants;
+import org.tuleap.mylyn.task.internal.agile.ui.util.MylynAgileUIMessages;
 
 /**
  * Figure representing a column header.
@@ -33,6 +35,8 @@ public class FoldableColumnHeaderFigure extends ColumnHeaderFigure {
 		super();
 		// Add the checkbox that will fold/unfold cards in this cell
 		foldCheckbox = new CheckBox();
+		foldCheckbox.setToolTip(new Label(MylynAgileUIMessages
+				.getString("FoldableColumnHeaderFigure.FoldTooltip"))); //$NON-NLS-1$
 		panel.add(foldCheckbox);
 		panel.setConstraint(foldCheckbox, Integer.valueOf(PositionConstants.RIGHT));
 	}
