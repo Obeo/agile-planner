@@ -17,7 +17,8 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.CardWrapper;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.SwimlaneWrapper;
-import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.figure.CellFigure;
+import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.figure.ProgressFigure;
+import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.figure.SwimlaneHeaderCellFigure;
 
 /**
  * The edit part for a swimlane header (left cell).
@@ -33,16 +34,31 @@ public class SwimlaneHeaderEditPart extends AbstractGraphicalEditPart {
 	 */
 	@Override
 	protected IFigure createFigure() {
-		return new CellFigure();
+		SwimlaneHeaderCellFigure cellFigure = new SwimlaneHeaderCellFigure();
+		return cellFigure;
 	}
 
 	/**
-	 * Returns the figure as a {@link CellFigure}.
+	 * {@inheritDoc}
 	 * 
-	 * @return the figure as a {@link CellFigure}.
+	 * @see org.eclipse.gef.editparts.AbstractEditPart#refreshVisuals()
 	 */
-	public CellFigure getCellFigure() {
-		return (CellFigure)getFigure();
+	@Override
+	protected void refreshVisuals() {
+		ProgressFigure progressFigure = getCellFigure().getProgressFigure();
+		SwimlaneWrapper swimlane = (SwimlaneWrapper)getModel();
+		progressFigure.setTotal(swimlane.getNumberOfAssignedCards());
+		progressFigure.setProgress(swimlane.getNumberOfCards(true));
+		progressFigure.repaint();
+	}
+
+	/**
+	 * Returns the figure as a {@link SwimlaneHeaderCellFigure}.
+	 * 
+	 * @return the figure as a {@link SwimlaneHeaderCellFigure}.
+	 */
+	public SwimlaneHeaderCellFigure getCellFigure() {
+		return (SwimlaneHeaderCellFigure)getFigure();
 	}
 
 	/**

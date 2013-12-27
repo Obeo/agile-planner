@@ -37,8 +37,8 @@ public class FoldableCellFigure extends CellFigure {
 		// Add the checkbox that will fold/unfold cards in this cell
 		foldCheckbox = new CheckBox();
 		foldCheckbox.setToolTip(new Label(MylynAgileUIMessages.getString("FoldableCellFigure.FoldTooltip"))); //$NON-NLS-1$
-		add(foldCheckbox, 0);
-		setConstraint(foldCheckbox, new GridData(SWT.RIGHT, SWT.FILL, true, false));
+		getHeaderPanel().add(foldCheckbox, 0);
+		getHeaderPanel().setConstraint(foldCheckbox, new GridData(SWT.RIGHT, SWT.FILL, true, true));
 	}
 
 	/**
