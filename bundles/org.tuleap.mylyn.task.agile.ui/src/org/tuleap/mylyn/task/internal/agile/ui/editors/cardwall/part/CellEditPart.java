@@ -138,6 +138,10 @@ public class CellEditPart extends AbstractGraphicalEditPart {
 	@Override
 	public void activate() {
 		super.activate();
+
+		// When activated, the cell should be refreshed
+		refreshVisuals();
+
 		// Listen to the model
 		SwimlaneCell cell = (SwimlaneCell)getModel();
 		foldingListener = new PropertyChangeListener() {
