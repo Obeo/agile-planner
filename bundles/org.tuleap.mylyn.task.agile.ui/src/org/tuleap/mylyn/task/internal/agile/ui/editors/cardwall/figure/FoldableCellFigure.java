@@ -11,7 +11,6 @@
 package org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.figure;
 
 import org.eclipse.draw2d.ChangeListener;
-import org.eclipse.draw2d.CheckBox;
 import org.eclipse.draw2d.GridData;
 import org.eclipse.draw2d.Label;
 import org.eclipse.swt.SWT;
@@ -28,14 +27,14 @@ public class FoldableCellFigure extends CellFigure {
 	/**
 	 * The checkbox used to fold and unfold children figures.
 	 */
-	private final CheckBox foldCheckbox;
+	private final CollapseExpandFigure foldCheckbox;
 
 	/**
 	 * Constructor.
 	 */
 	public FoldableCellFigure() {
 		// Add the checkbox that will fold/unfold cards in this cell
-		foldCheckbox = new CheckBox();
+		foldCheckbox = new CollapseExpandFigure();
 		foldCheckbox.setToolTip(new Label(MylynAgileUIMessages.getString("FoldableCellFigure.FoldTooltip"))); //$NON-NLS-1$
 		getHeaderPanel().add(foldCheckbox, 0);
 		getHeaderPanel().setConstraint(foldCheckbox, new GridData(SWT.RIGHT, SWT.FILL, true, true));

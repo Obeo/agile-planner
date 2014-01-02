@@ -40,4 +40,14 @@ public interface IMylynAgileIcons {
 	 * The new milestone icon.
 	 */
 	String NEW_MILESTONE_16X16 = "icons/editors/planning/new-milestone_16x16.png"; //$NON-NLS-1$
+
+	/**
+	 * Collapse a cardwall cell.
+	 */
+	String COLLAPSE_TSK = "icons/commons/collapse_tsk.gif"; //$NON-NLS-1$
+
+	/**
+	 * Expand a cardwall cell.
+	 */
+	String EXPAND_TSK = "icons/commons/expand_tsk.gif"; //$NON-NLS-1$
 }
