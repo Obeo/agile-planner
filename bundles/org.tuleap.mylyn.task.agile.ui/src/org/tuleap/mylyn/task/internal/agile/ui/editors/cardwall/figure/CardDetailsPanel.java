@@ -15,6 +15,7 @@ import org.eclipse.draw2d.Panel;
 import org.eclipse.draw2d.ToolbarLayout;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.text.TextFlow;
+import org.tuleap.mylyn.task.internal.agile.ui.util.IMylynAgileUIConstants;
 
 /**
  * Foldable details panel in a card.
@@ -50,6 +51,7 @@ public class CardDetailsPanel extends Panel {
 		add(panel);
 
 		ToolbarLayout panelLayout = new ToolbarLayout();
+		panelLayout.setSpacing(IMylynAgileUIConstants.MARGIN);
 		panelLayout.setStretchMinorAxis(true);
 		panel.setLayoutManager(panelLayout);
 	}

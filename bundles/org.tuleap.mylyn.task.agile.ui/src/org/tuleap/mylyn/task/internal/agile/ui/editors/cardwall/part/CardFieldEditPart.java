@@ -17,7 +17,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.Label;
+import org.eclipse.draw2d.text.TextFlow;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.gef.tools.DirectEditManager;
@@ -120,7 +120,7 @@ public class CardFieldEditPart extends AbstractGraphicalEditPart {
 	 * Performs the direct edit.
 	 */
 	private void performDirectEditing() {
-		Label label = ((CardFieldFigure)getFigure()).getValueLabel();
+		TextFlow label = ((CardFieldFigure)getFigure()).getValueLabel();
 		TaskAttribute attribute = (TaskAttribute)getModel();
 		String attributeType = attribute.getMetaData().getType();
 		DirectEditManager manager = null;

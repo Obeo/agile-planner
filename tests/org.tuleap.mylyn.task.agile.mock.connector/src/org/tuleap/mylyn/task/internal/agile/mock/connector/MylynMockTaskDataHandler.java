@@ -375,10 +375,14 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 					multiSelectionAtt20.putOption("102", "ldelaigue");
 					multiSelectionAtt20.putOption("103", "fbacha");
 					multiSelectionAtt20.putOption("104", "sbegaudeau");
+					multiSelectionAtt20.putOption("105",
+							"This is very very very very long multi-selection to test line wrapping");
 					values.clear();
-					values.add("101");
-					values.add("103");
-					values.add("104");
+					// values.add("101");
+					// values.add("103");
+					// values.add("104");
+					// values.add("102");
+					values.add("105");
 					card20.setFieldValues(CARD_MULTI_SELECTION_FIELD_ID, values);
 
 					break;

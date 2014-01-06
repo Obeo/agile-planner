@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.policy;
 
-import org.eclipse.draw2d.Label;
+import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.tools.CellEditorLocator;
 import org.eclipse.jface.viewers.CellEditor;
@@ -28,7 +28,7 @@ public class CardBoundFieldCellEditorLocator implements CellEditorLocator {
 	/**
 	 * The field label.
 	 */
-	private Label label;
+	private Figure label;
 
 	/**
 	 * Constructor.
@@ -36,7 +36,7 @@ public class CardBoundFieldCellEditorLocator implements CellEditorLocator {
 	 * @param label
 	 *            the field label
 	 */
-	public CardBoundFieldCellEditorLocator(Label label) {
+	public CardBoundFieldCellEditorLocator(Figure label) {
 		this.label = label;
 	}
 
@@ -49,7 +49,7 @@ public class CardBoundFieldCellEditorLocator implements CellEditorLocator {
 	public void relocate(CellEditor celleditor) {
 		CCombo combo = (CCombo)celleditor.getControl();
 		Point pref = combo.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-		Rectangle rect = label.getTextBounds().getCopy();
+		Rectangle rect = label.getBounds().getCopy();
 		label.translateToAbsolute(rect);
 		combo.setBounds(rect.x - 1, rect.y - 1, pref.x + 1, pref.y + 1);
 	}

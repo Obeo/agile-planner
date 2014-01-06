@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.policy;
 
-import org.eclipse.draw2d.Label;
+import org.eclipse.draw2d.text.TextFlow;
 import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.tools.CellEditorLocator;
 import org.eclipse.gef.tools.DirectEditManager;
@@ -26,7 +26,7 @@ public class CardFieldDirectEditManager extends DirectEditManager {
 	/**
 	 * The label.
 	 */
-	private final Label label;
+	private final TextFlow label;
 
 	/**
 	 * The validator to use for the cell editor.
@@ -46,7 +46,7 @@ public class CardFieldDirectEditManager extends DirectEditManager {
 	 *            The label
 	 */
 	public CardFieldDirectEditManager(GraphicalEditPart source, Class<?> editorType,
-			CellEditorLocator locator, Label label) {
+			CellEditorLocator locator, TextFlow label) {
 		super(source, editorType, locator);
 		this.label = label;
 	}
@@ -67,7 +67,7 @@ public class CardFieldDirectEditManager extends DirectEditManager {
 	 *            performed.
 	 */
 	public CardFieldDirectEditManager(GraphicalEditPart source, Class<?> editorType,
-			CellEditorLocator locator, Label label, ICellEditorValidator validator) {
+			CellEditorLocator locator, TextFlow label, ICellEditorValidator validator) {
 		this(source, editorType, locator, label);
 		this.validator = validator;
 	}

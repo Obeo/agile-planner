@@ -148,8 +148,6 @@ public class CardFigure extends Figure {
 		detailsPanel = new CardDetailsPanel();
 		detailsPanel.setFont(detailsFont);
 		ToolbarLayout detailslayout = new ToolbarLayout();
-		// detailslayout.marginHeight = IMylynAgileUIConstants.MARGIN;
-		// detailslayout.marginWidth = 0;
 		detailsPanel.setLayoutManager(detailslayout);
 		detailsPanel.setForegroundColor(ColorConstants.black);
 		cardRect.add(detailsPanel);
