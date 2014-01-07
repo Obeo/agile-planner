@@ -246,7 +246,7 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 		} else {
 			oldValue = att.getValue();
 		}
-		if (oldValue == null || oldValue != Boolean.toString(complete)) {
+		if (oldValue == null || !oldValue.equals(Boolean.toString(complete))) {
 			att.setValue(Boolean.toString(complete));
 			fireAttributeChanged(att);
 		}

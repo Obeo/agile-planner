@@ -208,7 +208,7 @@ public class AccentedRoundedLineBorder extends LineBorder {
 		 *******************************************************************************/
 		tempRect.setBounds(getPaintRectangle(figure, insets));
 		int w = getWidth();
-		if (w % 2 == 1) {
+		if (w % 2 != 0) {
 			tempRect.width--;
 			tempRect.height--;
 		}
