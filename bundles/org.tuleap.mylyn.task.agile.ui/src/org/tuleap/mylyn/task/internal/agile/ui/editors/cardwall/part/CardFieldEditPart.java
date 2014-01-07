@@ -26,9 +26,9 @@ import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.core.data.TaskAttributeMetaData;
 import org.tuleap.mylyn.task.agile.core.data.ITaskAttributeChangeListener;
-import org.tuleap.mylyn.task.agile.core.data.cardwall.CardWrapper;
 import org.tuleap.mylyn.task.internal.agile.ui.MylynAgileUIActivator;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.figure.CardFieldFigure;
+import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.CardModel;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.policy.CardBoundFieldCellEditorLocator;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.policy.CardBoundFieldDirectEditManager;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.policy.CardBoundFieldEditPolicy;
@@ -181,7 +181,7 @@ public class CardFieldEditPart extends AbstractGraphicalEditPart {
 				}
 			}
 		};
-		((CardWrapper)getParent().getModel()).addListener(attributeListener);
+		((CardModel)getParent().getModel()).getWrapper().addListener(attributeListener);
 	}
 
 	/**
@@ -191,7 +191,7 @@ public class CardFieldEditPart extends AbstractGraphicalEditPart {
 	 */
 	@Override
 	public void deactivate() {
-		((CardWrapper)getParent().getModel()).removeListener(attributeListener);
+		((CardModel)getParent().getModel()).getWrapper().removeListener(attributeListener);
 		attributeListener = null;
 		super.deactivate();
 	}
@@ -251,5 +251,7 @@ public class CardFieldEditPart extends AbstractGraphicalEditPart {
 		} else {
 			f.setField(attribute.getMetaData().getLabel(), attribute.getValues());
 		}
+		// The wrapping page needs to reflow so that scrollbars don't appear where they shouldn't
+		((CardEditPart)getParent()).refreshVisuals();
 	}
 }

@@ -10,12 +10,19 @@
  *******************************************************************************/
 package org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.figure;
 
-import org.eclipse.draw2d.MouseListener;
+import org.eclipse.draw2d.ColorConstants;
+import org.eclipse.draw2d.GridData;
+import org.eclipse.draw2d.GridLayout;
+import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.Panel;
 import org.eclipse.draw2d.ToolbarLayout;
 import org.eclipse.draw2d.geometry.Dimension;
-import org.eclipse.draw2d.text.TextFlow;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
+import org.tuleap.mylyn.task.internal.agile.ui.MylynAgileUIActivator;
+import org.tuleap.mylyn.task.internal.agile.ui.util.IMylynAgileIcons;
 import org.tuleap.mylyn.task.internal.agile.ui.util.IMylynAgileUIConstants;
+import org.tuleap.mylyn.task.internal.agile.ui.util.MylynAgileUIMessages;
 
 /**
  * Foldable details panel in a card.
@@ -25,14 +32,19 @@ import org.tuleap.mylyn.task.internal.agile.ui.util.IMylynAgileUIConstants;
 public class CardDetailsPanel extends Panel {
 
 	/**
-	 * The URL figure used as title.
-	 */
-	private final URLFigure urlFigure;
-
-	/**
 	 * The label of the URL figure.
 	 */
-	private final TextFlow titleLabel;
+	private final Label titleLabel;
+
+	/**
+	 * Icon for open state.
+	 */
+	private Image openIcon;
+
+	/**
+	 * Icon for closed state.
+	 */
+	private Image closedIcon;
 
 	/**
 	 * The actual panel that contains the fields.
@@ -41,14 +53,35 @@ public class CardDetailsPanel extends Panel {
 
 	/**
 	 * Constructor.
+	 * 
+	 * @param folded
+	 *            Indicates whether the details panel must be visible.
 	 */
-	public CardDetailsPanel() {
-		titleLabel = new TextFlow();
-		urlFigure = new URLFigure(titleLabel);
-		add(urlFigure);
+	public CardDetailsPanel(boolean folded) {
+		Panel headerPanel = new Panel();
+		headerPanel.setForegroundColor(ColorConstants.gray);
+		add(headerPanel);
+
+		GridLayout headerlayout = new GridLayout(1, false);
+		headerlayout.marginHeight = 0;
+		headerlayout.marginWidth = 0;
+		headerPanel.setLayoutManager(headerlayout);
+
+		titleLabel = new Label(MylynAgileUIMessages.getString("CardDetailsPanel.Title")); //$NON-NLS-1$
+		titleLabel.addMouseMotionListener(new DetailsMouseMotionListener(this));
+		headerPanel.add(titleLabel);
+		headerlayout.setConstraint(titleLabel, new GridData(SWT.LEFT, SWT.FILL, true, true));
 
 		panel = new Panel();
 		add(panel);
+		setFolded(folded);
+		openIcon = MylynAgileUIActivator.getDefault().getImage(IMylynAgileIcons.DETAILS_OPEN);
+		closedIcon = MylynAgileUIActivator.getDefault().getImage(IMylynAgileIcons.DETAILS_CLOSED);
+		if (folded) {
+			titleLabel.setIcon(openIcon);
+		} else {
+			titleLabel.setIcon(closedIcon);
+		}
 
 		ToolbarLayout panelLayout = new ToolbarLayout();
 		panelLayout.setSpacing(IMylynAgileUIConstants.MARGIN);
@@ -75,10 +108,13 @@ public class CardDetailsPanel extends Panel {
 	}
 
 	/**
-	 * Toggles details visibility.
+	 * Sets details visibility.
+	 * 
+	 * @param folded
+	 *            Indicates whether details must be visible.
 	 */
-	public void toggleDetails() {
-		panel.setVisible(isFolded());
+	public void setFolded(boolean folded) {
+		panel.setVisible(!folded);
 	}
 
 	/**
@@ -99,7 +135,7 @@ public class CardDetailsPanel extends Panel {
 	@Override
 	public Dimension getPreferredSize(int wHint, int hHint) {
 		Dimension d = super.getPreferredSize(wHint, hHint);
-		int h = urlFigure.getPreferredSize(wHint, -1).height + 3;
+		int h = titleLabel.getPreferredSize(wHint, -1).height + 3;
 		if (panel.isVisible()) {
 			h += panel.getPreferredSize(wHint, -1).height + 3;
 		}
@@ -107,22 +143,39 @@ public class CardDetailsPanel extends Panel {
 	}
 
 	/**
-	 * Adds the given listener to the URL label used to fold the details.
+	 * Title label getter.
 	 * 
-	 * @param listener
-	 *            listener to add
+	 * @return The title label.
 	 */
-	public void addFoldingListener(MouseListener listener) {
-		urlFigure.addMouseListener(listener);
+	public Label getTitleLabel() {
+		return titleLabel;
 	}
 
 	/**
-	 * Removes the given listener from the URL label used to fold the details.
+	 * {@inheritDoc}
 	 * 
-	 * @param listener
-	 *            listener to reove
+	 * @see org.eclipse.draw2d.Figure#repaint()
 	 */
-	public void removeFoldingListener(MouseListener listener) {
-		urlFigure.removeMouseListener(listener);
+	@Override
+	public void repaint() {
+		if (isFolded()) {
+			titleLabel.setIcon(closedIcon);
+		} else {
+			titleLabel.setIcon(openIcon);
+		}
+		super.repaint();
+	}
+
+	/**
+	 * Sets the icons for open and closed status.
+	 * 
+	 * @param open
+	 *            Icon for open status
+	 * @param closed
+	 *            Icon for closed status
+	 */
+	void setIcons(Image open, Image closed) {
+		this.openIcon = open;
+		this.closedIcon = closed;
 	}
 }

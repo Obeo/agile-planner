@@ -14,6 +14,7 @@ import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.GridData;
 import org.eclipse.draw2d.GridLayout;
+import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.Panel;
 import org.eclipse.draw2d.RoundedRectangle;
 import org.eclipse.draw2d.ToolbarLayout;
@@ -59,7 +60,7 @@ public class CardFigure extends Figure {
 	/**
 	 * The url of the card.
 	 */
-	private TextFlow urlTextFlow;
+	private Label urlLabel;
 
 	/**
 	 * The panel containing the data of the card.
@@ -145,9 +146,10 @@ public class CardFigure extends Figure {
 
 		addTitle();
 
-		detailsPanel = new CardDetailsPanel();
+		detailsPanel = new CardDetailsPanel(false);
 		detailsPanel.setFont(detailsFont);
 		ToolbarLayout detailslayout = new ToolbarLayout();
+		detailslayout.setStretchMinorAxis(true);
 		detailsPanel.setLayoutManager(detailslayout);
 		detailsPanel.setForegroundColor(ColorConstants.black);
 		cardRect.add(detailsPanel);
@@ -173,7 +175,7 @@ public class CardFigure extends Figure {
 	 *            The url to set.
 	 */
 	public void setUrl(String url) {
-		urlTextFlow.setText(url);
+		urlLabel.setText(url);
 	}
 
 	/**
@@ -198,9 +200,16 @@ public class CardFigure extends Figure {
 	 * Add the url of the card.
 	 */
 	private void addUrl() {
-		urlTextFlow = new TextFlow();
-		URLFigure urlFigure = new URLFigure(urlTextFlow);
-		contentPanel.add(urlFigure);
+		Panel urlPanel = new Panel();
+		GridLayout urlLayout = new GridLayout(1, false);
+		urlLayout.marginWidth = 0;
+		urlLayout.marginHeight = 0;
+		urlPanel.setLayoutManager(urlLayout);
+		urlLabel = new Label();
+		urlLabel.setForegroundColor(ColorConstants.gray);
+		urlPanel.add(urlLabel);
+		urlLayout.setConstraint(urlLabel, new GridData(SWT.LEFT, SWT.FILL, true, true));
+		contentPanel.add(urlPanel);
 	}
 
 	/**
@@ -208,8 +217,8 @@ public class CardFigure extends Figure {
 	 * 
 	 * @return The URL text flow.
 	 */
-	public TextFlow getUrl() {
-		return this.urlTextFlow;
+	public Label getUrl() {
+		return this.urlLabel;
 	}
 
 	/**
@@ -263,4 +272,5 @@ public class CardFigure extends Figure {
 			lineBorder.setAccentColor(color);
 		}
 	}
+
 }

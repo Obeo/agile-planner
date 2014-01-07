@@ -21,8 +21,8 @@ import org.eclipse.gef.editpolicies.ConstrainedLayoutEditPolicy;
 import org.eclipse.gef.editpolicies.NonResizableEditPolicy;
 import org.eclipse.gef.requests.ChangeBoundsRequest;
 import org.eclipse.gef.requests.CreateRequest;
-import org.tuleap.mylyn.task.agile.core.data.cardwall.CardWrapper;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.command.ChangeCardStatusCommand;
+import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.CardModel;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.SwimlaneCell;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.part.CardEditPart;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.part.CellEditPart;
@@ -74,7 +74,7 @@ public class CellContentEditPolicy extends ConstrainedLayoutEditPolicy {
 	@Override
 	protected Command createAddCommand(ChangeBoundsRequest request, EditPart child, Object constraint) {
 		CellEditPart host = (CellEditPart)getHost();
-		List<String> allowedColumns = ((CardWrapper)child.getModel()).getAllowedColumnIds();
+		List<String> allowedColumns = ((CardModel)child.getModel()).getWrapper().getAllowedColumnIds();
 		String cellColumn = ((SwimlaneCell)host.getModel()).getColumn().getWrapper().getId();
 
 		if (child.getParent().getParent() == host.getParent() && allowedColumns.contains(cellColumn)) {

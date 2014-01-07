@@ -15,6 +15,7 @@ import org.eclipse.gef.commands.Command;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.CardWrapper;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.ColumnWrapper;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.SwimlaneWrapper;
+import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.CardModel;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.SwimlaneCell;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.part.CardEditPart;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.part.CellEditPart;
@@ -63,15 +64,14 @@ public class ChangeCardStatusCommand extends Command {
 	 *            The edit part of the card which will be located after the one being moved or null if it does
 	 *            not exist.
 	 */
-	public ChangeCardStatusCommand(CellEditPart cellEditPart, CardEditPart moved,
-			CardEditPart after) {
+	public ChangeCardStatusCommand(CellEditPart cellEditPart, CardEditPart moved, CardEditPart after) {
 		this.targetCell = cellEditPart;
 
 		SwimlaneCell cell = (SwimlaneCell)cellEditPart.getModel();
 		targetSwimlane = cell.getSwimlane().getWrapper();
 		targetColumn = cell.getColumn().getWrapper();
 
-		movedCard = (CardWrapper)moved.getModel();
+		movedCard = ((CardModel)moved.getModel()).getWrapper();
 		oldStatusId = movedCard.getColumnId();
 	}
 

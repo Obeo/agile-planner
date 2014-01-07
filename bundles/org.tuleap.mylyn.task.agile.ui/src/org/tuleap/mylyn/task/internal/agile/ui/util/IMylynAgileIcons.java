@@ -50,4 +50,24 @@ public interface IMylynAgileIcons {
 	 * Expand a cardwall cell.
 	 */
 	String EXPAND_TSK = "icons/commons/expand_tsk.gif"; //$NON-NLS-1$
+
+	/**
+	 * Collapsed (arrow towards right).
+	 */
+	String DETAILS_CLOSED = "icons/commons/details_closed.gif"; //$NON-NLS-1$
+
+	/**
+	 * Expanded (arrow towards bottom).
+	 */
+	String DETAILS_OPEN = "icons/commons/details_open.gif"; //$NON-NLS-1$
+
+	/**
+	 * Collapsed hovered (arrow towards right).
+	 */
+	String DETAILS_CLOSED_HOVER = "icons/commons/details_closed_hov.gif"; //$NON-NLS-1$
+
+	/**
+	 * Expanded hovered (arrow towards bottom).
+	 */
+	String DETAILS_OPEN_HOVER = "icons/commons/details_open_hov.gif"; //$NON-NLS-1$
 }

@@ -20,6 +20,7 @@ import org.eclipse.gef.requests.DirectEditRequest;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.CardWrapper;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.command.SetFieldValuesCommand;
+import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.CardModel;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.part.CardEditPart;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.part.CardFieldEditPart;
 
@@ -52,7 +53,7 @@ public class CardBoundFieldEditPolicy extends DirectEditPolicy {
 		String key = Iterables.get(attribute.getOptions().entrySet(), valueIndex.intValue()).getKey();
 
 		CardEditPart cardPart = (CardEditPart)host.getParent();
-		CardWrapper cardWrapper = (CardWrapper)cardPart.getModel();
+		CardWrapper cardWrapper = ((CardModel)cardPart.getModel()).getWrapper();
 
 		return new SetFieldValuesCommand(cardWrapper, attribute, Collections.singletonList(key));
 	}

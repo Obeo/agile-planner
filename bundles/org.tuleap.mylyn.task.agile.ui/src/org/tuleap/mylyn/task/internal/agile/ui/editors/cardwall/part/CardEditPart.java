@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.part;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.List;
 
 import org.eclipse.draw2d.IFigure;
@@ -23,6 +25,9 @@ import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPart;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.CardWrapper;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.figure.CardDetailsPanel;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.figure.CardFigure;
+import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.figure.URLMouseMotionListener;
+import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.CardModel;
+import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.ICardwallProperties;
 
 /**
  * The edit part for the cards.
@@ -34,12 +39,22 @@ public class CardEditPart extends AbstractGraphicalEditPart {
 	/**
 	 * Listener for folding the card's details.
 	 */
-	private MouseListener mouseFoldingListener;
+	private MouseListener labelMouseListener;
+
+	/**
+	 * Listener of folding state of the card.
+	 */
+	private PropertyChangeListener cardFoldingListener;
 
 	/**
 	 * Listener for clicking on the card's ID.
 	 */
 	private MouseListener urlMouseListener;
+
+	/**
+	 * Listener for hovering the card's ID.
+	 */
+	private URLMouseMotionListener urlMouseMotionListener;
 
 	/**
 	 * The task editor taskEditorPart displaying the cardwall.
@@ -63,7 +78,8 @@ public class CardEditPart extends AbstractGraphicalEditPart {
 	 */
 	@Override
 	protected IFigure createFigure() {
-		CardWrapper wrapper = (CardWrapper)this.getModel();
+		CardModel cardModel = (CardModel)getModel();
+		CardWrapper wrapper = cardModel.getWrapper();
 		if (wrapper.getColumnId() == null) {
 			return new CardFigure(false);
 		}
@@ -97,19 +113,17 @@ public class CardEditPart extends AbstractGraphicalEditPart {
 	@Override
 	protected void refreshVisuals() {
 		CardFigure fig = getCardFigure();
-		CardWrapper card = (CardWrapper)getModel();
+		CardModel cardModel = (CardModel)getModel();
+		CardWrapper card = cardModel.getWrapper();
 
 		fig.setTitle(card.getLabel());
 		fig.setUrl(card.getDisplayId());
 		fig.setAccentColor(card.getAccentColor());
 
 		CardDetailsPanel panel = getDetailsPanel();
-		if (panel.isFolded()) {
-			panel.setTitle("> details");
-		} else {
-			panel.setTitle("v details");
-		}
 		panel.invalidateTree();
+		// The wrapping page needs to reflow so that scrollbars don't appear where they shouldn't
+		taskEditorPart.getTaskEditorPage().reflow();
 	}
 
 	/**
@@ -138,8 +152,8 @@ public class CardEditPart extends AbstractGraphicalEditPart {
 	 */
 	@Override
 	public List<?> getModelChildren() {
-		CardWrapper card = (CardWrapper)getModel();
-		return card.getFieldAttributes();
+		CardModel card = (CardModel)getModel();
+		return card.getWrapper().getFieldAttributes();
 	}
 
 	/**
@@ -150,7 +164,19 @@ public class CardEditPart extends AbstractGraphicalEditPart {
 	@Override
 	public void activate() {
 		super.activate();
-		mouseFoldingListener = new MouseListener() {
+		cardFoldingListener = new PropertyChangeListener() {
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				if (ICardwallProperties.FOLDED.equals(evt.getPropertyName())) {
+					boolean folded = ((Boolean)evt.getNewValue()).booleanValue();
+					getDetailsPanel().setFolded(folded);
+					getDetailsPanel().invalidateTree();
+					refreshVisuals();
+				}
+			}
+		};
+		((CardModel)getModel()).addPropertyChangeListener(cardFoldingListener);
+		labelMouseListener = new MouseListener() {
 
 			@Override
 			public void mouseReleased(MouseEvent me) {
@@ -159,11 +185,8 @@ public class CardEditPart extends AbstractGraphicalEditPart {
 
 			@Override
 			public void mousePressed(MouseEvent me) {
-				getDetailsPanel().toggleDetails();
-				getDetailsPanel().invalidateTree();
-				refreshVisuals();
-				// The wrapping page needs to reflow so that scrollabrs don't appear where they shouldn't
-				taskEditorPart.getTaskEditorPage().reflow();
+				CardModel model = (CardModel)getModel();
+				model.setFolded(!model.isFolded());
 			}
 
 			@Override
@@ -171,7 +194,7 @@ public class CardEditPart extends AbstractGraphicalEditPart {
 				//
 			}
 		};
-		getCardFigure().getDetailsPanel().addFoldingListener(mouseFoldingListener);
+		getCardFigure().getDetailsPanel().getTitleLabel().addMouseListener(labelMouseListener);
 		urlMouseListener = new MouseListener() {
 			@Override
 			public void mouseReleased(MouseEvent me) {
@@ -189,6 +212,8 @@ public class CardEditPart extends AbstractGraphicalEditPart {
 			}
 		};
 		getCardFigure().getUrl().addMouseListener(urlMouseListener);
+		urlMouseMotionListener = new URLMouseMotionListener();
+		getCardFigure().getUrl().addMouseMotionListener(urlMouseMotionListener);
 	}
 
 	/**
@@ -198,8 +223,10 @@ public class CardEditPart extends AbstractGraphicalEditPart {
 	 */
 	@Override
 	public void deactivate() {
-		getCardFigure().getDetailsPanel().removeFoldingListener(mouseFoldingListener);
-		mouseFoldingListener = null;
+		getCardFigure().getDetailsPanel().getTitleLabel().removeMouseListener(labelMouseListener);
+		getCardFigure().getUrl().removeMouseListener(urlMouseListener);
+		getCardFigure().getDetailsPanel().getTitleLabel().removeMouseMotionListener(urlMouseMotionListener);
+		labelMouseListener = null;
 		super.deactivate();
 	}
 
@@ -208,7 +235,8 @@ public class CardEditPart extends AbstractGraphicalEditPart {
 	 */
 	private void openTask() {
 		List<TaskRepository> allRepositories = TasksUi.getRepositoryManager().getAllRepositories();
-		CardWrapper card = (CardWrapper)getModel();
+		CardModel cardModel = (CardModel)getModel();
+		CardWrapper card = cardModel.getWrapper();
 		String repositoryUrl = card.getWrappedAttribute().getTaskData().getRepositoryUrl();
 		TaskRepository repository = null;
 		for (TaskRepository taskRepository : allRepositories) {

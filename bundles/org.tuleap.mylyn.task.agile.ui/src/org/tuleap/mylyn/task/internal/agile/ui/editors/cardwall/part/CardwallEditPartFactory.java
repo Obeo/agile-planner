@@ -14,8 +14,8 @@ import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartFactory;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPart;
-import org.tuleap.mylyn.task.agile.core.data.cardwall.CardWrapper;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.SwimlaneWrapper;
+import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.CardModel;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.CardwallModel;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.HeaderModel;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.SwimlaneCell;
@@ -50,7 +50,7 @@ public class CardwallEditPartFactory implements EditPartFactory {
 			part = new CardwallEditPart();
 		} else if (model instanceof HeaderModel) {
 			part = new HeaderEditPart();
-		} else if (model instanceof CardWrapper) {
+		} else if (model instanceof CardModel) {
 			part = new CardEditPart(taskEditorPart);
 		} else if (model instanceof SwimlaneCell) {
 			part = new CellEditPart(taskEditorPart);

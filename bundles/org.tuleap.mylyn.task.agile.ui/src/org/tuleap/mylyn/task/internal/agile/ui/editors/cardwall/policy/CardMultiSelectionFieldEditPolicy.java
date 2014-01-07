@@ -19,6 +19,7 @@ import org.eclipse.gef.requests.DirectEditRequest;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.CardWrapper;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.command.SetFieldValuesCommand;
+import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.CardModel;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.part.CardEditPart;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.part.CardFieldEditPart;
 
@@ -51,7 +52,7 @@ public class CardMultiSelectionFieldEditPolicy extends DirectEditPolicy {
 		TaskAttribute attribute = (TaskAttribute)host.getModel();
 
 		CardEditPart cardPart = (CardEditPart)host.getParent();
-		CardWrapper cardWrapper = (CardWrapper)cardPart.getModel();
+		CardWrapper cardWrapper = ((CardModel)cardPart.getModel()).getWrapper();
 
 		if (values.isEmpty()) {
 			values.add(""); //$NON-NLS-1$

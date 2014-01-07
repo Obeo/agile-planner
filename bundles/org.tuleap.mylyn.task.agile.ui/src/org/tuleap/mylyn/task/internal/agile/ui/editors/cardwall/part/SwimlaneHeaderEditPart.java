@@ -19,6 +19,7 @@ import org.tuleap.mylyn.task.agile.core.data.cardwall.CardWrapper;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.SwimlaneWrapper;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.figure.ProgressFigure;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.figure.SwimlaneHeaderCellFigure;
+import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.CardModel;
 
 /**
  * The edit part for a swimlane header (left cell).
@@ -77,11 +78,11 @@ public class SwimlaneHeaderEditPart extends AbstractGraphicalEditPart {
 	 * @see org.eclipse.gef.editparts.AbstractEditPart#getModelChildren()
 	 */
 	@Override
-	protected List<?> getModelChildren() {
-		List<CardWrapper> res = new ArrayList<CardWrapper>();
+	protected List<CardModel> getModelChildren() {
+		List<CardModel> res = new ArrayList<CardModel>();
 		for (CardWrapper card : ((SwimlaneWrapper)getModel()).getCards()) {
 			if (card.getColumnId() == null) {
-				res.add(card);
+				res.add(new CardModel(card));
 			}
 		}
 		return res;

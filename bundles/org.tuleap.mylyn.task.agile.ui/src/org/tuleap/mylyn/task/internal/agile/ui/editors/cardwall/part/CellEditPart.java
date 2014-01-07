@@ -12,6 +12,7 @@ package org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.part;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.draw2d.ChangeEvent;
@@ -24,6 +25,7 @@ import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPart;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.CardWrapper;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.figure.FoldableCellFigure;
+import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.CardModel;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.ICardwallProperties;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.SwimlaneCell;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.policy.CellContentEditPolicy;
@@ -92,9 +94,13 @@ public class CellEditPart extends AbstractGraphicalEditPart {
 	 * @see org.eclipse.gef.editparts.AbstractEditPart#getModelChildren()
 	 */
 	@Override
-	protected List<CardWrapper> getModelChildren() {
+	protected List<CardModel> getModelChildren() {
 		SwimlaneCell cell = (SwimlaneCell)getModel();
-		return cell.getCards();
+		List<CardModel> result = new ArrayList<CardModel>();
+		for (CardWrapper card : cell.getCards()) {
+			result.add(new CardModel(card));
+		}
+		return result;
 	}
 
 	/**
