@@ -74,14 +74,4 @@ public class FilterCardsContributionItem extends ControlContribution {
 		return FILTER_WIDTH;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * 
-	 * @see org.eclipse.jface.action.ContributionItem#update()
-	 */
-	@Override
-	public void update() {
-		super.update();
-	}
-
 }
