@@ -14,7 +14,6 @@ import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.gef.EditDomain;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.ui.parts.ScrollingGraphicalViewer;
-import org.eclipse.gef.ui.parts.SelectionSynchronizer;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
@@ -62,11 +61,6 @@ public class CardwallTaskEditorPart extends AbstractTaskEditorPart implements IT
 	private EditDomain editDomain;
 
 	/**
-	 * The GEF selection synchronizer.
-	 */
-	private SelectionSynchronizer synchronizer;
-
-	/**
 	 * The listener for filtering the cardwall content.
 	 */
 	private ModifyListener filterModifyListener;
@@ -101,8 +95,8 @@ public class CardwallTaskEditorPart extends AbstractTaskEditorPart implements IT
 		viewer.getControl().setBackground(ColorConstants.listBackground);
 		viewer.setEditPartFactory(new CardwallEditPartFactory(this));
 
-		synchronizer = new SelectionSynchronizer();
-		synchronizer.addViewer(viewer);
+		// synchronizer = new SelectionSynchronizer();
+		// synchronizer.addViewer(viewer);
 		IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
 		IWorkbenchPage page = window.getActivePage();
 		IEditorPart activeEditor = page.getActiveEditor();

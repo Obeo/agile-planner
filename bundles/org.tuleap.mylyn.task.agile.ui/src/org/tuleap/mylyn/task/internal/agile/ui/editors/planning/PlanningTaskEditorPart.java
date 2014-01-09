@@ -24,7 +24,6 @@ import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
-import org.eclipse.mylyn.commons.ui.CommonUiUtil;
 import org.eclipse.mylyn.internal.tasks.ui.util.TasksUiInternal;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
@@ -47,12 +46,10 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.forms.IFormPart;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -99,12 +96,6 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 	 */
 	@Override
 	public void createControl(Composite parent, FormToolkit toolkit) {
-		// This method can be called to refresh the part on a TaskDataModel refresh() event
-		// In such a case, the content is not disposed before, so it needs to be disposed here
-		// otherwise all controls woul appear twice.
-		if (!hasDisposedContent(parent)) {
-			disposeContent(parent);
-		}
 		Form form = toolkit.createForm(parent);
 		setControl(form);
 		form.setLayout(FormLayoutFactory.createClearGridLayout(false, 1));
@@ -567,7 +558,7 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 	private void openTask(TableItem item) {
 		BacklogItemWrapper backlogItemwrapper = (BacklogItemWrapper)item.getData();
 		TaskRepository repository = null;
-		String repositoryUrl = PlanningTaskEditorPart.this.getTaskData().getRepositoryUrl();
+		String repositoryUrl = getTaskData().getRepositoryUrl();
 		List<TaskRepository> allRepositories = TasksUi.getRepositoryManager().getAllRepositories();
 		for (TaskRepository taskRepository : allRepositories) {
 			if (repositoryUrl.equals(taskRepository.getRepositoryUrl())) {
@@ -589,7 +580,7 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 	private void openParentTask(TableItem item) {
 		BacklogItemWrapper backlogItemwrapper = (BacklogItemWrapper)item.getData();
 		TaskRepository repository = null;
-		String repositoryUrl = PlanningTaskEditorPart.this.getTaskData().getRepositoryUrl();
+		String repositoryUrl = getTaskData().getRepositoryUrl();
 		List<TaskRepository> allRepositories = TasksUi.getRepositoryManager().getAllRepositories();
 		for (TaskRepository taskRepository : allRepositories) {
 			if (repositoryUrl.equals(taskRepository.getRepositoryUrl())) {
@@ -609,39 +600,6 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 	@Override
 	public String getPartId() {
 		return IMylynAgileUIConstants.PLANNING_TASK_EDITOR_PART_DESC_ID;
-	}
-
-	/**
-	 * Disposes the widgets.
-	 * 
-	 * @param parent
-	 *            the parent.
-	 */
-	private void disposeContent(Composite parent) {
-		Menu menu = parent.getMenu();
-		CommonUiUtil.setMenu(parent, null);
-		// clear old controls and parts
-		for (Control control : parent.getChildren()) {
-			control.dispose();
-		}
-		for (IFormPart part : getManagedForm().getParts()) {
-			part.dispose();
-			getManagedForm().removePart(part);
-		}
-		// restore menu
-		parent.setMenu(menu);
-	}
-
-	/**
-	 * Indicates whether createControl() can be called.
-	 * 
-	 * @param parent
-	 *            the parent.
-	 * @return <code>true</code> if and only if internal controls are disposed and need to be re-created.
-	 */
-	private boolean hasDisposedContent(Composite parent) {
-		Control[] controls = parent.getChildren();
-		return controls == null || controls.length == 0 || controls[0].isDisposed();
 	}
 
 }

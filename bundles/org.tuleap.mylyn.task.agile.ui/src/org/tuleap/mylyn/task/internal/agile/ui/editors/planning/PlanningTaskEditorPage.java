@@ -17,6 +17,7 @@ import java.util.Set;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.mylyn.commons.ui.CommonUiUtil;
 import org.eclipse.mylyn.tasks.core.data.TaskDataModel;
 import org.eclipse.mylyn.tasks.core.data.TaskDataModelEvent;
 import org.eclipse.mylyn.tasks.core.data.TaskDataModelListener;
@@ -25,6 +26,10 @@ import org.eclipse.mylyn.tasks.ui.editors.TaskEditor;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditorInput;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditorPartDescriptor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.ui.forms.IFormPart;
 import org.tuleap.mylyn.task.agile.ui.AbstractAgileRepositoryConnectorUI;
 import org.tuleap.mylyn.task.agile.ui.task.IModelRegistry;
 import org.tuleap.mylyn.task.internal.agile.ui.AgileRepositoryConnectorUiServiceTrackerCustomizer;
@@ -77,11 +82,24 @@ public class PlanningTaskEditorPage extends AbstractTaskEditorPage {
 
 			@Override
 			public void modelRefreshed() {
+				// The TaskDataModel has been refreshed, we dispose the page content and recreate it
 				if (part != null) {
-					part.createControl(getManagedForm().getForm().getBody(), getManagedForm().getToolkit());
+					disposeContent();
+					createParts();
+					reflow();
 				}
 			}
 		};
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPage#refresh()
+	 */
+	@Override
+	public void refresh() {
+		// Nothing to do, we'll be notified through modelListener.modelRefreshed()
 	}
 
 	/**
@@ -109,6 +127,25 @@ public class PlanningTaskEditorPage extends AbstractTaskEditorPage {
 		part.initialize(this);
 		part.createControl(getManagedForm().getForm().getBody(), getManagedForm().getToolkit());
 		GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(part.getControl());
+	}
+
+	/**
+	 * Disposes the page content.
+	 */
+	private void disposeContent() {
+		Composite parent = getManagedForm().getForm().getBody();
+		Menu menu = parent.getMenu();
+		CommonUiUtil.setMenu(parent, null);
+		// clear old controls and parts
+		for (Control control : parent.getChildren()) {
+			control.dispose();
+		}
+		for (IFormPart formPart : getManagedForm().getParts()) {
+			formPart.dispose();
+			getManagedForm().removePart(formPart);
+		}
+		// restore menu
+		parent.setMenu(menu);
 	}
 
 	/**
@@ -141,6 +178,7 @@ public class PlanningTaskEditorPage extends AbstractTaskEditorPage {
 				model = super.createModel(input);
 				registry.registerModel(getEditor(), model);
 			}
+			model.addModelListener(modelListener);
 			return model;
 		}
 		throw new IllegalStateException(MylynAgileUIMessages
