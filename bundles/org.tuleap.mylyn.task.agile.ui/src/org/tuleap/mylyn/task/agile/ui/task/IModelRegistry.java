@@ -48,4 +48,40 @@ public interface IModelRegistry {
 	 *         editor.
 	 */
 	TaskDataModel getRegisteredModel(TaskEditor editor);
+
+	/**
+	 * Register a save listener on an editor.
+	 * 
+	 * @param editor
+	 *            The editor
+	 * @param saveListener
+	 *            The save listener
+	 */
+	void addSaveListener(TaskEditor editor, ISaveListener saveListener);
+
+	/**
+	 * Removes the given listener for the given editor.
+	 * 
+	 * @param editor
+	 *            The editor
+	 * @param saveListener
+	 *            The save listener
+	 */
+	void removeSaveListener(TaskEditor editor, ISaveListener saveListener);
+
+	/**
+	 * Will notify save listeners that a save is about to happen.
+	 * 
+	 * @param editor
+	 *            The editor in which a relevant page is about to be saved
+	 */
+	void fireBeforeSave(TaskEditor editor);
+
+	/**
+	 * Will notify save listeners that a save has taken place.
+	 * 
+	 * @param editor
+	 *            The editor in which a relevant page has been saved
+	 */
+	void fireAfterSave(TaskEditor editor);
 }

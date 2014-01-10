@@ -15,7 +15,6 @@ import com.google.common.collect.Sets;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.mylyn.commons.ui.CommonUiUtil;
@@ -38,6 +37,7 @@ import org.tuleap.mylyn.task.agile.core.data.cardwall.CardwallWrapper;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.SwimlaneWrapper;
 import org.tuleap.mylyn.task.agile.ui.AbstractAgileRepositoryConnectorUI;
 import org.tuleap.mylyn.task.agile.ui.task.IModelRegistry;
+import org.tuleap.mylyn.task.agile.ui.task.ISaveListener;
 import org.tuleap.mylyn.task.internal.agile.ui.AgileRepositoryConnectorUiServiceTrackerCustomizer;
 import org.tuleap.mylyn.task.internal.agile.ui.MylynAgileUIActivator;
 import org.tuleap.mylyn.task.internal.agile.ui.util.MylynAgileUIMessages;
@@ -48,7 +48,7 @@ import org.tuleap.mylyn.task.internal.agile.ui.util.MylynAgileUIMessages;
  * 
  * @author <a href="mailto:cedric.notot@obeo.fr">Cedric Notot</a>
  */
-public class CardwallTaskEditorPage extends AbstractTaskEditorPage {
+public class CardwallTaskEditorPage extends AbstractTaskEditorPage implements ISaveListener {
 
 	/**
 	 * The editor part.
@@ -165,6 +165,7 @@ public class CardwallTaskEditorPage extends AbstractTaskEditorPage {
 				registry.registerModel(getEditor(), model);
 			}
 			model.addModelListener(modelListener);
+			registry.addSaveListener(getEditor(), this);
 			return model;
 		}
 		throw new IllegalStateException(MylynAgileUIMessages
@@ -190,6 +191,14 @@ public class CardwallTaskEditorPage extends AbstractTaskEditorPage {
 				connector.getModelRegistry().deregisterModel(getEditor());
 			}
 		}
+		AgileRepositoryConnectorUiServiceTrackerCustomizer serviceTrackerCustomizer = MylynAgileUIActivator
+				.getDefault().getServiceTrackerCustomizer();
+		AbstractAgileRepositoryConnectorUI connector = serviceTrackerCustomizer
+				.getConnector(getConnectorKind());
+		if (connector != null) {
+			IModelRegistry registry = connector.getModelRegistry();
+			registry.removeSaveListener(getEditor(), this);
+		}
 		super.dispose();
 	}
 
@@ -208,26 +217,36 @@ public class CardwallTaskEditorPage extends AbstractTaskEditorPage {
 	 * 
 	 * @see org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPage#doSave(org.eclipse.core.runtime.IProgressMonitor)
 	 */
-	@Override
-	public void doSave(IProgressMonitor monitor) {
-		if (!isDirty()) {
-			return;
-		}
-		// Before we actually save, we compare the state of the cardwall to the last read state
-		// In order to mark all modified fields, to be able to submit only those fields (at the time of
-		// submission, we no longer have access to the TaskDataModel).
-		TaskDataModel taskDataModel = getModel();
-		if (taskDataModel != null) {
-			TaskData taskData = taskDataModel.getTaskData();
-			CardwallWrapper cardwall = new CardwallWrapper(taskData.getRoot());
-			for (SwimlaneWrapper swimlane : cardwall.getSwimlanes()) {
-				for (CardWrapper card : swimlane.getCards()) {
-					markCardChanges(taskDataModel, card);
-				}
-			}
-			// Only call this if the page has been initialized, otherwise, NPE occurs.
-			if (getManagedForm() != null) {
-				super.doSave(monitor);
+	// @Override
+	// public void doSave(IProgressMonitor monitor) {
+	// // if (!isDirty()) {
+	// // return;
+	// // }
+	// // Before we actually save, we compare the state of the cardwall to the last read state
+	// // In order to mark all modified fields, to be able to submit only those fields (at the time of
+	// // submission, we no longer have access to the TaskDataModel).
+	// TaskDataModel taskDataModel = getModel();
+	// if (taskDataModel != null) {
+	// markCards(taskDataModel);
+	// // Only call this if the page has been initialized, otherwise, NPE occurs.
+	// if (getManagedForm() != null) {
+	// super.doSave(monitor);
+	// }
+	// }
+	// }
+
+	/**
+	 * Mark modified card.
+	 * 
+	 * @param taskDataModel
+	 *            The {@link TaskDataModel}
+	 */
+	private void markCards(TaskDataModel taskDataModel) {
+		TaskData taskData = taskDataModel.getTaskData();
+		CardwallWrapper cardwall = new CardwallWrapper(taskData.getRoot());
+		for (SwimlaneWrapper swimlane : cardwall.getSwimlanes()) {
+			for (CardWrapper card : swimlane.getCards()) {
+				markCardChanges(taskDataModel, card);
 			}
 		}
 	}
@@ -244,13 +263,38 @@ public class CardwallTaskEditorPage extends AbstractTaskEditorPage {
 		TaskAttribute columnIdTaskAttribute = card.getColumnIdTaskAttribute();
 		if (columnIdTaskAttribute != null) {
 			TaskAttribute lastReadColumnId = taskDataModel.getLastReadAttribute(columnIdTaskAttribute);
-			card.markColumnIdChanged(!card.getColumnId().equals(lastReadColumnId.getValue()));
-			taskDataModel.attributeChanged(columnIdTaskAttribute);
+			if (card.markColumnIdChanged(!card.getColumnId().equals(lastReadColumnId.getValue()))) {
+				taskDataModel.attributeChanged(columnIdTaskAttribute);
+			}
 		}
 		for (TaskAttribute field : card.getFieldAttributes()) {
 			TaskAttribute lastRead = taskDataModel.getLastReadAttribute(field);
-			card.mark(field, !field.getValues().equals(lastRead.getValues()));
-			taskDataModel.attributeChanged(field);
+			if (card.mark(field, !field.getValues().equals(lastRead.getValues()))) {
+				taskDataModel.attributeChanged(field);
+			}
 		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see org.tuleap.mylyn.task.agile.ui.task.ISaveListener#beforeSave()
+	 */
+	@Override
+	public void beforeSave() {
+		TaskDataModel taskDataModel = getModel();
+		if (taskDataModel != null) {
+			markCards(taskDataModel);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see org.tuleap.mylyn.task.agile.ui.task.ISaveListener#afterSave()
+	 */
+	@Override
+	public void afterSave() {
+		// Nothing to do yet
 	}
 }

@@ -592,12 +592,14 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 	 * 
 	 * @param changed
 	 *            Flag to indicate whether the columnId has changed.
+	 * @return <code>true</code> if and only if a change has really been marked.
 	 */
-	public void markColumnIdChanged(boolean changed) {
+	public boolean markColumnIdChanged(boolean changed) {
 		TaskAttribute att = getColumnIdTaskAttribute();
 		if (att != null) {
-			mark(att, changed);
+			return mark(att, changed);
 		}
+		return false;
 	}
 
 	/**
@@ -617,14 +619,19 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 	 *            The attribute to mark
 	 * @param changed
 	 *            flag indicating whether the {@link TaskAttribute} has been changed.
+	 * @return <code>true</code> if and only if a change has really been marked.
 	 */
-	public void mark(TaskAttribute att, boolean changed) {
+	public boolean mark(TaskAttribute att, boolean changed) {
 		Assert.isNotNull(att);
-		if (changed) {
+		boolean madeAChange = false;
+		if (changed && att.getAttribute(CHANGED) == null) {
 			att.createAttribute(CHANGED);
-		} else {
+			madeAChange = true;
+		} else if (!changed && att.getAttribute(CHANGED) != null) {
 			att.removeAttribute(CHANGED);
+			madeAChange = true;
 		}
+		return madeAChange;
 	}
 
 	/**

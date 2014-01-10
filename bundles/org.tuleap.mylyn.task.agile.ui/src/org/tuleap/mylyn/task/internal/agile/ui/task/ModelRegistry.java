@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.tuleap.mylyn.task.internal.agile.ui.task;
 
+import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
 
 import java.util.Map;
 
@@ -18,6 +20,7 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.mylyn.tasks.core.data.TaskDataModel;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditor;
 import org.tuleap.mylyn.task.agile.ui.task.IModelRegistry;
+import org.tuleap.mylyn.task.agile.ui.task.ISaveListener;
 
 /**
  * Default implementation of {@link IModelRegistry}.
@@ -30,6 +33,11 @@ public class ModelRegistry implements IModelRegistry {
 	 * Map of {@link TaskDataModel} by editor.
 	 */
 	private final Map<TaskEditor, TaskDataModel> modelsByEditor = Maps.newHashMap();
+
+	/**
+	 * Multimap of save listeners by editor.
+	 */
+	private final Multimap<TaskEditor, ISaveListener> saveListeners = LinkedHashMultimap.create();
 
 	/**
 	 * Register a shared {@link TaskDataModel} for a given editor.
@@ -68,6 +76,52 @@ public class ModelRegistry implements IModelRegistry {
 	@Override
 	public TaskDataModel getRegisteredModel(TaskEditor editor) {
 		return modelsByEditor.get(editor);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see org.tuleap.mylyn.task.agile.ui.task.IModelRegistry#addSaveListener(org.eclipse.mylyn.tasks.ui.editors.TaskEditor,
+	 *      org.tuleap.mylyn.task.agile.ui.task.ISaveListener)
+	 */
+	@Override
+	public void addSaveListener(TaskEditor editor, ISaveListener saveListener) {
+		saveListeners.put(editor, saveListener);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see org.tuleap.mylyn.task.agile.ui.task.IModelRegistry#removeSaveListener(org.eclipse.mylyn.tasks.ui.editors.TaskEditor,
+	 *      org.tuleap.mylyn.task.agile.ui.task.ISaveListener)
+	 */
+	@Override
+	public void removeSaveListener(TaskEditor editor, ISaveListener saveListener) {
+		saveListeners.remove(editor, saveListener);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see org.tuleap.mylyn.task.agile.ui.task.IModelRegistry#fireBeforeSave(org.eclipse.mylyn.tasks.ui.editors.TaskEditor)
+	 */
+	@Override
+	public void fireBeforeSave(TaskEditor editor) {
+		for (ISaveListener listener : saveListeners.get(editor)) {
+			listener.beforeSave();
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see org.tuleap.mylyn.task.agile.ui.task.IModelRegistry#fireAfterSave(org.eclipse.mylyn.tasks.ui.editors.TaskEditor)
+	 */
+	@Override
+	public void fireAfterSave(TaskEditor editor) {
+		for (ISaveListener listener : saveListeners.get(editor)) {
+			listener.afterSave();
+		}
 	}
 
 }
