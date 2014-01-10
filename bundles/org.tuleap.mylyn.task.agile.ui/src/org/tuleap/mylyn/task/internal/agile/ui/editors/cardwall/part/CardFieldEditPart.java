@@ -120,9 +120,14 @@ public class CardFieldEditPart extends AbstractGraphicalEditPart {
 	 * Performs the direct edit.
 	 */
 	private void performDirectEditing() {
-		TextFlow label = ((CardFieldFigure)getFigure()).getValueLabel();
 		TaskAttribute attribute = (TaskAttribute)getModel();
-		String attributeType = attribute.getMetaData().getType();
+		// Only editable if the TaskAttribute is NOT read-only or disabled
+		TaskAttributeMetaData metaData = attribute.getMetaData();
+		if (metaData.isReadOnly() || metaData.isDisabled()) {
+			return;
+		}
+		TextFlow label = ((CardFieldFigure)getFigure()).getValueLabel();
+		String attributeType = metaData.getType();
 		DirectEditManager manager = null;
 		if (TaskAttribute.TYPE_SINGLE_SELECT.equals(attributeType)) {
 			manager = new CardBoundFieldDirectEditManager(this, ComboBoxCellEditor.class,
