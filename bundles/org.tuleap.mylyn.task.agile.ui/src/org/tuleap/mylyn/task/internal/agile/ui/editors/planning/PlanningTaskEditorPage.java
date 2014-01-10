@@ -46,9 +46,10 @@ import org.tuleap.mylyn.task.internal.agile.ui.util.MylynAgileUIMessages;
 public class PlanningTaskEditorPage extends AbstractTaskEditorPage {
 
 	/**
-	 * Flag to indicate whether standard mylyn actions should be created by this page.
+	 * Flag to indicate whether this page is the master page, in which case it mus create standard mylyn
+	 * actions and ensure it refreshes its {@link TaskDataModel} on refresh.
 	 */
-	private boolean createActionsInToolbar;
+	private boolean isMasterPage;
 
 	/**
 	 * The editor part.
@@ -67,12 +68,13 @@ public class PlanningTaskEditorPage extends AbstractTaskEditorPage {
 	 *            The parent TaskEditor.
 	 * @param connectorKind
 	 *            The related connector kind.
-	 * @param createActionsInToolbar
-	 *            Flag to indicate whether standard mylyn actions should be created by this page.
+	 * @param isMasterPage
+	 *            Flag to indicate whether this page is the master page, in which case it mus create standard
+	 *            mylyn actions and ensure it refreshes its {@link TaskDataModel} on refresh.
 	 */
-	public PlanningTaskEditorPage(TaskEditor editor, String connectorKind, boolean createActionsInToolbar) {
+	public PlanningTaskEditorPage(TaskEditor editor, String connectorKind, boolean isMasterPage) {
 		super(editor, connectorKind);
-		this.createActionsInToolbar = createActionsInToolbar;
+		this.isMasterPage = isMasterPage;
 		this.setNeedsSubmitButton(true);
 		modelListener = new TaskDataModelListener() {
 			@Override
@@ -99,7 +101,17 @@ public class PlanningTaskEditorPage extends AbstractTaskEditorPage {
 	 */
 	@Override
 	public void refresh() {
-		// Nothing to do, we'll be notified through modelListener.modelRefreshed()
+		if (isMasterPage) {
+			TaskDataModel model = getModel();
+			if (model != null) {
+				try {
+					model.refresh(null);
+				} catch (CoreException e) {
+					MylynAgileUIActivator.log(e, true);
+				}
+			}
+		}
+		// else nothing to do, we'll be notified through modelListener.modelRefreshed()
 	}
 
 	/**
@@ -155,7 +167,7 @@ public class PlanningTaskEditorPage extends AbstractTaskEditorPage {
 	 */
 	@Override
 	public void fillToolBar(IToolBarManager toolBarManager) {
-		if (createActionsInToolbar) {
+		if (isMasterPage) {
 			super.fillToolBar(toolBarManager);
 		}
 	}

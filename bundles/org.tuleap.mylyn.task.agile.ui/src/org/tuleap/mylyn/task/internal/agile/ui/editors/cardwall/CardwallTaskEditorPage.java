@@ -225,8 +225,11 @@ public class CardwallTaskEditorPage extends AbstractTaskEditorPage {
 					markCardChanges(taskDataModel, card);
 				}
 			}
+			// Only call this if the page has been initialized, otherwise, NPE occurs.
+			if (getManagedForm() != null) {
+				super.doSave(monitor);
+			}
 		}
-		super.doSave(monitor);
 	}
 
 	/**
