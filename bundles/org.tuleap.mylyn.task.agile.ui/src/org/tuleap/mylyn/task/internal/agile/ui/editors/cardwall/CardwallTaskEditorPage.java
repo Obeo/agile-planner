@@ -269,7 +269,7 @@ public class CardwallTaskEditorPage extends AbstractTaskEditorPage implements IS
 		}
 		for (TaskAttribute field : card.getFieldAttributes()) {
 			TaskAttribute lastRead = taskDataModel.getLastReadAttribute(field);
-			if (card.mark(field, !field.getValues().equals(lastRead.getValues()))) {
+			if (card.mark(field, lastRead == null || !field.getValues().equals(lastRead.getValues()))) {
 				taskDataModel.attributeChanged(field);
 			}
 		}
