@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
+import org.eclipse.mylyn.tasks.core.data.TaskAttributeMapper;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.CardWrapper;
 
 /**
@@ -88,7 +89,7 @@ public class SwimlaneCell extends AbstractNotifyingModel {
 	 * @return <code>true</code> if and only if the card passes the filter.
 	 */
 	private boolean filterCard(CardWrapper card, String filterLowerCase) {
-		if (card.getLabel().toLowerCase().contains(filterLowerCase)
+		if (card.getLabel() != null && card.getLabel().toLowerCase().contains(filterLowerCase)
 				|| card.getDisplayId().toLowerCase().contains(filterLowerCase)) {
 			return true;
 		}
@@ -109,27 +110,14 @@ public class SwimlaneCell extends AbstractNotifyingModel {
 	 * @return <code>true</code> if and only if the attribute passes the given filter.
 	 */
 	private boolean filterAttribute(TaskAttribute att, String filterLowerCase) {
-		boolean result = false;
-		String type = att.getMetaData().getType();
-		if (TaskAttribute.TYPE_SINGLE_SELECT.equals(type)) {
-			String option = att.getOption(att.getValue());
-			if (option.toLowerCase().contains(filterLowerCase)) {
-				result = true;
+		TaskAttributeMapper attributeMapper = att.getTaskData().getAttributeMapper();
+		List<String> valueLabels = attributeMapper.getValueLabels(att);
+		for (String valueLabel : valueLabels) {
+			if (valueLabel != null && valueLabel.toLowerCase().contains(filterLowerCase)) {
+				return true;
 			}
-		} else if (TaskAttribute.TYPE_MULTI_SELECT.equals(type)) {
-			for (String val : att.getValues()) {
-				String option = att.getOption(val);
-				if (option.toLowerCase().contains(filterLowerCase)) {
-					result = true;
-					break;
-				}
-			}
-		} else if (TaskAttribute.TYPE_DATE.equals(type) || TaskAttribute.TYPE_DATETIME.equals(type)) {
-			// Compare formatted date value to filter
-		} else if (att.getValue().toLowerCase().contains(filterLowerCase)) {
-			result = true;
 		}
-		return result;
+		return false;
 	}
 
 	/**
