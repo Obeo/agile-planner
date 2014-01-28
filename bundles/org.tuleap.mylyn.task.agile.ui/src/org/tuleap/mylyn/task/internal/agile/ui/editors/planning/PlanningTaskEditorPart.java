@@ -148,9 +148,9 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 		for (SubMilestoneWrapper subMilestone : Lists.reverse(wrapper.getSubMilestones())) {
 			createMilestoneSection(toolkit, subMilestone, milestoneListClient);
 		}
-		addNewMilestoneAction(milestoneList, toolbarManager);
-		addCollapseAllAction(milestoneList, toolbarManager);
-		addExpandAllAction(milestoneList, toolbarManager);
+		addNewMilestoneAction(toolbarManager);
+		addCollapseAllAction(milestoneListClient, toolbarManager);
+		addExpandAllAction(milestoneListClient, toolbarManager);
 
 		toolbarManager.update(true);
 	}
@@ -158,18 +158,17 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 	/**
 	 * Add the expand all action.
 	 * 
-	 * @param milestoneList
-	 *            the milestone list section
+	 * @param milestoneListClient
+	 *            the milestone list section client composite
 	 * @param toolbarManager
 	 *            The toolbar manager
 	 */
-	private void addExpandAllAction(final Section milestoneList, ToolBarManager toolbarManager) {
+	private void addExpandAllAction(final Composite milestoneListClient, ToolBarManager toolbarManager) {
 		Action expandAll = new Action(MylynAgileUIMessages.getString("PlanningTaskEditorPart.ExpandAll"), //$NON-NLS-1$
 				MylynAgileUIActivator.getImageDescriptor(IMylynAgileIcons.EXPAND_ALL)) {
-
 			@Override
 			public void run() {
-				for (Control control : milestoneList.getChildren()) {
+				for (Control control : milestoneListClient.getChildren()) {
 					if (control instanceof Section) {
 						((ExpandableComposite)control).setExpanded(true);
 					}
@@ -182,17 +181,17 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 	/**
 	 * Add the collapse all action.
 	 * 
-	 * @param milestoneList
-	 *            the milestone list section
+	 * @param milestoneListClient
+	 *            the milestone list section client composite
 	 * @param toolbarManager
 	 *            The toolbar manager
 	 */
-	private void addCollapseAllAction(final Section milestoneList, ToolBarManager toolbarManager) {
+	private void addCollapseAllAction(final Composite milestoneListClient, ToolBarManager toolbarManager) {
 		Action collapseAll = new Action(MylynAgileUIMessages.getString("PlanningTaskEditorPart.CollapseAll"), //$NON-NLS-1$
 				MylynAgileUIActivator.getImageDescriptor(IMylynAgileIcons.COLLAPSE_ALL)) {
 			@Override
 			public void run() {
-				for (Control control : milestoneList.getChildren()) {
+				for (Control control : milestoneListClient.getChildren()) {
 					if (control instanceof Section) {
 						((ExpandableComposite)control).setExpanded(false);
 					}
@@ -205,12 +204,10 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 	/**
 	 * Add the new milestone action.
 	 * 
-	 * @param milestoneList
-	 *            the milestone list section
 	 * @param toolbarManager
 	 *            The toolbar manager
 	 */
-	private void addNewMilestoneAction(final Section milestoneList, ToolBarManager toolbarManager) {
+	private void addNewMilestoneAction(ToolBarManager toolbarManager) {
 		Action newMilestone = new Action(MylynAgileUIMessages
 				.getString("PlanningTaskEditorPart.NewMilestone"), MylynAgileUIActivator //$NON-NLS-1$
 				.getImageDescriptor(IMylynAgileIcons.NEW_MILESTONE_16X16)) {
