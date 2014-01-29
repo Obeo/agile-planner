@@ -313,7 +313,9 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 					assignedToAtt.putOption("102", "ldelaigue");
 					assignedToAtt.putOption("103", "fbacha");
 					assignedToAtt.putOption("104", "sbegaudeau");
-					card00.setFieldValue(CARD_ASSIGNED_TO_FIELD_ID, "101"); //$NON-NLS-1$ 
+					// We set an invalid value here on purpose
+					// To test Request #5955
+					card00.setFieldValue(CARD_ASSIGNED_TO_FIELD_ID, "100"); //$NON-NLS-1$ 
 					card00.setFieldLabel(CARD_DATE_FIELD_ID, "Date"); //$NON-NLS-1$
 					card00.setFieldValue(CARD_DATE_FIELD_ID, "1220227200"); //$NON-NLS-1$
 					card00.getFieldAttribute(CARD_DATE_FIELD_ID).getMetaData().setType(

@@ -65,7 +65,7 @@ public class CardBoundFieldEditPolicy extends DirectEditPolicy {
 	 */
 	@Override
 	protected void showCurrentEditValue(DirectEditRequest request) {
-		// Nothin to do here, we don't want to change the background value during edition
+		// Nothing to do here, we don't want to change the background value during edition
 	}
 
 }

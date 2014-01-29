@@ -20,7 +20,6 @@ import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.swt.widgets.Composite;
-import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.util.CardwallComboBoxCellEditor;
 
 /**
  * {@link DirectEditManager} for String Field direct edting.
@@ -88,7 +87,10 @@ public class CardBoundFieldDirectEditManager extends DirectEditManager {
 		for (Entry<String, String> entry : options.entrySet()) {
 			items[i++] = entry.getValue();
 		}
-		CardwallComboBoxCellEditor editor = new CardwallComboBoxCellEditor(composite, items);
+		ComboBoxCellEditor editor = new ComboBoxCellEditor(composite, items);
+		// We force the Manager to be dirty so that it takes into account the value of the ComboBox
+		// Otherwise, a bug in the CBCellEditor prevents the retrieval of the selected value.
+		setDirty(true);
 		return editor;
 	}
 
