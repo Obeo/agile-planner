@@ -164,21 +164,22 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 		Date endDate = new Date(startDate.getTime() + (long)(DURATION * MILLISECOND_IN_DAY));
 
 		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(root);
-		this.createSprint(wrapper, milestoneId, "Sprint 1", CAPACITY, startDate, endDate); //$NON-NLS-1$ 
-		addNewBacklogItem(wrapper, milestoneId);
-		addNewBacklogItem(wrapper, milestoneId);
-		addNewBacklogItem(wrapper, milestoneId);
-		addNewBacklogItem(wrapper, milestoneId);
+		SubMilestoneWrapper sprint = createSprint(wrapper, milestoneId,
+				"Sprint 1", CAPACITY, startDate, endDate); //$NON-NLS-1$ 
+		addNewBacklogItem(sprint);
+		addNewBacklogItem(sprint);
+		addNewBacklogItem(sprint);
+		addNewBacklogItem(sprint);
 		milestoneId = Integer.toString(Integer.parseInt(milestoneId) + 1);
 
 		// Second Sprint
 		startDate = new Date(startDate.getTime() - 2 * MILLISECOND_IN_WEEK);
 		endDate = new Date(startDate.getTime() + (long)(DURATION * MILLISECOND_IN_DAY));
-		this.createSprint(wrapper, milestoneId, "Sprint 2", "18", startDate, endDate); //$NON-NLS-1$ 
+		sprint = createSprint(wrapper, milestoneId, "Sprint 2", "18", startDate, endDate); //$NON-NLS-1$ 
 
-		addNewBacklogItem(wrapper, milestoneId);
-		addNewBacklogItem(wrapper, milestoneId);
-		addNewBacklogItem(wrapper, milestoneId);
+		addNewBacklogItem(sprint);
+		addNewBacklogItem(sprint);
+		addNewBacklogItem(sprint);
 		milestoneId = Integer.toString(Integer.parseInt(milestoneId) + 1);
 
 		addNewBacklogItem(wrapper);
@@ -713,14 +714,16 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 	 *            The start date of the sprint
 	 * @param endDate
 	 *            The sprint's end date
+	 * @return the created wrapper.
 	 */
-	private void createSprint(MilestonePlanningWrapper wrapper, String id, String name, String capacity,
-			Date startDate, Date endDate) {
+	private SubMilestoneWrapper createSprint(MilestonePlanningWrapper wrapper, String id, String name,
+			String capacity, Date startDate, Date endDate) {
 		SubMilestoneWrapper subMilestone = wrapper.addSubMilestone(id);
 		subMilestone.setLabel(name);
 		subMilestone.setCapacity(capacity);
 		subMilestone.setStartDate(startDate);
 		subMilestone.setEndDate(endDate);
+		return subMilestone;
 	}
 
 	/**
@@ -746,13 +749,16 @@ public class MylynMockTaskDataHandler extends AbstractTaskDataHandler {
 	 * 
 	 * @param wrapper
 	 *            The milestone planning wrapper
-	 * @param id
-	 *            the milestone id to assign the backlog item to
 	 * @return A new wrapper assigned to the given milestone id
 	 */
-	private BacklogItemWrapper addNewBacklogItem(MilestonePlanningWrapper wrapper, String id) {
-		BacklogItemWrapper bi = addNewBacklogItem(wrapper);
-		bi.setAssignedMilestoneId(id);
+	private BacklogItemWrapper addNewBacklogItem(SubMilestoneWrapper wrapper) {
+		BacklogItemWrapper bi = wrapper.addBacklogItem(Integer.toString(backlogItemIndex));
+		bi.setInitialEffort("4"); //$NON-NLS-1$
+		bi.setLabel("User Story " + backlogItemIndex); //$NON-NLS-1$
+		bi.setParent("3:809#" + (backlogItemIndex + 1), Integer.toString(backlogItemIndex + 1)); //$NON-NLS-1$
+		bi.setType("User stories"); //$NON-NLS-1$
+		bi.setStatus("Closed"); //$NON-NLS-1$
+		backlogItemIndex++;
 		return bi;
 	}
 

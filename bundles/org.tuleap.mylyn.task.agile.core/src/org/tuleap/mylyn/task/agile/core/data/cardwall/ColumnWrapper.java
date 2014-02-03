@@ -56,7 +56,7 @@ public class ColumnWrapper extends AbstractTaskAttributeWrapper {
 	 *            The {@link TaskAttribute} that should represent a column.
 	 */
 	protected ColumnWrapper(CardwallWrapper parent, TaskAttribute att) {
-		super(parent.getRoot(), PREFIX_COLUMN, att.getValue());
+		super(parent.getRoot(), PREFIX_COLUMN, att.getId().substring(PREFIX_COLUMN.length()));
 		this.parent = parent;
 	}
 

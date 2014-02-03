@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -30,6 +31,7 @@ import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.data.AbstractTaskDataHandler;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
+import org.eclipse.mylyn.tasks.core.data.TaskDataModel;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPart;
@@ -59,6 +61,7 @@ import org.tuleap.mylyn.task.agile.core.IMilestoneMapping;
 import org.tuleap.mylyn.task.agile.core.data.ITaskAttributeChangeListener;
 import org.tuleap.mylyn.task.agile.core.data.planning.BacklogItemWrapper;
 import org.tuleap.mylyn.task.agile.core.data.planning.MilestonePlanningWrapper;
+import org.tuleap.mylyn.task.agile.core.data.planning.PlanningDataModelMerger;
 import org.tuleap.mylyn.task.agile.core.data.planning.SubMilestoneWrapper;
 import org.tuleap.mylyn.task.agile.ui.AbstractAgileRepositoryConnectorUI;
 import org.tuleap.mylyn.task.internal.agile.ui.MylynAgileUIActivator;
@@ -130,6 +133,7 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 		}
 		wrapper = new MilestonePlanningWrapper(getTaskData().getRoot());
 		wrapper.addListener(this);
+		mergeChanges();
 		TableViewer backlogViewer = createBacklogItemsTable(toolkit, backlogSection);
 
 		// Drag'n drop
@@ -153,6 +157,34 @@ public class PlanningTaskEditorPart extends AbstractTaskEditorPart implements IT
 		addExpandAllAction(milestoneListClient, toolbarManager);
 
 		toolbarManager.update(true);
+	}
+
+	/**
+	 * Merge the changes (after a model refresh, for instance).
+	 */
+	private void mergeChanges() {
+		TaskDataModel model = getModel();
+		if (model.getChangedAttributes().size() == 0) {
+			return;
+		}
+		doMergeChanges(model);
+		getTaskEditorPage().doSave(new NullProgressMonitor());
+	}
+
+	/**
+	 * Performs the merge.
+	 * 
+	 * @param model
+	 *            The {@link TaskDataModel}
+	 */
+	private void doMergeChanges(TaskDataModel model) {
+		try {
+			new PlanningDataModelMerger(model).merge();
+			// CHECKSTYLE:OFF
+		} catch (Exception e) {
+			// CHECKSTYLE:ON
+			MylynAgileUIActivator.log(e, true);
+		}
 	}
 
 	/**

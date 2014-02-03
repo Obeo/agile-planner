@@ -70,7 +70,8 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 	 *            The {@link TaskAttribute} that represents the card
 	 */
 	protected CardWrapper(SwimlaneWrapper parent, TaskAttribute cardAtt) {
-		super(parent.getRoot(), parent.getCardPrefix(), cardAtt.getValue());
+		super(parent.getRoot(), parent.getCardPrefix(), cardAtt.getId().substring(
+				parent.getCardPrefix().length()));
 		this.parent = parent;
 	}
 

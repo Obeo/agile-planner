@@ -70,6 +70,11 @@ public abstract class AbstractTaskAttributeWrapper {
 	protected final TaskAttribute attribute;
 
 	/**
+	 * The element's ID.
+	 */
+	private final String id;
+
+	/**
 	 * Constructor that receives the taskAttribute to wrap.
 	 * 
 	 * @param root
@@ -81,12 +86,12 @@ public abstract class AbstractTaskAttributeWrapper {
 	 */
 	public AbstractTaskAttributeWrapper(TaskAttribute root, String prefix, String id) {
 		this.root = root;
+		this.id = id;
 		TaskAttribute att = root.getMappedAttribute(prefix + id);
 		if (att == null) {
 			att = createAgileAttribute(prefix + id);
 			att.getMetaData().setReadOnly(true);
 			att.getMetaData().setType(TaskAttribute.TYPE_SHORT_TEXT);
-			att.setValue(id);
 		}
 		attribute = att;
 	}
@@ -137,7 +142,7 @@ public abstract class AbstractTaskAttributeWrapper {
 	 * @return The item's id.
 	 */
 	public String getId() {
-		return attribute.getValue();
+		return id;
 	}
 
 	/**
@@ -166,12 +171,12 @@ public abstract class AbstractTaskAttributeWrapper {
 	/**
 	 * Creates an agile task attribute.
 	 * 
-	 * @param id
+	 * @param attId
 	 *            The id of the attribute
 	 * @return The newly created attribute.
 	 */
-	protected TaskAttribute createAgileAttribute(String id) {
-		TaskAttribute att = root.createMappedAttribute(id);
+	protected TaskAttribute createAgileAttribute(String attId) {
+		TaskAttribute att = root.createMappedAttribute(attId);
 		att.getMetaData().setKind(KIND_AGILE);
 		return att;
 	}

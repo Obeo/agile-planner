@@ -21,6 +21,12 @@ import org.tuleap.mylyn.task.internal.agile.core.tests.data.MilestonePlanningWra
 import org.tuleap.mylyn.task.internal.agile.core.tests.data.MilestonePlanningWrapperTest;
 import org.tuleap.mylyn.task.internal.agile.core.tests.data.TaskAttributesTest;
 import org.tuleap.mylyn.task.internal.agile.core.tests.data.TopPlanningMapperTest;
+import org.tuleap.mylyn.task.internal.agile.core.tests.diff.DiffTest;
+import org.tuleap.mylyn.task.internal.agile.core.tests.merge.FunctionalChangeTest;
+import org.tuleap.mylyn.task.internal.agile.core.tests.merge.ItemChangeSetTest;
+import org.tuleap.mylyn.task.internal.agile.core.tests.merge.ItemChangeTest;
+import org.tuleap.mylyn.task.internal.agile.core.tests.merge.MultiListDiffTest;
+import org.tuleap.mylyn.task.internal.agile.core.tests.merge.MultiListMergerTest;
 
 /**
  * This class should be used to launch all the unit tests.
@@ -31,7 +37,8 @@ import org.tuleap.mylyn.task.internal.agile.core.tests.data.TopPlanningMapperTes
 @RunWith(Suite.class)
 @Suite.SuiteClasses({MilestonePlanningWrapperTest.class,
 		MilestonePlanningWrapperMovingBacklogItemsTest.class, CardwallWrapperTest.class,
-		TopPlanningMapperTest.class, TaskAttributesTest.class })
+		TopPlanningMapperTest.class, TaskAttributesTest.class, DiffTest.class, FunctionalChangeTest.class,
+		ItemChangeSetTest.class, ItemChangeTest.class, MultiListDiffTest.class, MultiListMergerTest.class })
 public final class AllMylynAgileCoreTests {
 
 	/**

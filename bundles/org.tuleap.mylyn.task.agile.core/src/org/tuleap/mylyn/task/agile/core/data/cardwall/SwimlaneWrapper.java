@@ -50,7 +50,7 @@ public class SwimlaneWrapper extends AbstractTaskAttributeWrapper {
 	 *            The {@link TaskAttribute} that represents the swimlane.
 	 */
 	protected SwimlaneWrapper(CardwallWrapper parent, TaskAttribute att) {
-		super(parent.getRoot(), PREFIX_SWIMLANE, att.getValue());
+		super(parent.getRoot(), PREFIX_SWIMLANE, att.getId().substring(PREFIX_SWIMLANE.length()));
 		Assert.isNotNull(parent);
 		this.parent = parent;
 	}

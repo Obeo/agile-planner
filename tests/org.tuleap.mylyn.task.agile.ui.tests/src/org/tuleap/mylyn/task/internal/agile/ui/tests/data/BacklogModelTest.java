@@ -50,8 +50,7 @@ public class BacklogModelTest {
 		subMilestone.setStartDate(new Date());
 		subMilestone.setStartDate(new Date(System.currentTimeMillis() + 11L * 1000 * 3600 * 24));
 
-		BacklogItemWrapper backlogItem = wrapper.addBacklogItem("300"); //$NON-NLS-1$
-		backlogItem.setAssignedMilestoneId("200"); //$NON-NLS-1$
+		BacklogItemWrapper backlogItem = subMilestone.addBacklogItem("300"); //$NON-NLS-1$
 		backlogItem.setInitialEffort("5");
 		backlogItem.setLabel("backlog item 1"); //$NON-NLS-1$
 
@@ -86,17 +85,10 @@ public class BacklogModelTest {
 		backlogItem.setInitialEffort("5");
 		backlogItem.setLabel("backlog item 1"); //$NON-NLS-1$
 
-		BacklogItemWrapper backlogItem2 = wrapper.addBacklogItem("301"); //$NON-NLS-1$
-		backlogItem2.setAssignedMilestoneId("200"); //$NON-NLS-1$
+		BacklogItemWrapper backlogItem2 = subMilestone.addBacklogItem("301"); //$NON-NLS-1$
 		backlogItem2.setInitialEffort("5");
 		backlogItem2.setLabel("backlog item 2"); //$NON-NLS-1$
 
-		BacklogItemWrapper backlogItem3 = wrapper.addBacklogItem("302"); //$NON-NLS-1$
-		backlogItem3.setAssignedMilestoneId("201"); //$NON-NLS-1$
-		backlogItem3.setInitialEffort("5");
-		backlogItem3.setLabel("backlog item 3"); //$NON-NLS-1$
-
-		// CHECKING
 		assertEquals(backlogModel.getMilestoneId(), subMilestone.getId());
 		assertEquals(backlogModel.getSubMilestone(), subMilestone);
 		assertEquals(backlogModel.getBacklogItems().size(), 1);

@@ -13,6 +13,7 @@ package org.tuleap.mylyn.task.agile.core.data.planning;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterators;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -193,11 +194,14 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 		for (String backlogItemId : backlog.getValues()) {
 			result.add(wrapBacklogItem(backlogItemId));
 		}
+		for (SubMilestoneWrapper subMilestone : getSubMilestones()) {
+			result.addAll(subMilestone.getOrderedBacklogItems());
+		}
 		return result;
 	}
 
 	/**
-	 * Returns the unassigned backlog items (whether or not they are assigned to a milestone) in the oredering
+	 * Returns the unassigned backlog items (whether or not they are assigned to a milestone) in the ordering
 	 * corresponding to their priority.
 	 * 
 	 * @return a list of backlog item wrappers, never null but possibly empty.
@@ -205,10 +209,7 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 	public List<BacklogItemWrapper> getOrderedUnassignedBacklogItems() {
 		List<BacklogItemWrapper> result = newArrayList();
 		for (String backlogItemId : backlog.getValues()) {
-			BacklogItemWrapper bi = wrapBacklogItem(backlogItemId);
-			if (bi.getAssignedMilestoneId() == null) {
-				result.add(bi);
-			}
+			result.add(wrapBacklogItem(backlogItemId));
 		}
 		return result;
 	}
@@ -267,124 +268,185 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 	 * @param items
 	 *            the BacklogItems list
 	 * @param target
-	 *            the target BacklogItem, if null elements are appended at the end of the backlog.
-	 * @param before
-	 *            a boolean parameter that indicates if moving BacklogItems will be before or after the target
-	 */
-	public void moveItemsToBacklog(List<BacklogItemWrapper> items, BacklogItemWrapper target, boolean before) {
-		if (items == null || items.isEmpty()) {
-			return;
-		}
-		String targetId = null;
-		if (target != null) {
-			targetId = target.getWrappedAttribute().getValue();
-		}
-		int insertPosition = -1;
-		List<String> ids = newArrayList();
-		ids.addAll(backlog.getValues()); // Modifiable copy of ordered ids
-
-		List<String> movedIds = newArrayList();
-		for (BacklogItemWrapper bi : items) {
-			TaskAttribute wrappedAtt = bi.getWrappedAttribute();
-			bi.removeAssignedMilestoneId();
-			if (wrappedAtt.getValue().equals(targetId)) {
-				// If the target element is among the moved elements,
-				// Elements already treated must be moved before it,
-				// and the remaining elements must be moved after it.
-				insertPosition = ids.indexOf(targetId);
-			}
-			String movedId = wrappedAtt.getValue();
-			// Security : we only move elements that are present in the original list
-			if (ids.remove(movedId)) {
-				movedIds.add(movedId);
-			}
-		}
-		if (insertPosition == -1) {
-			insertPosition = computeInsertPosition(before, targetId, ids);
-		}
-		for (String movedId : movedIds) {
-			ids.add(insertPosition++, movedId);
-		}
-		backlog.clearValues();
-		backlog.setValues(ids);
-		fireAttributeChanged(backlog);
-	}
-
-	/**
-	 * Moves a list of BacklogItem before or after a target BacklogItem.
-	 * 
-	 * @param items
-	 *            the BacklogItems list
-	 * @param target
 	 *            the target BacklogItem, if null elements are appended at the end of the milestone.
 	 * @param before
 	 *            a boolean parameter that indicates if moving BacklogItems will be before or after the target
 	 * @param subMilestone
-	 *            the subMilestone to which BacklogItems will be moved. The target's assigned id should be
-	 *            equal to the subMilestone's id.
+	 *            the subMilestone to which BacklogItems will be moved. If null, items are assigned to the
+	 *            backlog.
 	 */
-	public void moveItemsToMilestone(List<BacklogItemWrapper> items, BacklogItemWrapper target,
-			boolean before, SubMilestoneWrapper subMilestone) {
-		if (items == null || items.isEmpty()) {
-			return;
+	public void moveItems(List<BacklogItemWrapper> items, BacklogItemWrapper target, boolean before,
+			SubMilestoneWrapper subMilestone) {
+		TaskAttribute itemListAtt;
+		if (subMilestone == null) {
+			itemListAtt = backlog;
+		} else {
+			itemListAtt = subMilestone.getWrappedAttribute();
+		}
+		List<String> subMilestoneValues = new ArrayList<String>(itemListAtt.getValues());
+		List<String> idsToMove = new ArrayList<String>();
+		for (BacklogItemWrapper item : items) {
+			idsToMove.add(item.getId());
 		}
 		String targetId = null;
 		if (target != null) {
-			targetId = target.getWrappedAttribute().getValue();
+			targetId = target.getId();
 		}
-		int insertPosition = -1;
-		List<String> formerIds = newArrayList();
-		formerIds.addAll(backlog.getValues()); // Modifiable copy of ordered ids
-
-		List<String> movedIds = newArrayList();
-		for (BacklogItemWrapper bi : items) {
-			TaskAttribute wrappedAtt = bi.getWrappedAttribute();
-			bi.setAssignedMilestoneId(subMilestone.getId());
-			if (wrappedAtt.getValue().equals(targetId)) {
-				// If the target element is among the moved elements,
-				// Elements already treated must be moved before it,
-				// and the remaining elements must be moved after it.
-				insertPosition = formerIds.indexOf(targetId);
-			}
-			String movedId = wrappedAtt.getValue();
-			// Security : we only move elements that are present in the original list
-			if (formerIds.remove(movedId)) {
-				movedIds.add(movedId);
+		if (!subMilestoneValues.containsAll(idsToMove)) {
+			// Clean all impacted list attributes in case of move between lists
+			removeItemsFromOtherListsBeforeMove(itemListAtt, idsToMove);
+		}
+		// Now, perform the insertion
+		int index;
+		if (target == null || !subMilestoneValues.contains(targetId)) {
+			index = subMilestoneValues.size();
+		} else {
+			index = subMilestoneValues.indexOf(targetId);
+			if (!before) {
+				index++;
 			}
 		}
-		if (insertPosition == -1) {
-			insertPosition = computeInsertPosition(before, targetId, formerIds);
+		for (String idToMove : idsToMove) {
+			if (idToMove.equals(targetId) && subMilestoneValues.contains(targetId)) {
+				index--;
+				if (!before) {
+					index--;
+				}
+			}
+			subMilestoneValues.remove(idToMove);
 		}
-		for (String movedId : movedIds) {
-			formerIds.add(insertPosition++, movedId);
-		}
-		backlog.clearValues();
-		backlog.setValues(formerIds);
-		fireAttributeChanged(backlog);
+		subMilestoneValues.addAll(index, idsToMove);
+		itemListAtt.setValues(subMilestoneValues);
+		fireAttributeChanged(itemListAtt);
 	}
 
 	/**
-	 * Compute the insertion index.
+	 * Removes the elements about to be moved from their lists.
 	 * 
-	 * @param before
-	 *            flag
-	 * @param targetId
-	 *            id of target, can be null
-	 * @param formerIds
-	 *            List of ids not moved
-	 * @return The insertion index in formerIds.
+	 * @param itemListAtt
+	 *            TaskAttribute that persists the target list
+	 * @param idsToMove
+	 *            List of IDs to insert
 	 */
-	private int computeInsertPosition(boolean before, String targetId, List<String> formerIds) {
-		int insertPosition;
-		if (targetId == null) {
-			insertPosition = formerIds.size();
-		} else {
-			insertPosition = formerIds.indexOf(targetId);
-			if (!before) {
-				insertPosition++;
+	private void removeItemsFromOtherListsBeforeMove(TaskAttribute itemListAtt, List<String> idsToMove) {
+		if (itemListAtt != backlog) {
+			removeItemsFrom(backlog, idsToMove);
+		}
+		for (SubMilestoneWrapper milestone : getSubMilestones()) {
+			TaskAttribute milestoneAtt = milestone.getWrappedAttribute();
+			if (itemListAtt != milestoneAtt) {
+				removeItemsFrom(milestoneAtt, idsToMove);
 			}
 		}
-		return insertPosition;
+	}
+
+	/**
+	 * Remove all the existing IDs from the values of the given {@link TaskAttribute}.
+	 * 
+	 * @param attribute
+	 *            The TaskAttribute to update.
+	 * @param idsToMove
+	 *            The list of IDs to remove
+	 */
+	private void removeItemsFrom(TaskAttribute attribute, List<String> idsToMove) {
+		List<String> values = new ArrayList<String>(attribute.getValues());
+		boolean needsUpdate = values.removeAll(idsToMove);
+		if (needsUpdate) {
+			attribute.setValues(values);
+			fireAttributeChanged(attribute);
+		}
+	}
+
+	/**
+	 * An update to perform on a TaskAttribute.
+	 * 
+	 * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
+	 */
+	private static class TaskAttributeUpdate {
+		/**
+		 * The attribute.
+		 */
+		private final TaskAttribute attribute;
+
+		/**
+		 * The values to set to the attribute.
+		 */
+		private final List<String> values;
+
+		/**
+		 * Constructor.
+		 * 
+		 * @param attribute
+		 *            The attribute
+		 * @param values
+		 *            The values to set
+		 */
+		public TaskAttributeUpdate(TaskAttribute attribute, List<String> values) {
+			super();
+			this.attribute = attribute;
+			this.values = values;
+		}
+
+		/**
+		 * Executes this update by setting the values to the attribute, and returns the updated attribute. No
+		 * notification is performed by this method.
+		 * 
+		 * @return The updated attribute.
+		 */
+		public TaskAttribute run() {
+			attribute.setValues(values);
+			return attribute;
+		}
+
+	}
+
+	/**
+	 * Insert in the first list the given IDs At the relevant index computed according to the target and the
+	 * "before" flag.
+	 * 
+	 * @param att
+	 *            The attribute to update (will be modified by the call)
+	 * @param idsToMove
+	 *            The list of ids to insert
+	 * @param index
+	 *            The insertion index
+	 */
+	private void insertBacklogItemIds(TaskAttribute att, List<String> idsToMove, int index) {
+		List<String> values = new ArrayList<String>(att.getValues());
+		values.addAll(index, idsToMove);
+		att.setValues(values);
+		fireAttributeChanged(att);
+	}
+
+	/**
+	 * Compute the insertion index, taken all the parameters into account. This must be called before the
+	 * target list is emptied of its former list.
+	 * 
+	 * @param att
+	 *            The attribute to update (will be modified by the call)
+	 * @param target
+	 *            The target element
+	 * @param before
+	 *            Whether insertion must take place before or after.
+	 * @return the insertion index in the list
+	 */
+	private int computeInsertionIndex(TaskAttribute att, BacklogItemWrapper target, boolean before) {
+		int index;
+		List<String> values = new ArrayList<String>(att.getValues());
+		if (target != null) {
+			index = values.indexOf(target.getId());
+			if (index < 0) {
+				index = values.size();
+			} else if (target != null && values.contains(target.getId())) {
+				index--;
+			} else if (!before) {
+				index++;
+			}
+
+		} else {
+			index = values.size();
+		}
+		return index;
 	}
 
 	/**
@@ -474,5 +536,16 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 	protected void fireAttributeChanged(TaskAttribute att) {
 		// Required for delegation from other classes of this package
 		super.fireAttributeChanged(att);
+	}
+
+	/**
+	 * Indicates whether the list of elements in the backlog ahs been changed locally, compared to the lates
+	 * known repository version.
+	 * 
+	 * @return <code>true</code> if the list of items in the backlog is different from the latest known remote
+	 *         list.
+	 */
+	public boolean hasBacklogChanged() {
+		return backlog.getAttribute(CHANGED) != null;
 	}
 }

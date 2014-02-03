@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.core.data.TaskAttributeMapper;
+import org.tuleap.mylyn.task.agile.core.data.AbstractNotifyingWrapper;
 import org.tuleap.mylyn.task.agile.core.data.AbstractTaskAttributeWrapper;
 
 /**
@@ -73,6 +74,17 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 	protected SubMilestoneWrapper(final MilestonePlanningWrapper parent, String id) {
 		super(parent.getRoot(), PREFIX_MILESTONE, id);
 		this.parent = parent;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see org.tuleap.mylyn.task.agile.core.data.AbstractTaskAttributeWrapper#getId()
+	 */
+	@Override
+	public String getId() {
+		// The wrapped attribute is used to persist the list of items in this milestone
+		return attribute.getId().substring(PREFIX_MILESTONE.length());
 	}
 
 	/**
@@ -228,21 +240,28 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 	}
 
 	/**
-	 * Returns the unassigned backlog items (whether or not they are assigned to a milestone) in the oredering
-	 * corresponding to their priority.
+	 * Creates a new task attribute to represent a BacklogItem and returns a wrapper for this new
+	 * TaskAttribute. The created TaskAttribute is inserted in the given parent, that must be non-null.
+	 * 
+	 * @param id
+	 *            the backlogItem identifier
+	 * @return A wrapper for a newly created TaskAttribute representing a BacklogItem in the given parent.
+	 */
+	public BacklogItemWrapper addBacklogItem(String id) {
+		BacklogItemWrapper w = parent.wrapBacklogItem(id);
+		attribute.addValue(id);
+		return w;
+	}
+
+	/**
+	 * Returns the list of backlog items that is the content of this sub-milestone.
 	 * 
 	 * @return a list of backlog item wrappers, never null but possibly empty.
 	 */
 	public List<BacklogItemWrapper> getOrderedBacklogItems() {
-		String milestoneId = getId();
 		List<BacklogItemWrapper> result = Lists.newArrayList();
-		TaskAttribute backlog = parent.getBacklogTaskAttribute();
-		for (String attributeId : backlog.getValues()) {
-			BacklogItemWrapper bi = parent.wrapBacklogItem(attributeId);
-			String assignedId = bi.getAssignedMilestoneId();
-			if (assignedId != null && assignedId.equals(milestoneId)) {
-				result.add(bi);
-			}
+		for (String attributeId : attribute.getValues()) {
+			result.add(parent.wrapBacklogItem(attributeId));
 		}
 		return result;
 	}
@@ -294,5 +313,16 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 	@Override
 	protected void fireAttributeChanged(TaskAttribute att) {
 		parent.fireAttributeChanged(att);
+	}
+
+	/**
+	 * Indicates whether the list of elements in the sub-milestone content has been changed locally, compared
+	 * to the lates known repository version.
+	 * 
+	 * @return <code>true</code> if the list of items in the backlog is different from the latest known remote
+	 *         list.
+	 */
+	public boolean hasContentChanged() {
+		return attribute.getAttribute(AbstractNotifyingWrapper.CHANGED) != null;
 	}
 }

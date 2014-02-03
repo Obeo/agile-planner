@@ -83,7 +83,6 @@ public class MilestonePlanningWrapperTest {
 		assertEquals(TaskAttribute.TYPE_SHORT_TEXT, capacity.getMetaData().getType());
 
 		TaskAttribute id = root.getAttribute(milestone0.getId());
-		assertEquals("200", id.getValue()); //$NON-NLS-1$
 		assertEquals(TaskAttribute.TYPE_SHORT_TEXT, id.getMetaData().getType());
 
 		TaskAttribute label = root.getAttribute(milestone0.getId() + '-'
@@ -108,10 +107,9 @@ public class MilestonePlanningWrapperTest {
 		String label1 = "label of backlog item 300"; //$NON-NLS-1$
 
 		// Backlog
-		BacklogItemWrapper backlogItem = wrapper.addBacklogItem("300");
+		BacklogItemWrapper backlogItem = subMilestone.addBacklogItem("300");
 		backlogItem.setLabel(label1);
 		backlogItem.setInitialEffort("5");
-		backlogItem.setAssignedMilestoneId("200");
 
 		TaskAttribute backlogAtt = root.getAttribute(MilestonePlanningWrapper.BACKLOG);
 		TaskAttribute bi0 = root.getAttribute(BacklogItemWrapper.PREFIX_BACKLOG_ITEM + "300"); //$NON-NLS-1$
@@ -123,18 +121,12 @@ public class MilestonePlanningWrapperTest {
 		assertEquals(TaskAttribute.TYPE_SHORT_TEXT, pointsAtt.getMetaData().getType());
 
 		TaskAttribute biIdAtt = root.getAttribute(bi0.getId());
-		assertEquals("300", biIdAtt.getValue()); //$NON-NLS-1$
 		assertEquals(TaskAttribute.TYPE_SHORT_TEXT, biIdAtt.getMetaData().getType());
 
 		TaskAttribute biLabelAtt = root.getAttribute(bi0.getId() + '-'
 				+ AbstractTaskAttributeWrapper.SUFFIX_LABEL);
 		assertEquals(label1, biLabelAtt.getValue());
 		assertEquals(TaskAttribute.TYPE_SHORT_RICH_TEXT, biLabelAtt.getMetaData().getType());
-
-		TaskAttribute assignedIdAtt = root.getAttribute(bi0.getId() + '-'
-				+ BacklogItemWrapper.SUFFIX_ASSIGNED_MILESTONE_ID);
-		assertEquals("200", assignedIdAtt.getValue()); //$NON-NLS-1$
-		assertEquals(TaskAttribute.TYPE_INTEGER, assignedIdAtt.getMetaData().getType());
 	}
 
 	/**
@@ -164,12 +156,10 @@ public class MilestonePlanningWrapperTest {
 		subMilestone.setStartDate(testDate);
 		Date endDate = new Date(testDate.getTime() + 1000 * 60 * 60 * 24 * 11);
 		subMilestone.setEndDate(endDate);
-		BacklogItemWrapper backlogItem = wrapper.addBacklogItem("300");
+		BacklogItemWrapper backlogItem = subMilestone.addBacklogItem("300");
 		String label1 = "label of backlog item 300"; //$NON-NLS-1$
 		backlogItem.setLabel(label1);
 		backlogItem.setInitialEffort("5");
-		backlogItem.setAssignedMilestoneId("200");
-		// System.out.println(taskData.getRoot());
 
 		wrapper = new MilestonePlanningWrapper(taskData.getRoot());
 
@@ -188,7 +178,6 @@ public class MilestonePlanningWrapperTest {
 		assertEquals("300", backlogItem.getId());
 		assertEquals(label1, backlogItem.getLabel());
 		assertEquals("5", backlogItem.getInitialEffort());
-		assertEquals("200", backlogItem.getAssignedMilestoneId());
 
 		assertFalse(backlogItems.hasNext());
 	}
@@ -223,78 +212,8 @@ public class MilestonePlanningWrapperTest {
 		assertEquals("-1", backlogItem.getId());
 		assertNull(backlogItem.getLabel());
 		assertNull(backlogItem.getInitialEffort());
-		assertNull(backlogItem.getAssignedMilestoneId());
 
 		assertFalse(backlogItems.hasNext());
-	}
-
-	/**
-	 * Check that the mechanism to assign/unassign a backlog item to a milestone works right.
-	 */
-	@Test
-	public void testBacklogItemAssignedIdRemoval() {
-		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(taskData.getRoot());
-		// Date testDate = new Date();
-		wrapper.addSubMilestone("123");
-		BacklogItemWrapper backlogItem = wrapper.addBacklogItem("333");
-		backlogItem.setAssignedMilestoneId("123");
-		assertEquals("123", backlogItem.getAssignedMilestoneId());
-		backlogItem.removeAssignedMilestoneId();
-		assertNull(backlogItem.getAssignedMilestoneId());
-	}
-
-	/**
-	 * Check that the mechanism to set values works if invoked several times.
-	 */
-	@Test
-	public void testMultipleAssignments() {
-		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(taskData.getRoot());
-		// Date testDate = new Date();
-		SubMilestoneWrapper subMilestone = wrapper.addSubMilestone("123");
-		assertEquals("123", subMilestone.getId());
-
-		subMilestone.setCapacity("10");
-		assertEquals("10", subMilestone.getCapacity());
-		subMilestone.setCapacity("12");
-		assertEquals("12", subMilestone.getCapacity());
-
-		Date endDate = new Date(testDate.getTime() + 1000 * 60 * 60 * 24 * 11);
-		subMilestone.setEndDate(endDate);
-		endDate = new Date(endDate.getTime() + 1000 * 60 * 60 * 24 * 2);
-		subMilestone.setEndDate(endDate);
-
-		String label = "Label 1"; //$NON-NLS-1$
-		String label2 = "Other"; //$NON-NLS-1$
-		subMilestone.setLabel(label);
-		assertEquals(label, subMilestone.getLabel());
-		subMilestone.setLabel(label2);
-		assertEquals(label2, subMilestone.getLabel());
-
-		Date testDate2 = new Date();
-		testDate2.setTime(testDate.getTime() - 120000);
-		subMilestone.setStartDate(testDate);
-		assertEquals(testDate.getTime(), subMilestone.getStartDate().getTime());
-		subMilestone.setStartDate(testDate2);
-		assertEquals(testDate2.getTime(), subMilestone.getStartDate().getTime());
-
-		BacklogItemWrapper backlogItem = wrapper.addBacklogItem("333");
-
-		assertEquals("333", backlogItem.getId());
-
-		backlogItem.setAssignedMilestoneId("123");
-		assertEquals("123", backlogItem.getAssignedMilestoneId());
-		backlogItem.setAssignedMilestoneId("128");
-		assertEquals("128", backlogItem.getAssignedMilestoneId());
-
-		backlogItem.setInitialEffort("20");
-		assertEquals("20", backlogItem.getInitialEffort());
-		backlogItem.setInitialEffort("15");
-		assertEquals("15", backlogItem.getInitialEffort());
-
-		backlogItem.setLabel(label);
-		assertEquals(label, backlogItem.getLabel());
-		backlogItem.setLabel(label2);
-		assertEquals(label2, backlogItem.getLabel());
 	}
 
 	/**
@@ -397,16 +316,6 @@ public class MilestonePlanningWrapperTest {
 		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(biLabelKey));
 		backlogItem.setLabel("Other"); //$NON-NLS-1$
 		assertEquals(Integer.valueOf(2), listener.getInvocationsCount(biLabelKey));
-
-		backlogItem.setAssignedMilestoneId("200");
-		String assignedIdKey = BacklogItemWrapper.PREFIX_BACKLOG_ITEM + "123-"
-				+ BacklogItemWrapper.SUFFIX_ASSIGNED_MILESTONE_ID;
-
-		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(assignedIdKey));
-		backlogItem.setAssignedMilestoneId("200");
-		assertEquals(Integer.valueOf(1), listener.getInvocationsCount(assignedIdKey));
-		backlogItem.setAssignedMilestoneId("201");
-		assertEquals(Integer.valueOf(2), listener.getInvocationsCount(assignedIdKey));
 	}
 
 	/**
@@ -441,8 +350,6 @@ public class MilestonePlanningWrapperTest {
 		assertEquals(1, att.getValues().size());
 		att = taskData.getRoot().getAttribute("mta_bi-987");
 		assertNotNull(att);
-		assertEquals("987", att.getValue());
-		assertEquals(1, att.getValues().size());
 	}
 
 	@Test

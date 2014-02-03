@@ -105,16 +105,14 @@ public class BacklogItemDropAdapter extends ViewerDropAdapter {
 			if (selectedBacklogItems.isEmpty()) {
 				ret = false;
 			} else {
-				String milestoneId = wrapper.getAssignedMilestoneId();
+				String milestoneId = container.getMilestoneId();
 				MilestonePlanningWrapper planningWrapper = container.getMilestonePlanning();
 				if (milestoneId == null) {
 					// Drop on planning's backlog
-					planningWrapper.moveItemsToBacklog(selectedBacklogItems, wrapper, before);
+					planningWrapper.moveItems(selectedBacklogItems, wrapper, before, null);
 				} else {
 					// Drop on a milestone's backlog item
-					planningWrapper.moveItemsToMilestone(selectedBacklogItems, wrapper, before,
-							planningWrapper
-
+					planningWrapper.moveItems(selectedBacklogItems, wrapper, before, planningWrapper
 							.getSubMilestone(milestoneId));
 				}
 				ret = true;
@@ -151,21 +149,15 @@ public class BacklogItemDropAdapter extends ViewerDropAdapter {
 			lastBacklogItem = Iterables.getLast(biWrappers);
 		}
 		String targetAssignedMilestoneId = container.getMilestoneId();
-
-		BacklogItemWrapper firstSelectedElement = selectedBacklogItems.get(0);
-		String selectedAssignedMilestoneId = firstSelectedElement.getAssignedMilestoneId();
 		if (targetAssignedMilestoneId == null) {
 			// Move to the backlog
-			if (selectedAssignedMilestoneId != null) {
-				container.getMilestonePlanning().moveItemsToBacklog(selectedBacklogItems, lastBacklogItem,
-						false);
-				ret = true;
-			}
-		} else if (!targetAssignedMilestoneId.equals(selectedAssignedMilestoneId)) {
+			container.getMilestonePlanning().moveItems(selectedBacklogItems, lastBacklogItem, false, null);
+			ret = true;
+		} else {
 			SubMilestoneWrapper targetMilestone = container.getMilestonePlanning().getSubMilestone(
 					targetAssignedMilestoneId);
-			container.getMilestonePlanning().moveItemsToMilestone(selectedBacklogItems, lastBacklogItem,
-					false, targetMilestone);
+			container.getMilestonePlanning().moveItems(selectedBacklogItems, lastBacklogItem, false,
+					targetMilestone);
 			ret = true;
 		}
 		return ret;

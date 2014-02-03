@@ -164,57 +164,6 @@ public class BacklogItemWrapper extends AbstractTaskAttributeWrapper {
 	}
 
 	/**
-	 * Assigned milestone id getter.
-	 * 
-	 * @return The id of the (sub) milestone to which this item is assigned, or {@code null} if it is not
-	 *         assigned to any (sub) milestone.
-	 */
-	public String getAssignedMilestoneId() {
-		String result = null;
-		TaskAttribute att = root.getMappedAttribute(getAssignedIdAttributeId());
-		// Replace with hasValue() when depends on Mylyn 3.9
-		if (att != null && att.getValues().size() > 0) {
-			result = att.getValue();
-		}
-		return result;
-	}
-
-	/**
-	 * Assigned milestone id setter.
-	 * 
-	 * @param milestoneId
-	 *            The assigned milestone id.
-	 */
-	public void setAssignedMilestoneId(String milestoneId) {
-		TaskAttribute att = root.getMappedAttribute(getAssignedIdAttributeId());
-		String oldValue = null;
-		if (att == null) {
-			att = createAgileAttribute(getAssignedIdAttributeId());
-			att.getMetaData().setType(TaskAttribute.TYPE_INTEGER);
-		} else {
-			oldValue = att.getValue();
-		}
-		if (oldValue == null || !oldValue.equals(milestoneId)) {
-			att.setValue(milestoneId);
-			fireAttributeChanged(att);
-		}
-	}
-
-	/**
-	 * Remove the milestone assignment of this backlog item.
-	 */
-	public void removeAssignedMilestoneId() {
-		TaskAttribute att = root.getMappedAttribute(getAssignedIdAttributeId());
-		if (att != null) {
-			// Replace with hasValue() when depends on Mylyn 3.9
-			if (att.getValues().size() > 0) {
-				att.clearValues();
-				fireAttributeChanged(att);
-			}
-		}
-	}
-
-	/**
 	 * Return the parent milestone planning as a wrapper.
 	 * 
 	 * @return The (never null) parent planning, as a wrapper.

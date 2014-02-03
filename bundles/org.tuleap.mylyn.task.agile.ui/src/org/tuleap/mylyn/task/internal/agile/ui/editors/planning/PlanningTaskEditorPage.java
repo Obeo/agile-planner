@@ -10,14 +10,17 @@
  *******************************************************************************/
 package org.tuleap.mylyn.task.internal.agile.ui.editors.planning;
 
+import com.google.common.base.Predicates;
 import com.google.common.collect.Sets;
 
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.mylyn.commons.ui.CommonUiUtil;
+import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.eclipse.mylyn.tasks.core.data.TaskDataModel;
 import org.eclipse.mylyn.tasks.core.data.TaskDataModelEvent;
 import org.eclipse.mylyn.tasks.core.data.TaskDataModelListener;
@@ -30,8 +33,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.forms.IFormPart;
+import org.tuleap.mylyn.task.agile.core.data.TaskAttributes;
+import org.tuleap.mylyn.task.agile.core.data.cardwall.CardwallWrapper;
+import org.tuleap.mylyn.task.agile.core.data.planning.MilestonePlanningWrapper;
+import org.tuleap.mylyn.task.agile.core.data.planning.SubMilestoneWrapper;
 import org.tuleap.mylyn.task.agile.ui.AbstractAgileRepositoryConnectorUI;
 import org.tuleap.mylyn.task.agile.ui.task.IModelRegistry;
+import org.tuleap.mylyn.task.agile.ui.task.ISaveListener;
 import org.tuleap.mylyn.task.internal.agile.ui.AgileRepositoryConnectorUiServiceTrackerCustomizer;
 import org.tuleap.mylyn.task.internal.agile.ui.MylynAgileUIActivator;
 import org.tuleap.mylyn.task.internal.agile.ui.util.MylynAgileUIMessages;
@@ -43,7 +51,7 @@ import org.tuleap.mylyn.task.internal.agile.ui.util.MylynAgileUIMessages;
  * @author <a href="mailto:stephane.begaudeau@obeo.fr">Stephane Begaudeau</a>
  * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
  */
-public class PlanningTaskEditorPage extends AbstractTaskEditorPage {
+public class PlanningTaskEditorPage extends AbstractTaskEditorPage implements ISaveListener {
 
 	/**
 	 * Flag to indicate whether this page is the master page, in which case it mus create standard mylyn
@@ -105,9 +113,14 @@ public class PlanningTaskEditorPage extends AbstractTaskEditorPage {
 			TaskDataModel model = getModel();
 			if (model != null) {
 				try {
+					showEditorBusy(true);
+					// This is important, will apply local changes
+					doSave(new NullProgressMonitor());
 					model.refresh(null);
 				} catch (CoreException e) {
 					MylynAgileUIActivator.log(e, true);
+				} finally {
+					showEditorBusy(false);
 				}
 			}
 		}
@@ -191,6 +204,7 @@ public class PlanningTaskEditorPage extends AbstractTaskEditorPage {
 				registry.registerModel(getEditor(), model);
 			}
 			model.addModelListener(modelListener);
+			registry.addSaveListener(getEditor(), this);
 			return model;
 		}
 		throw new IllegalStateException(MylynAgileUIMessages
@@ -217,5 +231,32 @@ public class PlanningTaskEditorPage extends AbstractTaskEditorPage {
 			}
 		}
 		super.dispose();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see org.tuleap.mylyn.task.agile.ui.task.ISaveListener#beforeSave()
+	 */
+	@Override
+	public void beforeSave() {
+		TaskDataModel taskDataModel = getModel();
+		if (taskDataModel != null) {
+			TaskData taskData = taskDataModel.getTaskData();
+			CardwallWrapper cardwall = new CardwallWrapper(taskData.getRoot());
+			cardwall.markChanges(taskDataModel, Predicates.or(TaskAttributes
+					.identifiedBy(MilestonePlanningWrapper.BACKLOG), TaskAttributes
+					.prefixedBy(SubMilestoneWrapper.PREFIX_MILESTONE)));
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see org.tuleap.mylyn.task.agile.ui.task.ISaveListener#afterSave()
+	 */
+	@Override
+	public void afterSave() {
+		// Nothing to do yet
 	}
 }
