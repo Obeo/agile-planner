@@ -18,7 +18,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.mylyn.commons.ui.CommonUiUtil;
-import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.eclipse.mylyn.tasks.core.data.TaskDataModel;
 import org.eclipse.mylyn.tasks.core.data.TaskDataModelEvent;
@@ -32,7 +31,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.forms.IFormPart;
-import org.tuleap.mylyn.task.agile.core.data.cardwall.CardWrapper;
+import org.tuleap.mylyn.task.agile.core.data.TaskAttributes;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.CardwallWrapper;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.SwimlaneWrapper;
 import org.tuleap.mylyn.task.agile.ui.AbstractAgileRepositoryConnectorUI;
@@ -215,76 +214,15 @@ public class CardwallTaskEditorPage extends AbstractTaskEditorPage implements IS
 	/**
 	 * {@inheritDoc}
 	 * 
-	 * @see org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPage#doSave(org.eclipse.core.runtime.IProgressMonitor)
-	 */
-	// @Override
-	// public void doSave(IProgressMonitor monitor) {
-	// // if (!isDirty()) {
-	// // return;
-	// // }
-	// // Before we actually save, we compare the state of the cardwall to the last read state
-	// // In order to mark all modified fields, to be able to submit only those fields (at the time of
-	// // submission, we no longer have access to the TaskDataModel).
-	// TaskDataModel taskDataModel = getModel();
-	// if (taskDataModel != null) {
-	// markCards(taskDataModel);
-	// // Only call this if the page has been initialized, otherwise, NPE occurs.
-	// if (getManagedForm() != null) {
-	// super.doSave(monitor);
-	// }
-	// }
-	// }
-
-	/**
-	 * Mark modified card.
-	 * 
-	 * @param taskDataModel
-	 *            The {@link TaskDataModel}
-	 */
-	private void markCards(TaskDataModel taskDataModel) {
-		TaskData taskData = taskDataModel.getTaskData();
-		CardwallWrapper cardwall = new CardwallWrapper(taskData.getRoot());
-		for (SwimlaneWrapper swimlane : cardwall.getSwimlanes()) {
-			for (CardWrapper card : swimlane.getCards()) {
-				markCardChanges(taskDataModel, card);
-			}
-		}
-	}
-
-	/**
-	 * Marks the card modification since last read from server.
-	 * 
-	 * @param taskDataModel
-	 *            The {@link TaskDataModel}
-	 * @param card
-	 *            The card
-	 */
-	private void markCardChanges(TaskDataModel taskDataModel, CardWrapper card) {
-		TaskAttribute columnIdTaskAttribute = card.getColumnIdTaskAttribute();
-		if (columnIdTaskAttribute != null) {
-			TaskAttribute lastReadColumnId = taskDataModel.getLastReadAttribute(columnIdTaskAttribute);
-			if (card.markColumnIdChanged(!card.getColumnId().equals(lastReadColumnId.getValue()))) {
-				taskDataModel.attributeChanged(columnIdTaskAttribute);
-			}
-		}
-		for (TaskAttribute field : card.getFieldAttributes()) {
-			TaskAttribute lastRead = taskDataModel.getLastReadAttribute(field);
-			if (card.mark(field, lastRead == null || !field.getValues().equals(lastRead.getValues()))) {
-				taskDataModel.attributeChanged(field);
-			}
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * 
 	 * @see org.tuleap.mylyn.task.agile.ui.task.ISaveListener#beforeSave()
 	 */
 	@Override
 	public void beforeSave() {
 		TaskDataModel taskDataModel = getModel();
 		if (taskDataModel != null) {
-			markCards(taskDataModel);
+			TaskData taskData = taskDataModel.getTaskData();
+			CardwallWrapper cardwall = new CardwallWrapper(taskData.getRoot());
+			cardwall.markChanges(taskDataModel, TaskAttributes.prefixedBy(SwimlaneWrapper.PREFIX_SWIMLANE));
 		}
 	}
 

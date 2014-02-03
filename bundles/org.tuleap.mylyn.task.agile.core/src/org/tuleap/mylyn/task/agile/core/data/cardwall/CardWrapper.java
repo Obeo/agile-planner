@@ -15,7 +15,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
 
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.tuleap.mylyn.task.agile.core.data.AbstractNotifyingWrapper;
 
@@ -56,11 +55,6 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 	 * Suffix used to compute the mylyn id of the task attribute that represents the status.
 	 */
 	public static final String ALLOWED_COLS = "allowed_cols"; //$NON-NLS-1$
-
-	/**
-	 * TaskAttribute id used to mark parent task attribute as changed.
-	 */
-	public static final String CHANGED = "changed"; //$NON-NLS-1$
 
 	/**
 	 * The parent card wall.
@@ -588,21 +582,6 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 	}
 
 	/**
-	 * Mark or reset the column ID changed status.
-	 * 
-	 * @param changed
-	 *            Flag to indicate whether the columnId has changed.
-	 * @return <code>true</code> if and only if a change has really been marked.
-	 */
-	public boolean markColumnIdChanged(boolean changed) {
-		TaskAttribute att = getColumnIdTaskAttribute();
-		if (att != null) {
-			return mark(att, changed);
-		}
-		return false;
-	}
-
-	/**
 	 * Indicates whether the column ID has been marked as changed.
 	 * 
 	 * @return <code>true</code> if and only if the column id has been marked as changed.
@@ -610,28 +589,6 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 	public boolean hasColumnIdChanged() {
 		TaskAttribute att = getColumnIdTaskAttribute();
 		return hasChanged(att);
-	}
-
-	/**
-	 * Mark the given {@link TaskAttribute} as changed or unchanged.
-	 * 
-	 * @param att
-	 *            The attribute to mark
-	 * @param changed
-	 *            flag indicating whether the {@link TaskAttribute} has been changed.
-	 * @return <code>true</code> if and only if a change has really been marked.
-	 */
-	public boolean mark(TaskAttribute att, boolean changed) {
-		Assert.isNotNull(att);
-		boolean madeAChange = false;
-		if (changed && att.getAttribute(CHANGED) == null) {
-			att.createAttribute(CHANGED);
-			madeAChange = true;
-		} else if (!changed && att.getAttribute(CHANGED) != null) {
-			att.removeAttribute(CHANGED);
-			madeAChange = true;
-		}
-		return madeAChange;
 	}
 
 	/**

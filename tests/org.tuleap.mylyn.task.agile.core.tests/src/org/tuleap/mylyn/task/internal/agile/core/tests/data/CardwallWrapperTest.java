@@ -15,12 +15,18 @@ import com.google.common.collect.Lists;
 import java.util.Arrays;
 import java.util.List;
 
+import org.eclipse.mylyn.internal.tasks.core.TaskTask;
+import org.eclipse.mylyn.internal.tasks.core.data.TaskDataState;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.core.data.TaskAttributeMapper;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
+import org.eclipse.mylyn.tasks.core.data.TaskDataModel;
 import org.junit.Before;
 import org.junit.Test;
+import org.tuleap.mylyn.task.agile.core.data.AbstractNotifyingWrapper;
+import org.tuleap.mylyn.task.agile.core.data.ITaskAttributeChangeListener;
+import org.tuleap.mylyn.task.agile.core.data.TaskAttributes;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.CardWrapper;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.CardwallWrapper;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.ColumnWrapper;
@@ -44,6 +50,11 @@ public class CardwallWrapperTest {
 	 * The wrapped task data.
 	 */
 	private TaskData taskData;
+
+	/**
+	 * The task repository for tests.
+	 */
+	private TaskRepository taskRepository;
 
 	/**
 	 * Tests basic ward wall creation.
@@ -407,7 +418,7 @@ public class CardwallWrapperTest {
 		String repositoryUrl = "repository"; //$NON-NLS-1$
 		String connectorKind = "kind"; //$NON-NLS-1$
 		String taskId = "id"; //$NON-NLS-1$ 
-		TaskRepository taskRepository = new TaskRepository(connectorKind, repositoryUrl);
+		taskRepository = new TaskRepository(connectorKind, repositoryUrl);
 		TaskAttributeMapper mapper = new TaskAttributeMapper(taskRepository);
 		taskData = new TaskData(mapper, connectorKind, repositoryUrl, taskId);
 	}
@@ -741,4 +752,67 @@ public class CardwallWrapperTest {
 		assertEquals(2, swimlane.getNumberOfAssignedCards(false));
 	}
 
+	/**
+	 * Tests of the mechanism used to mark actual modifications of the TaskData.
+	 */
+	@Test
+	public void testMarkChangedAttributes() {
+		CardwallWrapper wrapper = new CardwallWrapper(taskData.getRoot());
+		for (int i = 0; i < 4; i++) {
+			wrapper.addColumn(Integer.toString(10 + i), "Column" + i);
+		}
+		SwimlaneWrapper swimlane = wrapper.addSwimlane("123");
+
+		// One card assigned true
+		int i = 0;
+		CardWrapper card = swimlane.addCard(Integer.toString(200 + i));
+		card.setLabel("Label " + (200 + i));
+		card.setColumnId(Integer.toString(10 + i));
+		card.setComplete(true);
+		i++;
+
+		// One card assigned false
+		card = swimlane.addCard(Integer.toString(200 + i));
+		card.setLabel("Label " + (200 + i));
+		card.setColumnId(Integer.toString(10 + i));
+		card.setComplete(false);
+		i++;
+
+		// One card unassigned true
+		card = swimlane.addCard(Integer.toString(200 + i));
+		card.setLabel("Label " + (200 + i));
+		card.setComplete(true);
+		i++;
+
+		TaskDataState state = new TaskDataState("kind", "repository", "id");
+		state.setRepositoryData(TaskDataState.createCopy(taskData));
+		state.revert();
+		final TaskDataModel model = new TaskDataModel(taskRepository,
+				new TaskTask("kind", "repository", "id"), state);
+		TaskData taskDataToUse = model.getTaskData();
+		wrapper = new CardwallWrapper(taskDataToUse.getRoot());
+		wrapper.addListener(new ITaskAttributeChangeListener() {
+			@Override
+			public void attributeChanged(TaskAttribute attribute) {
+				model.attributeChanged(attribute);
+			}
+		});
+		wrapper.markChanges(model, TaskAttributes.prefixedBy(SwimlaneWrapper.PREFIX_SWIMLANE));
+		// Nothing should have changed
+		List<CardWrapper> cards = wrapper.getSwimlanes().get(0).getCards();
+
+		for (CardWrapper aCard : cards) {
+			// Check that there is no CHANGED sub-attribute
+			assertTrue(aCard.getColumnIdTaskAttribute() == null
+					|| aCard.getColumnIdTaskAttribute().getAttributes().isEmpty());
+		}
+
+		cards.get(0).setColumnId("10"); // Unchanged
+		cards.get(1).setColumnId("10"); // Changed from 11 to 10
+		cards.get(2).setColumnId("10"); // Changed from null to 10
+		wrapper.markChanges(model, TaskAttributes.prefixedBy(SwimlaneWrapper.PREFIX_SWIMLANE));
+		assertTrue(cards.get(0).getColumnIdTaskAttribute().getAttributes().isEmpty()); // Not changed
+		assertNotNull(cards.get(1).getColumnIdTaskAttribute().getAttribute(AbstractNotifyingWrapper.CHANGED));
+		assertNotNull(cards.get(1).getColumnIdTaskAttribute().getAttribute(AbstractNotifyingWrapper.CHANGED));
+	}
 }
