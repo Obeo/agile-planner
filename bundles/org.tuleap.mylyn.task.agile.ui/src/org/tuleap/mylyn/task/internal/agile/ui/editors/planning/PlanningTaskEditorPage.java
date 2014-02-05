@@ -250,6 +250,11 @@ public class PlanningTaskEditorPage extends AbstractTaskEditorPage implements IS
 		}
 	}
 
+	@Override
+	public boolean isDirty() {
+		return getManagedForm() != null && super.isDirty();
+	}
+
 	/**
 	 * {@inheritDoc}
 	 * 

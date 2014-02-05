@@ -211,6 +211,11 @@ public class CardwallTaskEditorPage extends AbstractTaskEditorPage implements IS
 		// Nothing to do, we'll be notified through modelListener.modelRefreshed()
 	}
 
+	@Override
+	public boolean isDirty() {
+		return getManagedForm() != null && super.isDirty();
+	}
+
 	/**
 	 * {@inheritDoc}
 	 * 
