@@ -42,7 +42,8 @@ public class CardBoundFieldEditPolicy extends DirectEditPolicy {
 		Integer valueIndex = (Integer)request.getCellEditor().getValue();
 
 		// for CellEditor, null is always returned for invalid values
-		if (valueIndex == null) {
+		// Or -1 for indexes, it seems...
+		if (valueIndex == null || valueIndex.intValue() < 0) {
 			return null;
 		}
 
