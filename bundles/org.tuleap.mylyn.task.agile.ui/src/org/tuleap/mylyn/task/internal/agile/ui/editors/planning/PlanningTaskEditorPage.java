@@ -16,6 +16,7 @@ import com.google.common.collect.Sets;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -253,6 +254,35 @@ public class PlanningTaskEditorPage extends AbstractTaskEditorPage implements IS
 	@Override
 	public boolean isDirty() {
 		return getManagedForm() != null && super.isDirty();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPage#doSave(org.eclipse.core.runtime.IProgressMonitor)
+	 */
+	@Override
+	public void doSave(IProgressMonitor monitor) {
+		if (isMasterPage) {
+			String connectorKind = getTaskRepository().getConnectorKind();
+			AgileRepositoryConnectorUiServiceTrackerCustomizer serviceTrackerCustomizer = MylynAgileUIActivator
+					.getDefault().getServiceTrackerCustomizer();
+			AbstractAgileRepositoryConnectorUI connector = serviceTrackerCustomizer
+					.getConnector(connectorKind);
+			IModelRegistry registry = null;
+			if (connector != null) {
+				registry = connector.getModelRegistry();
+			}
+			if (registry != null) {
+				registry.fireBeforeSave(getEditor());
+			}
+			super.doSave(monitor);
+			if (registry != null) {
+				registry.fireAfterSave(getEditor());
+			}
+		} else {
+			super.doSave(monitor);
+		}
 	}
 
 	/**
