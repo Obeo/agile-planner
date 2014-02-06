@@ -12,6 +12,7 @@ package org.tuleap.mylyn.task.agile.core.data.planning;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterators;
+import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -19,6 +20,7 @@ import java.util.List;
 
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.tuleap.mylyn.task.agile.core.data.AbstractNotifyingWrapper;
+import org.tuleap.mylyn.task.internal.agile.core.util.ListUtil;
 
 import static com.google.common.collect.Lists.newArrayList;
 
@@ -283,8 +285,8 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 		} else {
 			itemListAtt = subMilestone.getWrappedAttribute();
 		}
-		List<String> subMilestoneValues = new ArrayList<String>(itemListAtt.getValues());
-		List<String> idsToMove = new ArrayList<String>();
+		List<String> subMilestoneValues = itemListAtt.getValues();
+		List<String> idsToMove = Lists.newArrayList();
 		for (BacklogItemWrapper item : items) {
 			idsToMove.add(item.getId());
 		}
@@ -296,27 +298,8 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 			// Clean all impacted list attributes in case of move between lists
 			removeItemsFromOtherListsBeforeMove(itemListAtt, idsToMove);
 		}
-		// Now, perform the insertion
-		int index;
-		if (target == null || !subMilestoneValues.contains(targetId)) {
-			index = subMilestoneValues.size();
-		} else {
-			index = subMilestoneValues.indexOf(targetId);
-			if (!before) {
-				index++;
-			}
-		}
-		for (String idToMove : idsToMove) {
-			if (idToMove.equals(targetId) && subMilestoneValues.contains(targetId)) {
-				index--;
-				if (!before) {
-					index--;
-				}
-			}
-			subMilestoneValues.remove(idToMove);
-		}
-		subMilestoneValues.addAll(index, idsToMove);
-		itemListAtt.setValues(subMilestoneValues);
+		List<String> newValues = ListUtil.mergeItems(idsToMove, subMilestoneValues, targetId, before);
+		itemListAtt.setValues(newValues);
 		fireAttributeChanged(itemListAtt);
 	}
 
