@@ -104,22 +104,6 @@ public class PlanningDataModelMerger {
 	}
 
 	/**
-	 * Extract a changed attribute from the given list.
-	 * 
-	 * @param local
-	 *            the local attribute, for which we want the changed equivalent.
-	 * @return The changed attribute, which may be unsaved, or the given one if it's not in the changed list.
-	 */
-	// private TaskAttribute extractChangedAttribute(TaskAttribute local) {
-	// for (TaskAttribute changed : model.getChangedAttributes()) {
-	// if (changed.equals(local)) {
-	// return changed;
-	// }
-	// }
-	// return local;
-	// }
-
-	/**
 	 * Get the repository TaskAttribute for the given ID.
 	 * 
 	 * @param localAtt
