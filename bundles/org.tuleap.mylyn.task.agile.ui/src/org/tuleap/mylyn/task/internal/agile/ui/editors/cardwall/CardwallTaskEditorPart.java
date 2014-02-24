@@ -12,10 +12,14 @@ package org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall;
 
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.gef.EditDomain;
+import org.eclipse.gef.EditPart;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.ui.parts.ScrollingGraphicalViewer;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPart;
 import org.eclipse.swt.events.ModifyEvent;
@@ -44,6 +48,70 @@ import org.tuleap.mylyn.task.internal.agile.ui.util.MylynAgileUIMessages;
  * @author <a href="mailto:cedric.notot@obeo.fr">Cedric Notot</a>
  */
 public class CardwallTaskEditorPart extends AbstractTaskEditorPart implements ITaskAttributeChangeListener {
+
+	/**
+	 * Selection provider to use with the cardwall. Introduced to solve Eclipse Agile Planner:Requests-6285.
+	 * 
+	 * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
+	 */
+	private static final class CardwallSelectionProvider implements ISelectionProvider {
+		/**
+		 * The current selectionProvider.
+		 */
+		private final ISelectionProvider selectionProvider;
+
+		/**
+		 * The cardwall viewer.
+		 */
+		private final GraphicalViewer viewer;
+
+		/**
+		 * Constructor.
+		 * 
+		 * @param selectionProvider
+		 *            The current selection provider
+		 * @param viewer
+		 *            The veiwer
+		 */
+		private CardwallSelectionProvider(ISelectionProvider selectionProvider, GraphicalViewer viewer) {
+			this.selectionProvider = selectionProvider;
+			this.viewer = viewer;
+		}
+
+		@Override
+		public void setSelection(ISelection selection) {
+			if (selection instanceof EditPart) {
+				viewer.setSelection(selection);
+			}
+			if (selectionProvider != null) {
+				selectionProvider.setSelection(selection);
+			}
+		}
+
+		@Override
+		public void removeSelectionChangedListener(ISelectionChangedListener listener) {
+			viewer.removeSelectionChangedListener(listener);
+			if (selectionProvider != null) {
+				selectionProvider.removeSelectionChangedListener(listener);
+			}
+		}
+
+		@Override
+		public ISelection getSelection() {
+			if (selectionProvider != null) {
+				return selectionProvider.getSelection();
+			}
+			return viewer.getSelection();
+		}
+
+		@Override
+		public void addSelectionChangedListener(ISelectionChangedListener listener) {
+			viewer.addSelectionChangedListener(listener);
+			if (selectionProvider != null) {
+				selectionProvider.addSelectionChangedListener(listener);
+			}
+		}
+	}
 
 	/**
 	 * The edited cardwall model.
@@ -101,7 +169,9 @@ public class CardwallTaskEditorPart extends AbstractTaskEditorPart implements IT
 		IWorkbenchPage page = window.getActivePage();
 		IEditorPart activeEditor = page.getActiveEditor();
 		IWorkbenchPartSite site = activeEditor.getSite();
-		site.setSelectionProvider(viewer);
+
+		// Eclipse Agile Planner:Requests-6285
+		site.setSelectionProvider(new CardwallSelectionProvider(site.getSelectionProvider(), viewer));
 
 		CardwallWrapper wrapper = new CardwallWrapper(getTaskData().getRoot());
 		wrapper.addListener(this);
