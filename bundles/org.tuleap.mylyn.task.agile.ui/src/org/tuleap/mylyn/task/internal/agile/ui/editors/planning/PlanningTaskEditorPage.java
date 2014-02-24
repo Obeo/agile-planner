@@ -4,23 +4,23 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Obeo - initial API and implementation
  *******************************************************************************/
 package org.tuleap.mylyn.task.internal.agile.ui.editors.planning;
 
 import com.google.common.base.Predicates;
-import com.google.common.collect.Sets;
 
+import java.util.Collections;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.mylyn.commons.ui.CommonUiUtil;
+import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.eclipse.mylyn.tasks.core.data.TaskDataModel;
 import org.eclipse.mylyn.tasks.core.data.TaskDataModelEvent;
@@ -29,12 +29,15 @@ import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPage;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditor;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditorInput;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditorPartDescriptor;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.forms.IFormPart;
+import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.forms.widgets.TableWrapData;
+import org.tuleap.mylyn.task.agile.core.data.ITaskAttributeChangeListener;
 import org.tuleap.mylyn.task.agile.core.data.TaskAttributes;
+import org.tuleap.mylyn.task.agile.core.data.burndown.BurndownMapper;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.CardwallWrapper;
 import org.tuleap.mylyn.task.agile.core.data.planning.MilestonePlanningWrapper;
 import org.tuleap.mylyn.task.agile.core.data.planning.SubMilestoneWrapper;
@@ -43,16 +46,17 @@ import org.tuleap.mylyn.task.agile.ui.task.IModelRegistry;
 import org.tuleap.mylyn.task.agile.ui.task.ISaveListener;
 import org.tuleap.mylyn.task.internal.agile.ui.AgileRepositoryConnectorUiServiceTrackerCustomizer;
 import org.tuleap.mylyn.task.internal.agile.ui.MylynAgileUIActivator;
+import org.tuleap.mylyn.task.internal.agile.ui.editors.FormLayoutFactory;
 import org.tuleap.mylyn.task.internal.agile.ui.util.MylynAgileUIMessages;
 
 /**
  * The Page for the PlanningTaskEditor. This page parameterizes the editor to display only the relevant tabs
  * and parts.
- * 
+ *
  * @author <a href="mailto:stephane.begaudeau@obeo.fr">Stephane Begaudeau</a>
  * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
  */
-public class PlanningTaskEditorPage extends AbstractTaskEditorPage implements ISaveListener {
+public class PlanningTaskEditorPage extends AbstractTaskEditorPage implements ISaveListener, ITaskAttributeChangeListener {
 
 	/**
 	 * Flag to indicate whether this page is the master page, in which case it mus create standard mylyn
@@ -61,9 +65,19 @@ public class PlanningTaskEditorPage extends AbstractTaskEditorPage implements IS
 	private boolean isMasterPage;
 
 	/**
-	 * The editor part.
+	 * The backlog editor part.
 	 */
-	private PlanningTaskEditorPart part;
+	private BacklogTaskEditorPart backlogPart;
+
+	/**
+	 * The burn-down chart editor part.
+	 */
+	private BurndownTaskEditorPart burndownPart;
+
+	/**
+	 * The sub-milestone editor part.
+	 */
+	private SubMilestoneListTaskEditorPart milestonesPart;
 
 	/**
 	 * The model listener.
@@ -71,8 +85,13 @@ public class PlanningTaskEditorPage extends AbstractTaskEditorPage implements IS
 	private final TaskDataModelListener modelListener;
 
 	/**
+	 * The planning wrapper.
+	 */
+	private MilestonePlanningWrapper wrapper;
+
+	/**
 	 * Constructor, which delegates to the matching super constructor.
-	 * 
+	 *
 	 * @param editor
 	 *            The parent TaskEditor.
 	 * @param connectorKind
@@ -94,7 +113,7 @@ public class PlanningTaskEditorPage extends AbstractTaskEditorPage implements IS
 			@Override
 			public void modelRefreshed() {
 				// The TaskDataModel has been refreshed, we dispose the page content and recreate it
-				if (part != null) {
+				if (backlogPart != null) {
 					disposeContent();
 					createParts();
 					reflow();
@@ -105,7 +124,7 @@ public class PlanningTaskEditorPage extends AbstractTaskEditorPage implements IS
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPage#refresh()
 	 */
 	@Override
@@ -130,29 +149,50 @@ public class PlanningTaskEditorPage extends AbstractTaskEditorPage implements IS
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPage#createPartDescriptors()
 	 */
 	@Override
 	protected Set<TaskEditorPartDescriptor> createPartDescriptors() {
 		// We just want to display the planning editor in this tab
-		Set<TaskEditorPartDescriptor> descriptors = Sets.newLinkedHashSet();
-		descriptors.add(new PlanningTaskEditorPartDescriptor());
-		return descriptors;
+		return Collections.emptySet();
 	}
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPage#createParts()
 	 */
 	@Override
 	protected void createParts() {
-		part = new PlanningTaskEditorPart();
-		getManagedForm().addPart(part);
-		part.initialize(this);
-		part.createControl(getManagedForm().getForm().getBody(), getManagedForm().getToolkit());
-		GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(part.getControl());
+		Composite body = getManagedForm().getForm().getBody();
+		body.setLayout(FormLayoutFactory.createFormPaneTableWrapLayout(false, 2));
+		body.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
+
+		FormToolkit toolkit = getManagedForm().getToolkit();
+		Composite leftPane = toolkit.createComposite(body);
+		leftPane.setLayout(FormLayoutFactory.createFormPaneTableWrapLayout(false, 1));
+		leftPane.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
+		Composite rightPane = toolkit.createComposite(body);
+		rightPane.setLayout(FormLayoutFactory.createFormPaneTableWrapLayout(false, 1));
+		rightPane.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
+
+		BurndownMapper burndown = new BurndownMapper(getModel().getTaskData());
+		if (burndown.getBurndownData() != null) {
+			burndownPart = new BurndownTaskEditorPart();
+			burndownPart.initialize(this);
+			burndownPart.createControl(leftPane, toolkit);
+		}
+
+		backlogPart = new BacklogTaskEditorPart();
+		getManagedForm().addPart(backlogPart);
+		backlogPart.initialize(this);
+		backlogPart.createControl(leftPane, toolkit);
+
+		milestonesPart = new SubMilestoneListTaskEditorPart();
+		getManagedForm().addPart(milestonesPart);
+		milestonesPart.initialize(this);
+		milestonesPart.createControl(rightPane, toolkit);
 	}
 
 	/**
@@ -176,7 +216,7 @@ public class PlanningTaskEditorPage extends AbstractTaskEditorPage implements IS
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPage#fillToolBar(org.eclipse.jface.action.IToolBarManager)
 	 */
 	@Override
@@ -187,8 +227,17 @@ public class PlanningTaskEditorPage extends AbstractTaskEditorPage implements IS
 	}
 
 	/**
+	 * Getter of the cached wrapper.
+	 *
+	 * @return The cached wrapper.
+	 */
+	protected MilestonePlanningWrapper getWrapper() {
+		return wrapper;
+	}
+
+	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPage#createModel(org.eclipse.mylyn.tasks.ui.editors.TaskEditorInput)
 	 */
 	@Override
@@ -206,6 +255,8 @@ public class PlanningTaskEditorPage extends AbstractTaskEditorPage implements IS
 			}
 			model.addModelListener(modelListener);
 			registry.addSaveListener(getEditor(), this);
+			wrapper = new MilestonePlanningWrapper(model.getTaskData().getRoot());
+			wrapper.addListener(this);
 			return model;
 		}
 		throw new IllegalStateException(MylynAgileUIMessages
@@ -214,11 +265,15 @@ public class PlanningTaskEditorPage extends AbstractTaskEditorPage implements IS
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPage#dispose()
 	 */
 	@Override
 	public void dispose() {
+		if (wrapper != null) {
+			wrapper.removeListener(this);
+			wrapper = null;
+		}
 		TaskDataModel taskDataModel = getModel();
 		if (taskDataModel != null) {
 			taskDataModel.removeModelListener(modelListener);
@@ -236,7 +291,7 @@ public class PlanningTaskEditorPage extends AbstractTaskEditorPage implements IS
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see org.tuleap.mylyn.task.agile.ui.task.ISaveListener#beforeSave()
 	 */
 	@Override
@@ -258,7 +313,7 @@ public class PlanningTaskEditorPage extends AbstractTaskEditorPage implements IS
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPage#doSave(org.eclipse.core.runtime.IProgressMonitor)
 	 */
 	@Override
@@ -287,11 +342,21 @@ public class PlanningTaskEditorPage extends AbstractTaskEditorPage implements IS
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see org.tuleap.mylyn.task.agile.ui.task.ISaveListener#afterSave()
 	 */
 	@Override
 	public void afterSave() {
 		// Nothing to do yet
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @see org.tuleap.mylyn.task.agile.core.data.ITaskAttributeChangeListener#attributeChanged(org.eclipse.mylyn.tasks.core.data.TaskAttribute)
+	 */
+	@Override
+	public void attributeChanged(TaskAttribute attribute) {
+		getModel().attributeChanged(attribute);
 	}
 }

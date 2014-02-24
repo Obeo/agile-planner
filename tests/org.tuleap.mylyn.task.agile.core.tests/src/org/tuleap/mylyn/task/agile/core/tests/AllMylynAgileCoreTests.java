@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Obeo - initial API and implementation
  *******************************************************************************/
@@ -16,6 +16,8 @@ import junit.textui.TestRunner;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+import org.tuleap.mylyn.task.internal.agile.core.tests.data.BurndownDataTest;
+import org.tuleap.mylyn.task.internal.agile.core.tests.data.BurndownMapperTest;
 import org.tuleap.mylyn.task.internal.agile.core.tests.data.CardwallWrapperTest;
 import org.tuleap.mylyn.task.internal.agile.core.tests.data.MilestonePlanningWrapperMovingBacklogItemsTest;
 import org.tuleap.mylyn.task.internal.agile.core.tests.data.MilestonePlanningWrapperTest;
@@ -31,16 +33,16 @@ import org.tuleap.mylyn.task.internal.agile.core.tests.util.ListUtilTest;
 
 /**
  * This class should be used to launch all the unit tests.
- * 
+ *
  * @author <a href="mailto:stephane.begaudeau@obeo.fr">Stephane Begaudeau</a>
  * @since 1.0
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({MilestonePlanningWrapperTest.class,
-		MilestonePlanningWrapperMovingBacklogItemsTest.class, CardwallWrapperTest.class,
-		TopPlanningMapperTest.class, TaskAttributesTest.class, DiffTest.class, FunctionalChangeTest.class,
-		ItemChangeSetTest.class, ItemChangeTest.class, MultiListDiffTest.class, MultiListMergerTest.class,
-		ListUtilTest.class })
+	MilestonePlanningWrapperMovingBacklogItemsTest.class, CardwallWrapperTest.class,
+	TopPlanningMapperTest.class, TaskAttributesTest.class, DiffTest.class, FunctionalChangeTest.class,
+	ItemChangeSetTest.class, ItemChangeTest.class, MultiListDiffTest.class, MultiListMergerTest.class,
+	ListUtilTest.class, BurndownDataTest.class, BurndownMapperTest.class })
 public final class AllMylynAgileCoreTests {
 
 	/**
@@ -52,7 +54,7 @@ public final class AllMylynAgileCoreTests {
 
 	/**
 	 * Launches the test with the given arguments.
-	 * 
+	 *
 	 * @param args
 	 *            Arguments of the testCase.
 	 */
@@ -62,7 +64,7 @@ public final class AllMylynAgileCoreTests {
 
 	/**
 	 * Creates the {@link junit.framework.TestSuite TestSuite} for all the test.
-	 * 
+	 *
 	 * @return The test suite containing all the tests
 	 */
 	public static Test suite() {
