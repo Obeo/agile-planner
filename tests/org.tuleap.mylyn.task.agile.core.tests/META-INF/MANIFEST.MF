@@ -9,9 +9,10 @@ Bundle-Localization: plugin
 Export-Package: org.tuleap.mylyn.task.agile.core.tests,
  org.tuleap.mylyn.task.internal.agile.core.tests.data;x-internal:=true,
  org.tuleap.mylyn.task.internal.agile.core.tests.diff;x-internal:=true,
- org.tuleap.mylyn.task.internal.agile.core.tests.merge;x-internal:=true
+ org.tuleap.mylyn.task.internal.agile.core.tests.merge;x-internal:=true,
+ org.tuleap.mylyn.task.internal.agile.core.tests.util;x-internal:=true
 Require-Bundle: org.junit,
  org.eclipse.mylyn.commons.sdk.util,
  org.tuleap.mylyn.task.agile.core,
  org.eclipse.mylyn.tasks.core,
- com.google.guava;bundle-version="11.0.2"
+ com.google.guava;bundle-version="[11.0.0,12.0.0)"
