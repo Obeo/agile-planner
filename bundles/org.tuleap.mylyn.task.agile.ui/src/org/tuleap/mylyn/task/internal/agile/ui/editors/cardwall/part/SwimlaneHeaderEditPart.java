@@ -49,7 +49,7 @@ public class SwimlaneHeaderEditPart extends AbstractGraphicalEditPart {
 		ProgressFigure progressFigure = getCellFigure().getProgressFigure();
 		SwimlaneWrapper swimlane = (SwimlaneWrapper)getModel();
 		progressFigure.setTotal(swimlane.getNumberOfAssignedCards());
-		progressFigure.setProgress(swimlane.getNumberOfCards(true));
+		progressFigure.setProgress(swimlane.getNumberOfAssignedCards(true));
 		progressFigure.repaint();
 	}
 
