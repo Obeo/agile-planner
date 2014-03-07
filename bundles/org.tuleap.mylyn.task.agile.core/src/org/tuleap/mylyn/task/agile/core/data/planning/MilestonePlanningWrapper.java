@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Obeo - initial API and implementation
  *******************************************************************************/
@@ -33,7 +33,7 @@ import static com.google.common.collect.Lists.newArrayList;
  * <p>
  * A Milestone Planning should contain all the data needed for the planning tab in the editor.
  * </p>
- * 
+ *
  * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
  */
 public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
@@ -69,6 +69,11 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 	public static final String HAS_CARDWALL = "mta_has_cardwall"; //$NON-NLS-1$
 
 	/**
+	 * Id of the reference sub-task attribute.
+	 */
+	public static final String BACKLOG_REF = "mta_backlog_ref"; //$NON-NLS-1$
+
+	/**
 	 * The attribute that represents the list of the sub-milestones.
 	 */
 	private final TaskAttribute submilestoneList;
@@ -80,7 +85,7 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param root
 	 *            The parent task attribute that contains every piece of data related to the wrapped
 	 *            milestone.
@@ -103,7 +108,7 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 
 	/**
 	 * Gets the cardwall flag.
-	 * 
+	 *
 	 * @return The cardwall flag that indicates whether there ought to be a cardwall for this planning.
 	 */
 	public boolean getHasCardwall() {
@@ -116,7 +121,7 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 
 	/**
 	 * Sets the cardwall flag.
-	 * 
+	 *
 	 * @param hasCardwall
 	 *            The cardwall flag.
 	 */
@@ -130,7 +135,7 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 
 	/**
 	 * Creates a new sub-milestone in the wrapped milestone and returns its wrapper.
-	 * 
+	 *
 	 * @param id
 	 *            the sub-milestone identifier
 	 * @return A new wrapper for a new task attribute that is created by invoking this method.
@@ -143,7 +148,7 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 
 	/**
 	 * Returns the sub-milestones.
-	 * 
+	 *
 	 * @return a never null iterable of sub-milestone wrappers.
 	 */
 	public List<SubMilestoneWrapper> getSubMilestones() {
@@ -156,7 +161,7 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 
 	/**
 	 * The number of sub-milestones in this planning.
-	 * 
+	 *
 	 * @return the number of sub-milestones in this planning.
 	 */
 	public int submilestonesCount() {
@@ -166,7 +171,7 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 	/**
 	 * Creates a new task attribute to represent a BacklogItem and returns a wrapper for this new
 	 * TaskAttribute. The created TaskAttribute is inserted in the given parent, that must be non-null.
-	 * 
+	 *
 	 * @param id
 	 *            the backlogItem identifier
 	 * @return A wrapper for a newly created TaskAttribute representing a BacklogItem in the given parent.
@@ -179,7 +184,7 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 
 	/**
 	 * The number of backlog items in the backlog.
-	 * 
+	 *
 	 * @return the number of backlog items in the backlog.
 	 */
 	public int backlogItemsCount() {
@@ -188,7 +193,7 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 
 	/**
 	 * Returns all the backlog items (whether or not they are assigned to a milestone).
-	 * 
+	 *
 	 * @return a list of backlog item wrappers, never null but possibly empty.
 	 */
 	public List<BacklogItemWrapper> getAllBacklogItems() {
@@ -205,7 +210,7 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 	/**
 	 * Returns the unassigned backlog items (whether or not they are assigned to a milestone) in the ordering
 	 * corresponding to their priority.
-	 * 
+	 *
 	 * @return a list of backlog item wrappers, never null but possibly empty.
 	 */
 	public List<BacklogItemWrapper> getOrderedUnassignedBacklogItems() {
@@ -218,7 +223,7 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 
 	/**
 	 * Provides the sub-milestone with the given id.
-	 * 
+	 *
 	 * @param id
 	 *            The id of the sub-milestone being looked for
 	 * @return The first milestone found with the given id in the list of sub-milestones.
@@ -244,7 +249,7 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 
 	/**
 	 * Returns a sub-milestone wrapper for an existing task attribute.
-	 * 
+	 *
 	 * @param milestoneId
 	 *            The sub-milestone ID.
 	 * @return a new sub-milestone wrapper for the given task attribute.
@@ -255,7 +260,7 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 
 	/**
 	 * Returns a backlog item wrapper for an existing task attribute.
-	 * 
+	 *
 	 * @param backlogItemId
 	 *            The ID of the BI.
 	 * @return a new backlog wrapper for the given task attribute.
@@ -266,7 +271,7 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 
 	/**
 	 * Moves a list of BacklogItem before or after a target BacklogItem.
-	 * 
+	 *
 	 * @param items
 	 *            the BacklogItems list
 	 * @param target
@@ -305,7 +310,7 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 
 	/**
 	 * Removes the elements about to be moved from their lists.
-	 * 
+	 *
 	 * @param itemListAtt
 	 *            TaskAttribute that persists the target list
 	 * @param idsToMove
@@ -325,116 +330,24 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 
 	/**
 	 * Remove all the existing IDs from the values of the given {@link TaskAttribute}.
-	 * 
-	 * @param attribute
+	 *
+	 * @param att
 	 *            The TaskAttribute to update.
 	 * @param idsToMove
 	 *            The list of IDs to remove
 	 */
-	private void removeItemsFrom(TaskAttribute attribute, List<String> idsToMove) {
-		List<String> values = new ArrayList<String>(attribute.getValues());
+	private void removeItemsFrom(TaskAttribute att, List<String> idsToMove) {
+		List<String> values = new ArrayList<String>(att.getValues());
 		boolean needsUpdate = values.removeAll(idsToMove);
 		if (needsUpdate) {
-			attribute.setValues(values);
-			fireAttributeChanged(attribute);
+			att.setValues(values);
+			fireAttributeChanged(att);
 		}
-	}
-
-	/**
-	 * An update to perform on a TaskAttribute.
-	 * 
-	 * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
-	 */
-	private static class TaskAttributeUpdate {
-		/**
-		 * The attribute.
-		 */
-		private final TaskAttribute attribute;
-
-		/**
-		 * The values to set to the attribute.
-		 */
-		private final List<String> values;
-
-		/**
-		 * Constructor.
-		 * 
-		 * @param attribute
-		 *            The attribute
-		 * @param values
-		 *            The values to set
-		 */
-		public TaskAttributeUpdate(TaskAttribute attribute, List<String> values) {
-			super();
-			this.attribute = attribute;
-			this.values = values;
-		}
-
-		/**
-		 * Executes this update by setting the values to the attribute, and returns the updated attribute. No
-		 * notification is performed by this method.
-		 * 
-		 * @return The updated attribute.
-		 */
-		public TaskAttribute run() {
-			attribute.setValues(values);
-			return attribute;
-		}
-
-	}
-
-	/**
-	 * Insert in the first list the given IDs At the relevant index computed according to the target and the
-	 * "before" flag.
-	 * 
-	 * @param att
-	 *            The attribute to update (will be modified by the call)
-	 * @param idsToMove
-	 *            The list of ids to insert
-	 * @param index
-	 *            The insertion index
-	 */
-	private void insertBacklogItemIds(TaskAttribute att, List<String> idsToMove, int index) {
-		List<String> values = new ArrayList<String>(att.getValues());
-		values.addAll(index, idsToMove);
-		att.setValues(values);
-		fireAttributeChanged(att);
-	}
-
-	/**
-	 * Compute the insertion index, taken all the parameters into account. This must be called before the
-	 * target list is emptied of its former list.
-	 * 
-	 * @param att
-	 *            The attribute to update (will be modified by the call)
-	 * @param target
-	 *            The target element
-	 * @param before
-	 *            Whether insertion must take place before or after.
-	 * @return the insertion index in the list
-	 */
-	private int computeInsertionIndex(TaskAttribute att, BacklogItemWrapper target, boolean before) {
-		int index;
-		List<String> values = new ArrayList<String>(att.getValues());
-		if (target != null) {
-			index = values.indexOf(target.getId());
-			if (index < 0) {
-				index = values.size();
-			} else if (target != null && values.contains(target.getId())) {
-				index--;
-			} else if (!before) {
-				index++;
-			}
-
-		} else {
-			index = values.size();
-		}
-		return index;
 	}
 
 	/**
 	 * Milestones list title setter. Does not notify.
-	 * 
+	 *
 	 * @param title
 	 *            The milestones list title
 	 */
@@ -451,7 +364,7 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 
 	/**
 	 * Backlog title getter.
-	 * 
+	 *
 	 * @return The backlog title, or <code>null</code> if unset.
 	 */
 	public String getMilestonesTitle() {
@@ -464,7 +377,7 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 
 	/**
 	 * Backlog title setter. Does not notify.
-	 * 
+	 *
 	 * @param title
 	 *            The backlog title
 	 */
@@ -481,7 +394,7 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 
 	/**
 	 * Backlog title getter.
-	 * 
+	 *
 	 * @return The backlog title, or <code>null</code> if unset.
 	 */
 	public String getBacklogTitle() {
@@ -494,7 +407,7 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 
 	/**
 	 * Provides the wrapped task attribute that represents the backlog.
-	 * 
+	 *
 	 * @return The wrapped task attribute that represents the backlog.
 	 */
 	public TaskAttribute getBacklogTaskAttribute() {
@@ -502,8 +415,17 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 	}
 
 	/**
+	 * Provides the wrapped task attribute that represents the backlog.
+	 *
+	 * @return The wrapped task attribute that represents the backlog.
+	 */
+	public TaskAttribute getReferenceBacklogTaskAttribute() {
+		return backlog.getAttribute(BACKLOG_REF);
+	}
+
+	/**
 	 * Provides the wrapped task attribute that represents the milestone list.
-	 * 
+	 *
 	 * @return The wrapped task attribute that represents the milestone list.
 	 */
 	public TaskAttribute getSubMilestoneListTaskAttribute() {
@@ -512,7 +434,7 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see org.tuleap.mylyn.task.agile.core.data.AbstractNotifyingWrapper#fireAttributeChanged(org.eclipse.mylyn.tasks.core.data.TaskAttribute)
 	 */
 	@Override
@@ -524,11 +446,60 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 	/**
 	 * Indicates whether the list of elements in the backlog ahs been changed locally, compared to the lates
 	 * known repository version.
-	 * 
+	 *
 	 * @return <code>true</code> if the list of items in the backlog is different from the latest known remote
 	 *         list.
 	 */
 	public boolean hasBacklogChanged() {
-		return backlog.getAttribute(CHANGED) != null;
+		TaskAttribute ref = backlog.getAttribute(BACKLOG_REF);
+		if (ref == null) {
+			return false;
+		}
+		return !ref.getValues().equals(backlog.getValues());
+	}
+
+	/**
+	 * <p>
+	 * <b>WARNING</b> This method is NOT intended to be called by clients. It should only be called by the
+	 * planning editor. It is only public for ease of development.
+	 * </p>
+	 * <p>
+	 * Marks the backlog reference (the common ancestor for merge operations).
+	 * </p>
+	 *
+	 * @param values
+	 *            the reference list of values.
+	 */
+	public void setBacklogReference(List<String> values) {
+		TaskAttribute ref = backlog.getAttribute(BACKLOG_REF);
+		if (ref == null) {
+			ref = backlog.createAttribute(BACKLOG_REF);
+		}
+		if (!values.equals(ref.getValues())) {
+			ref.setValues(values);
+			fireAttributeChanged(backlog);
+		}
+	}
+
+	/**
+	 * <p>
+	 * <b>WARNING</b> This method is NOT intended to be called by clients. It should only be called by the
+	 * planning editor. It is only public for ease of development.
+	 * </p>
+	 * <p>
+	 * Marks the backlog reference (the common ancestor for merge operations) with the current value <b>if and
+	 * only if no reference exists</b>, and does so for all the sub-milestones.
+	 * </p>
+	 */
+	public void markReference() {
+		TaskAttribute ref = backlog.getAttribute(BACKLOG_REF);
+		if (ref == null) {
+			ref = backlog.createAttribute(BACKLOG_REF);
+			ref.setValues(backlog.getValues());
+			fireAttributeChanged(backlog);
+		}
+		for (SubMilestoneWrapper subMilestone : getSubMilestones()) {
+			subMilestone.markReference();
+		}
 	}
 }

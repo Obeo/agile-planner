@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Obeo - initial API and implementation
  *******************************************************************************/
@@ -12,7 +12,7 @@ package org.tuleap.mylyn.task.internal.agile.core.merge;
 
 /**
  * The state of an item.
- * 
+ *
  * @param <T>
  *            The type of elemenst in the lists
  * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
@@ -30,7 +30,7 @@ public class ItemState<T> {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param listId
 	 *            the ID of the list containing the element this state describes
 	 * @param index
@@ -44,7 +44,7 @@ public class ItemState<T> {
 
 	/**
 	 * List ID getter.
-	 * 
+	 *
 	 * @return the list ID
 	 */
 	public String getListId() {
@@ -53,7 +53,7 @@ public class ItemState<T> {
 
 	/**
 	 * Index getter.
-	 * 
+	 *
 	 * @return the index
 	 */
 	public int getIndex() {
@@ -62,11 +62,11 @@ public class ItemState<T> {
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
-		return new StringBuilder().append(listId).append(" - ").append(index).toString(); //$NON-NLS-1$
+		return String.valueOf(listId) + '[' + index + ']';
 	}
 }

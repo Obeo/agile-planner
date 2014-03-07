@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Obeo - initial API and implementation
  *******************************************************************************/
@@ -15,7 +15,7 @@ import org.tuleap.mylyn.task.internal.agile.core.diff.IChange.Kind;
 
 /**
  * Represents the modification of a backlog item.
- * 
+ *
  * @param <T>
  *            The type of elemenst in the lists
  * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
@@ -33,7 +33,7 @@ public final class ItemChange<T> {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param listId
 	 *            The id of the list the change must apply to
 	 * @param change
@@ -51,7 +51,7 @@ public final class ItemChange<T> {
 
 	/**
 	 * List ID getter.
-	 * 
+	 *
 	 * @return the list ID
 	 */
 	public String getListId() {
@@ -60,7 +60,7 @@ public final class ItemChange<T> {
 
 	/**
 	 * Change getter.
-	 * 
+	 *
 	 * @return the change
 	 */
 	public IChange<T> getChange() {
@@ -69,27 +69,37 @@ public final class ItemChange<T> {
 
 	/**
 	 * Provides a representation of the initial state of this change.
-	 * 
+	 *
 	 * @return A representation of the initial state of this change, or null if the change is an addition.
 	 */
-	public ItemState initialState() {
-		ItemState result = null;
+	public ItemState<T> initialState() {
+		ItemState<T> result = null;
 		if (change.getKind() != Kind.ADD) {
-			result = new ItemState(listId, change.getRightIndex());
+			result = new ItemState<T>(listId, change.getRightIndex());
 		}
 		return result;
 	}
 
 	/**
 	 * Provides a representation of the final state of this change.
-	 * 
+	 *
 	 * @return A representation of the final state of this change, or null if the change is a deletion.
 	 */
-	public ItemState finalState() {
-		ItemState result = null;
+	public ItemState<T> finalState() {
+		ItemState<T> result = null;
 		if (change.getKind() != Kind.DELETE) {
-			result = new ItemState(listId, change.getLeftIndex());
+			result = new ItemState<T>(listId, change.getLeftIndex());
 		}
 		return result;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "ItemChange: " + initialState() + " -> " + finalState(); //$NON-NLS-1$//$NON-NLS-2$
 	}
 }

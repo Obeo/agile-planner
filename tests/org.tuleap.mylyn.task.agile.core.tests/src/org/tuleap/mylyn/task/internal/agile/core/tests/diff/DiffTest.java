@@ -20,7 +20,7 @@ import static org.junit.Assert.fail;
 
 /**
  * Tests of {@link Diff}.
- * 
+ *
  * @author <a href="mailto:laurent.goubet@obeo.fr">Laurent Goubet</a>
  * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
  */
@@ -234,6 +234,28 @@ public class DiffTest {
 
 		assertEquals(expected.size(), differences.size());
 		assertContainsAll(differences, expected);
+	}
+
+	@SuppressWarnings("unused")
+	@Test
+	public void testDiffWithNullMatcher() {
+		try {
+			new Diff(null, new ClassicLCS());
+			fail("There should have been an IllegalArgumentException");
+		} catch (IllegalArgumentException e) {
+			// Test ok
+		}
+	}
+
+	@SuppressWarnings("unused")
+	@Test
+	public void testDiffWithNullLcs() {
+		try {
+			new Diff(new EqualityMatcher(), null);
+			fail("There should have been an IllegalArgumentException");
+		} catch (IllegalArgumentException e) {
+			// Test ok
+		}
 	}
 
 	private static <E> void assertContainsAll(List<E> list, List<E> expectedContained) {

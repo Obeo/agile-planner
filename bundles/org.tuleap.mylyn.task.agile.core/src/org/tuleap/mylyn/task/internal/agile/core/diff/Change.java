@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Obeo - initial API and implementation
  *******************************************************************************/
@@ -12,7 +12,7 @@ package org.tuleap.mylyn.task.internal.agile.core.diff;
 
 /**
  * Default implementation of {@link IChange}.
- * 
+ *
  * @param <E>
  *            The type of elements to match.
  * @author <a href="mailto:laurent.goubet@obeo.fr">Laurent Goubet</a>
@@ -41,7 +41,7 @@ public class Change<E> implements IChange<E> {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param object
 	 *            The changed object
 	 * @param kind
@@ -111,6 +111,6 @@ public class Change<E> implements IChange<E> {
 
 	@Override
 	public String toString() {
-		return object.toString() + " - " + kind; //$NON-NLS-1$
+		return String.valueOf(kind) + ' ' + object;
 	}
 }

@@ -4,12 +4,13 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Obeo - initial API and implementation
  *******************************************************************************/
 package org.tuleap.mylyn.task.internal.agile.core.tests.data;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
 
@@ -32,7 +33,7 @@ import static org.junit.Assert.assertTrue;
 
 /**
  * Tests of the milestone planning task mapper.
- * 
+ *
  * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
  */
 public class MilestonePlanningWrapperTest {
@@ -235,7 +236,7 @@ public class MilestonePlanningWrapperTest {
 	public void setUp() {
 		String repositoryUrl = "repository"; //$NON-NLS-1$
 		String connectorKind = "kind"; //$NON-NLS-1$
-		String taskId = "id"; //$NON-NLS-1$ 
+		String taskId = "id"; //$NON-NLS-1$
 		TaskRepository taskRepository = new TaskRepository(connectorKind, repositoryUrl);
 		TaskAttributeMapper mapper = new TaskAttributeMapper(taskRepository);
 		taskData = new TaskData(mapper, connectorKind, repositoryUrl, taskId);
@@ -412,5 +413,181 @@ public class MilestonePlanningWrapperTest {
 		TaskAttribute att = taskData.getRoot().getAttribute(MilestonePlanningWrapper.HAS_CARDWALL);
 		assertNotNull(att);
 		assertEquals("true", att.getValue());
+	}
+
+	@Test
+	public void testHasBacklogChangedNotChangedUnmarked() {
+		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(taskData.getRoot());
+		assertFalse(wrapper.hasBacklogChanged());
+	}
+
+	@Test
+	public void testHasBacklogChangedNotChangedMarked() {
+		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(taskData.getRoot());
+		wrapper.markReference();
+		assertFalse(wrapper.hasBacklogChanged());
+	}
+
+	@Test
+	public void testHasBacklogChangedChangedByMove() {
+		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(taskData.getRoot());
+		wrapper.addBacklogItem("bi0");
+		wrapper.addBacklogItem("bi1");
+		wrapper.addBacklogItem("bi2");
+		wrapper.markReference();
+		wrapper.moveItems(Arrays.asList(wrapper.wrapBacklogItem("bi0")), wrapper.wrapBacklogItem("bi2"),
+				true, null);
+		assertTrue(wrapper.hasBacklogChanged());
+	}
+
+	@Test
+	public void testHasBacklogChangedChangedBySetReference() {
+		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(taskData.getRoot());
+		wrapper.addBacklogItem("bi0");
+		wrapper.addBacklogItem("bi1");
+		wrapper.addBacklogItem("bi2");
+		wrapper.setBacklogReference(Arrays.asList("bi1", "bi2", "bi0"));
+		assertTrue(wrapper.hasBacklogChanged());
+	}
+
+	@Test
+	public void testHasBacklogChangedNotChangedBySetReference() {
+		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(taskData.getRoot());
+		wrapper.addBacklogItem("bi0");
+		wrapper.addBacklogItem("bi1");
+		wrapper.addBacklogItem("bi2");
+		wrapper.setBacklogReference(Arrays.asList("bi0", "bi1", "bi2"));
+		assertFalse(wrapper.hasBacklogChanged());
+	}
+
+	@Test
+	public void testSetReference() {
+		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(taskData.getRoot());
+		wrapper.setBacklogReference(Arrays.asList("1", "2", "3"));
+		TaskAttribute att = wrapper.getReferenceBacklogTaskAttribute();
+		assertNotNull(att);
+		assertEquals(Arrays.asList("1", "2", "3"), att.getValues());
+	}
+
+	@Test
+	public void testSetReferenceTwice() {
+		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(taskData.getRoot());
+		wrapper.setBacklogReference(Arrays.asList("1", "2", "3"));
+		wrapper.setBacklogReference(Arrays.asList("5", "6", "7"));
+		TaskAttribute att = wrapper.getReferenceBacklogTaskAttribute();
+		assertEquals(Arrays.asList("5", "6", "7"), att.getValues());
+	}
+
+	@Test
+	public void testMarkReference() {
+		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(taskData.getRoot());
+		wrapper.addBacklogItem("bi0");
+		wrapper.addBacklogItem("bi1");
+		wrapper.addBacklogItem("bi2");
+		wrapper.markReference();
+		TaskAttribute att = wrapper.getReferenceBacklogTaskAttribute();
+		assertEquals(Arrays.asList("bi0", "bi1", "bi2"), att.getValues());
+	}
+
+	@Test
+	public void testMarkReferenceTwice() {
+		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(taskData.getRoot());
+		wrapper.addBacklogItem("bi0");
+		wrapper.addBacklogItem("bi1");
+		wrapper.addBacklogItem("bi2");
+		wrapper.markReference();
+		wrapper.addBacklogItem("bi3");
+		wrapper.markReference();
+		TaskAttribute att = wrapper.getReferenceBacklogTaskAttribute();
+		// The reference must not change after 1st call
+		assertEquals(Arrays.asList("bi0", "bi1", "bi2"), att.getValues());
+	}
+
+	@Test
+	public void testMarkReferenceWithSubMilestones() {
+		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(taskData.getRoot());
+		wrapper.addBacklogItem("0");
+		wrapper.addBacklogItem("1");
+		wrapper.addBacklogItem("2");
+		SubMilestoneWrapper mi1 = wrapper.addSubMilestone("mi1");
+		mi1.addBacklogItem("3");
+		mi1.addBacklogItem("4");
+		SubMilestoneWrapper mi2 = wrapper.addSubMilestone("mi2");
+		mi2.addBacklogItem("5");
+		mi2.addBacklogItem("6");
+
+		wrapper.markReference();
+		TaskAttribute att = wrapper.getReferenceBacklogTaskAttribute();
+		assertEquals(Arrays.asList("0", "1", "2"), att.getValues());
+		TaskAttribute att1 = mi1.getReferenceWrappedAttribute();
+		assertEquals(Arrays.asList("3", "4"), att1.getValues());
+		TaskAttribute att2 = mi2.getReferenceWrappedAttribute();
+		assertEquals(Arrays.asList("5", "6"), att2.getValues());
+	}
+
+	@Test
+	public void testMarkReferenceTwiceWithSubMilestones() {
+		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(taskData.getRoot());
+		wrapper.addBacklogItem("0");
+		wrapper.addBacklogItem("1");
+		wrapper.addBacklogItem("2");
+		SubMilestoneWrapper mi1 = wrapper.addSubMilestone("mi1");
+		mi1.addBacklogItem("3");
+		mi1.addBacklogItem("4");
+		SubMilestoneWrapper mi2 = wrapper.addSubMilestone("mi2");
+		mi2.addBacklogItem("5");
+		mi2.addBacklogItem("6");
+
+		wrapper.markReference();
+
+		wrapper.addBacklogItem("10");
+		mi1.addBacklogItem("11");
+		mi2.addBacklogItem("12");
+
+		wrapper.markReference();
+
+		// References must not change
+		TaskAttribute att = wrapper.getReferenceBacklogTaskAttribute();
+		assertEquals(Arrays.asList("0", "1", "2"), att.getValues());
+		TaskAttribute att1 = mi1.getReferenceWrappedAttribute();
+		assertEquals(Arrays.asList("3", "4"), att1.getValues());
+		TaskAttribute att2 = mi2.getReferenceWrappedAttribute();
+		assertEquals(Arrays.asList("5", "6"), att2.getValues());
+	}
+
+	@Test
+	public void testGetBacklogTaskAttribute() {
+		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(taskData.getRoot());
+		wrapper.addBacklogItem("0");
+		wrapper.addBacklogItem("1");
+		wrapper.addBacklogItem("2");
+		TaskAttribute att = wrapper.getBacklogTaskAttribute();
+		assertEquals(Arrays.asList("0", "1", "2"), att.getValues());
+		assertEquals("mta_backlog", att.getId());
+	}
+
+	@Test
+	public void testGetSubMilestonesTaskAttribute() {
+		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(taskData.getRoot());
+		SubMilestoneWrapper mi1 = wrapper.addSubMilestone("mi1");
+		mi1.addBacklogItem("3");
+		mi1.addBacklogItem("4");
+		SubMilestoneWrapper mi2 = wrapper.addSubMilestone("mi2");
+		mi2.addBacklogItem("5");
+		mi2.addBacklogItem("6");
+
+		TaskAttribute att = wrapper.getSubMilestoneListTaskAttribute();
+		assertEquals(Arrays.asList("mi1", "mi2"), att.getValues());
+		assertEquals("mta_milestones", att.getId());
+	}
+
+	@Test
+	public void testGetParentMilestone() {
+		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(taskData.getRoot());
+		BacklogItemWrapper bi1 = wrapper.addBacklogItem("1");
+		SubMilestoneWrapper mi1 = wrapper.addSubMilestone("mi1");
+		BacklogItemWrapper bi3 = mi1.addBacklogItem("3");
+		assertEquals(wrapper, bi1.getParentMilestone());
+		assertEquals(wrapper, bi3.getParentMilestone());
 	}
 }

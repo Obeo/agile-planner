@@ -40,6 +40,7 @@ import org.tuleap.mylyn.task.agile.core.data.TaskAttributes;
 import org.tuleap.mylyn.task.agile.core.data.burndown.BurndownMapper;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.CardwallWrapper;
 import org.tuleap.mylyn.task.agile.core.data.planning.MilestonePlanningWrapper;
+import org.tuleap.mylyn.task.agile.core.data.planning.PlanningDataModelMerger;
 import org.tuleap.mylyn.task.agile.core.data.planning.SubMilestoneWrapper;
 import org.tuleap.mylyn.task.agile.ui.AbstractAgileRepositoryConnectorUI;
 import org.tuleap.mylyn.task.agile.ui.task.IModelRegistry;
@@ -80,7 +81,7 @@ public class PlanningTaskEditorPage extends AbstractTaskEditorPage implements IS
 	private SubMilestoneListTaskEditorPart milestonesPart;
 
 	/**
-	 * The model listener.
+	 * The model listener, used to refresh the page when the model is updated.
 	 */
 	private final TaskDataModelListener modelListener;
 
@@ -165,6 +166,8 @@ public class PlanningTaskEditorPage extends AbstractTaskEditorPage implements IS
 	 */
 	@Override
 	protected void createParts() {
+		refreshWrapper();
+		mergeChanges();
 		Composite body = getManagedForm().getForm().getBody();
 		body.setLayout(FormLayoutFactory.createFormPaneTableWrapLayout(false, 2));
 		body.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
@@ -255,12 +258,26 @@ public class PlanningTaskEditorPage extends AbstractTaskEditorPage implements IS
 			}
 			model.addModelListener(modelListener);
 			registry.addSaveListener(getEditor(), this);
-			wrapper = new MilestonePlanningWrapper(model.getTaskData().getRoot());
-			wrapper.addListener(this);
 			return model;
 		}
 		throw new IllegalStateException(MylynAgileUIMessages
 				.getString("SharedTaskDataModel.agileConnectorRequired")); //$NON-NLS-1$
+	}
+
+	/**
+	 * Merge the changes (after a model refresh, for instance).
+	 */
+	private void mergeChanges() {
+		try {
+			if (new PlanningDataModelMerger(getModel()).merge()) {
+				doSave(new NullProgressMonitor());
+			}
+			// CHECKSTYLE:OFF
+		} catch (Exception e) {
+			// CHECKSTYLE:ON
+			// TODO Advise user to discard local changes
+			MylynAgileUIActivator.log(e, true);
+		}
 	}
 
 	/**
@@ -270,10 +287,6 @@ public class PlanningTaskEditorPage extends AbstractTaskEditorPage implements IS
 	 */
 	@Override
 	public void dispose() {
-		if (wrapper != null) {
-			wrapper.removeListener(this);
-			wrapper = null;
-		}
 		TaskDataModel taskDataModel = getModel();
 		if (taskDataModel != null) {
 			taskDataModel.removeModelListener(modelListener);
@@ -287,6 +300,21 @@ public class PlanningTaskEditorPage extends AbstractTaskEditorPage implements IS
 			}
 		}
 		super.dispose();
+	}
+
+	/**
+	 * Dispose the wrapper if it exists and recreates it. Needs to be done on model refresh.
+	 */
+	private void refreshWrapper() {
+		if (wrapper != null) {
+			wrapper.removeListener(this);
+			wrapper = null;
+		}
+		wrapper = new MilestonePlanningWrapper(getModel().getTaskData().getRoot());
+		// This is important, it marks the reference state of the planning TaskAttributes to allow the
+		// merge
+		wrapper.markReference();
+		wrapper.addListener(this);
 	}
 
 	/**

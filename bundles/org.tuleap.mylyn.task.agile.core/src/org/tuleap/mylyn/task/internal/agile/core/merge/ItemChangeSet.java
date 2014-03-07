@@ -166,8 +166,6 @@ public final class ItemChangeSet<T> {
 		if (!isValid()) {
 			throw new IllegalStateException("This change set is invalid."); //$NON-NLS-1$
 		}
-		FunctionalChange<T> remoteChange = getRemoteChange();
-		FunctionalChange<T> localChange = getLocalChange();
 		return new FunctionalChangeSet<T>(getLocalChange(), getRemoteChange());
 	}
 

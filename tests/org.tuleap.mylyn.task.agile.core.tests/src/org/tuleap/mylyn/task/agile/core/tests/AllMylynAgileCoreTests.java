@@ -21,14 +21,18 @@ import org.tuleap.mylyn.task.internal.agile.core.tests.data.BurndownMapperTest;
 import org.tuleap.mylyn.task.internal.agile.core.tests.data.CardwallWrapperTest;
 import org.tuleap.mylyn.task.internal.agile.core.tests.data.MilestonePlanningWrapperMovingBacklogItemsTest;
 import org.tuleap.mylyn.task.internal.agile.core.tests.data.MilestonePlanningWrapperTest;
+import org.tuleap.mylyn.task.internal.agile.core.tests.data.SubMilestoneWrapperTest;
 import org.tuleap.mylyn.task.internal.agile.core.tests.data.TaskAttributesTest;
 import org.tuleap.mylyn.task.internal.agile.core.tests.data.TopPlanningMapperTest;
+import org.tuleap.mylyn.task.internal.agile.core.tests.diff.ChangeTest;
+import org.tuleap.mylyn.task.internal.agile.core.tests.diff.ClassicLCSTest;
 import org.tuleap.mylyn.task.internal.agile.core.tests.diff.DiffTest;
 import org.tuleap.mylyn.task.internal.agile.core.tests.merge.FunctionalChangeTest;
 import org.tuleap.mylyn.task.internal.agile.core.tests.merge.ItemChangeSetTest;
 import org.tuleap.mylyn.task.internal.agile.core.tests.merge.ItemChangeTest;
 import org.tuleap.mylyn.task.internal.agile.core.tests.merge.MultiListDiffTest;
 import org.tuleap.mylyn.task.internal.agile.core.tests.merge.MultiListMergerTest;
+import org.tuleap.mylyn.task.internal.agile.core.tests.merge.PlanningDataModelMergerTest;
 import org.tuleap.mylyn.task.internal.agile.core.tests.util.ListUtilTest;
 
 /**
@@ -38,11 +42,18 @@ import org.tuleap.mylyn.task.internal.agile.core.tests.util.ListUtilTest;
  * @since 1.0
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({MilestonePlanningWrapperTest.class,
-	MilestonePlanningWrapperMovingBacklogItemsTest.class, CardwallWrapperTest.class,
-	TopPlanningMapperTest.class, TaskAttributesTest.class, DiffTest.class, FunctionalChangeTest.class,
-	ItemChangeSetTest.class, ItemChangeTest.class, MultiListDiffTest.class, MultiListMergerTest.class,
-	ListUtilTest.class, BurndownDataTest.class, BurndownMapperTest.class })
+@Suite.SuiteClasses({
+	// data
+	BurndownDataTest.class, BurndownMapperTest.class, CardwallWrapperTest.class,
+	MilestonePlanningWrapperMovingBacklogItemsTest.class, MilestonePlanningWrapperTest.class,
+	SubMilestoneWrapperTest.class, TaskAttributesTest.class, TopPlanningMapperTest.class,
+	// diff
+	ChangeTest.class, ClassicLCSTest.class, DiffTest.class,
+	// merge
+	FunctionalChangeTest.class, ItemChangeSetTest.class, ItemChangeTest.class, MultiListDiffTest.class,
+	MultiListMergerTest.class, PlanningDataModelMergerTest.class,
+	// util
+	ListUtilTest.class })
 public final class AllMylynAgileCoreTests {
 
 	/**

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Obeo - initial API and implementation
  *******************************************************************************/
@@ -24,7 +24,7 @@ import static org.junit.Assert.assertSame;
 
 /**
  * {@link ItemChange} unit tests.
- * 
+ *
  * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
  */
 public class ItemChangeTest {
@@ -60,7 +60,7 @@ public class ItemChangeTest {
 	public void testGetStatesForAddition() {
 		ItemChange<String> itemChange = new ItemChange<String>(null, add);
 		assertNull(itemChange.initialState());
-		ItemState state = itemChange.finalState();
+		ItemState<String> state = itemChange.finalState();
 		assertEquals(1, state.getIndex());
 		assertNull(state.getListId());
 	}
@@ -83,8 +83,21 @@ public class ItemChangeTest {
 		assertEquals(3, finalState.getIndex());
 	}
 
+	@SuppressWarnings("unused")
 	@Test(expected = IllegalArgumentException.class)
 	public void testInstantiationWithNullChange() {
-		ItemChange<String> itemChange = new ItemChange<String>(null, null);
+		new ItemChange<String>(null, null);
+	}
+
+	@Test
+	public void testToString() {
+		ItemChange<String> itemChange = new ItemChange<String>(null, move);
+		assertEquals("ItemChange: null[5] -> null[3]", itemChange.toString());
+	}
+
+	@Test
+	public void testItemStateToString() {
+		ItemState<String> state = new ItemState<String>("list id", 123);
+		assertEquals("list id[123]", state.toString());
 	}
 }

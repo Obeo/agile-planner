@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Obeo - initial API and implementation
  *******************************************************************************/
@@ -17,12 +17,11 @@ import java.util.List;
 
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.core.data.TaskAttributeMapper;
-import org.tuleap.mylyn.task.agile.core.data.AbstractNotifyingWrapper;
 import org.tuleap.mylyn.task.agile.core.data.AbstractTaskAttributeWrapper;
 
 /**
  * Wrapper of a TaskAttribute that represents a Sub-milestone.
- * 
+ *
  * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
  */
 public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
@@ -59,13 +58,18 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 	public static final String SUFFIX_STATUS_VALUE = "status_value"; //$NON-NLS-1$
 
 	/**
+	 * Id of the reference sub-task attribute.
+	 */
+	public static final String REF = "ref"; //$NON-NLS-1$
+
+	/**
 	 * The parent planning.
 	 */
 	private final MilestonePlanningWrapper parent;
 
 	/**
 	 * Constructor to use to wrap an existing instance.
-	 * 
+	 *
 	 * @param parent
 	 *            The parent planning
 	 * @param id
@@ -78,7 +82,7 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see org.tuleap.mylyn.task.agile.core.data.AbstractTaskAttributeWrapper#getId()
 	 */
 	@Override
@@ -89,7 +93,7 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 
 	/**
 	 * Computes the unique id of the capacity attribute.
-	 * 
+	 *
 	 * @return The unique id of the capacity attribute.
 	 */
 	private String getCapacityAttributeId() {
@@ -98,7 +102,7 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 
 	/**
 	 * Computes the unique id of the duration attribute.
-	 * 
+	 *
 	 * @return The unique id of the duration attribute.
 	 */
 	private String getEndDateAttributeId() {
@@ -107,7 +111,7 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 
 	/**
 	 * Computes the unique id of the start date attribute.
-	 * 
+	 *
 	 * @return The unique id of the start date attribute.
 	 */
 	private String getStartDateAttributeId() {
@@ -116,7 +120,7 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 
 	/**
 	 * Computes the unique id of the status value attribute.
-	 * 
+	 *
 	 * @return The unique id of the status value attribute.
 	 */
 	private String getStatusValueAttributeId() {
@@ -125,7 +129,7 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 
 	/**
 	 * Capacity getter.
-	 * 
+	 *
 	 * @return The milestone's capacity, or {@code null} if not defined.
 	 */
 	public String getCapacity() {
@@ -139,7 +143,7 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 
 	/**
 	 * Capacity setter.
-	 * 
+	 *
 	 * @param capacity
 	 *            The milestone's capacity.
 	 */
@@ -163,7 +167,7 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 
 	/**
 	 * Start date getter.
-	 * 
+	 *
 	 * @return The milestone's start date, or {@code null} if not defined.
 	 */
 	public Date getStartDate() {
@@ -178,7 +182,7 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 
 	/**
 	 * Start date setter.
-	 * 
+	 *
 	 * @param start
 	 *            The milestone's start date. Nothing happens if it is null, and the former, if any, start
 	 *            date is left unchanged.
@@ -202,7 +206,7 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 
 	/**
 	 * Duration getter.
-	 * 
+	 *
 	 * @return The milestone's duration, or {@code null} if not defined.
 	 */
 	public Date getEndDate() {
@@ -217,7 +221,7 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 
 	/**
 	 * Start date setter.
-	 * 
+	 *
 	 * @param start
 	 *            The milestone's start date. Nothing happens if it is null, and the former, if any, start
 	 *            date is left unchanged.
@@ -242,7 +246,7 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 	/**
 	 * Creates a new task attribute to represent a BacklogItem and returns a wrapper for this new
 	 * TaskAttribute. The created TaskAttribute is inserted in the given parent, that must be non-null.
-	 * 
+	 *
 	 * @param id
 	 *            the backlogItem identifier
 	 * @return A wrapper for a newly created TaskAttribute representing a BacklogItem in the given parent.
@@ -255,7 +259,7 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 
 	/**
 	 * Returns the list of backlog items that is the content of this sub-milestone.
-	 * 
+	 *
 	 * @return a list of backlog item wrappers, never null but possibly empty.
 	 */
 	public List<BacklogItemWrapper> getOrderedBacklogItems() {
@@ -268,7 +272,7 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 
 	/**
 	 * Capacity getter.
-	 * 
+	 *
 	 * @return The milestone's capacity, or {@code null} if not defined.
 	 */
 	public String getStatusValue() {
@@ -282,7 +286,7 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 
 	/**
 	 * Status value setter.
-	 * 
+	 *
 	 * @param statusValue
 	 *            The milestone's status value (i.e. label).
 	 */
@@ -307,7 +311,7 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see org.tuleap.mylyn.task.agile.core.data.AbstractTaskAttributeWrapper#fireAttributeChanged(org.eclipse.mylyn.tasks.core.data.TaskAttribute)
 	 */
 	@Override
@@ -318,11 +322,54 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 	/**
 	 * Indicates whether the list of elements in the sub-milestone content has been changed locally, compared
 	 * to the lates known repository version.
-	 * 
+	 *
 	 * @return <code>true</code> if the list of items in the backlog is different from the latest known remote
 	 *         list.
 	 */
 	public boolean hasContentChanged() {
-		return attribute.getAttribute(AbstractNotifyingWrapper.CHANGED) != null;
+		TaskAttribute ref = attribute.getAttribute(REF);
+		if (ref == null) {
+			return false;
+		}
+		return !ref.getValues().equals(attribute.getValues());
+	}
+
+	/**
+	 * Marks the backlog reference (the common ancestor for merge operations).
+	 *
+	 * @param values
+	 *            the reference list of values.
+	 */
+	public void setBacklogReference(List<String> values) {
+		TaskAttribute ref = getReferenceWrappedAttribute();
+		if (ref == null) {
+			ref = attribute.createAttribute(REF);
+		}
+		if (!values.equals(ref.getValues())) {
+			ref.setValues(values);
+			fireAttributeChanged(attribute);
+		}
+	}
+
+	/**
+	 * Marks the backlog reference (the common ancestor for merge operations) with the current value if and
+	 * only if no reference exists.
+	 */
+	public void markReference() {
+		TaskAttribute ref = getReferenceWrappedAttribute();
+		if (ref == null) {
+			ref = attribute.createAttribute(REF);
+			ref.setValues(attribute.getValues());
+			fireAttributeChanged(attribute);
+		}
+	}
+
+	/**
+	 * Provides the wrapped attribute.
+	 *
+	 * @return The wrapped attribute, never null.
+	 */
+	public TaskAttribute getReferenceWrappedAttribute() {
+		return attribute.getAttribute(REF);
 	}
 }

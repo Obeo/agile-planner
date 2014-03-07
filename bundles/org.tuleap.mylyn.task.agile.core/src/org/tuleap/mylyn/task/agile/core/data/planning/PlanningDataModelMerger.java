@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Obeo - initial API and implementation
  *******************************************************************************/
@@ -24,7 +24,7 @@ import org.tuleap.mylyn.task.internal.agile.core.merge.MultiListMerger;
 
 /**
  * Used to merge plannings.
- * 
+ *
  * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
  */
 public class PlanningDataModelMerger {
@@ -41,7 +41,7 @@ public class PlanningDataModelMerger {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param model
 	 *            The model
 	 */
@@ -52,10 +52,13 @@ public class PlanningDataModelMerger {
 
 	/**
 	 * Perform the merge.
+	 *
+	 * @return <code>true</code> if and only if changes have actually been made.
 	 */
-	public void merge() {
+	public boolean merge() {
 		MultiListMerger<String> merger = new MultiListMerger<String>();
 		Map<String, List<String>> merge = merger.merge(buildLists());
+		boolean madeAChange = false;
 		for (Entry<String, List<String>> entry : merge.entrySet()) {
 			String key = entry.getKey();
 			TaskAttribute attribute;
@@ -66,21 +69,30 @@ public class PlanningDataModelMerger {
 			}
 			List<String> values = entry.getValue();
 			if (!values.equals(attribute.getValues())) {
+				// Only change if there is an actual change to make
 				attribute.setValues(values);
+				madeAChange = true;
 				model.attributeChanged(attribute);
+				List<String> newReferencevalues = getRepositoryAttribute(attribute).getValues();
+				if (key == null) {
+					wrapper.setBacklogReference(newReferencevalues);
+				} else {
+					wrapper.getSubMilestone(key).setBacklogReference(newReferencevalues);
+				}
 			}
 		}
+		return madeAChange;
 	}
 
 	/**
 	 * Compute the 3-way lists from the {@link TaskDataModel}.
-	 * 
+	 *
 	 * @return The list of 3-way lists including the backlog and each milestone's content.
 	 */
 	private List<IThreeWayList<String>> buildLists() {
 		List<IThreeWayList<String>> lists = Lists.newArrayList();
 		TaskAttribute local = wrapper.getBacklogTaskAttribute();
-		TaskAttribute ancestor = model.getLastReadAttribute(local);
+		TaskAttribute ancestor = wrapper.getReferenceBacklogTaskAttribute();
 		TaskAttribute remote = getRepositoryAttribute(local);
 		if (ancestor == null) {
 			ancestor = remote;
@@ -91,7 +103,7 @@ public class PlanningDataModelMerger {
 		for (SubMilestoneWrapper subMilestone : wrapper.getSubMilestones()) {
 			String milestoneId = subMilestone.getId();
 			local = subMilestone.getWrappedAttribute();
-			ancestor = model.getLastReadAttribute(local);
+			ancestor = subMilestone.getReferenceWrappedAttribute();
 			remote = getRepositoryAttribute(local);
 			if (ancestor == null) {
 				ancestor = remote;
@@ -105,7 +117,7 @@ public class PlanningDataModelMerger {
 
 	/**
 	 * Get the repository TaskAttribute for the given ID.
-	 * 
+	 *
 	 * @param localAtt
 	 *            the local task attribute
 	 * @return the corresponding repository TaskAttribute, never null.

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Obeo - initial API and implementation
  *******************************************************************************/
@@ -21,7 +21,7 @@ import static org.junit.Assert.assertTrue;
 
 /**
  * Unit tests of {@link FunctionalChange}.
- * 
+ *
  * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
  */
 public class FunctionalChangeTest {
@@ -60,6 +60,13 @@ public class FunctionalChangeTest {
 		assertEquals(4, change.fromState().getIndex());
 		assertEquals("id", change.toState().getListId());
 		assertEquals(12, change.toState().getIndex());
+	}
+
+	@Test
+	public void testToString() {
+		FunctionalChange<String> change = FunctionalChange.move(new ItemState<String>("old", 4),
+				new ItemState<String>("id", 12));
+		assertEquals("FunctionalChange: old[4] -> id[12]", change.toString());
 	}
 
 	@Test(expected = IllegalArgumentException.class)

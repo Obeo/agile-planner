@@ -75,7 +75,7 @@ public class BurndownData {
 	 * @return the points
 	 */
 	public double[] getPoints() {
-		return points;
+		return points.clone();
 	}
 
 }

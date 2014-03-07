@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Obeo - initial API and implementation
  *******************************************************************************/
@@ -12,7 +12,7 @@ package org.tuleap.mylyn.task.internal.agile.core.merge;
 
 /**
  * A functional change set groups a local functional change and a remote functional change.
- * 
+ *
  * @param <T>
  *            The type of elements in the lists.
  * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
@@ -31,7 +31,7 @@ public class FunctionalChangeSet<T> {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param localChange
 	 *            The local change
 	 * @param remoteChange
@@ -44,7 +44,7 @@ public class FunctionalChangeSet<T> {
 
 	/**
 	 * Local change.
-	 * 
+	 *
 	 * @return the localChange
 	 */
 	public FunctionalChange<T> getLocalChange() {
@@ -53,7 +53,7 @@ public class FunctionalChangeSet<T> {
 
 	/**
 	 * Remote change.
-	 * 
+	 *
 	 * @return the remoteChange
 	 */
 	public FunctionalChange<T> getRemoteChange() {
@@ -62,14 +62,12 @@ public class FunctionalChangeSet<T> {
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
-		StringBuilder b = new StringBuilder();
-		b.append("local:  ").append(localChange).append("\nremote: ").append(remoteChange); //$NON-NLS-1$ //$NON-NLS-2$
-		return b.toString();
+		return "FunctionalChange\n\tlocal:  " + localChange + "\n\tremote" + remoteChange; //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 }
