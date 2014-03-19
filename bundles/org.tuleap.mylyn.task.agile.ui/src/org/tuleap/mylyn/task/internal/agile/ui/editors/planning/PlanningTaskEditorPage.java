@@ -21,7 +21,6 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.mylyn.commons.ui.CommonUiUtil;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
-import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.eclipse.mylyn.tasks.core.data.TaskDataModel;
 import org.eclipse.mylyn.tasks.core.data.TaskDataModelEvent;
 import org.eclipse.mylyn.tasks.core.data.TaskDataModelListener;
@@ -38,7 +37,6 @@ import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.tuleap.mylyn.task.agile.core.data.ITaskAttributeChangeListener;
 import org.tuleap.mylyn.task.agile.core.data.TaskAttributes;
 import org.tuleap.mylyn.task.agile.core.data.burndown.BurndownMapper;
-import org.tuleap.mylyn.task.agile.core.data.cardwall.CardwallWrapper;
 import org.tuleap.mylyn.task.agile.core.data.planning.MilestonePlanningWrapper;
 import org.tuleap.mylyn.task.agile.core.data.planning.PlanningDataModelMerger;
 import org.tuleap.mylyn.task.agile.core.data.planning.SubMilestoneWrapper;
@@ -325,10 +323,8 @@ public class PlanningTaskEditorPage extends AbstractTaskEditorPage implements IS
 	@Override
 	public void beforeSave() {
 		TaskDataModel taskDataModel = getModel();
-		if (taskDataModel != null) {
-			TaskData taskData = taskDataModel.getTaskData();
-			CardwallWrapper cardwall = new CardwallWrapper(taskData.getRoot());
-			cardwall.markChanges(taskDataModel, Predicates.or(TaskAttributes
+		if (wrapper != null) {
+			wrapper.markChanges(taskDataModel, Predicates.or(TaskAttributes
 					.identifiedBy(MilestonePlanningWrapper.BACKLOG), TaskAttributes
 					.prefixedBy(SubMilestoneWrapper.PREFIX_MILESTONE)));
 		}

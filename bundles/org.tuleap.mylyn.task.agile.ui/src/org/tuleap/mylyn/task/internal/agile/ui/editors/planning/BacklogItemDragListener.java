@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Obeo - initial API and implementation
  *******************************************************************************/
@@ -18,7 +18,7 @@ import org.eclipse.swt.dnd.DragSourceListener;
 
 /**
  * Drag listener for BacklogItem tables.
- * 
+ *
  * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
  */
 public class BacklogItemDragListener implements DragSourceListener {
@@ -30,7 +30,7 @@ public class BacklogItemDragListener implements DragSourceListener {
 
 	/**
 	 * Constructor, requires the table viewer to listen to.
-	 * 
+	 *
 	 * @param viewer
 	 *            the table viewer to listen to.
 	 */
@@ -40,7 +40,7 @@ public class BacklogItemDragListener implements DragSourceListener {
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see org.eclipse.swt.dnd.DragSourceListener#dragStart(org.eclipse.swt.dnd.DragSourceEvent)
 	 */
 	@Override
@@ -50,7 +50,7 @@ public class BacklogItemDragListener implements DragSourceListener {
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see org.eclipse.swt.dnd.DragSourceListener#dragSetData(org.eclipse.swt.dnd.DragSourceEvent)
 	 */
 	@Override
@@ -65,12 +65,13 @@ public class BacklogItemDragListener implements DragSourceListener {
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see org.eclipse.swt.dnd.DragSourceListener#dragFinished(org.eclipse.swt.dnd.DragSourceEvent)
 	 */
 	@Override
 	public void dragFinished(DragSourceEvent event) {
 		fViewer.refresh();
+		fViewer.getControl().getParent().getParent().getParent().getParent().layout();
 	}
 
 }

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Obeo - initial API and implementation
  *******************************************************************************/
@@ -27,14 +27,14 @@ import org.tuleap.mylyn.task.agile.core.data.planning.SubMilestoneWrapper;
 
 /**
  * Drop Listener for BacklogItem tables.
- * 
+ *
  * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
  */
 public class BacklogItemDropAdapter extends ViewerDropAdapter {
 
 	/**
 	 * Constructor, requires a viewer. Delegates to the parent class.
-	 * 
+	 *
 	 * @param viewer
 	 *            The viewer.
 	 */
@@ -44,7 +44,7 @@ public class BacklogItemDropAdapter extends ViewerDropAdapter {
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see org.eclipse.jface.viewers.ViewerDropAdapter#performDrop(java.lang.Object)
 	 */
 	@Override
@@ -62,13 +62,14 @@ public class BacklogItemDropAdapter extends ViewerDropAdapter {
 		}
 		if (ret) {
 			getViewer().refresh();
+			getViewer().getControl().getParent().getParent().getParent().getParent().layout();
 		}
 		return ret;
 	}
 
 	/**
 	 * Performs the drop on a backlogItem TaskAttribute.
-	 * 
+	 *
 	 * @param selection
 	 *            The current selection that contains the elements to drop.
 	 * @param wrapper
@@ -123,7 +124,7 @@ public class BacklogItemDropAdapter extends ViewerDropAdapter {
 
 	/**
 	 * Performs the drop on the table, adding elements at the end.
-	 * 
+	 *
 	 * @param selection
 	 *            The current selection that contains the elements to drop.
 	 * @return {@code true} if the drop has been performed from an external list, and {@code false} if the
@@ -141,7 +142,6 @@ public class BacklogItemDropAdapter extends ViewerDropAdapter {
 		if (selectedBacklogItems.isEmpty()) {
 			return false;
 		}
-		boolean ret = false;
 		IBacklog container = (IBacklog)getViewer().getInput();
 		Iterable<BacklogItemWrapper> biWrappers = container.getBacklogItems();
 		BacklogItemWrapper lastBacklogItem = null;
@@ -149,23 +149,18 @@ public class BacklogItemDropAdapter extends ViewerDropAdapter {
 			lastBacklogItem = Iterables.getLast(biWrappers);
 		}
 		String targetAssignedMilestoneId = container.getMilestoneId();
-		if (targetAssignedMilestoneId == null) {
-			// Move to the backlog
-			container.getMilestonePlanning().moveItems(selectedBacklogItems, lastBacklogItem, false, null);
-			ret = true;
-		} else {
-			SubMilestoneWrapper targetMilestone = container.getMilestonePlanning().getSubMilestone(
-					targetAssignedMilestoneId);
-			container.getMilestonePlanning().moveItems(selectedBacklogItems, lastBacklogItem, false,
-					targetMilestone);
-			ret = true;
+		SubMilestoneWrapper targetMilestone = null;
+		if (targetAssignedMilestoneId != null) {
+			targetMilestone = container.getMilestonePlanning().getSubMilestone(targetAssignedMilestoneId);
 		}
-		return ret;
+		container.getMilestonePlanning().moveItems(selectedBacklogItems, lastBacklogItem, false,
+				targetMilestone);
+		return true;
 	}
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see org.eclipse.jface.viewers.ViewerDropAdapter#validateDrop(java.lang.Object, int,
 	 *      org.eclipse.swt.dnd.TransferData)
 	 */
