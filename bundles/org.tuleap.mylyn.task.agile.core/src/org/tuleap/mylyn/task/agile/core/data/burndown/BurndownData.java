@@ -48,7 +48,7 @@ public class BurndownData {
 		this.duration = duration;
 		this.capacity = capacity;
 		Assert.isNotNull(points);
-		this.points = points;
+		this.points = points.clone();
 	}
 
 	/**
