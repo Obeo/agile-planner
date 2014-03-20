@@ -82,9 +82,8 @@ public class SubMilestoneListTaskEditorPart extends AbstractTableTaskEditorPart 
 				.createSection(panel, ExpandableComposite.TITLE_BAR | Section.EXPANDED);
 		setControl(panel);
 		milestoneList.setLayout(FormLayoutFactory.createFormPaneTableWrapLayout(false, 1));
-		milestoneList.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
 		milestoneList.setText(MylynAgileUIMessages.getString("PlanningTaskEditorPart.DefaulMilestonesTitle")); //$NON-NLS-1$
-		milestoneList.setLayoutData(GridDataFactory.fillDefaults().create());
+		milestoneList.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).create());
 
 		ToolBarManager toolbarManager = new ToolBarManager(SWT.FLAT);
 		ToolBar toolbar = toolbarManager.createControl(milestoneList);
@@ -168,7 +167,7 @@ public class SubMilestoneListTaskEditorPart extends AbstractTableTaskEditorPart 
 				IRunnableWithProgress runnable = new IRunnableWithProgress() {
 					@Override
 					public void run(IProgressMonitor monitor) throws InvocationTargetException,
-					InterruptedException {
+							InterruptedException {
 						createNewMilestone(monitor);
 					}
 				};

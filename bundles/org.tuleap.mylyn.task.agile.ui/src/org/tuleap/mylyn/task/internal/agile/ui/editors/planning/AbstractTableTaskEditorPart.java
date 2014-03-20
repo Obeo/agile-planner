@@ -13,7 +13,7 @@ package org.tuleap.mylyn.task.internal.agile.ui.editors.planning;
 import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
@@ -93,7 +93,6 @@ public abstract class AbstractTableTaskEditorPart extends AbstractTaskEditorPart
 	 * @return The TableViewer that displays the milestone's backlog items.
 	 */
 	protected TableViewer createBacklogItemsTable(final FormToolkit toolkit, final Section section) {
-		final String strMissing = MylynAgileUIMessages.getString("PlanningTaskEditorPart.MissingTextValue"); //$NON-NLS-1$
 		final Table table = toolkit.createTable(section, SWT.BORDER | SWT.MULTI | SWT.FULL_SELECTION);
 		section.setClient(table);
 		table.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -104,101 +103,39 @@ public abstract class AbstractTableTaskEditorPart extends AbstractTaskEditorPart
 		final TableViewerColumn colId = new TableViewerColumn(viewer, SWT.NONE);
 		colId.getColumn().setText(
 				MylynAgileUIMessages.getString("PlanningTaskEditorPart.DefaultIdColumnHeader")); //$NON-NLS-1$
-
-		// Set the HyperLink label provider
-		colId.setLabelProvider(new HyperlinkLabelProvider(table));
+		colId.setLabelProvider(new BacklogItemLabelProvider());
 		colId.getColumn().setWidth(IMylynAgileUIConstants.DEFAULT_ID_COL_WIDTH);
-
-		// Add the listener
-		viewer.getTable().addMouseListener(this.getMouseListener(table));
-		viewer.getTable().addMouseMoveListener(this.getMouseMoveListener(table));
 
 		// Column type
 		final TableViewerColumn colType = new TableViewerColumn(viewer, SWT.NONE);
 		colType.getColumn().setText(
 				MylynAgileUIMessages.getString("PlanningTaskEditorPart.DefaultTypeColumnHeader")); //$NON-NLS-1$
-		colType.setLabelProvider(new ColumnLabelProvider() {
-			@Override
-			public String getText(Object element) {
-				String ret;
-				if (element == null) {
-					ret = strMissing;
-				} else if (element instanceof BacklogItemWrapper) {
-					ret = ((BacklogItemWrapper)element).getType();
-				} else {
-					ret = element.toString();
-				}
-				return ret;
-			}
-		});
+		colType.setLabelProvider(new BacklogItemLabelProvider());
 		colType.getColumn().setWidth(IMylynAgileUIConstants.DEFAULT_TYPE_COL_WIDTH);
 
 		// Column "label"
 		final TableViewerColumn colLabel = new TableViewerColumn(viewer, SWT.NONE);
 		colLabel.getColumn().setText(
 				MylynAgileUIMessages.getString("PlanningTaskEditorPart.DefaulLabelColumnHeader")); //$NON-NLS-1$
-		colLabel.setLabelProvider(new ColumnLabelProvider() {
-			@Override
-			public String getText(Object element) {
-				String ret;
-				if (element == null) {
-					ret = strMissing;
-				} else if (element instanceof BacklogItemWrapper) {
-					ret = ((BacklogItemWrapper)element).getLabel();
-				} else {
-					ret = element.toString();
-				}
-				return ret;
-			}
-		});
+		colLabel.setLabelProvider(new BacklogItemLabelProvider());
 		colLabel.getColumn().setWidth(IMylynAgileUIConstants.DEFAULT_LABEL_COL_WIDTH);
+		ColumnViewerToolTipSupport.enableFor(colLabel.getViewer());
 
 		final TableViewerColumn colPoints = new TableViewerColumn(viewer, SWT.NONE);
-		String backlogItemPointLabel = MylynAgileUIMessages
-				.getString("PlanningTaskEditorPart.DefaultPointsColumnHeader"); //$NON-NLS-1$
-		colPoints.getColumn().setText(backlogItemPointLabel);
-		colPoints.setLabelProvider(new ColumnLabelProvider() {
-			@Override
-			public String getText(Object element) {
-				String ret;
-				if (element == null) {
-					ret = MylynAgileUIMessages.getString("PlanningTaskEditorPageFactory.MissingNumericValue"); //$NON-NLS-1$;
-				} else if (element instanceof BacklogItemWrapper) {
-					ret = ((BacklogItemWrapper)element).getInitialEffort();
-				} else {
-					ret = element.toString();
-				}
-				return ret;
-			}
-		});
+		colPoints.getColumn().setText(
+				MylynAgileUIMessages.getString("PlanningTaskEditorPart.DefaultPointsColumnHeader")); //$NON-NLS-1$
+		colPoints.setLabelProvider(new BacklogItemLabelProvider());
 		colPoints.getColumn().setWidth(IMylynAgileUIConstants.DEFAULT_POINTS_COL_WIDTH);
 
 		// Column "parent"
 		final TableViewerColumn colParent = new TableViewerColumn(viewer, SWT.NONE);
 		colParent.getColumn().setText(
 				MylynAgileUIMessages.getString("PlanningTaskEditorPart.DefaultParentColumnHeader")); //$NON-NLS-1$
-		colParent.setLabelProvider(new ParentLabelProvider(table));
+		colParent.setLabelProvider(new BacklogItemLabelProvider());
 		colParent.getColumn().setWidth(IMylynAgileUIConstants.DEFAULT_PARENT_COL_WIDTH);
 
-		// Column status
-		final TableViewerColumn colStatus = new TableViewerColumn(viewer, SWT.NONE);
-		colStatus.getColumn().setText(
-				MylynAgileUIMessages.getString("PlanningTaskEditorPart.DefaultStatusColumnHeader")); //$NON-NLS-1$
-		colStatus.setLabelProvider(new ColumnLabelProvider() {
-			@Override
-			public String getText(Object element) {
-				String ret;
-				if (element == null) {
-					ret = strMissing;
-				} else if (element instanceof BacklogItemWrapper) {
-					ret = ((BacklogItemWrapper)element).getStatus();
-				} else {
-					ret = element.toString();
-				}
-				return ret;
-			}
-		});
-		colStatus.getColumn().setWidth(IMylynAgileUIConstants.DEFAULT_STATUS_COL_WIDTH);
+		viewer.getTable().addMouseListener(this.getMouseListener(table));
+		viewer.getTable().addMouseMoveListener(this.getMouseMoveListener(table));
 
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);

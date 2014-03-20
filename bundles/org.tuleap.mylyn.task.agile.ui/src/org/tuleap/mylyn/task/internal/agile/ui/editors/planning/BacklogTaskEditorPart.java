@@ -57,7 +57,7 @@ public class BacklogTaskEditorPart extends AbstractTableTaskEditorPart {
 		setControl(panel);
 		backlogSection.setText(MylynAgileUIMessages.getString("PlanningTaskEditorPart.DefaulBacklogLabel")); //$NON-NLS-1$
 		backlogSection.setLayout(FormLayoutFactory.createClearTableWrapLayout(false, 1));
-		backlogSection.setLayoutData(GridDataFactory.fillDefaults().create());
+		backlogSection.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).create());
 
 		TableViewer backlogViewer = createBacklogItemsTable(toolkit, backlogSection);
 		// Drag'n drop
