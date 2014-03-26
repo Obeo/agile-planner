@@ -4,18 +4,14 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Obeo - initial API and implementation
  *******************************************************************************/
-package org.tuleap.mylyn.task.internal.agile.ui.tests.data;
+package org.tuleap.mylyn.task.internal.agile.ui.tests.backlog;
 
 import java.util.Date;
 
-import org.eclipse.mylyn.tasks.core.TaskRepository;
-import org.eclipse.mylyn.tasks.core.data.TaskAttributeMapper;
-import org.eclipse.mylyn.tasks.core.data.TaskData;
-import org.junit.Before;
 import org.junit.Test;
 import org.tuleap.mylyn.task.agile.core.data.planning.BacklogItemWrapper;
 import org.tuleap.mylyn.task.agile.core.data.planning.MilestonePlanningWrapper;
@@ -27,15 +23,10 @@ import static org.junit.Assert.assertEquals;
 
 /**
  * Tests of the Backlog model classes.
- * 
+ *
  * @author <a href="mailto:cedric.notot@obeo.fr">Cedric Notot</a>
  */
-public class BacklogModelTest {
-
-	/**
-	 * The wrapped task data.
-	 */
-	private TaskData taskData;
+public class BacklogModelTest extends AbstractBacklogTest {
 
 	/**
 	 * test SubMilestoneBacklogModel.
@@ -94,19 +85,6 @@ public class BacklogModelTest {
 		assertEquals(backlogModel.getBacklogItems().size(), 1);
 		assertEquals(backlogModel.getBacklogItems().get(0).getId(), backlogItem2.getId());
 		assertEquals(backlogModel.getMilestonePlanning(), wrapper);
-	}
-
-	/**
-	 * Configure the data for the tests.
-	 */
-	@Before
-	public void setUp() {
-		String repositoryUrl = "repository"; //$NON-NLS-1$
-		String connectorKind = "kind"; //$NON-NLS-1$
-		String taskId = "id"; //$NON-NLS-1$ 
-		TaskRepository taskRepository = new TaskRepository(connectorKind, repositoryUrl);
-		TaskAttributeMapper mapper = new TaskAttributeMapper(taskRepository);
-		taskData = new TaskData(mapper, connectorKind, repositoryUrl, taskId);
 	}
 
 }

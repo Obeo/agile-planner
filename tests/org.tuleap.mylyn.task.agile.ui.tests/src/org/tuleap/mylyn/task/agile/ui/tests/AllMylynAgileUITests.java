@@ -17,11 +17,12 @@ import junit.textui.TestRunner;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.tuleap.mylyn.task.internal.agile.ui.tests.MylynAgileUIActivatorTest;
+import org.tuleap.mylyn.task.internal.agile.ui.tests.backlog.BacklogItemListContentProviderTest;
+import org.tuleap.mylyn.task.internal.agile.ui.tests.backlog.BacklogModelTest;
 import org.tuleap.mylyn.task.internal.agile.ui.tests.cardwall.model.CardwallModelTest;
 import org.tuleap.mylyn.task.internal.agile.ui.tests.cardwall.validator.DateValidatorTest;
 import org.tuleap.mylyn.task.internal.agile.ui.tests.cardwall.validator.DoubleValidatorTest;
 import org.tuleap.mylyn.task.internal.agile.ui.tests.cardwall.validator.IntegerValidatorTest;
-import org.tuleap.mylyn.task.internal.agile.ui.tests.data.BacklogModelTest;
 
 /**
  * This class should be used to launch all the unit tests.
@@ -30,18 +31,18 @@ import org.tuleap.mylyn.task.internal.agile.ui.tests.data.BacklogModelTest;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-// editors.cardwall.part
-// Removed because does not run in jenkins
-// due to same package in different projects trick...
-// SwimlaneEditPartTest.class,
-// cardwall.model
-		CardwallModelTest.class,
-		// cardwall.validator
-		DateValidatorTest.class, DoubleValidatorTest.class, IntegerValidatorTest.class,
-		// data
-		BacklogModelTest.class,
-		//
-		MylynAgileUIActivatorTest.class })
+	// editors.cardwall.part
+	// Removed because does not run in jenkins
+	// due to same package in different projects trick...
+	// SwimlaneEditPartTest.class,
+	// backlog
+	BacklogItemListContentProviderTest.class, BacklogModelTest.class,
+	// cardwall.model
+	CardwallModelTest.class,
+	// cardwall.validator
+	DateValidatorTest.class, DoubleValidatorTest.class, IntegerValidatorTest.class,
+	//
+	MylynAgileUIActivatorTest.class })
 public final class AllMylynAgileUITests {
 
 	/**

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Obeo - initial API and implementation
  *******************************************************************************/
@@ -17,10 +17,10 @@ import org.eclipse.jface.viewers.Viewer;
 
 /**
  * Content Provider for Milestones and Backlogs.
- * 
+ *
  * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
  */
-final class BacklogItemListContentProvider implements IStructuredContentProvider {
+public final class BacklogItemListContentProvider implements IStructuredContentProvider {
 
 	@Override
 	public void inputChanged(Viewer pViewer, Object oldInput, Object newInput) {
