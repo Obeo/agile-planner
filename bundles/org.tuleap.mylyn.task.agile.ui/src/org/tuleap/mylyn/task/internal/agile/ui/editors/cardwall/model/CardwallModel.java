@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Obeo - initial API and implementation
  *******************************************************************************/
@@ -20,7 +20,7 @@ import org.tuleap.mylyn.task.agile.core.data.cardwall.SwimlaneWrapper;
 
 /**
  * UI model of a cardwall.
- * 
+ *
  * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
  */
 public class CardwallModel extends AbstractNotifyingModel {
@@ -47,7 +47,7 @@ public class CardwallModel extends AbstractNotifyingModel {
 
 	/**
 	 * The UI model of a cardwall.
-	 * 
+	 *
 	 * @param cardwall
 	 *            the cardwall, must not be null.
 	 */
@@ -57,7 +57,7 @@ public class CardwallModel extends AbstractNotifyingModel {
 
 	/**
 	 * The cardwall.
-	 * 
+	 *
 	 * @return the cardwall
 	 */
 	public CardwallWrapper getWrapper() {
@@ -66,7 +66,7 @@ public class CardwallModel extends AbstractNotifyingModel {
 
 	/**
 	 * The cardwall's columns.
-	 * 
+	 *
 	 * @return The cardwall's columns.
 	 */
 	public List<ColumnModel> getColumns() {
@@ -83,7 +83,7 @@ public class CardwallModel extends AbstractNotifyingModel {
 
 	/**
 	 * The cardwall's swimlanes.
-	 * 
+	 *
 	 * @return The cardwall's swimlanes.
 	 */
 	public List<SwimlaneModel> getSwimlanes() {
@@ -98,7 +98,7 @@ public class CardwallModel extends AbstractNotifyingModel {
 
 	/**
 	 * Filter getter.
-	 * 
+	 *
 	 * @return The filter.
 	 */
 	public String getFilter() {
@@ -107,14 +107,13 @@ public class CardwallModel extends AbstractNotifyingModel {
 
 	/**
 	 * Filter setter.
-	 * 
+	 *
 	 * @param filter
 	 *            the filter value.
 	 */
 	public void setFilter(String filter) {
-		if (this.filter == null && filter != null || this.filter != null
-				&& !this.filter.equalsIgnoreCase(filter)) {
-			String oldFilter = this.filter;
+		String oldFilter = this.filter;
+		if (oldFilter == null && filter != null || oldFilter != null && !oldFilter.equalsIgnoreCase(filter)) {
 			this.filter = filter;
 			mPcs.firePropertyChange(ICardwallProperties.FILTER, oldFilter, filter);
 		}
