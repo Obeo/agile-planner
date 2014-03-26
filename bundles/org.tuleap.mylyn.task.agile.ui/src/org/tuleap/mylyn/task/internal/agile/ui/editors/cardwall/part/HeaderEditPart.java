@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Obeo - initial API and implementation
  *******************************************************************************/
@@ -21,14 +21,14 @@ import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.HeaderMode
 
 /**
  * The edit part for the cells used as heading for columns, swimlanes and the whole card wall.
- * 
+ *
  * @author <a href="mailto:cedric.notot@obeo.fr">Cedric Notot</a>
  */
 public class HeaderEditPart extends AbstractGraphicalEditPart {
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#createFigure()
 	 */
 	@Override
@@ -45,7 +45,7 @@ public class HeaderEditPart extends AbstractGraphicalEditPart {
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see org.eclipse.gef.editparts.AbstractEditPart#createEditPolicies()
 	 */
 	@Override
@@ -55,14 +55,14 @@ public class HeaderEditPart extends AbstractGraphicalEditPart {
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see org.eclipse.gef.editparts.AbstractEditPart#getModelChildren()
 	 */
 	@Override
 	protected List<?> getModelChildren() {
 		List<Object> res = new ArrayList<Object>();
 		HeaderModel header = (HeaderModel)getModel();
-		res.add(header.getbacklogLabel());
+		res.add(header.getBacklogLabel());
 		res.addAll(header.getColumns());
 		return res;
 	}

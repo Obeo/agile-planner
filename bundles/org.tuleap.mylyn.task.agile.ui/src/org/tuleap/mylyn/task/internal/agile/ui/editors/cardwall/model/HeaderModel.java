@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Obeo - initial API and implementation
  *******************************************************************************/
@@ -14,7 +14,7 @@ import java.util.List;
 
 /**
  * Model used to represent a cardwall header.
- * 
+ *
  * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
  */
 public class HeaderModel {
@@ -26,7 +26,7 @@ public class HeaderModel {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param cardwall
 	 *            The cardwall.
 	 */
@@ -36,17 +36,17 @@ public class HeaderModel {
 
 	/**
 	 * Backlog label accessor.
-	 * 
+	 *
 	 * @return the backlog label.
 	 */
-	public String getbacklogLabel() {
+	public String getBacklogLabel() {
 		// TODO
 		return "Backlog"; //$NON-NLS-1$
 	}
 
 	/**
 	 * Columns getter.
-	 * 
+	 *
 	 * @return The card wall columns.
 	 */
 	public List<ColumnModel> getColumns() {
