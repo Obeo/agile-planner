@@ -20,6 +20,7 @@ import org.tuleap.mylyn.task.internal.agile.ui.editors.planning.IBacklog;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 /**
  * Tests of {@link BacklogItemListContentProvider}.
@@ -42,15 +43,19 @@ public class BacklogItemListContentProviderTest extends AbstractBacklogTest {
 		final BacklogItemWrapper bi1 = planning.addBacklogItem("bi1");
 		final BacklogItemWrapper bi2 = planning.addBacklogItem("bi2");
 		IBacklog backlog = new IBacklog() {
-
+			@Override
 			public MilestonePlanningWrapper getMilestonePlanning() {
+				fail("getMilestonePlanning should not be called.");
 				return null;
 			}
 
+			@Override
 			public String getMilestoneId() {
+				fail("getMilestoneId should not be called.");
 				return null;
 			}
 
+			@Override
 			public Iterable<BacklogItemWrapper> getBacklogItems() {
 				return Arrays.asList(bi0, bi1, bi2);
 			}

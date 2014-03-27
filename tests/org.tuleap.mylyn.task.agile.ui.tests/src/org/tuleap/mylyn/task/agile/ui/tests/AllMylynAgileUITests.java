@@ -16,6 +16,7 @@ import junit.textui.TestRunner;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.part.SwimlaneEditPartTest;
 import org.tuleap.mylyn.task.internal.agile.ui.tests.MylynAgileUIActivatorTest;
 import org.tuleap.mylyn.task.internal.agile.ui.tests.backlog.BacklogItemListContentProviderTest;
 import org.tuleap.mylyn.task.internal.agile.ui.tests.backlog.BacklogModelTest;
@@ -32,9 +33,7 @@ import org.tuleap.mylyn.task.internal.agile.ui.tests.cardwall.validator.IntegerV
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
 	// editors.cardwall.part
-	// Removed because does not run in jenkins
-	// due to same package in different projects trick...
-	// SwimlaneEditPartTest.class,
+	SwimlaneEditPartTest.class,
 	// backlog
 	BacklogItemListContentProviderTest.class, BacklogModelTest.class,
 	// cardwall.model
