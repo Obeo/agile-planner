@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Obeo - initial API and implementation
  *******************************************************************************/
@@ -24,14 +24,14 @@ import org.tuleap.mylyn.task.internal.agile.ui.util.IMylynAgileUIConstants;
 
 /**
  * The root edit part for the card wall.
- * 
+ *
  * @author <a href="mailto:cedric.notot@obeo.fr">Cedric Notot</a>
  */
 public class CardwallEditPart extends AbstractGraphicalEditPart {
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#createFigure()
 	 */
 	@Override
@@ -47,17 +47,17 @@ public class CardwallEditPart extends AbstractGraphicalEditPart {
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see org.eclipse.gef.editparts.AbstractEditPart#createEditPolicies()
 	 */
 	@Override
 	protected void createEditPolicies() {
-		// TODO Auto-generated method stub
+		// Nothing to do here
 	}
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see org.eclipse.gef.editparts.AbstractEditPart#getModelChildren()
 	 */
 	@Override

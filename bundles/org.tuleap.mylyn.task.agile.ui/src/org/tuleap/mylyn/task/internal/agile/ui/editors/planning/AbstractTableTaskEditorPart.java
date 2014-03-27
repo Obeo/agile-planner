@@ -29,13 +29,13 @@ import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.tuleap.mylyn.task.agile.core.data.planning.BacklogItemWrapper;
 import org.tuleap.mylyn.task.agile.core.data.planning.MilestonePlanningWrapper;
+import org.tuleap.mylyn.task.internal.agile.ui.MylynAgileUIActivator;
 import org.tuleap.mylyn.task.internal.agile.ui.util.IMylynAgileUIConstants;
 import org.tuleap.mylyn.task.internal.agile.ui.util.MylynAgileUIMessages;
 
@@ -183,8 +183,10 @@ public abstract class AbstractTableTaskEditorPart extends AbstractTaskEditorPart
 		Point point = new Point(e.x, e.y);
 		TableItem item = table.getItem(point);
 		if (item != null && !item.isDisposed()) {
-			item.setBackground(-1, Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
-			item.setForeground(-1, Display.getCurrent().getSystemColor(SWT.COLOR_BLACK));
+			item.setBackground(-1, MylynAgileUIActivator.getDefault().getDisplay().getSystemColor(
+					SWT.COLOR_WHITE));
+			item.setForeground(-1, MylynAgileUIActivator.getDefault().getDisplay().getSystemColor(
+					SWT.COLOR_BLACK));
 		}
 		if (item == null) {
 			return;
@@ -192,14 +194,16 @@ public abstract class AbstractTableTaskEditorPart extends AbstractTaskEditorPart
 		Rectangle idColumn = item.getBounds(0);
 		if (idColumn.contains(point)) {
 			table.deselectAll();
-			item.setBackground(0, Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
+			item.setBackground(0, MylynAgileUIActivator.getDefault().getDisplay().getSystemColor(
+					SWT.COLOR_WHITE));
 			openTask(item);
 		} else {
 			Rectangle parentColumn = item.getBounds(PARENT_COLUMN_INDEX);
 
 			if (parentColumn.contains(point)) {
 				table.deselectAll();
-				item.setBackground(0, Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
+				item.setBackground(0, MylynAgileUIActivator.getDefault().getDisplay().getSystemColor(
+						SWT.COLOR_WHITE));
 				openParentTask(item);
 			}
 		}

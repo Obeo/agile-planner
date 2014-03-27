@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Obeo - initial API and implementation
  *******************************************************************************/
@@ -27,13 +27,12 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
-import org.eclipse.swt.widgets.Display;
 import org.tuleap.mylyn.task.internal.agile.ui.MylynAgileUIActivator;
 import org.tuleap.mylyn.task.internal.agile.ui.util.IMylynAgileUIConstants;
 
 /**
  * Figure representing a card in the card wall.
- * 
+ *
  * @author <a href="mailto:cedric.notot@obeo.fr">Cedric Notot</a>
  */
 public class CardFigure extends Figure {
@@ -89,7 +88,7 @@ public class CardFigure extends Figure {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param isAssigned
 	 *            indicates if the card is assigned or not to a column.
 	 */
@@ -160,7 +159,7 @@ public class CardFigure extends Figure {
 
 	/**
 	 * Setter of the title of the card.
-	 * 
+	 *
 	 * @param title
 	 *            The title to set.
 	 */
@@ -170,7 +169,7 @@ public class CardFigure extends Figure {
 
 	/**
 	 * Setter of the url of the card.
-	 * 
+	 *
 	 * @param url
 	 *            The url to set.
 	 */
@@ -214,7 +213,7 @@ public class CardFigure extends Figure {
 
 	/**
 	 * URL text flow.
-	 * 
+	 *
 	 * @return The URL text flow.
 	 */
 	public Label getUrl() {
@@ -223,7 +222,7 @@ public class CardFigure extends Figure {
 
 	/**
 	 * Provides the details panel.
-	 * 
+	 *
 	 * @return The details panel.
 	 */
 	public CardDetailsPanel getDetailsPanel() {
@@ -232,37 +231,27 @@ public class CardFigure extends Figure {
 
 	/**
 	 * Provides the default background color for cards.
-	 * 
+	 *
 	 * @return The default bg color for cards.
 	 */
 	public Color getDefaultBackgroundColor() {
 		MylynAgileUIActivator activator = MylynAgileUIActivator.getDefault();
-		if (activator.hasColor(CARD_BG_COLOR_KEY)) {
-			return activator.getColor(CARD_BG_COLOR_KEY);
-		}
-		Color c = new Color(Display.getCurrent(), IMylynAgileUIConstants.CARD_BG_COLOR);
-		activator.putColor(CARD_BG_COLOR_KEY, c);
-		return c;
+		return activator.forRgb(IMylynAgileUIConstants.CARD_BG_COLOR);
 	}
 
 	/**
 	 * Provides the default background color for cards.
-	 * 
+	 *
 	 * @return The default bg color for cards.
 	 */
 	public Color getHeaderBackgroundColor() {
 		MylynAgileUIActivator activator = MylynAgileUIActivator.getDefault();
-		if (activator.hasColor(BI_CARD_BG_COLOR_KEY)) {
-			return activator.getColor(BI_CARD_BG_COLOR_KEY);
-		}
-		Color c = new Color(Display.getCurrent(), IMylynAgileUIConstants.BI_CARD_BG_COLOR);
-		activator.putColor(BI_CARD_BG_COLOR_KEY, c);
-		return c;
+		return activator.forRgb(IMylynAgileUIConstants.BI_CARD_BG_COLOR);
 	}
 
 	/**
 	 * Sets the header band color.
-	 * 
+	 *
 	 * @param rgb
 	 *            The color representation as a string #rrggbb
 	 */

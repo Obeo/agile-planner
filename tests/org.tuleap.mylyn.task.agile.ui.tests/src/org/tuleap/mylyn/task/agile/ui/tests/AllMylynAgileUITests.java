@@ -16,6 +16,9 @@ import junit.textui.TestRunner;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.part.CardEditPartTest;
+import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.part.CardwallEditPartTest;
+import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.part.CellEditPartTest;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.part.SwimlaneEditPartTest;
 import org.tuleap.mylyn.task.internal.agile.ui.tests.MylynAgileUIActivatorTest;
 import org.tuleap.mylyn.task.internal.agile.ui.tests.backlog.BacklogItemListContentProviderTest;
@@ -33,6 +36,7 @@ import org.tuleap.mylyn.task.internal.agile.ui.tests.cardwall.validator.IntegerV
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
 	// editors.cardwall.part
+	CardEditPartTest.class, CardwallEditPartTest.class, CellEditPartTest.class,
 	SwimlaneEditPartTest.class,
 	// backlog
 	BacklogItemListContentProviderTest.class, BacklogModelTest.class,

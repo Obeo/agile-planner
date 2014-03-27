@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Obeo - initial API and implementation
  *******************************************************************************/
@@ -32,7 +32,7 @@ import org.tuleap.mylyn.task.internal.agile.ui.util.MylynAgileUIMessages;
 
 /**
  * The activator in charge of managing the life-cycle of the bundle.
- * 
+ *
  * @author <a href="mailto:stephane.begaudeau@obeo.fr">Stephane Begaudeau</a>
  */
 public class MylynAgileUIActivator extends AbstractUIPlugin {
@@ -65,7 +65,7 @@ public class MylynAgileUIActivator extends AbstractUIPlugin {
 	/**
 	 * Cache of colors by arbitrary id.
 	 */
-	private Map<String, Color> colorsById = new HashMap<String, Color>();
+	private Map<Object, Color> colorsById = new HashMap<Object, Color>();
 
 	/**
 	 * Pattern to match RGB colors.
@@ -74,7 +74,7 @@ public class MylynAgileUIActivator extends AbstractUIPlugin {
 
 	/**
 	 * Returns the sole instance of the activator.
-	 * 
+	 *
 	 * @return The sole instance of the activator.
 	 */
 	public static MylynAgileUIActivator getDefault() {
@@ -83,7 +83,7 @@ public class MylynAgileUIActivator extends AbstractUIPlugin {
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see org.eclipse.core.runtime.Plugin#start(org.osgi.framework.BundleContext)
 	 */
 	@Override
@@ -99,7 +99,7 @@ public class MylynAgileUIActivator extends AbstractUIPlugin {
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see org.eclipse.core.runtime.Plugin#stop(org.osgi.framework.BundleContext)
 	 */
 	@Override
@@ -126,7 +126,7 @@ public class MylynAgileUIActivator extends AbstractUIPlugin {
 
 	/**
 	 * Returns the service tracker customizer.
-	 * 
+	 *
 	 * @return The service tracker customizer.
 	 */
 	public AgileRepositoryConnectorUiServiceTrackerCustomizer getServiceTrackerCustomizer() {
@@ -135,7 +135,7 @@ public class MylynAgileUIActivator extends AbstractUIPlugin {
 
 	/**
 	 * Returns an image at the given plug-in relative path.
-	 * 
+	 *
 	 * @param path
 	 *            is a plug-in relative path
 	 * @return the image
@@ -154,7 +154,7 @@ public class MylynAgileUIActivator extends AbstractUIPlugin {
 
 	/**
 	 * Returns an image descriptor for the image file at the given plug-in relative path.
-	 * 
+	 *
 	 * @param path
 	 *            the path
 	 * @return the image descriptor
@@ -165,7 +165,7 @@ public class MylynAgileUIActivator extends AbstractUIPlugin {
 
 	/**
 	 * Trace an Exception in the error log.
-	 * 
+	 *
 	 * @param e
 	 *            Exception to log.
 	 * @param blocker
@@ -203,7 +203,7 @@ public class MylynAgileUIActivator extends AbstractUIPlugin {
 
 	/**
 	 * Puts the given status in the error log view.
-	 * 
+	 *
 	 * @param status
 	 *            Error Status.
 	 */
@@ -228,7 +228,7 @@ public class MylynAgileUIActivator extends AbstractUIPlugin {
 
 	/**
 	 * Puts the given message in the error log view, as error or warning.
-	 * 
+	 *
 	 * @param message
 	 *            The message to put in the error log view.
 	 * @param blocker
@@ -256,23 +256,23 @@ public class MylynAgileUIActivator extends AbstractUIPlugin {
 
 	/**
 	 * Get the color for the given id, if it exists.
-	 * 
+	 *
 	 * @param key
 	 *            The color key (arbitrary)
 	 * @return The cached color, possibly <code>null</code>.
 	 */
-	public Color getColor(String key) {
+	public Color getColor(Object key) {
 		return colorsById.get(key);
 	}
 
 	/**
 	 * Indicates whether there is a cached color for the given key.
-	 * 
+	 *
 	 * @param key
 	 *            the color key;
 	 * @return <code>true</code> if and only if there is an entry for the given key.
 	 */
-	public boolean hasColor(String key) {
+	public boolean hasColor(Object key) {
 		return colorsById.containsKey(key);
 	}
 
@@ -281,7 +281,7 @@ public class MylynAgileUIActivator extends AbstractUIPlugin {
 	 * present in the cache, this method returns the cached color which is different from the given color. It
 	 * is the client's responsibility to dispose the given color properly. The cached color (the one that is
 	 * returned) must not be disposed of.
-	 * 
+	 *
 	 * @param key
 	 *            The key
 	 * @param color
@@ -290,7 +290,7 @@ public class MylynAgileUIActivator extends AbstractUIPlugin {
 	 *         here already was one in the cache. If the returned color is different from the given color, the
 	 *         caller should dispose the given color.
 	 */
-	public synchronized Color putColor(String key, Color color) {
+	public synchronized Color putColor(Object key, Color color) {
 		if (colorsById.containsKey(key)) {
 			return colorsById.get(key);
 		}
@@ -300,7 +300,7 @@ public class MylynAgileUIActivator extends AbstractUIPlugin {
 
 	/**
 	 * Provides the color for the given RGB code, after creating it if necessary.
-	 * 
+	 *
 	 * @param rgb
 	 *            The RGB code in CSS format, #rrggbb with exactly 6 hexadecimal digits.
 	 * @return The relevant color or null if the given RGB code has an invalid format or is null.
@@ -319,7 +319,7 @@ public class MylynAgileUIActivator extends AbstractUIPlugin {
 					int r = Integer.parseInt(rgbMatcher.group(1), Short.SIZE);
 					int g = Integer.parseInt(rgbMatcher.group(2), Short.SIZE);
 					int b = Integer.parseInt(rgbMatcher.group(3), Short.SIZE);
-					c = new Color(Display.getCurrent(), new RGB(r, g, b));
+					c = new Color(getDisplay(), new RGB(r, g, b));
 					colorsById.put(rgb, c);
 				}
 			} catch (NumberFormatException e) {
@@ -327,5 +327,34 @@ public class MylynAgileUIActivator extends AbstractUIPlugin {
 			}
 		}
 		return c;
+	}
+
+	/**
+	 * Provides the Color for the given {@link RGB}, after creating it if necessary. This ensures a proper
+	 * disposal of system resources when the plug-in is deactivated.
+	 * 
+	 * @param rgb
+	 *            The RGB for the desired Color.
+	 * @return The desired Color.
+	 */
+	public synchronized Color forRgb(RGB rgb) {
+		if (hasColor(rgb)) {
+			return getColor(rgb);
+		}
+		Color c = new Color(getDisplay(), rgb);
+		return putColor(rgb, c);
+	}
+
+	/**
+	 * Provides the {@link Display} to use.
+	 *
+	 * @return The current display, or the default display if there's no current display.
+	 */
+	public Display getDisplay() {
+		Display result = Display.getCurrent();
+		if (result == null) {
+			result = Display.getDefault();
+		}
+		return result;
 	}
 }

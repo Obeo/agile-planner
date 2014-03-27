@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Obeo - initial API and implementation
  *******************************************************************************/
@@ -32,7 +32,6 @@ import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.ISharedImages;
@@ -40,11 +39,12 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.widgets.Section;
 import org.tuleap.mylyn.task.agile.core.data.planning.BacklogItemWrapper;
 import org.tuleap.mylyn.task.agile.core.data.planning.SubMilestoneWrapper;
+import org.tuleap.mylyn.task.internal.agile.ui.MylynAgileUIActivator;
 import org.tuleap.mylyn.task.internal.agile.ui.util.MylynAgileUIMessages;
 
 /**
  * A viewer for milestone sections, which manages the refresh of the section's dynamic parts on demand.
- * 
+ *
  * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
  */
 public class MilestoneSectionViewer extends Viewer {
@@ -66,7 +66,7 @@ public class MilestoneSectionViewer extends Viewer {
 
 	/**
 	 * Constructor receiving an existing section.
-	 * 
+	 *
 	 * @param section
 	 *            The section to wrap in this Viewer.
 	 */
@@ -81,7 +81,7 @@ public class MilestoneSectionViewer extends Viewer {
 		GridDataFactory.swtDefaults().applyTo(statusLabel);
 		ToolBarManager toolBarManager = new ToolBarManager(SWT.FLAT);
 		ToolBar toolbar = toolBarManager.createControl(c);
-		final Cursor handCursor = new Cursor(Display.getCurrent(), SWT.CURSOR_HAND);
+		final Cursor handCursor = new Cursor(MylynAgileUIActivator.getDefault().getDisplay(), SWT.CURSOR_HAND);
 		toolbar.setCursor(handCursor);
 
 		// Cursor needs to be explicitly disposed
@@ -119,7 +119,7 @@ public class MilestoneSectionViewer extends Viewer {
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see org.eclipse.jface.viewers.Viewer#getControl()
 	 */
 	@Override
@@ -129,7 +129,7 @@ public class MilestoneSectionViewer extends Viewer {
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see org.eclipse.jface.viewers.Viewer#getInput()
 	 */
 	@Override
@@ -139,7 +139,7 @@ public class MilestoneSectionViewer extends Viewer {
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see org.eclipse.jface.viewers.Viewer#setInput(java.lang.Object)
 	 */
 	@Override
@@ -151,7 +151,7 @@ public class MilestoneSectionViewer extends Viewer {
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see org.eclipse.jface.viewers.Viewer#refresh()
 	 */
 	@Override
@@ -182,7 +182,7 @@ public class MilestoneSectionViewer extends Viewer {
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see org.eclipse.jface.viewers.Viewer#getSelection()
 	 */
 	@Override
@@ -192,7 +192,7 @@ public class MilestoneSectionViewer extends Viewer {
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see org.eclipse.jface.viewers.Viewer#setSelection(org.eclipse.jface.viewers.ISelection, boolean)
 	 */
 	@Override
@@ -202,7 +202,7 @@ public class MilestoneSectionViewer extends Viewer {
 
 	/**
 	 * Computes the required milestone capacity by adding the points of all the milestone's items.
-	 * 
+	 *
 	 * @return the sum of all backlog items in <code>milestoneAtt</code>.
 	 */
 	private float getMilestoneSectionRequiredCapacity() {
@@ -223,7 +223,7 @@ public class MilestoneSectionViewer extends Viewer {
 	/**
 	 * Computes the estimated milestone capacity by retrieving it from the relevant sub-attribute in the given
 	 * TaskAttribute.
-	 * 
+	 *
 	 * @return the estimated milestone capacity by retrieving it from the relevant sub-attribute in the given
 	 *         TaskAttribute, or -1 if the capacity is not present
 	 */
@@ -242,7 +242,7 @@ public class MilestoneSectionViewer extends Viewer {
 
 	/**
 	 * Computes and returns the text to use as a header for a milestone section.
-	 * 
+	 *
 	 * @return The text to use as a header for a milestone section.
 	 */
 	private String getMilestoneSectionHeaderText() {

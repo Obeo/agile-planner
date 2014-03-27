@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Obeo - initial API and implementation
  *******************************************************************************/
@@ -19,6 +19,7 @@ import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseListener;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPart;
@@ -31,7 +32,7 @@ import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.ICardwallP
 
 /**
  * The edit part for the cards.
- * 
+ *
  * @author <a href="mailto:cedric.notot@obeo.fr">Cedric Notot</a>
  */
 public class CardEditPart extends AbstractGraphicalEditPart {
@@ -63,9 +64,9 @@ public class CardEditPart extends AbstractGraphicalEditPart {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param taskEditorPart
-	 *            THe task editor taskEditorPart that displays the cardwall.
+	 *            The task editor taskEditorPart that displays the cardwall.
 	 */
 	public CardEditPart(AbstractTaskEditorPart taskEditorPart) {
 		this.taskEditorPart = taskEditorPart;
@@ -73,22 +74,19 @@ public class CardEditPart extends AbstractGraphicalEditPart {
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#createFigure()
 	 */
 	@Override
 	protected IFigure createFigure() {
 		CardModel cardModel = (CardModel)getModel();
 		CardWrapper wrapper = cardModel.getWrapper();
-		if (wrapper.getColumnId() == null) {
-			return new CardFigure(false);
-		}
-		return new CardFigure(true);
+		return new CardFigure(wrapper.getColumnId() != null);
 	}
 
 	/**
 	 * Get the figure of the card.
-	 * 
+	 *
 	 * @return The card figure.
 	 */
 	public CardFigure getCardFigure() {
@@ -97,17 +95,17 @@ public class CardEditPart extends AbstractGraphicalEditPart {
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see org.eclipse.gef.editparts.AbstractEditPart#createEditPolicies()
 	 */
 	@Override
 	protected void createEditPolicies() {
-		// TODO Auto-generated method stub
+		// Nothing to do here
 	}
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see org.eclipse.gef.editparts.AbstractEditPart#refreshVisuals()
 	 */
 	@Override
@@ -128,7 +126,7 @@ public class CardEditPart extends AbstractGraphicalEditPart {
 
 	/**
 	 * Provides the detail panel.
-	 * 
+	 *
 	 * @return The details panel.
 	 */
 	public CardDetailsPanel getDetailsPanel() {
@@ -137,7 +135,7 @@ public class CardEditPart extends AbstractGraphicalEditPart {
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#getContentPane()
 	 */
 	@Override
@@ -147,7 +145,7 @@ public class CardEditPart extends AbstractGraphicalEditPart {
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see org.eclipse.gef.editparts.AbstractEditPart#getChildren()
 	 */
 	@Override
@@ -158,7 +156,7 @@ public class CardEditPart extends AbstractGraphicalEditPart {
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#activate()
 	 */
 	@Override
@@ -218,7 +216,7 @@ public class CardEditPart extends AbstractGraphicalEditPart {
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#deactivate()
 	 */
 	@Override
@@ -234,17 +232,11 @@ public class CardEditPart extends AbstractGraphicalEditPart {
 	 * Open the task corresponding to the card.
 	 */
 	private void openTask() {
-		List<TaskRepository> allRepositories = TasksUi.getRepositoryManager().getAllRepositories();
 		CardModel cardModel = (CardModel)getModel();
 		CardWrapper card = cardModel.getWrapper();
-		String repositoryUrl = card.getWrappedAttribute().getTaskData().getRepositoryUrl();
-		TaskRepository repository = null;
-		for (TaskRepository taskRepository : allRepositories) {
-			if (repositoryUrl.equals(taskRepository.getRepositoryUrl())) {
-				repository = taskRepository;
-				break;
-			}
-		}
+		TaskData taskData = card.getWrappedAttribute().getTaskData();
+		TaskRepository repository = TasksUi.getRepositoryManager().getRepository(taskData.getConnectorKind(),
+				taskData.getRepositoryUrl());
 		if (repository != null) {
 			TasksUiUtil.openTask(repository, card.getArtifactId());
 		}

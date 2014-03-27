@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Obeo - initial API and implementation
  *******************************************************************************/
@@ -12,7 +12,6 @@ package org.tuleap.mylyn.task.internal.agile.ui.tests;
 
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.tuleap.mylyn.task.internal.agile.ui.MylynAgileUIActivator;
 
@@ -24,10 +23,9 @@ import static org.junit.Assert.assertTrue;
 
 /**
  * Tests of Agile UI Activator.
- * 
+ *
  * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
  */
-@Ignore("Waiting for xvnc setup in continuous integration")
 public class MylynAgileUIActivatorTest {
 
 	/**
