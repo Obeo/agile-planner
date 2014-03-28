@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Obeo - initial API and implementation
  *******************************************************************************/
@@ -23,14 +23,14 @@ import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.CardModel;
 
 /**
  * The edit part for a swimlane header (left cell).
- * 
+ *
  * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
  */
 public class SwimlaneHeaderEditPart extends AbstractGraphicalEditPart {
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#createFigure()
 	 */
 	@Override
@@ -41,7 +41,7 @@ public class SwimlaneHeaderEditPart extends AbstractGraphicalEditPart {
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see org.eclipse.gef.editparts.AbstractEditPart#refreshVisuals()
 	 */
 	@Override
@@ -55,7 +55,7 @@ public class SwimlaneHeaderEditPart extends AbstractGraphicalEditPart {
 
 	/**
 	 * Returns the figure as a {@link SwimlaneHeaderCellFigure}.
-	 * 
+	 *
 	 * @return the figure as a {@link SwimlaneHeaderCellFigure}.
 	 */
 	public SwimlaneHeaderCellFigure getCellFigure() {
@@ -64,17 +64,17 @@ public class SwimlaneHeaderEditPart extends AbstractGraphicalEditPart {
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see org.eclipse.gef.editparts.AbstractEditPart#createEditPolicies()
 	 */
 	@Override
 	protected void createEditPolicies() {
-		// TODO Auto-generated method stub
+		// Nothing to do here
 	}
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see org.eclipse.gef.editparts.AbstractEditPart#getModelChildren()
 	 */
 	@Override
@@ -90,7 +90,7 @@ public class SwimlaneHeaderEditPart extends AbstractGraphicalEditPart {
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#getContentPane()
 	 */
 	@Override

@@ -50,7 +50,7 @@ public class HeaderEditPart extends AbstractGraphicalEditPart {
 	 */
 	@Override
 	protected void createEditPolicies() {
-		// TODO Auto-generated method stub
+		// Nothing to do here
 	}
 
 	/**
@@ -59,7 +59,7 @@ public class HeaderEditPart extends AbstractGraphicalEditPart {
 	 * @see org.eclipse.gef.editparts.AbstractEditPart#getModelChildren()
 	 */
 	@Override
-	protected List<?> getModelChildren() {
+	protected List<Object> getModelChildren() {
 		List<Object> res = new ArrayList<Object>();
 		HeaderModel header = (HeaderModel)getModel();
 		res.add(header.getBacklogLabel());
