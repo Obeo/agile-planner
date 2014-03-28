@@ -16,6 +16,8 @@ import junit.textui.TestRunner;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.command.ChangeCardStatusCommandTest;
+import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.command.SetFieldValuesCommandTest;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.part.CardEditPartTest;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.part.CardwallEditPartTest;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.part.CellEditPartTest;
@@ -35,6 +37,8 @@ import org.tuleap.mylyn.task.internal.agile.ui.tests.cardwall.validator.IntegerV
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+	// editors.cardwall.command
+	ChangeCardStatusCommandTest.class, SetFieldValuesCommandTest.class,
 	// editors.cardwall.part
 	CardEditPartTest.class, CardwallEditPartTest.class, CellEditPartTest.class,
 	SwimlaneEditPartTest.class,

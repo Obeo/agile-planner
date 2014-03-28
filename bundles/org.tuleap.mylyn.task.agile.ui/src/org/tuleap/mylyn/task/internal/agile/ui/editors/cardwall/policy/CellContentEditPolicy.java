@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Obeo - initial API and implementation
  *******************************************************************************/
@@ -29,7 +29,7 @@ import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.part.CellEditPar
 
 /**
  * Edit policy to manage the move of the cards in a cell.
- * 
+ *
  * @author <a href="mailto:cedric.notot@obeo.fr">Cedric Notot</a>
  * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
  */
@@ -37,7 +37,7 @@ public class CellContentEditPolicy extends ConstrainedLayoutEditPolicy {
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see org.eclipse.gef.editpolicies.ConstrainedLayoutEditPolicy#getConstraintFor(org.eclipse.draw2d.geometry.Point)
 	 */
 	@Override
@@ -47,7 +47,7 @@ public class CellContentEditPolicy extends ConstrainedLayoutEditPolicy {
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see org.eclipse.gef.editpolicies.ConstrainedLayoutEditPolicy#getConstraintFor(org.eclipse.draw2d.geometry.Rectangle)
 	 */
 	@Override
@@ -57,7 +57,7 @@ public class CellContentEditPolicy extends ConstrainedLayoutEditPolicy {
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see org.eclipse.gef.editpolicies.LayoutEditPolicy#getCreateCommand(org.eclipse.gef.requests.CreateRequest)
 	 */
 	@Override
@@ -67,7 +67,7 @@ public class CellContentEditPolicy extends ConstrainedLayoutEditPolicy {
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see org.eclipse.gef.editpolicies.ConstrainedLayoutEditPolicy#createAddCommand(org.eclipse.gef.requests.ChangeBoundsRequest,
 	 *      org.eclipse.gef.EditPart, java.lang.Object)
 	 */
@@ -78,14 +78,14 @@ public class CellContentEditPolicy extends ConstrainedLayoutEditPolicy {
 		String cellColumn = ((SwimlaneCell)host.getModel()).getColumn().getWrapper().getId();
 
 		if (child.getParent().getParent() == host.getParent() && allowedColumns.contains(cellColumn)) {
-			return new ChangeCardStatusCommand(host, (CardEditPart)child, null);
+			return new ChangeCardStatusCommand(host, (CardEditPart)child);
 		}
 		return null;
 	}
 
 	/**
 	 * Use appropriate edit policy for children cards, that are not resizable. {@inheritDoc}
-	 * 
+	 *
 	 * @see org.eclipse.gef.editpolicies.ConstrainedLayoutEditPolicy#createChildEditPolicy(org.eclipse.gef.EditPart)
 	 */
 	@Override

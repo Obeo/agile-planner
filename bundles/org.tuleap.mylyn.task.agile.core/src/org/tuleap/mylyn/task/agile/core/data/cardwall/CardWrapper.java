@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Obeo - initial API and implementation
  *******************************************************************************/
@@ -21,7 +21,7 @@ import org.tuleap.mylyn.task.agile.core.data.AbstractNotifyingWrapper;
 /**
  * Card wall wrapper, encapsulates all the logic of writing and reading {@link TaskAttribute}s in a TaskData
  * and offers a usable API.
- * 
+ *
  * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
  */
 public class CardWrapper extends AbstractNotifyingWrapper {
@@ -63,7 +63,7 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 
 	/**
 	 * Constructor to use to wrap an existing instance.
-	 * 
+	 *
 	 * @param parent
 	 *            The parent.
 	 * @param cardAtt
@@ -77,7 +77,7 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 
 	/**
 	 * Constructor to use when creating a new instance.
-	 * 
+	 *
 	 * @param parent
 	 *            The parent.
 	 * @param id
@@ -90,7 +90,7 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see org.tuleap.mylyn.task.agile.core.data.AbstractTaskAttributeWrapper#fireAttributeChanged(org.eclipse.mylyn.tasks.core.data.TaskAttribute)
 	 */
 	@Override
@@ -101,7 +101,7 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 
 	/**
 	 * Computes the unique id of the Assigned column id attribute.
-	 * 
+	 *
 	 * @return The unique id of the Assigned column id attribute.
 	 */
 	private String getColumnIdAttributeId() {
@@ -110,7 +110,7 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 
 	/**
 	 * Computes the unique id of the Assigned column id attribute.
-	 * 
+	 *
 	 * @return The unique id of the Assigned column id attribute.
 	 */
 	private String getArtifactIdAttributeId() {
@@ -119,7 +119,7 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 
 	/**
 	 * Computes the unique id of the Assigned status attribute.
-	 * 
+	 *
 	 * @return The unique id of the Assigned status attribute.
 	 */
 	private String getStatusAttributeId() {
@@ -128,7 +128,7 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 
 	/**
 	 * Computes the unique id of the color attribute.
-	 * 
+	 *
 	 * @return The unique id of the color attribute.
 	 */
 	private String getColorAttributeId() {
@@ -137,7 +137,7 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 
 	/**
 	 * Computes the unique id of the Assigned status attribute.
-	 * 
+	 *
 	 * @return The unique id of the Assigned status attribute.
 	 */
 	private String getAllowedColumnAttributeId() {
@@ -146,7 +146,7 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 
 	/**
 	 * Computes the unique id of the Assigned column id attribute.
-	 * 
+	 *
 	 * @param id
 	 *            The id of the field.
 	 * @return The unique id of the Assigned column id attribute.
@@ -157,7 +157,7 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 
 	/**
 	 * Returns all the configurable fields {@link TaskAttribute}s.
-	 * 
+	 *
 	 * @return all the existing configurable fields {@link TaskAttribute}s.
 	 */
 	public List<TaskAttribute> getFieldAttributes() {
@@ -173,7 +173,7 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 
 	/**
 	 * Provides the {@link TaskAttribute} of a configurable field contained by this card.
-	 * 
+	 *
 	 * @param id
 	 *            ID of the field (without the card prefix)
 	 * @return The field {@link TaskAttribute}, or null if it does not exist.
@@ -185,7 +185,7 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 	/**
 	 * Add a configurable field by creating the relevant {@link TaskAttribute} as a child of this card's
 	 * {@link TaskAttribute}.
-	 * 
+	 *
 	 * @param id
 	 *            The id of the field.
 	 * @param label
@@ -204,7 +204,7 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 	/**
 	 * Returns the field id of a given {@link TaskAttribute} if it represents a field that belongs to this
 	 * card.
-	 * 
+	 *
 	 * @param att
 	 *            The attribute, should be one fo the card's fields.
 	 * @return The external field ID, or null if the given attribute does not belong to this card.
@@ -220,7 +220,7 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 
 	/**
 	 * Status getter.
-	 * 
+	 *
 	 * @return The status of the card, or <code>false</code> if it is not set.
 	 */
 	public boolean isComplete() {
@@ -234,7 +234,7 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 
 	/**
 	 * Complete setter.
-	 * 
+	 *
 	 * @param complete
 	 *            The status.
 	 */
@@ -255,7 +255,7 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 
 	/**
 	 * Color getter.
-	 * 
+	 *
 	 * @return The color of the card, or null if it is not set.
 	 */
 	public String getAccentColor() {
@@ -269,7 +269,7 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 
 	/**
 	 * Color setter.
-	 * 
+	 *
 	 * @param color
 	 *            The color.
 	 */
@@ -287,7 +287,7 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 
 	/**
 	 * Assigned milestone id getter.
-	 * 
+	 *
 	 * @return The id of the column to which this card is assigned, or null if it is not assigned, which
 	 *         should not happen in an ideal world.
 	 */
@@ -302,7 +302,7 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 
 	/**
 	 * Assigned milestone id setter.
-	 * 
+	 *
 	 * @param columnId
 	 *            The assigned milestone id. No effect if columnId is null.
 	 */
@@ -326,7 +326,7 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 
 	/**
 	 * Assigned milestone id getter.
-	 * 
+	 *
 	 * @return The id of the column to which this card is assigned, or null if it is not assigned, which
 	 *         should not happen in an ideal world.
 	 */
@@ -341,7 +341,7 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 
 	/**
 	 * Assigned milestone id setter.
-	 * 
+	 *
 	 * @param artifactId
 	 *            The assigned milestone id. No effect if artifactId is null.
 	 */
@@ -365,7 +365,7 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 
 	/**
 	 * Get the values of the allowed column ids.
-	 * 
+	 *
 	 * @return The list of allowed column identifiers. Never null but possibly empty.
 	 */
 	public List<String> getAllowedColumnIds() {
@@ -378,7 +378,7 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 
 	/**
 	 * Add an allowed column id, after creating the relevant {@link TaskAttribute} if necessary.
-	 * 
+	 *
 	 * @param columnId
 	 *            The column id to add.
 	 */
@@ -396,7 +396,7 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 
 	/**
 	 * Get the value of a configurable field by its id.
-	 * 
+	 *
 	 * @param id
 	 *            The if of the field.
 	 * @return The value of the field with this id, or null if cannot be found.
@@ -411,7 +411,7 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 
 	/**
 	 * Get the value of a configurable field by its id.
-	 * 
+	 *
 	 * @param id
 	 *            The if of the field.
 	 * @return The value of the field with this id, or null if cannot be found.
@@ -426,7 +426,7 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 
 	/**
 	 * Get the values of a configurable field by its id.
-	 * 
+	 *
 	 * @param id
 	 *            The if of the field.
 	 * @return The list of values, never null but possibly empty;
@@ -441,7 +441,7 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 
 	/**
 	 * Set a label of a configurable field, after creating the relevant {@link TaskAttribute} if necessary.
-	 * 
+	 *
 	 * @param id
 	 *            the id of the field.
 	 * @param label
@@ -460,7 +460,7 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 
 	/**
 	 * Set a value to a configurable field, after creating the relevant {@link TaskAttribute} if necessary.
-	 * 
+	 *
 	 * @param id
 	 *            the id of the field.
 	 * @param value
@@ -485,7 +485,7 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 
 	/**
 	 * Clears the value(s) of a configurable field.
-	 * 
+	 *
 	 * @param id
 	 *            the id of the field.
 	 */
@@ -511,28 +511,30 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 	/**
 	 * Set a list of values to a configurable field, after creating the relevant {@link TaskAttribute} if
 	 * necessary.
-	 * 
+	 *
 	 * @param id
 	 *            the id of the field.
 	 * @param values
-	 *            The values to set. If null or empty, nothing is done.
+	 *            The values to set. If null, nothing is done, but if empty, values are cleared.
 	 */
 	public void setFieldValues(String id, List<String> values) {
-		if (values == null || values.isEmpty()) {
+		if (values == null) {
 			return;
 		}
 		TaskAttribute att = root.getAttribute(getFieldAttributeId(id));
 		if (att == null) {
 			att = root.createAttribute(getFieldAttributeId(id));
 		}
-		att.setValues(values);
-		// TODO Refine this
-		fireAttributeChanged(att);
+		List<String> oldValues = att.getValues();
+		if (!values.equals(oldValues)) {
+			att.setValues(values);
+			fireAttributeChanged(att);
+		}
 	}
 
 	/**
 	 * Add a value to a configurable field, after creating the relevant {@link TaskAttribute} if necessary.
-	 * 
+	 *
 	 * @param id
 	 *            the id of the field.
 	 * @param value
@@ -553,7 +555,7 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 	/**
 	 * Add a list of values to a configurable field, after creating the relevant {@link TaskAttribute} if
 	 * necessary.
-	 * 
+	 *
 	 * @param id
 	 *            the id of the field.
 	 * @param values
@@ -575,7 +577,7 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 
 	/**
 	 * Provides the {@link TaskAttribute} used for storing the assigned column id of the card.
-	 * 
+	 *
 	 * @return The {@link TaskAttribute} representing the column id of the card, which can be null.
 	 */
 	public TaskAttribute getColumnIdTaskAttribute() {
@@ -584,7 +586,7 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 
 	/**
 	 * Indicates whether the column ID has been marked as changed.
-	 * 
+	 *
 	 * @return <code>true</code> if and only if the column id has been marked as changed.
 	 */
 	public boolean hasColumnIdChanged() {
@@ -594,7 +596,7 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 
 	/**
 	 * Indicates whether the given {@link TaskAttribute} is marked as changed.
-	 * 
+	 *
 	 * @param att
 	 *            The {@link TaskAttribute}
 	 * @return <code>true</code> if and only if att is marked as changed.
@@ -605,7 +607,7 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 
 	/**
 	 * Indicates whether the card has changed (i.e. if it needs to be submitted to the server).
-	 * 
+	 *
 	 * @return <code>true</code> if and only if the card has a change that needs to be sent to the server.
 	 */
 	public boolean hasChanged() {

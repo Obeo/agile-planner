@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Obeo - initial API and implementation
  *******************************************************************************/
@@ -22,7 +22,7 @@ import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.part.CellEditPar
 
 /**
  * The command to move a card from a cell to another.
- * 
+ *
  * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
  * @author <a href="mailto:cedric.notot@obeo.fr">Cedric Notot</a>
  */
@@ -55,19 +55,16 @@ public class ChangeCardStatusCommand extends Command {
 
 	/**
 	 * Constructor.
-	 * 
-	 * @param cellEditPart
-	 *            The edit part of the cell containing the card being moved.
+	 *
+	 * @param targetCellEditPart
+	 *            The edit part of the cell <b>where the card is being moved to</b>.
 	 * @param moved
 	 *            The edit part of the card being moved.
-	 * @param after
-	 *            The edit part of the card which will be located after the one being moved or null if it does
-	 *            not exist.
 	 */
-	public ChangeCardStatusCommand(CellEditPart cellEditPart, CardEditPart moved, CardEditPart after) {
-		this.targetCell = cellEditPart;
+	public ChangeCardStatusCommand(CellEditPart targetCellEditPart, CardEditPart moved) {
+		this.targetCell = targetCellEditPart;
 
-		SwimlaneCell cell = (SwimlaneCell)cellEditPart.getModel();
+		SwimlaneCell cell = (SwimlaneCell)targetCellEditPart.getModel();
 		targetSwimlane = cell.getSwimlane().getWrapper();
 		targetColumn = cell.getColumn().getWrapper();
 
@@ -77,7 +74,7 @@ public class ChangeCardStatusCommand extends Command {
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see org.eclipse.gef.commands.Command#execute()
 	 */
 	@Override
@@ -91,7 +88,7 @@ public class ChangeCardStatusCommand extends Command {
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see org.eclipse.gef.commands.Command#undo()
 	 */
 	@Override
