@@ -15,6 +15,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.DragSourceListener;
+import org.eclipse.swt.widgets.Composite;
 
 /**
  * Drag listener for BacklogItem tables.
@@ -22,6 +23,11 @@ import org.eclipse.swt.dnd.DragSourceListener;
  * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
  */
 public class BacklogItemDragListener implements DragSourceListener {
+
+	/**
+	 * The part (to refresh when drop is performed).
+	 */
+	protected final Composite part;
 
 	/**
 	 * The table viewer to listen to.
@@ -33,9 +39,12 @@ public class BacklogItemDragListener implements DragSourceListener {
 	 *
 	 * @param viewer
 	 *            the table viewer to listen to.
+	 * @param part
+	 *            The part
 	 */
-	public BacklogItemDragListener(TableViewer viewer) {
+	public BacklogItemDragListener(TableViewer viewer, Composite part) {
 		this.fViewer = viewer;
+		this.part = part;
 	}
 
 	/**
@@ -71,7 +80,8 @@ public class BacklogItemDragListener implements DragSourceListener {
 	@Override
 	public void dragFinished(DragSourceEvent event) {
 		fViewer.refresh();
-		fViewer.getControl().getParent().getParent().getParent().getParent().layout();
+		part.pack();
+		part.layout();
 	}
 
 }

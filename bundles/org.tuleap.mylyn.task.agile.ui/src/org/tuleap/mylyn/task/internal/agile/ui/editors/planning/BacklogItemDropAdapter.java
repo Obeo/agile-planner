@@ -21,6 +21,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerDropAdapter;
 import org.eclipse.swt.dnd.TransferData;
+import org.eclipse.swt.widgets.Composite;
 import org.tuleap.mylyn.task.agile.core.data.planning.BacklogItemWrapper;
 import org.tuleap.mylyn.task.agile.core.data.planning.MilestonePlanningWrapper;
 import org.tuleap.mylyn.task.agile.core.data.planning.SubMilestoneWrapper;
@@ -33,13 +34,21 @@ import org.tuleap.mylyn.task.agile.core.data.planning.SubMilestoneWrapper;
 public class BacklogItemDropAdapter extends ViewerDropAdapter {
 
 	/**
+	 * The part (to refresh when drop is performed).
+	 */
+	protected final Composite part;
+
+	/**
 	 * Constructor, requires a viewer. Delegates to the parent class.
 	 *
 	 * @param viewer
 	 *            The viewer.
+	 * @param part
+	 *            The part
 	 */
-	public BacklogItemDropAdapter(Viewer viewer) {
+	public BacklogItemDropAdapter(Viewer viewer, Composite part) {
 		super(viewer);
+		this.part = part;
 	}
 
 	/**
@@ -62,7 +71,8 @@ public class BacklogItemDropAdapter extends ViewerDropAdapter {
 		}
 		if (ret) {
 			getViewer().refresh();
-			getViewer().getControl().getParent().getParent().getParent().getParent().layout();
+			part.pack();
+			part.layout();
 		}
 		return ret;
 	}

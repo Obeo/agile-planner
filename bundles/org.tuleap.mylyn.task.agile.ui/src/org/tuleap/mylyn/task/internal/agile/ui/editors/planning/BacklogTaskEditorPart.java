@@ -62,9 +62,9 @@ public class BacklogTaskEditorPart extends AbstractTableTaskEditorPart {
 		TableViewer backlogViewer = createBacklogItemsTable(toolkit, backlogSection);
 		// Drag'n drop
 		backlogViewer.addDragSupport(DND.DROP_MOVE, new Transfer[] {LocalSelectionTransfer.getTransfer() },
-				new BacklogItemDragListener(backlogViewer));
+				new BacklogItemDragListener(backlogViewer, parent));
 		backlogViewer.addDropSupport(DND.DROP_MOVE, new Transfer[] {LocalSelectionTransfer.getTransfer() },
-				new BacklogItemDropAdapter(backlogViewer));
+				new BacklogItemDropAdapter(backlogViewer, parent));
 		backlogViewer.setInput(new MilestoneBacklogModel(getWrapper()));
 	}
 

@@ -56,6 +56,7 @@ import org.tuleap.mylyn.task.internal.agile.ui.util.MylynAgileUIMessages;
  * @author <a href="mailto:stephane.begaudeau@obeo.fr">Stephane Begaudeau</a>
  * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
  */
+@SuppressWarnings("restriction")
 public class SubMilestoneListTaskEditorPart extends AbstractTableTaskEditorPart {
 
 	/**
@@ -249,9 +250,9 @@ public class SubMilestoneListTaskEditorPart extends AbstractTableTaskEditorPart 
 
 		// Drag'n drop
 		viewer.addDragSupport(DND.DROP_MOVE, new Transfer[] {LocalSelectionTransfer.getTransfer() },
-				new MilestoneDragListener(viewer, milestoneViewer));
+				new MilestoneDragListener(viewer, milestoneViewer, milestoneListClient));
 		viewer.addDropSupport(DND.DROP_MOVE, new Transfer[] {LocalSelectionTransfer.getTransfer() },
-				new MilestoneDropAdapter(viewer, milestoneViewer));
+				new MilestoneDropAdapter(viewer, milestoneViewer, milestoneListClient));
 	}
 
 	/**
