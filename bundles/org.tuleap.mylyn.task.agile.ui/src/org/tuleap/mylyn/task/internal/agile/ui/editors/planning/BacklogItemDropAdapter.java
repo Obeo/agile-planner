@@ -71,8 +71,8 @@ public class BacklogItemDropAdapter extends ViewerDropAdapter {
 		}
 		if (ret) {
 			getViewer().refresh();
-			part.pack();
 			part.layout();
+			part.getParent().layout();
 		}
 		return ret;
 	}

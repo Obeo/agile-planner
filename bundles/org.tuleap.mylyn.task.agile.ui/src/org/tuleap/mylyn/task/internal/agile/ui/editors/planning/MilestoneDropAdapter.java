@@ -51,6 +51,7 @@ public class MilestoneDropAdapter extends BacklogItemDropAdapter {
 		boolean ret = super.performDrop(data);
 		if (ret) {
 			fMilestoneSectionViewer.refresh();
+			part.getParent().getParent().getParent().getParent().layout();
 		}
 		return ret;
 	}

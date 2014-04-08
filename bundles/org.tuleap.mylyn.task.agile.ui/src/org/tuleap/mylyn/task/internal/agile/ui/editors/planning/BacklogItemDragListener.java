@@ -80,7 +80,6 @@ public class BacklogItemDragListener implements DragSourceListener {
 	@Override
 	public void dragFinished(DragSourceEvent event) {
 		fViewer.refresh();
-		part.pack();
 		part.layout();
 	}
 
