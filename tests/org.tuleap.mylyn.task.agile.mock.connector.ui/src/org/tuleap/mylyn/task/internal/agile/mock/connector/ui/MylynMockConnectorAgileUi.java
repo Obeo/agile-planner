@@ -14,6 +14,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
+import org.tuleap.mylyn.task.agile.core.IBacklogItemMapping;
 import org.tuleap.mylyn.task.agile.core.IMilestoneMapping;
 import org.tuleap.mylyn.task.agile.mock.connector.util.IMylynMockConnectorConstants;
 import org.tuleap.mylyn.task.agile.ui.AbstractAgileRepositoryConnectorUI;
@@ -57,6 +58,19 @@ public class MylynMockConnectorAgileUi extends AbstractAgileRepositoryConnectorU
 	public IMilestoneMapping getNewMilestoneMapping(TaskData planningTaskData, String parentMilestoneId,
 			TaskRepository taskRepository, IProgressMonitor monitor) {
 		return new MylynMockMilestoneMapping();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see org.tuleap.mylyn.task.agile.ui.AbstractAgileRepositoryConnectorUI#getNewMilestoneMapping(org.eclipse.mylyn.tasks.core.data.TaskData,
+	 *      java.lang.String, org.eclipse.mylyn.tasks.core.TaskRepository,
+	 *      org.eclipse.core.runtime.IProgressMonitor)
+	 */
+	@Override
+	public IBacklogItemMapping getNewBacklogItemMapping(TaskData planningTaskData, String parentMilestoneId,
+			TaskRepository taskRepository, IProgressMonitor monitor) {
+		return new MylynMockBacklogItemMapping();
 	}
 
 	/**

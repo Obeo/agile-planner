@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Obeo - initial API and implementation
  *******************************************************************************/
@@ -12,7 +12,7 @@ package org.tuleap.mylyn.task.internal.agile.ui.util;
 
 /**
  * This interface will be used to hold the paths of all the icons used in the bundle.
- * 
+ *
  * @author <a href="mailto:stephane.begaudeau@obeo.fr">Stephane Begaudeau</a>
  */
 public interface IMylynAgileIcons {
@@ -70,4 +70,9 @@ public interface IMylynAgileIcons {
 	 * Expanded hovered (arrow towards bottom).
 	 */
 	String DETAILS_OPEN_HOVER = "icons/commons/details_open_hov.gif"; //$NON-NLS-1$
+
+	/**
+	 * The new BacklogItem icon.
+	 */
+	String NEW_BACKLOGITEM = "icons/editors/planning/new-backlogItem.gif"; //$NON-NLS-1$
 }

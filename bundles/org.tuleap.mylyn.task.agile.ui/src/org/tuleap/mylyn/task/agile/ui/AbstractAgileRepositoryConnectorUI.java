@@ -14,6 +14,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
+import org.tuleap.mylyn.task.agile.core.IBacklogItemMapping;
 import org.tuleap.mylyn.task.agile.core.IMilestoneMapping;
 import org.tuleap.mylyn.task.agile.ui.task.IModelRegistry;
 import org.tuleap.mylyn.task.internal.agile.ui.task.ModelRegistry;
@@ -54,6 +55,24 @@ public abstract class AbstractAgileRepositoryConnectorUI {
 	 * @return The wizard to create the task that represents the milestone.
 	 */
 	public abstract IMilestoneMapping getNewMilestoneMapping(TaskData planningTaskData,
+			String parentMilestoneId, TaskRepository taskRepository, IProgressMonitor monitor);
+
+	/**
+	 * Provides the mapping for BacklogItem creation. A BacklogItem is created within a parent planning. This
+	 * mapping will be provided to the {@link org.eclipse.mylyn.tasks.core.data.AbstractTaskDataHandler} of
+	 * the connector in order to create the BacklogItem.
+	 * 
+	 * @param planningTaskData
+	 *            The task data of the parent planning where the BacklogItem is to be created.
+	 * @param parentMilestoneId
+	 *            The identifier of the parent milestone
+	 * @param taskRepository
+	 *            The task repository of the planning that should also host the new BacklogItem.
+	 * @param monitor
+	 *            The progress monitor to use for monitoring progress...
+	 * @return The wizard to create the task that represents the BacklogItem.
+	 */
+	public abstract IBacklogItemMapping getNewBacklogItemMapping(TaskData planningTaskData,
 			String parentMilestoneId, TaskRepository taskRepository, IProgressMonitor monitor);
 
 	/**
