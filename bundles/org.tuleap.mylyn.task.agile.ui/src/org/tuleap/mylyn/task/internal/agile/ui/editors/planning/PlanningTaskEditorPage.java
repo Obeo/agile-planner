@@ -178,22 +178,87 @@ public class PlanningTaskEditorPage extends AbstractTaskEditorPage implements IS
 		rightPane.setLayout(FormLayoutFactory.createFormPaneTableWrapLayout(false, 1));
 		rightPane.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
 
-		BurndownMapper burndown = new BurndownMapper(getModel().getTaskData());
-		if (burndown.getBurndownData() != null) {
-			burndownPart = new BurndownTaskEditorPart();
-			burndownPart.initialize(this);
-			burndownPart.createControl(leftPane, toolkit);
-		}
+		TaskAttribute milestonesAtt = getModel().getTaskData().getRoot().getAttribute(
+				MilestonePlanningWrapper.MILESTONE_LIST);
+		TaskAttribute burndownAtt = getModel().getTaskData().getRoot().getAttribute(
+				BurndownMapper.BURNDOWN_ID);
+		TaskAttribute backlogAtt = getModel().getTaskData().getRoot().getAttribute(
+				MilestonePlanningWrapper.BACKLOG);
 
+		if (backlogAtt != null) {
+			if (milestonesAtt != null) {
+				createAllParts(toolkit, leftPane, rightPane, milestonesAtt, burndownAtt);
+			} else {
+				createSpecificParts(toolkit, leftPane, rightPane, burndownAtt);
+			}
+		}
+	}
+
+	/**
+	 * Create submilestones, backlog and burndown parts.
+	 *
+	 * @param toolkit
+	 *            The toolkit
+	 * @param leftPane
+	 *            The left pane
+	 * @param rightPane
+	 *            The right pane
+	 * @param milestonesAtt
+	 *            The milestone's attribute
+	 * @param burndownAtt
+	 *            the burndown's attribute
+	 */
+	private void createAllParts(FormToolkit toolkit, Composite leftPane, Composite rightPane,
+			TaskAttribute milestonesAtt, TaskAttribute burndownAtt) {
 		backlogPart = new BacklogTaskEditorPart();
 		getManagedForm().addPart(backlogPart);
 		backlogPart.initialize(this);
-		backlogPart.createControl(leftPane, toolkit);
-
 		milestonesPart = new SubMilestoneListTaskEditorPart();
 		getManagedForm().addPart(milestonesPart);
 		milestonesPart.initialize(this);
 		milestonesPart.createControl(rightPane, toolkit);
+		if (burndownAtt != null) {
+			BurndownMapper burndown = new BurndownMapper(getModel().getTaskData());
+			if (burndown.getBurndownData() != null) {
+				burndownPart = new BurndownTaskEditorPart();
+				burndownPart.initialize(this);
+				burndownPart.createControl(leftPane, toolkit);
+			}
+		}
+		backlogPart.createControl(leftPane, toolkit);
+	}
+
+	/**
+	 * Create backlog and burndown parts and not submilestones one.
+	 *
+	 * @param toolkit
+	 *            The toolkit
+	 * @param leftPane
+	 *            The left pane
+	 * @param rightPane
+	 *            The right pane
+	 * @param burndownAtt
+	 *            the burndown's attribute
+	 */
+	private void createSpecificParts(FormToolkit toolkit, Composite leftPane, Composite rightPane,
+			TaskAttribute burndownAtt) {
+		backlogPart = new BacklogTaskEditorPart();
+		getManagedForm().addPart(backlogPart);
+		backlogPart.initialize(this);
+		if (burndownAtt != null) {
+			BurndownMapper burndown = new BurndownMapper(getModel().getTaskData());
+			if (burndown.getBurndownData() != null) {
+				burndownPart = new BurndownTaskEditorPart();
+				burndownPart.initialize(this);
+				burndownPart.createControl(leftPane, toolkit);
+			}
+			backlogPart.createControl(rightPane, toolkit);
+		} else {
+			Composite wholeBody = getManagedForm().getForm().getBody();
+			wholeBody.setLayout(FormLayoutFactory.createFormPaneTableWrapLayout(false, 1));
+			wholeBody.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
+			backlogPart.createControl(wholeBody, toolkit);
+		}
 	}
 
 	/**

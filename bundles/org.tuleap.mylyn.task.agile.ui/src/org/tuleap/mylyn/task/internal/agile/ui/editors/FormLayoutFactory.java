@@ -4,7 +4,7 @@
  *  are made available under the terms of the Eclipse Public License v1.0
  *  which accompanies this distribution, and is available at
  *  http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  *  Contributors:
  *     IBM Corporation - initial API and implementation
  *     Obeo - Addition in Mylyn Agile + javadoc
@@ -18,7 +18,7 @@ import org.eclipse.ui.forms.widgets.TableWrapLayout;
 
 /**
  * Utility class copied from {@link org.eclipse.pde.internal.ui.editor.FormLayoutFactory}.
- * 
+ *
  * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
  */
 @SuppressWarnings("all")
@@ -133,7 +133,7 @@ public class FormLayoutFactory {
 	public static final int MASTER_DETAILS_MARGIN_WIDTH = 0;
 
 	/**
-	 * 
+	 *
 	 */
 	private FormLayoutFactory() {
 		// NO-OP
@@ -141,7 +141,7 @@ public class FormLayoutFactory {
 
 	/**
 	 * For form bodies.
-	 * 
+	 *
 	 * @param makeColumnsEqualWidth
 	 * @param numColumns
 	 */
@@ -167,7 +167,7 @@ public class FormLayoutFactory {
 
 	/**
 	 * For miscellaneous grouping composites. For sections (as a whole - header plus client).
-	 * 
+	 *
 	 * @param makeColumnsEqualWidth
 	 * @param numColumns
 	 */
@@ -193,7 +193,7 @@ public class FormLayoutFactory {
 
 	/**
 	 * For form bodies.
-	 * 
+	 *
 	 * @param makeColumnsEqualWidth
 	 * @param numColumns
 	 */
@@ -216,7 +216,7 @@ public class FormLayoutFactory {
 
 	/**
 	 * For composites used to group sections in left and right panes.
-	 * 
+	 *
 	 * @param makeColumnsEqualWidth
 	 * @param numColumns
 	 */
@@ -238,8 +238,31 @@ public class FormLayoutFactory {
 	}
 
 	/**
+	 * For composites used to whole section.
+	 *
+	 * @param makeColumnsEqualWidth
+	 * @param numColumns
+	 */
+	public static TableWrapLayout createFormWholeTableWrapLayout(boolean makeColumnsEqualWidth, int numColumns) {
+		TableWrapLayout layout = new TableWrapLayout();
+
+		layout.topMargin = FORM_PANE_MARGIN_TOP;
+		layout.bottomMargin = FORM_PANE_MARGIN_BOTTOM;
+		layout.leftMargin = FORM_PANE_MARGIN_LEFT;
+		layout.rightMargin = FORM_PANE_MARGIN_RIGHT;
+		//
+		// layout.horizontalSpacing = 70;
+		// layout.verticalSpacing = 35;
+
+		layout.makeColumnsEqualWidth = makeColumnsEqualWidth;
+		layout.numColumns = numColumns;
+
+		return layout;
+	}
+
+	/**
 	 * For composites used to group sections in left and right panes.
-	 * 
+	 *
 	 * @param makeColumnsEqualWidth
 	 * @param numColumns
 	 */
@@ -265,7 +288,7 @@ public class FormLayoutFactory {
 
 	/**
 	 * For miscellaneous grouping composites. For sections (as a whole - header plus client).
-	 * 
+	 *
 	 * @param makeColumnsEqualWidth
 	 * @param numColumns
 	 */
@@ -288,7 +311,7 @@ public class FormLayoutFactory {
 
 	/**
 	 * For master sections belonging to a master details block.
-	 * 
+	 *
 	 * @param makeColumnsEqualWidth
 	 * @param numColumns
 	 */
@@ -328,7 +351,7 @@ public class FormLayoutFactory {
 
 	/**
 	 * For details sections belonging to a master details block.
-	 * 
+	 *
 	 * @param makeColumnsEqualWidth
 	 * @param numColumns
 	 */
@@ -368,7 +391,7 @@ public class FormLayoutFactory {
 
 	/**
 	 * For composites set as section clients. For composites containg form text.
-	 * 
+	 *
 	 * @param makeColumnsEqualWidth
 	 * @param numColumns
 	 */
@@ -394,7 +417,7 @@ public class FormLayoutFactory {
 
 	/**
 	 * For composites set as section clients. For composites containg form text.
-	 * 
+	 *
 	 * @param makeColumnsEqualWidth
 	 * @param numColumns
 	 */
