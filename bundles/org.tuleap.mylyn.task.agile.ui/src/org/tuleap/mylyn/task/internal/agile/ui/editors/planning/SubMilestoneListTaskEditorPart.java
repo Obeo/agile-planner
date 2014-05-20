@@ -35,7 +35,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
@@ -174,7 +173,8 @@ public class SubMilestoneListTaskEditorPart extends AbstractTableTaskEditorPart 
 				};
 
 				try {
-					PlatformUI.getWorkbench().getProgressService().run(false, false, runnable);
+					SubMilestoneListTaskEditorPart.this.getTaskEditorPage().getEditorSite()
+							.getWorkbenchWindow().run(false, false, runnable);
 				} catch (InvocationTargetException e) {
 					MylynAgileUIActivator.log(e, true);
 				} catch (InterruptedException e) {
@@ -212,9 +212,6 @@ public class SubMilestoneListTaskEditorPart extends AbstractTableTaskEditorPart 
 						newMilestoneTaskData, mapping, monitor);
 				if (isInitialized) {
 					TasksUiInternal.createAndOpenNewTask(newMilestoneTaskData);
-				} else {
-					MylynAgileUIActivator.log(MylynAgileUIMessages.getString(
-							"PlanningTaskEditorPart.InvalidInitializationNewMilestone", connectorKind), true); //$NON-NLS-1$
 				}
 			} catch (CoreException e) {
 				MylynAgileUIActivator.log(e, true);

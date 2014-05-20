@@ -32,7 +32,6 @@ import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
@@ -116,7 +115,8 @@ public class BacklogTaskEditorPart extends AbstractTableTaskEditorPart {
 				};
 
 				try {
-					PlatformUI.getWorkbench().getProgressService().run(false, false, runnable);
+					BacklogTaskEditorPart.this.getTaskEditorPage().getEditorSite().getWorkbenchWindow().run(
+							false, false, runnable);
 				} catch (InvocationTargetException e) {
 					MylynAgileUIActivator.log(e, true);
 				} catch (InterruptedException e) {
@@ -154,11 +154,6 @@ public class BacklogTaskEditorPart extends AbstractTableTaskEditorPart {
 						mapping, monitor);
 				if (isInitialized) {
 					TasksUiInternal.createAndOpenNewTask(newBITaskData);
-				} else {
-					MylynAgileUIActivator
-					.log(MylynAgileUIMessages
-							.getString(
-									"PlanningTaskEditorPart.InvalidInitializationNewBacklogItem", connectorKind), true); //$NON-NLS-1$
 				}
 			} catch (CoreException e) {
 				MylynAgileUIActivator.log(e, true);
