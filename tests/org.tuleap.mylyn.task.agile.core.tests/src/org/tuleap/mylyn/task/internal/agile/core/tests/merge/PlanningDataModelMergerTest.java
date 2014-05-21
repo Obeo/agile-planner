@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Obeo - initial API and implementation
  *******************************************************************************/
@@ -35,7 +35,7 @@ import static org.junit.Assert.assertFalse;
 
 /**
  * Tests of {@link PlanningDataModelMerger}.
- * 
+ *
  * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
  */
 public class PlanningDataModelMergerTest {
@@ -83,6 +83,7 @@ public class PlanningDataModelMergerTest {
 			LinkedHashMap<String, List<String>> milestoneIds) {
 		TaskAttribute root = taskData.getRoot();
 		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(root);
+		wrapper.setAllowedToHaveSubmilestones(true);
 		wrapper.setLabel("Milestone Test");
 		wrapper.setDisplayId("123");
 		wrapper.setHasCardwall(false);

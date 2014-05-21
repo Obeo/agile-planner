@@ -96,8 +96,10 @@ public class SubMilestoneListTaskEditorPart extends AbstractTableTaskEditorPart 
 		milestoneListClient.setLayout(FormLayoutFactory.createFormPaneTableWrapLayout(false, 1));
 		milestoneListClient.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
 		milestoneList.setClient(milestoneListClient);
-		for (SubMilestoneWrapper subMilestone : Lists.reverse(getWrapper().getSubMilestones())) {
-			createMilestoneSection(toolkit, subMilestone, milestoneListClient);
+		if (getWrapper().isAllowedToHaveSubmilestones()) {
+			for (SubMilestoneWrapper subMilestone : Lists.reverse(getWrapper().getSubMilestones())) {
+				createMilestoneSection(toolkit, subMilestone, milestoneListClient);
+			}
 		}
 		addNewMilestoneAction(toolbarManager);
 		addCollapseAllAction(milestoneListClient, toolbarManager);
@@ -167,7 +169,7 @@ public class SubMilestoneListTaskEditorPart extends AbstractTableTaskEditorPart 
 				IRunnableWithProgress runnable = new IRunnableWithProgress() {
 					@Override
 					public void run(IProgressMonitor monitor) throws InvocationTargetException,
-							InterruptedException {
+					InterruptedException {
 						createNewMilestone(monitor);
 					}
 				};

@@ -74,11 +74,6 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 	public static final String BACKLOG_REF = "mta_backlog_ref"; //$NON-NLS-1$
 
 	/**
-	 * The attribute that represents the list of the sub-milestones.
-	 */
-	private final TaskAttribute submilestoneList;
-
-	/**
 	 * The attribute that represents the list of the backlog items.
 	 */
 	private final TaskAttribute backlog;
@@ -92,18 +87,12 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 	 */
 	public MilestonePlanningWrapper(final TaskAttribute root) {
 		super(root, MILESTONE_PLANNING, ""); //$NON-NLS-1$
-		TaskAttribute milestonesAtt = root.getAttribute(MILESTONE_LIST);
-		if (milestonesAtt == null) {
-			milestonesAtt = root.createAttribute(MILESTONE_LIST);
-			milestonesAtt.getMetaData().setReadOnly(true);
-		}
 		TaskAttribute backlogAtt = root.getAttribute(BACKLOG);
 		if (backlogAtt == null) {
 			backlogAtt = root.createAttribute(BACKLOG);
 			backlogAtt.getMetaData().setReadOnly(true);
 		}
 		backlog = backlogAtt;
-		submilestoneList = milestonesAtt;
 	}
 
 	/**
@@ -139,11 +128,16 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 	 * @param id
 	 *            the sub-milestone identifier
 	 * @return A new wrapper for a new task attribute that is created by invoking this method.
+	 * @throws IllegalStateException
+	 *             If the milestone is not allowed to have submilestones
 	 */
-	public SubMilestoneWrapper addSubMilestone(String id) {
-		SubMilestoneWrapper w = wrapSubMilestone(id);
-		submilestoneList.addValue(id);
-		return w;
+	public SubMilestoneWrapper addSubMilestone(String id) throws IllegalStateException {
+		if (root.getAttribute(MILESTONE_LIST) != null) {
+			SubMilestoneWrapper w = wrapSubMilestone(id);
+			root.getAttribute(MILESTONE_LIST).addValue(id);
+			return w;
+		}
+		throw new IllegalStateException("The milestone is not allowed to have submilestones"); //$NON-NLS-1$
 	}
 
 	/**
@@ -153,8 +147,10 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 	 */
 	public List<SubMilestoneWrapper> getSubMilestones() {
 		List<SubMilestoneWrapper> result = newArrayList();
-		for (String milestoneId : submilestoneList.getValues()) {
-			result.add(wrapSubMilestone(milestoneId));
+		if (root.getAttribute(MILESTONE_LIST) != null) {
+			for (String milestoneId : root.getAttribute(MILESTONE_LIST).getValues()) {
+				result.add(wrapSubMilestone(milestoneId));
+			}
 		}
 		return result;
 	}
@@ -165,7 +161,10 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 	 * @return the number of sub-milestones in this planning.
 	 */
 	public int submilestonesCount() {
-		return submilestoneList.getValues().size();
+		if (root.getAttribute(MILESTONE_LIST) != null) {
+			return root.getAttribute(MILESTONE_LIST).getValues().size();
+		}
+		return 0;
 	}
 
 	/**
@@ -232,14 +231,14 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 		if (id != null) {
 			Iterator<SubMilestoneWrapper> candidates = Iterators.filter(getSubMilestones().iterator(),
 					new Predicate<SubMilestoneWrapper>() {
-						/**
-						 * {@inheritDoc}
-						 */
-						@Override
-						public boolean apply(SubMilestoneWrapper w) {
-							return id.equals(w.getId());
-						}
-					});
+				/**
+				 * {@inheritDoc}
+				 */
+				@Override
+				public boolean apply(SubMilestoneWrapper w) {
+					return id.equals(w.getId());
+				}
+			});
 			if (candidates.hasNext()) {
 				return candidates.next();
 			}
@@ -429,7 +428,7 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 	 * @return The wrapped task attribute that represents the milestone list.
 	 */
 	public TaskAttribute getSubMilestoneListTaskAttribute() {
-		return submilestoneList;
+		return root.getAttribute(MILESTONE_LIST);
 	}
 
 	/**
@@ -498,8 +497,40 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 			ref.setValues(backlog.getValues());
 			fireAttributeChanged(backlog);
 		}
-		for (SubMilestoneWrapper subMilestone : getSubMilestones()) {
-			subMilestone.markReference();
+		if (this.isAllowedToHaveSubmilestones()) {
+			for (SubMilestoneWrapper subMilestone : getSubMilestones()) {
+				subMilestone.markReference();
+			}
 		}
+	}
+
+	/**
+	 * Indicates whether the milestone is allowed to have submilestones or not .
+	 *
+	 * @return <code>true</code> if the submilestones list is not null.
+	 */
+	public boolean isAllowedToHaveSubmilestones() {
+		return root.getAttribute(MILESTONE_LIST) != null;
+	}
+
+	/**
+	 * Allow or not the milestone to have submilestones.
+	 *
+	 * @param allowed
+	 *            Indicates whether the milestone is allowed to have submilestones or not.
+	 */
+	public void setAllowedToHaveSubmilestones(boolean allowed) {
+		TaskAttribute milestonesAtt = root.getAttribute(MILESTONE_LIST);
+		if (allowed) {
+			if (milestonesAtt == null) {
+				milestonesAtt = root.createAttribute(MILESTONE_LIST);
+				milestonesAtt.getMetaData().setReadOnly(true);
+			}
+		} else {
+			if (milestonesAtt != null) {
+				root.removeAttribute(MILESTONE_LIST);
+			}
+		}
+
 	}
 }

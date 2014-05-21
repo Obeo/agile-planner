@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Obeo - initial API and implementation
  *******************************************************************************/
@@ -29,7 +29,7 @@ import static org.junit.Assert.assertTrue;
 
 /**
  * Tests of the milestone planning task mapper.
- * 
+ *
  * @author <a href="mailto:firas.bacha@obeo.fr">Firas Bacha</a>
  */
 public class MilestonePlanningWrapperMovingBacklogItemsTest {
@@ -161,11 +161,12 @@ public class MilestonePlanningWrapperMovingBacklogItemsTest {
 	public void setUp() {
 		String repositoryUrl = "repository"; //$NON-NLS-1$
 		String connectorKind = "kind"; //$NON-NLS-1$
-		String taskId = "id"; //$NON-NLS-1$ 
+		String taskId = "id"; //$NON-NLS-1$
 		TaskRepository taskRepository = new TaskRepository(connectorKind, repositoryUrl);
 		TaskAttributeMapper mapper = new TaskAttributeMapper(taskRepository);
 		taskData = new TaskData(mapper, connectorKind, repositoryUrl, taskId);
 		wrapper = new MilestonePlanningWrapper(taskData.getRoot());
+		wrapper.setAllowedToHaveSubmilestones(true);
 		// Date testDate = new Date();
 		subMilestone1 = wrapper.addSubMilestone("100");
 		subMilestone2 = wrapper.addSubMilestone("200");

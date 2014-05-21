@@ -34,7 +34,7 @@ public class BacklogModelTest extends AbstractBacklogTest {
 	@Test
 	public void testMilestoneBacklogModel() {
 		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(taskData.getRoot());
-
+		wrapper.setAllowedToHaveSubmilestones(true);
 		SubMilestoneWrapper subMilestone = wrapper.addSubMilestone("200"); //$NON-NLS-1$
 		subMilestone.setCapacity("20");
 		subMilestone.setLabel("Milestone 1"); //$NON-NLS-1$
@@ -64,7 +64,7 @@ public class BacklogModelTest extends AbstractBacklogTest {
 	@Test
 	public void testSubMilestoneBacklogModel() {
 		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(taskData.getRoot());
-
+		wrapper.setAllowedToHaveSubmilestones(true);
 		SubMilestoneWrapper subMilestone = wrapper.addSubMilestone("200"); //$NON-NLS-1$
 		subMilestone.setCapacity("20");
 		subMilestone.setLabel("Milestone 1"); //$NON-NLS-1$

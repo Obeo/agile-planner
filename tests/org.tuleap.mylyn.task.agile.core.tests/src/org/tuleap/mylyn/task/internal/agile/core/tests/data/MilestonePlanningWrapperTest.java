@@ -50,11 +50,12 @@ public class MilestonePlanningWrapperTest {
 
 	/**
 	 * Tests the basic manipulation of a MilestonePlanningWrapper to ensure the TaskAttribute structure is
-	 * correct.
+	 * correct when creating submilestones is allowed.
 	 */
 	@Test
-	public void testMilestoneCreation() {
+	public void testAllowedMilestoneCreation() {
 		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(taskData.getRoot());
+		wrapper.setAllowedToHaveSubmilestones(true);
 		SubMilestoneWrapper subMilestone = wrapper.addSubMilestone("200");
 		subMilestone.setCapacity("20");
 		subMilestone.setLabel("Milestone 1"); //$NON-NLS-1$
@@ -131,6 +132,16 @@ public class MilestonePlanningWrapperTest {
 	}
 
 	/**
+	 * Tests the basic manipulation of a MilestonePlanningWrapper to ensure the TaskAttribute structure is
+	 * correct when creating submilestones is not allowed.
+	 */
+	@Test(expected = IllegalStateException.class)
+	public void testNotAllowedMilestoneCreation() {
+		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(taskData.getRoot());
+		wrapper.addSubMilestone("200");
+	}
+
+	/**
 	 * Tests the setting and reading of titles in the milestone planning wrapper.
 	 */
 	@Test
@@ -150,6 +161,7 @@ public class MilestonePlanningWrapperTest {
 	@Test
 	public void testReadAndWrite() {
 		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(taskData.getRoot());
+		wrapper.setAllowedToHaveSubmilestones(true);
 		SubMilestoneWrapper subMilestone = wrapper.addSubMilestone("200");
 		subMilestone.setCapacity("20");
 		String label0 = "Milestone 1"; //$NON-NLS-1$
@@ -189,6 +201,7 @@ public class MilestonePlanningWrapperTest {
 	@Test
 	public void testMilestoneWithoutOptionalFields() {
 		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(taskData.getRoot());
+		wrapper.setAllowedToHaveSubmilestones(true);
 		// Date testDate = new Date();
 		SubMilestoneWrapper subMilestone = wrapper.addSubMilestone("-1");
 		BacklogItemWrapper backlogItem = wrapper.addBacklogItem("-1");
@@ -223,6 +236,7 @@ public class MilestonePlanningWrapperTest {
 	@Test
 	public void testGetMilestoneById() {
 		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(taskData.getRoot());
+		wrapper.setAllowedToHaveSubmilestones(true);
 		wrapper.addSubMilestone("123");
 		assertNull(wrapper.getSubMilestone("122"));
 		SubMilestoneWrapper other = wrapper.getSubMilestone("123");
@@ -250,6 +264,7 @@ public class MilestonePlanningWrapperTest {
 	public void testNotificationsWithOneListener() {
 		TestChangeListener listener = new TestChangeListener();
 		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(taskData.getRoot());
+		wrapper.setAllowedToHaveSubmilestones(true);
 		wrapper.addListener(listener);
 
 		SubMilestoneWrapper subMilestone = wrapper.addSubMilestone("200");
@@ -506,6 +521,7 @@ public class MilestonePlanningWrapperTest {
 	@Test
 	public void testMarkReferenceWithSubMilestones() {
 		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(taskData.getRoot());
+		wrapper.setAllowedToHaveSubmilestones(true);
 		wrapper.addBacklogItem("0");
 		wrapper.addBacklogItem("1");
 		wrapper.addBacklogItem("2");
@@ -528,6 +544,7 @@ public class MilestonePlanningWrapperTest {
 	@Test
 	public void testMarkReferenceTwiceWithSubMilestones() {
 		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(taskData.getRoot());
+		wrapper.setAllowedToHaveSubmilestones(true);
 		wrapper.addBacklogItem("0");
 		wrapper.addBacklogItem("1");
 		wrapper.addBacklogItem("2");
@@ -569,6 +586,7 @@ public class MilestonePlanningWrapperTest {
 	@Test
 	public void testGetSubMilestonesTaskAttribute() {
 		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(taskData.getRoot());
+		wrapper.setAllowedToHaveSubmilestones(true);
 		SubMilestoneWrapper mi1 = wrapper.addSubMilestone("mi1");
 		mi1.addBacklogItem("3");
 		mi1.addBacklogItem("4");
@@ -584,6 +602,7 @@ public class MilestonePlanningWrapperTest {
 	@Test
 	public void testGetParentMilestone() {
 		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(taskData.getRoot());
+		wrapper.setAllowedToHaveSubmilestones(true);
 		BacklogItemWrapper bi1 = wrapper.addBacklogItem("1");
 		SubMilestoneWrapper mi1 = wrapper.addSubMilestone("mi1");
 		BacklogItemWrapper bi3 = mi1.addBacklogItem("3");

@@ -61,22 +61,22 @@ public class PlanningDataModelMerger {
 		boolean madeAChange = false;
 		for (Entry<String, List<String>> entry : merge.entrySet()) {
 			String key = entry.getKey();
-			TaskAttribute attribute;
+			TaskAttribute attribute = null;
 			if (key == null) {
 				attribute = wrapper.getBacklogTaskAttribute();
-			} else {
+			} else if (wrapper.isAllowedToHaveSubmilestones()) {
 				attribute = wrapper.getSubMilestone(key).getWrappedAttribute();
 			}
 			List<String> values = entry.getValue();
-			if (!values.equals(attribute.getValues())) {
-				// Only change if there is an actual change to make
+			if (attribute != null && !values.equals(attribute.getValues())) {
+				// Only change if there is an actual change to makewra
 				attribute.setValues(values);
 				madeAChange = true;
 				model.attributeChanged(attribute);
 				List<String> newReferencevalues = getRepositoryAttribute(attribute).getValues();
 				if (key == null) {
 					wrapper.setBacklogReference(newReferencevalues);
-				} else {
+				} else if (wrapper.isAllowedToHaveSubmilestones()) {
 					wrapper.getSubMilestone(key).setBacklogReference(newReferencevalues);
 				}
 			}
@@ -100,17 +100,19 @@ public class PlanningDataModelMerger {
 		BasicThreeWayList<String> list3W = new BasicThreeWayList<String>(null, ancestor.getValues(), local
 				.getValues(), remote.getValues());
 		lists.add(list3W);
-		for (SubMilestoneWrapper subMilestone : wrapper.getSubMilestones()) {
-			String milestoneId = subMilestone.getId();
-			local = subMilestone.getWrappedAttribute();
-			ancestor = subMilestone.getReferenceWrappedAttribute();
-			remote = getRepositoryAttribute(local);
-			if (ancestor == null) {
-				ancestor = remote;
+		if (wrapper.isAllowedToHaveSubmilestones()) {
+			for (SubMilestoneWrapper subMilestone : wrapper.getSubMilestones()) {
+				String milestoneId = subMilestone.getId();
+				local = subMilestone.getWrappedAttribute();
+				ancestor = subMilestone.getReferenceWrappedAttribute();
+				remote = getRepositoryAttribute(local);
+				if (ancestor == null) {
+					ancestor = remote;
+				}
+				list3W = new BasicThreeWayList<String>(milestoneId, ancestor.getValues(), local.getValues(),
+						remote.getValues());
+				lists.add(list3W);
 			}
-			list3W = new BasicThreeWayList<String>(milestoneId, ancestor.getValues(), local.getValues(),
-					remote.getValues());
-			lists.add(list3W);
 		}
 		return lists;
 	}

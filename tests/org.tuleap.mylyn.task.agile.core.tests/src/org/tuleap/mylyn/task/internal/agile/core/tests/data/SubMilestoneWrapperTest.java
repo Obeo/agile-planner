@@ -63,6 +63,7 @@ public class SubMilestoneWrapperTest {
 		taskData = new TaskData(mapper, connectorKind, repositoryUrl, taskId);
 		testDate = new Date();
 		planning = new MilestonePlanningWrapper(taskData.getRoot());
+		planning.setAllowedToHaveSubmilestones(true);
 	}
 
 	/**
@@ -92,6 +93,7 @@ public class SubMilestoneWrapperTest {
 	 */
 	@Test
 	public void testStartDate() {
+
 		SubMilestoneWrapper wrapper = planning.addSubMilestone("an id");
 		assertNull(wrapper.getStartDate());
 		wrapper.setStartDate(testDate);
@@ -104,6 +106,7 @@ public class SubMilestoneWrapperTest {
 	 */
 	@Test
 	public void testEndDate() {
+
 		SubMilestoneWrapper wrapper = planning.addSubMilestone("an id");
 		assertNull(wrapper.getEndDate());
 		wrapper.setEndDate(testDate);
