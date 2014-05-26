@@ -11,14 +11,14 @@
 package org.tuleap.mylyn.task.internal.agile.mock.connector.ui;
 
 import org.eclipse.mylyn.tasks.core.TaskMapping;
-import org.tuleap.mylyn.task.agile.core.IBacklogItemMapping;
+import org.tuleap.mylyn.task.agile.core.ICardMapping;
 
 /**
- * The mapping of the card.
+ * The mapping of the backlogItem.
  *
  * @author <a href="mailto:firas.bacha@obeo.fr">Firas Bacha</a>
  */
-public class MylynMockBacklogItemMapping extends TaskMapping implements IBacklogItemMapping {
+public class MylynMockCardMapping extends TaskMapping implements ICardMapping {
 
 	/**
 	 * {@inheritDoc}
@@ -26,7 +26,7 @@ public class MylynMockBacklogItemMapping extends TaskMapping implements IBacklog
 	 * @see org.tuleap.mylyn.task.agile.core.IBacklogItemMapping#getParentMilestoneId()
 	 */
 	@Override
-	public String getParentMilestoneId() {
+	public String getParentCard() {
 		return "A/B/C"; //$NON-NLS-1$
 	}
 

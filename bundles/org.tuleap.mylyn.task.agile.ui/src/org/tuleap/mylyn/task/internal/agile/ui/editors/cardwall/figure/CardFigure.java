@@ -27,13 +27,16 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.Image;
 import org.tuleap.mylyn.task.internal.agile.ui.MylynAgileUIActivator;
+import org.tuleap.mylyn.task.internal.agile.ui.util.IMylynAgileIcons;
 import org.tuleap.mylyn.task.internal.agile.ui.util.IMylynAgileUIConstants;
 
 /**
  * Figure representing a card in the card wall.
  *
  * @author <a href="mailto:cedric.notot@obeo.fr">Cedric Notot</a>
+ * @author <a href="mailto:firas.bacha@obeo.fr">Firas Bacha</a>
  */
 public class CardFigure extends Figure {
 	/**
@@ -60,6 +63,11 @@ public class CardFigure extends Figure {
 	 * The url of the card.
 	 */
 	private Label urlLabel;
+
+	/**
+	 * The new card creation label.
+	 */
+	private Label newCardLabel;
 
 	/**
 	 * The panel containing the data of the card.
@@ -200,7 +208,7 @@ public class CardFigure extends Figure {
 	 */
 	private void addUrl() {
 		Panel urlPanel = new Panel();
-		GridLayout urlLayout = new GridLayout(1, false);
+		GridLayout urlLayout = new GridLayout(2, false);
 		urlLayout.marginWidth = 0;
 		urlLayout.marginHeight = 0;
 		urlPanel.setLayoutManager(urlLayout);
@@ -208,6 +216,25 @@ public class CardFigure extends Figure {
 		urlLabel.setForegroundColor(ColorConstants.gray);
 		urlPanel.add(urlLabel);
 		urlLayout.setConstraint(urlLabel, new GridData(SWT.LEFT, SWT.FILL, true, true));
+		addNewCardAction(urlPanel, urlLayout);
+	}
+
+	/**
+	 * Add the new card creation action.
+	 *
+	 * @param urlPanel
+	 *            The panel
+	 * @param urlLayout
+	 *            The layout
+	 */
+	private void addNewCardAction(Panel urlPanel, GridLayout urlLayout) {
+		newCardLabel = new Label();
+		Image openIcon = MylynAgileUIActivator.getDefault().getImage(IMylynAgileIcons.NEW_BACKLOGITEM);
+		newCardLabel.setIcon(openIcon);
+		newCardLabel.addMouseMotionListener(new CreateCardMouseMotionListener(newCardLabel));
+		newCardLabel.setForegroundColor(ColorConstants.gray);
+		urlPanel.add(newCardLabel);
+		urlLayout.setConstraint(newCardLabel, new GridData(SWT.RIGHT, SWT.FILL, true, true));
 		contentPanel.add(urlPanel);
 	}
 
@@ -218,6 +245,15 @@ public class CardFigure extends Figure {
 	 */
 	public Label getUrl() {
 		return this.urlLabel;
+	}
+
+	/**
+	 * Get the new card creation label.
+	 *
+	 * @return The new card creation label.
+	 */
+	public Label getNewCardLabel() {
+		return this.newCardLabel;
 	}
 
 	/**

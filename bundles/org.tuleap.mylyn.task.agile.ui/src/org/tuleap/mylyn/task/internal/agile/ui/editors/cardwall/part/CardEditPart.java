@@ -14,26 +14,35 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseListener;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
+import org.eclipse.mylyn.internal.tasks.ui.util.TasksUiInternal;
+import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.eclipse.mylyn.tasks.core.data.AbstractTaskDataHandler;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPart;
+import org.tuleap.mylyn.task.agile.core.ICardMapping;
 import org.tuleap.mylyn.task.agile.core.data.cardwall.CardWrapper;
+import org.tuleap.mylyn.task.agile.ui.AbstractAgileRepositoryConnectorUI;
+import org.tuleap.mylyn.task.internal.agile.ui.MylynAgileUIActivator;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.figure.CardDetailsPanel;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.figure.CardFigure;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.figure.URLMouseMotionListener;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.CardModel;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.ICardwallProperties;
+import org.tuleap.mylyn.task.internal.agile.ui.util.MylynAgileUIMessages;
 
 /**
  * The edit part for the cards.
  *
  * @author <a href="mailto:cedric.notot@obeo.fr">Cedric Notot</a>
+ * @author <a href="mailto:firas.bacha@obeo.fr">Firas Bacha</a>
  */
 public class CardEditPart extends AbstractGraphicalEditPart {
 
@@ -51,6 +60,11 @@ public class CardEditPart extends AbstractGraphicalEditPart {
 	 * Listener for clicking on the card's ID.
 	 */
 	private MouseListener urlMouseListener;
+
+	/**
+	 * Listener for clicking on the new card creation.
+	 */
+	private MouseListener createCardMouseListener;
 
 	/**
 	 * Listener for hovering the card's ID.
@@ -212,6 +226,24 @@ public class CardEditPart extends AbstractGraphicalEditPart {
 		getCardFigure().getUrl().addMouseListener(urlMouseListener);
 		urlMouseMotionListener = new URLMouseMotionListener();
 		getCardFigure().getUrl().addMouseMotionListener(urlMouseMotionListener);
+
+		createCardMouseListener = new MouseListener() {
+			@Override
+			public void mouseReleased(MouseEvent me) {
+				//
+			}
+
+			@Override
+			public void mousePressed(MouseEvent me) {
+				createNewcard();
+			}
+
+			@Override
+			public void mouseDoubleClicked(MouseEvent me) {
+				//
+			}
+		};
+		getCardFigure().getNewCardLabel().addMouseListener(createCardMouseListener);
 	}
 
 	/**
@@ -239,6 +271,42 @@ public class CardEditPart extends AbstractGraphicalEditPart {
 				taskData.getRepositoryUrl());
 		if (repository != null) {
 			TasksUiUtil.openTask(repository, card.getArtifactId());
+		}
+	}
+
+	/**
+	 * Create new card.
+	 */
+	private void createNewcard() {
+		CardModel cardModel = (CardModel)getModel();
+		CardWrapper card = cardModel.getWrapper();
+		TaskData taskData = card.getRoot().getTaskData();
+		String connectorKind = taskData.getConnectorKind();
+		AbstractAgileRepositoryConnectorUI connector = MylynAgileUIActivator.getDefault()
+				.getServiceTrackerCustomizer().getConnector(connectorKind);
+		TaskRepository taskRepository = TasksUi.getRepositoryManager().getRepository(connectorKind,
+				taskData.getRepositoryUrl());
+		if (connector != null) {
+			ICardMapping mapping = connector.getNewCardMapping(taskData, card.getArtifactId(),
+					taskRepository, null);
+			AbstractRepositoryConnector repositoryConnector = TasksUi.getRepositoryConnector(connectorKind);
+			AbstractTaskDataHandler taskDataHandler = repositoryConnector.getTaskDataHandler();
+
+			TaskData newCardTaskData = new TaskData(taskDataHandler.getAttributeMapper(taskRepository),
+					connectorKind, taskRepository.getRepositoryUrl(), ""); //$NON-NLS-1$
+
+			try {
+				boolean isInitialized = taskDataHandler.initializeTaskData(taskRepository, newCardTaskData,
+						mapping, null);
+				if (isInitialized) {
+					TasksUiInternal.createAndOpenNewTask(newCardTaskData);
+				}
+			} catch (CoreException e) {
+				MylynAgileUIActivator.log(e, true);
+			}
+		} else {
+			MylynAgileUIActivator.log(MylynAgileUIMessages.getString(
+					"PlanningTaskEditorPart.NoAgileUiConnectorFoundWithKind", connectorKind), true); //$NON-NLS-1$
 		}
 	}
 }

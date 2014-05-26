@@ -8,26 +8,21 @@
  * Contributors:
  *     Obeo - initial API and implementation
  *******************************************************************************/
-package org.tuleap.mylyn.task.internal.agile.mock.connector.ui;
+package org.tuleap.mylyn.task.agile.core;
 
-import org.eclipse.mylyn.tasks.core.TaskMapping;
-import org.tuleap.mylyn.task.agile.core.IBacklogItemMapping;
+import org.eclipse.mylyn.tasks.core.ITaskMapping;
 
 /**
- * The mapping of the card.
+ * This interface will be used to initialize the new card that will be created.
  *
  * @author <a href="mailto:firas.bacha@obeo.fr">Firas Bacha</a>
  */
-public class MylynMockBacklogItemMapping extends TaskMapping implements IBacklogItemMapping {
+public interface ICardMapping extends ITaskMapping {
 
 	/**
-	 * {@inheritDoc}
+	 * Returns the identifier of the parent card of the card to create.
 	 *
-	 * @see org.tuleap.mylyn.task.agile.core.IBacklogItemMapping#getParentMilestoneId()
+	 * @return The identifier of the parent card of the card to create.
 	 */
-	@Override
-	public String getParentMilestoneId() {
-		return "A/B/C"; //$NON-NLS-1$
-	}
-
+	String getParentCard();
 }

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Obeo - initial API and implementation
  *******************************************************************************/
@@ -15,13 +15,14 @@ import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.tuleap.mylyn.task.agile.core.IBacklogItemMapping;
+import org.tuleap.mylyn.task.agile.core.ICardMapping;
 import org.tuleap.mylyn.task.agile.core.IMilestoneMapping;
 import org.tuleap.mylyn.task.agile.ui.task.IModelRegistry;
 import org.tuleap.mylyn.task.internal.agile.ui.task.ModelRegistry;
 
 /**
  * UI Connector to an Agile repository.
- * 
+ *
  * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
  * @since 1.0
  */
@@ -34,7 +35,7 @@ public abstract class AbstractAgileRepositoryConnectorUI {
 
 	/**
 	 * Provides the type of connector supported by this connector.
-	 * 
+	 *
 	 * @return The type of connector supported.
 	 */
 	public abstract String getConnectorKind();
@@ -43,7 +44,7 @@ public abstract class AbstractAgileRepositoryConnectorUI {
 	 * Provides the mapping for milestone creation. A milestone is created within a parent planning. This
 	 * mapping will be provided to the {@link org.eclipse.mylyn.tasks.core.data.AbstractTaskDataHandler} of
 	 * the connector in order to create the submilestone.
-	 * 
+	 *
 	 * @param planningTaskData
 	 *            The task data of the parent planning where the milestone is to be created.
 	 * @param parentMilestoneId
@@ -61,7 +62,7 @@ public abstract class AbstractAgileRepositoryConnectorUI {
 	 * Provides the mapping for BacklogItem creation. A BacklogItem is created within a parent planning. This
 	 * mapping will be provided to the {@link org.eclipse.mylyn.tasks.core.data.AbstractTaskDataHandler} of
 	 * the connector in order to create the BacklogItem.
-	 * 
+	 *
 	 * @param planningTaskData
 	 *            The task data of the parent planning where the BacklogItem is to be created.
 	 * @param parentMilestoneId
@@ -76,6 +77,22 @@ public abstract class AbstractAgileRepositoryConnectorUI {
 			String parentMilestoneId, TaskRepository taskRepository, IProgressMonitor monitor);
 
 	/**
+	 * Provides the mapping for card creation.
+	 *
+	 * @param planningTaskData
+	 *            The task data of the parent planning where the BacklogItem is to be created.
+	 * @param parentCardId
+	 *            The identifier of the parent milestone
+	 * @param taskRepository
+	 *            The task repository of the planning that should also host the new BacklogItem.
+	 * @param monitor
+	 *            The progress monitor to use for monitoring progress...
+	 * @return The wizard to create the task that represents the BacklogItem.
+	 */
+	public abstract ICardMapping getNewCardMapping(TaskData planningTaskData, String parentCardId,
+			TaskRepository taskRepository, IProgressMonitor monitor);
+
+	/**
 	 * <p>
 	 * Indicates the list of the identifier of the task editor page factories that are in conflict with the
 	 * task editor page factory identifier provided. Every task editor page factory of the Agile UI bundle
@@ -86,7 +103,7 @@ public abstract class AbstractAgileRepositoryConnectorUI {
 	 * The default implementation returns an empty array. This method is meant to be overridden by
 	 * implementors if needed.
 	 * </p>
-	 * 
+	 *
 	 * @param taskEditorPageFactoryId
 	 *            The identifier of the task editor page factory that is being used
 	 * @param task
@@ -101,7 +118,7 @@ public abstract class AbstractAgileRepositoryConnectorUI {
 
 	/**
 	 * Indicates whether the given {@link ITask} should have a cardwall tab displayed.
-	 * 
+	 *
 	 * @param task
 	 *            The task
 	 * @param repository
@@ -112,7 +129,7 @@ public abstract class AbstractAgileRepositoryConnectorUI {
 
 	/**
 	 * Indicates whether the given {@link ITask} should have a planning tab displayed.
-	 * 
+	 *
 	 * @param task
 	 *            The task
 	 * @param repository
@@ -125,7 +142,7 @@ public abstract class AbstractAgileRepositoryConnectorUI {
 	 * Indicates whether the agile editor should create the standard toolbar actions given {@link ITask}
 	 * should have a cardwall tab displayed. Implementors should return <code>true</code> only if they don't
 	 * want to display the main tab which already creates the standard actions.
-	 * 
+	 *
 	 * @param task
 	 *            The task
 	 * @param repository
@@ -136,7 +153,7 @@ public abstract class AbstractAgileRepositoryConnectorUI {
 
 	/**
 	 * Provides the model register that keeps track of shared models.
-	 * 
+	 *
 	 * @return The model register
 	 */
 	public IModelRegistry getModelRegistry() {
