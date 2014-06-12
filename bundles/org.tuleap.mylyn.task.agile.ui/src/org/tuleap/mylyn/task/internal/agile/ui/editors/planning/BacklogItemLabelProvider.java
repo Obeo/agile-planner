@@ -42,7 +42,7 @@ class BacklogItemLabelProvider extends StyledCellLabelProvider {
 			BacklogItemWrapper wrapper = (BacklogItemWrapper)element;
 			sValue = getLabel(wrapper, cell);
 			// TODO Replace with API on BIW isClosed()
-			if ("Closed".equalsIgnoreCase(wrapper.getStatus())) { //$NON-NLS-1$
+			if (SubMilestoneListTaskEditorPart.CLOSED_STATUS.equalsIgnoreCase(wrapper.getStatus())) {
 				closed = true;
 			}
 		}

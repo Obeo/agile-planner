@@ -58,6 +58,11 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 	public static final String SUFFIX_STATUS_VALUE = "status_value"; //$NON-NLS-1$
 
 	/**
+	 * The suffix used to indicate that a task attribute represents a sub-milestone semantic status value.
+	 */
+	public static final String SUFFIX_STATUS = "status"; //$NON-NLS-1$
+
+	/**
 	 * Id of the reference sub-task attribute.
 	 */
 	public static final String REF = "ref"; //$NON-NLS-1$
@@ -125,6 +130,15 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 	 */
 	private String getStatusValueAttributeId() {
 		return getAttributeId(attribute, SUFFIX_STATUS_VALUE);
+	}
+
+	/**
+	 * Computes the unique id of the semantic status value attribute.
+	 *
+	 * @return The unique id of the status value attribute.
+	 */
+	private String getStatusAttributeId() {
+		return getAttributeId(attribute, SUFFIX_STATUS);
 	}
 
 	/**
@@ -271,9 +285,9 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 	}
 
 	/**
-	 * Capacity getter.
+	 * Status label getter.
 	 *
-	 * @return The milestone's capacity, or {@code null} if not defined.
+	 * @return The milestone's status, or {@code null} if not defined.
 	 */
 	public String getStatusValue() {
 		String result = null;
@@ -298,6 +312,46 @@ public final class SubMilestoneWrapper extends AbstractTaskAttributeWrapper {
 		String oldValue = null;
 		if (att == null) {
 			att = createAgileAttribute(getStatusValueAttributeId());
+			att.getMetaData().setType(TaskAttribute.TYPE_SHORT_RICH_TEXT);
+			att.getMetaData().setReadOnly(true);
+		} else {
+			oldValue = att.getValue();
+		}
+		if (oldValue == null || !oldValue.equals(statusValue)) {
+			att.setValue(statusValue);
+			fireAttributeChanged(att);
+		}
+	}
+
+	/**
+	 * Semantic milestone status getter.
+	 *
+	 * @return The milestone's semantic status (possible values= "Open" and "Closed") , or {@code null} if not
+	 *         defined.
+	 */
+	public String getStatus() {
+		String result = null;
+		TaskAttribute att = root.getMappedAttribute(getStatusAttributeId());
+		if (att != null) {
+			result = att.getValue();
+		}
+		return result;
+	}
+
+	/**
+	 * Semantic milestone status value setter.
+	 *
+	 * @param statusValue
+	 *            The milestone semantic status value (possible values= "Open" and "Closed") .
+	 */
+	public void setStatus(String statusValue) {
+		if (statusValue == null) {
+			return;
+		}
+		TaskAttribute att = root.getMappedAttribute(getStatusAttributeId());
+		String oldValue = null;
+		if (att == null) {
+			att = createAgileAttribute(getStatusAttributeId());
 			att.getMetaData().setType(TaskAttribute.TYPE_SHORT_RICH_TEXT);
 			att.getMetaData().setReadOnly(true);
 		} else {

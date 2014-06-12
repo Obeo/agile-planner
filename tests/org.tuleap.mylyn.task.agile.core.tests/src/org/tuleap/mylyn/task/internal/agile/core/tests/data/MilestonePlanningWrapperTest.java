@@ -63,12 +63,14 @@ public class MilestonePlanningWrapperTest {
 		Date endDate = new Date(testDate.getTime() + 1000 * 60 * 60 * 24 * 11);
 		subMilestone.setEndDate(endDate);
 		subMilestone.setStatusValue("current");
+		subMilestone.setStatus("Open");
 
 		assertEquals("20", subMilestone.getCapacity());
 		assertEquals("Milestone 1", subMilestone.getLabel());
 		assertEquals(testDate, subMilestone.getStartDate());
 		assertEquals(endDate, subMilestone.getEndDate());
 		assertEquals("current", subMilestone.getStatusValue());
+		assertEquals("Open", subMilestone.getStatus());
 
 		TaskAttribute root = taskData.getRoot();
 		TaskAttribute planningAtt = root.getAttribute(MilestonePlanningWrapper.MILESTONE_PLANNING);

@@ -64,6 +64,16 @@ public class SubMilestoneListTaskEditorPart extends AbstractTableTaskEditorPart 
 	public static final String SUBMILESTONE_PART_DESC_ID = "org.tuleap.mylyn.task.agile.submilestone"; //$NON-NLS-1$
 
 	/**
+	 * The milestone open state.
+	 */
+	public static final String OPEN_STATUS = "Open"; //$NON-NLS-1$
+
+	/**
+	 * The milestone closed state.
+	 */
+	public static final String CLOSED_STATUS = "Closed"; //$NON-NLS-1$
+
+	/**
 	 * {@inheritDoc}
 	 *
 	 * @see org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPart#createControl(org.eclipse.swt.widgets.Composite,
@@ -169,14 +179,14 @@ public class SubMilestoneListTaskEditorPart extends AbstractTableTaskEditorPart 
 				IRunnableWithProgress runnable = new IRunnableWithProgress() {
 					@Override
 					public void run(IProgressMonitor monitor) throws InvocationTargetException,
-					InterruptedException {
+							InterruptedException {
 						createNewMilestone(monitor);
 					}
 				};
 
 				try {
 					SubMilestoneListTaskEditorPart.this.getTaskEditorPage().getEditorSite()
-							.getWorkbenchWindow().run(false, false, runnable);
+					.getWorkbenchWindow().run(false, false, runnable);
 				} catch (InvocationTargetException e) {
 					MylynAgileUIActivator.log(e, true);
 				} catch (InterruptedException e) {
@@ -237,7 +247,12 @@ public class SubMilestoneListTaskEditorPart extends AbstractTableTaskEditorPart 
 	private void createMilestoneSection(FormToolkit toolkit, SubMilestoneWrapper subMilestone,
 			Composite milestoneListClient) {
 		Section milestoneSection = toolkit.createSection(milestoneListClient, ExpandableComposite.TITLE_BAR
-				| Section.DESCRIPTION | Section.TWISTIE | Section.EXPANDED);
+				| Section.DESCRIPTION | Section.TWISTIE);
+		if (CLOSED_STATUS.equalsIgnoreCase(subMilestone.getStatus())) {
+			milestoneSection.setExpanded(false);
+		} else if (OPEN_STATUS.equalsIgnoreCase(subMilestone.getStatus())) {
+			milestoneSection.setExpanded(true);
+		}
 		milestoneSection.setLayout(FormLayoutFactory.createClearTableWrapLayout(false, 1));
 		TableWrapData milestoneLayoutData = new TableWrapData(TableWrapData.FILL_GRAB);
 		milestoneSection.setLayoutData(milestoneLayoutData);

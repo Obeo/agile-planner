@@ -155,6 +155,18 @@ public class SubMilestoneWrapperTest {
 
 	/**
 	 * Test method for
+	 * {@link org.tuleap.mylyn.task.agile.core.data.planning.SubMilestoneWrapper#getStatus()}.
+	 */
+	@Test
+	public void testSemanticStatusValue() {
+		SubMilestoneWrapper wrapper = planning.addSubMilestone("an id");
+		assertNull(wrapper.getStatus());
+		wrapper.setStatus("Open");
+		assertEquals("Open", wrapper.getStatus());
+	}
+
+	/**
+	 * Test method for
 	 * {@link org.tuleap.mylyn.task.agile.core.data.planning.SubMilestoneWrapper#hasContentChanged()}.
 	 */
 	@Test
