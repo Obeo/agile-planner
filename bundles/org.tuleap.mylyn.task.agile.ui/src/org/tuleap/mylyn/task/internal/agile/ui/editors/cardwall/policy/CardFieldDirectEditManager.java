@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Obeo - initial API and implementation
  *******************************************************************************/
@@ -17,8 +17,8 @@ import org.eclipse.gef.tools.DirectEditManager;
 import org.eclipse.jface.viewers.ICellEditorValidator;
 
 /**
- * {@link DirectEditManager} for String Field direct edting.
- * 
+ * {@link DirectEditManager} for String Field direct editing.
+ *
  * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
  */
 public class CardFieldDirectEditManager extends DirectEditManager {
@@ -35,7 +35,7 @@ public class CardFieldDirectEditManager extends DirectEditManager {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param source
 	 *            The source
 	 * @param editorType
@@ -53,7 +53,7 @@ public class CardFieldDirectEditManager extends DirectEditManager {
 
 	/**
 	 * Constructor with a validator.
-	 * 
+	 *
 	 * @param source
 	 *            The source
 	 * @param editorType
@@ -74,7 +74,7 @@ public class CardFieldDirectEditManager extends DirectEditManager {
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see org.eclipse.gef.tools.DirectEditManager#initCellEditor()
 	 */
 	@Override

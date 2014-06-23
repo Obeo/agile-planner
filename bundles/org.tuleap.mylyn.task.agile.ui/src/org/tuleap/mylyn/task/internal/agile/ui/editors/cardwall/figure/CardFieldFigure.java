@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Obeo - initial API and implementation
  *******************************************************************************/
@@ -33,7 +33,7 @@ import org.tuleap.mylyn.task.internal.agile.ui.util.IMylynAgileUIConstants;
 
 /**
  * Figure of a configurable card field.
- * 
+ *
  * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
  * @author <a href="mailto:firas.bacha@obeo.fr">Firas Bacha</a>
  */
@@ -50,16 +50,41 @@ public class CardFieldFigure extends Figure {
 	private List<String> values;
 
 	/**
-	 * The value of the configurable field.
+	 * The value text flow.
 	 */
 	private final TextFlow value;
+
+	/**
+	 * The link value text flow.
+	 */
+	private TextFlow linkValue;
+
+	/**
+	 * The text flow used to locate links direct editing.
+	 */
+	private TextFlow linkLocator;
+
+	/**
+	 * The label flow page.
+	 */
+	private FlowPage labelFlowPage;
+
+	/**
+	 * The value panel.
+	 */
+	private Panel valuePanel;
+
+	/**
+	 * The value panel.
+	 */
+	private Panel labelPanel;
 
 	/**
 	 * Constructor.
 	 */
 	public CardFieldFigure() {
 		label = new TextFlow();
-		Panel labelPanel = new Panel();
+		labelPanel = new Panel();
 		// The content panel MUST have a ToolbarLayout for PageFlows to work all right.
 		ToolbarLayout labelLayout = new ToolbarLayout();
 		labelLayout.setMinorAlignment(ToolbarLayout.ALIGN_BOTTOMRIGHT);
@@ -69,7 +94,7 @@ public class CardFieldFigure extends Figure {
 		add(labelPanel);
 
 		value = new TextFlow();
-		Panel valuePanel = new Panel();
+		valuePanel = new Panel();
 		// The content panel MUST have a ToolbarLayout for PageFlows to work all right.
 		ToolbarLayout valueLayout = new ToolbarLayout();
 		valueLayout.setMinorAlignment(ToolbarLayout.ALIGN_BOTTOMRIGHT);
@@ -78,6 +103,13 @@ public class CardFieldFigure extends Figure {
 		initTextFlow(value, valuePanel, ColorConstants.black, PositionConstants.LEFT);
 		add(valuePanel);
 
+		managePanelsLayouts();
+	}
+
+	/**
+	 * Manage panels layouts.
+	 */
+	private void managePanelsLayouts() {
 		GridLayout layout = new GridLayout(2, true);
 		layout.verticalSpacing = 0;
 		layout.horizontalSpacing = IMylynAgileUIConstants.MARGIN;
@@ -90,7 +122,7 @@ public class CardFieldFigure extends Figure {
 
 	/**
 	 * Set the field data.
-	 * 
+	 *
 	 * @param lbl
 	 *            The label
 	 * @param someValues
@@ -102,8 +134,21 @@ public class CardFieldFigure extends Figure {
 	}
 
 	/**
+	 * Set the links field data.
+	 *
+	 * @param lbl
+	 *            The label
+	 * @param someValues
+	 *            The links values
+	 */
+	public void setLinkField(String lbl, List<String> someValues) {
+		this.label.setText(lbl + ":"); //$NON-NLS-1$
+		setLinksValues(someValues);
+	}
+
+	/**
 	 * Sets the values of this field.
-	 * 
+	 *
 	 * @param values
 	 *            The values to set.
 	 */
@@ -121,8 +166,63 @@ public class CardFieldFigure extends Figure {
 	}
 
 	/**
+	 * Sets the links values.
+	 *
+	 * @param theValues
+	 *            The links values
+	 */
+	public void setLinksValues(List<String> theValues) {
+		labelFlowPage = new FlowPage();
+		if (!theValues.isEmpty()) {
+			Iterator<String> it = theValues.iterator();
+			linkValue = new TextFlow(it.next());
+			linkLocator = linkValue;
+			manageLinksLayouts(null);
+			while (it.hasNext()) {
+				TextFlow separator = new TextFlow(", "); //$NON-NLS-1$
+				linkValue = new TextFlow(it.next());
+				manageLinksLayouts(separator);
+			}
+		}
+	}
+
+	/**
+	 * Manage the links field layouts.
+	 *
+	 * @param separator
+	 *            The links separator
+	 */
+	private void manageLinksLayouts(TextFlow separator) {
+		this.remove(valuePanel);
+		valuePanel = new Panel();
+		managePanelsLayouts();
+
+		ToolbarLayout valueLayout = new ToolbarLayout();
+		valueLayout.setMinorAlignment(ToolbarLayout.ALIGN_BOTTOMRIGHT);
+		valueLayout.setStretchMinorAxis(true);
+		valuePanel.setLayoutManager(valueLayout);
+		add(valuePanel);
+		labelFlowPage.setForegroundColor(ColorConstants.gray);
+		labelFlowPage.setHorizontalAligment(PositionConstants.LEFT);
+		FlowContext flowContext = (FlowContext)labelFlowPage.getLayoutManager();
+		if (separator != null) {
+			labelFlowPage.add(separator);
+			ParagraphTextLayout separatorLayout = new ParagraphTextLayout(separator,
+					ParagraphTextLayout.WORD_WRAP_SOFT);
+			separator.setLayoutManager(separatorLayout);
+			separatorLayout.setFlowContext(flowContext);
+		}
+		labelFlowPage.add(linkValue);
+		ParagraphTextLayout linkValueLayout = new ParagraphTextLayout(linkValue,
+				ParagraphTextLayout.WORD_WRAP_SOFT);
+		linkValue.setLayoutManager(linkValueLayout);
+		linkValueLayout.setFlowContext(flowContext);
+		valuePanel.add(labelFlowPage);
+	}
+
+	/**
 	 * Provides access to the value label, for direct editing.
-	 * 
+	 *
 	 * @return The value label.
 	 */
 	public TextFlow getValueLabel() {
@@ -132,7 +232,7 @@ public class CardFieldFigure extends Figure {
 	/**
 	 * Provides the actual values displayed by the field. Modifying the returned list has no effect on this
 	 * figure.
-	 * 
+	 *
 	 * @return a List, never <code>null</code> but possibly empty, which is a copy of this figure's list of
 	 *         values.
 	 */
@@ -145,7 +245,7 @@ public class CardFieldFigure extends Figure {
 
 	/**
 	 * Set-up of a TextFlow in a given panel.
-	 * 
+	 *
 	 * @param textFlow
 	 *            the text flow to setup
 	 * @param panel
@@ -155,8 +255,8 @@ public class CardFieldFigure extends Figure {
 	 * @param alignment
 	 *            the alignment of the text flow
 	 */
-	private void initTextFlow(TextFlow textFlow, Panel panel, Color color, int alignment) {
-		FlowPage labelFlowPage = new FlowPage();
+	public void initTextFlow(TextFlow textFlow, Panel panel, Color color, int alignment) {
+		labelFlowPage = new FlowPage();
 
 		labelFlowPage.setForegroundColor(color);
 		labelFlowPage.add(textFlow);
@@ -169,6 +269,24 @@ public class CardFieldFigure extends Figure {
 		paragraphLayout.setFlowContext(flowContext);
 
 		panel.add(labelFlowPage);
+	}
+
+	/**
+	 * Get the flow page.
+	 *
+	 * @return The flow page.
+	 */
+	public FlowPage getFlowPage() {
+		return this.labelFlowPage;
+	}
+
+	/**
+	 * Provides access to the link locator, for direct editing.
+	 *
+	 * @return The value label.
+	 */
+	public TextFlow getLocator() {
+		return linkLocator;
 	}
 
 }
