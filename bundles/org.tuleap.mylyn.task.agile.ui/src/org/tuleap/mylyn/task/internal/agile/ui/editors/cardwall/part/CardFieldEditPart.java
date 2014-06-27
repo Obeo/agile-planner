@@ -21,6 +21,7 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseListener;
 import org.eclipse.draw2d.text.TextFlow;
+import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.gef.tools.DirectEditManager;
@@ -47,6 +48,7 @@ import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.policy.CardDateF
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.policy.CardFieldCellEditorLocator;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.policy.CardFieldDirectEditManager;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.policy.CardFieldEditPolicy;
+import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.policy.CardFieldSelectionEditPolicy;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.policy.CardLinksFieldDirectEditManager;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.policy.CardLinksFieldEditPolicy;
 import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.policy.CardMultiSelectionFieldCellEditorLocator;
@@ -113,6 +115,8 @@ public class CardFieldEditPart extends AbstractGraphicalEditPart {
 		// Only editable if the TaskAttribute is NOT read-only or disabled
 		TaskAttributeMetaData metaData = attribute.getMetaData();
 		if (!metaData.isReadOnly() && !metaData.isDisabled()) {
+			// Indicate selected field if it's editable.
+			installEditPolicy(EditPolicy.SELECTION_FEEDBACK_ROLE, new CardFieldSelectionEditPolicy());
 			String type = metaData.getType();
 			if (TaskAttribute.TYPE_SINGLE_SELECT.equals(type)) {
 				// bound field
@@ -168,7 +172,7 @@ public class CardFieldEditPart extends AbstractGraphicalEditPart {
 		} else if (TaskAttribute.TYPE_TASK_DEPENDENCY.equals(attributeType)) {
 			manager = new CardLinksFieldDirectEditManager(this, TextCellEditor.class,
 					new CardFieldCellEditorLocator(((CardFieldFigure)getFigure()).getLocator()), attribute
-					.getValues(), new LinksValidator());
+							.getValues(), new LinksValidator());
 		} else if (TaskAttribute.TYPE_URL.equals(attributeType)) {
 			MylynAgileUIActivator.log(MylynAgileUIMessages.getString(
 					IMylynAgileUIConstants.DIRECT_EDIT_NOT_SUPPORTED, "URL"), false); //$NON-NLS-1$
