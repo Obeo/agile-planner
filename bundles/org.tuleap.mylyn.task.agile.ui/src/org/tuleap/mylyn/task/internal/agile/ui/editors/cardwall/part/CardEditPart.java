@@ -45,6 +45,10 @@ import org.tuleap.mylyn.task.internal.agile.ui.util.MylynAgileUIMessages;
  * @author <a href="mailto:firas.bacha@obeo.fr">Firas Bacha</a>
  */
 public class CardEditPart extends AbstractGraphicalEditPart {
+	/**
+	 * The identifier of the has parent task attribute.
+	 */
+	public static final String HAS_PARENT = "has_parent"; //$NON-NLS-1$
 
 	/**
 	 * Listener for folding the card's details.
@@ -95,7 +99,7 @@ public class CardEditPart extends AbstractGraphicalEditPart {
 	protected IFigure createFigure() {
 		CardModel cardModel = (CardModel)getModel();
 		CardWrapper wrapper = cardModel.getWrapper();
-		return new CardFigure(wrapper.getColumnId() != null);
+		return new CardFigure(wrapper.getColumnId() != null, wrapper.hasChildren());
 	}
 
 	/**
@@ -243,7 +247,10 @@ public class CardEditPart extends AbstractGraphicalEditPart {
 				//
 			}
 		};
-		getCardFigure().getNewCardLabel().addMouseListener(createCardMouseListener);
+		if (getCardFigure().hasChildren()) {
+			getCardFigure().getNewCardLabel().addMouseListener(createCardMouseListener);
+		}
+
 	}
 
 	/**

@@ -95,12 +95,20 @@ public class CardFigure extends Figure {
 	private final AccentedRoundedLineBorder lineBorder;
 
 	/**
+	 * Indicates if the card could have or not children.
+	 */
+	private boolean hasChildren;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param isAssigned
 	 *            indicates if the card is assigned or not to a column.
+	 * @param hasChildren
+	 *            indicates if the card could has children
 	 */
-	public CardFigure(boolean isAssigned) {
+	public CardFigure(boolean isAssigned, boolean hasChildren) {
+		this.hasChildren = hasChildren;
 		// TODO make this font manipulation cleaner
 		defaultFont = JFaceResources.getDefaultFont();
 		FontData[] defaultFontData = defaultFont.getFontData();
@@ -149,7 +157,7 @@ public class CardFigure extends Figure {
 		cardRect.add(contentPanel);
 		cardRect.setConstraint(contentPanel, new GridData(SWT.FILL, SWT.FILL, true, true));
 
-		addUrl();
+		addUrl(hasChildren);
 
 		addTitle();
 
@@ -205,8 +213,11 @@ public class CardFigure extends Figure {
 
 	/**
 	 * Add the url of the card.
+	 *
+	 * @param couldHaveChildren
+	 *            Indicates if the card could have children or not.
 	 */
-	private void addUrl() {
+	private void addUrl(boolean couldHaveChildren) {
 		Panel urlPanel = new Panel();
 		GridLayout urlLayout = new GridLayout(2, false);
 		urlLayout.marginWidth = 0;
@@ -216,7 +227,9 @@ public class CardFigure extends Figure {
 		urlLabel.setForegroundColor(ColorConstants.gray);
 		urlPanel.add(urlLabel);
 		urlLayout.setConstraint(urlLabel, new GridData(SWT.LEFT, SWT.FILL, true, true));
-		addNewCardAction(urlPanel, urlLayout);
+		if (couldHaveChildren) {
+			addNewCardAction(urlPanel, urlLayout);
+		}
 	}
 
 	/**
@@ -296,6 +309,15 @@ public class CardFigure extends Figure {
 		if (color != null) {
 			lineBorder.setAccentColor(color);
 		}
+	}
+
+	/**
+	 * Indicating if the card could have or not children.
+	 *
+	 * @return The value of the hasChildren attribute.
+	 */
+	public boolean hasChildren() {
+		return this.hasChildren;
 	}
 
 }

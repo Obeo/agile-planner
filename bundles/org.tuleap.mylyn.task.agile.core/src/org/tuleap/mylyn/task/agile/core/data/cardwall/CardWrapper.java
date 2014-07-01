@@ -57,6 +57,11 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 	public static final String ALLOWED_COLS = "allowed_cols"; //$NON-NLS-1$
 
 	/**
+	 * The identifier of the has children task attribute.
+	 */
+	public static final String HAS_CHILDREN = "has_children"; //$NON-NLS-1$
+
+	/**
 	 * The parent card wall.
 	 */
 	private final SwimlaneWrapper parent;
@@ -183,6 +188,15 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 	}
 
 	/**
+	 * Computes the unique id of the hasChildren attribute.
+	 *
+	 * @return The unique id of the hasChildren attribute.
+	 */
+	private String getHasChildrenAttributeId() {
+		return getAttributeId(attribute, HAS_CHILDREN);
+	}
+
+	/**
 	 * Add a configurable field by creating the relevant {@link TaskAttribute} as a child of this card's
 	 * {@link TaskAttribute}.
 	 *
@@ -301,6 +315,21 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 	}
 
 	/**
+	 * HasChildren id getter.
+	 *
+	 * @return <code>true</code> if the card could have children, <code>false</code> if the card could not
+	 *         have children or null if it is not assigned, which should not happen in an ideal world.
+	 */
+	public boolean hasChildren() {
+		boolean result = false;
+		TaskAttribute att = root.getAttribute(getHasChildrenAttributeId());
+		if (att != null) {
+			result = Boolean.parseBoolean(att.getValue());
+		}
+		return result;
+	}
+
+	/**
 	 * Assigned milestone id setter.
 	 *
 	 * @param columnId
@@ -320,6 +349,27 @@ public class CardWrapper extends AbstractNotifyingWrapper {
 		}
 		if (oldValue == null || !oldValue.equals(columnId)) {
 			att.setValue(columnId);
+			fireAttributeChanged(att);
+		}
+	}
+
+	/**
+	 * hasChildren setter.
+	 *
+	 * @param hasChildren
+	 *            The hasChildren value. No effect if hasChildren is null.
+	 */
+	public void setHasChildren(boolean hasChildren) {
+		TaskAttribute att = root.getAttribute(getHasChildrenAttributeId());
+		String oldValue = null;
+		if (att == null) {
+			att = root.createAttribute(getHasChildrenAttributeId());
+			att.getMetaData().setType(TaskAttribute.TYPE_BOOLEAN);
+		} else {
+			oldValue = att.getValue();
+		}
+		if (oldValue == null || !oldValue.equals(Boolean.toString(hasChildren))) {
+			att.setValue(Boolean.toString(hasChildren));
 			fireAttributeChanged(att);
 		}
 	}
