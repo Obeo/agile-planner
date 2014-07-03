@@ -227,9 +227,7 @@ public class CardFigure extends Figure {
 		urlLabel.setForegroundColor(ColorConstants.gray);
 		urlPanel.add(urlLabel);
 		urlLayout.setConstraint(urlLabel, new GridData(SWT.LEFT, SWT.FILL, true, true));
-		if (couldHaveChildren) {
-			addNewCardAction(urlPanel, urlLayout);
-		}
+		addNewCardAction(urlPanel, urlLayout, couldHaveChildren);
 	}
 
 	/**
@@ -239,15 +237,19 @@ public class CardFigure extends Figure {
 	 *            The panel
 	 * @param urlLayout
 	 *            The layout
+	 * @param couldHaveChildren
+	 *            Indicates if the card could have children or not.
 	 */
-	private void addNewCardAction(Panel urlPanel, GridLayout urlLayout) {
-		newCardLabel = new Label();
-		Image openIcon = MylynAgileUIActivator.getDefault().getImage(IMylynAgileIcons.NEW_BACKLOGITEM);
-		newCardLabel.setIcon(openIcon);
-		newCardLabel.addMouseMotionListener(new CreateCardMouseMotionListener(newCardLabel));
-		newCardLabel.setForegroundColor(ColorConstants.gray);
-		urlPanel.add(newCardLabel);
-		urlLayout.setConstraint(newCardLabel, new GridData(SWT.RIGHT, SWT.FILL, true, true));
+	private void addNewCardAction(Panel urlPanel, GridLayout urlLayout, boolean couldHaveChildren) {
+		if (couldHaveChildren) {
+			newCardLabel = new Label();
+			Image openIcon = MylynAgileUIActivator.getDefault().getImage(IMylynAgileIcons.NEW_BACKLOGITEM);
+			newCardLabel.setIcon(openIcon);
+			newCardLabel.addMouseMotionListener(new CreateCardMouseMotionListener(newCardLabel));
+			newCardLabel.setForegroundColor(ColorConstants.gray);
+			urlPanel.add(newCardLabel);
+			urlLayout.setConstraint(newCardLabel, new GridData(SWT.RIGHT, SWT.FILL, true, true));
+		}
 		contentPanel.add(urlPanel);
 	}
 
