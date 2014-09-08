@@ -10,7 +10,7 @@
   </parent>
   <groupId>org.eclipse.mylyn</groupId>
   <artifactId>org.tuleap.mylyn.task.agile.core.tests</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.0.1-SNAPSHOT</version>
   <packaging>eclipse-test-plugin</packaging>
   <properties>
     <test.suite>${project.artifactId}.AllMylynAgileCoreTests</test.suite>
