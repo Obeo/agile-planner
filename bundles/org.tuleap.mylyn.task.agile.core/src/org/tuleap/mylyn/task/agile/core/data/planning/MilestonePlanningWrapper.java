@@ -15,6 +15,7 @@ import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -47,6 +48,21 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 	 * Id of the milestone list task attribute.
 	 */
 	public static final String MILESTONE_LIST = "mta_milestones"; //$NON-NLS-1$
+
+	/**
+	 * Id of the task attribute for allowed sub-milestone trackers.
+	 */
+	public static final String SUB_MILESTONE_TRACKERS = "mta_submi_trackers"; //$NON-NLS-1$
+
+	/**
+	 * Id of the task attribute for allowed backlog trackers.
+	 */
+	public static final String BACKLOG_TRACKERS = "mta_backlog_trackers"; //$NON-NLS-1$
+
+	/**
+	 * Id of the task attribute for allowed content trackers.
+	 */
+	public static final String CONTENT_TRACKERS = "mta_content_trackers"; //$NON-NLS-1$
 
 	/**
 	 * Id of the milestone title task attribute.
@@ -532,5 +548,86 @@ public final class MilestonePlanningWrapper extends AbstractNotifyingWrapper {
 			}
 		}
 
+	}
+
+	/**
+	 * Set the allowed sub-milestone types.
+	 * 
+	 * @param ids
+	 *            allowed sub-milestone types.
+	 */
+	public void setAllowedSubmilestoneTypes(List<String> ids) {
+		TaskAttribute att = root.getMappedAttribute(SUB_MILESTONE_TRACKERS);
+		if (att == null) {
+			att = createAgileAttribute(SUB_MILESTONE_TRACKERS);
+		}
+		att.setValues(ids);
+	}
+
+	/**
+	 * Set the allowed backlog item types.
+	 * 
+	 * @param ids
+	 *            allowed backlog item types.
+	 */
+	public void setAllowedBacklogItemTypes(List<String> ids) {
+		TaskAttribute att = root.getMappedAttribute(BACKLOG_TRACKERS);
+		if (att == null) {
+			att = createAgileAttribute(BACKLOG_TRACKERS);
+		}
+		att.setValues(ids);
+	}
+
+	/**
+	 * Set the allowed content item types.
+	 * 
+	 * @param ids
+	 *            allowed content item types.
+	 */
+	public void setAllowedContentItemTypes(List<String> ids) {
+		TaskAttribute att = root.getMappedAttribute(CONTENT_TRACKERS);
+		if (att == null) {
+			att = createAgileAttribute(CONTENT_TRACKERS);
+		}
+		att.setValues(ids);
+	}
+
+	/**
+	 * Get the allowed sub-milestone types.
+	 * 
+	 * @return the allowed sub-milestone types.
+	 */
+	public List<String> getAllowedSubmilestoneTypes() {
+		TaskAttribute att = root.getMappedAttribute(SUB_MILESTONE_TRACKERS);
+		if (att != null) {
+			return att.getValues();
+		}
+		return Collections.emptyList();
+	}
+
+	/**
+	 * Get the allowed backlog item types.
+	 * 
+	 * @return the allowed backlog item types.
+	 */
+	public List<String> getAllowedBacklogItemTypes() {
+		TaskAttribute att = root.getMappedAttribute(BACKLOG_TRACKERS);
+		if (att != null) {
+			return att.getValues();
+		}
+		return Collections.emptyList();
+	}
+
+	/**
+	 * Get the allowed content item types.
+	 * 
+	 * @return the allowed content item types.
+	 */
+	public List<String> getAllowedContentItemTypes() {
+		TaskAttribute att = root.getMappedAttribute(CONTENT_TRACKERS);
+		if (att != null) {
+			return att.getValues();
+		}
+		return Collections.emptyList();
 	}
 }

@@ -611,4 +611,67 @@ public class MilestonePlanningWrapperTest {
 		assertEquals(wrapper, bi1.getParentMilestone());
 		assertEquals(wrapper, bi3.getParentMilestone());
 	}
+
+	@Test
+	public void testSetBacklogTypes() {
+		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(taskData.getRoot());
+		wrapper.setAllowedBacklogItemTypes(Arrays.asList("123", "456"));
+
+		TaskAttribute root = taskData.getRoot();
+		TaskAttribute attribute = root.getAttribute(MilestonePlanningWrapper.BACKLOG_TRACKERS);
+		assertNotNull(attribute);
+		assertEquals(Arrays.asList("123", "456"), attribute.getValues());
+	}
+
+	@Test
+	public void testSetContentTypes() {
+		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(taskData.getRoot());
+		wrapper.setAllowedContentItemTypes(Arrays.asList("123", "456"));
+
+		TaskAttribute root = taskData.getRoot();
+		TaskAttribute attribute = root.getAttribute(MilestonePlanningWrapper.CONTENT_TRACKERS);
+		assertNotNull(attribute);
+		assertEquals(Arrays.asList("123", "456"), attribute.getValues());
+	}
+
+	@Test
+	public void testSetSubMilestoneTypes() {
+		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(taskData.getRoot());
+		wrapper.setAllowedSubmilestoneTypes(Arrays.asList("123", "456"));
+
+		TaskAttribute root = taskData.getRoot();
+		TaskAttribute attribute = root.getAttribute(MilestonePlanningWrapper.SUB_MILESTONE_TRACKERS);
+		assertNotNull(attribute);
+		assertEquals(Arrays.asList("123", "456"), attribute.getValues());
+	}
+
+	@Test
+	public void testGetBacklogTypes() {
+		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(taskData.getRoot());
+
+		TaskAttribute root = taskData.getRoot();
+		TaskAttribute attribute = root.createAttribute(MilestonePlanningWrapper.BACKLOG_TRACKERS);
+		attribute.setValues(Arrays.asList("12", "34"));
+		assertEquals(Arrays.asList("12", "34"), wrapper.getAllowedBacklogItemTypes());
+	}
+
+	@Test
+	public void testGetContentTypes() {
+		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(taskData.getRoot());
+
+		TaskAttribute root = taskData.getRoot();
+		TaskAttribute attribute = root.createAttribute(MilestonePlanningWrapper.CONTENT_TRACKERS);
+		attribute.setValues(Arrays.asList("12", "34"));
+		assertEquals(Arrays.asList("12", "34"), wrapper.getAllowedContentItemTypes());
+	}
+
+	@Test
+	public void testGetSubMilestoneTypes() {
+		MilestonePlanningWrapper wrapper = new MilestonePlanningWrapper(taskData.getRoot());
+
+		TaskAttribute root = taskData.getRoot();
+		TaskAttribute attribute = root.createAttribute(MilestonePlanningWrapper.SUB_MILESTONE_TRACKERS);
+		attribute.setValues(Arrays.asList("12", "34"));
+		assertEquals(Arrays.asList("12", "34"), wrapper.getAllowedSubmilestoneTypes());
+	}
 }
