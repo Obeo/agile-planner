@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Obeo - initial API and implementation
  *******************************************************************************/
@@ -21,7 +21,7 @@ import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.model.ColumnMode
 
 /**
  * The edit part for the cells used as heading for columns, swimlanes and the whole card wall.
- * 
+ *
  * @author <a href="mailto:cedric.notot@obeo.fr">Cedric Notot</a>
  */
 public class ColumnHeaderEditPart extends AbstractGraphicalEditPart {
@@ -38,7 +38,7 @@ public class ColumnHeaderEditPart extends AbstractGraphicalEditPart {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param taskEditorPart
 	 *            THe task editor taskEditorPart that displays the cardwall.
 	 */
@@ -48,7 +48,7 @@ public class ColumnHeaderEditPart extends AbstractGraphicalEditPart {
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#createFigure()
 	 */
 	@Override
@@ -61,7 +61,7 @@ public class ColumnHeaderEditPart extends AbstractGraphicalEditPart {
 
 	/**
 	 * Returns the figure as a {@link ColumnHeaderFigure}.
-	 * 
+	 *
 	 * @return the figure as a {@link ColumnHeaderFigure}.
 	 */
 	public ColumnHeaderFigure getHeaderFigure() {
@@ -70,7 +70,7 @@ public class ColumnHeaderEditPart extends AbstractGraphicalEditPart {
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see org.eclipse.gef.editparts.AbstractEditPart#createEditPolicies()
 	 */
 	@Override
@@ -80,7 +80,7 @@ public class ColumnHeaderEditPart extends AbstractGraphicalEditPart {
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see org.eclipse.gef.editparts.AbstractEditPart#refreshVisuals()
 	 */
 	@Override
@@ -97,7 +97,7 @@ public class ColumnHeaderEditPart extends AbstractGraphicalEditPart {
 
 	/**
 	 * Get the text to display in the cell.
-	 * 
+	 *
 	 * @param model
 	 *            The model object to manage.
 	 * @return The text to display.
@@ -114,7 +114,7 @@ public class ColumnHeaderEditPart extends AbstractGraphicalEditPart {
 
 	/**
 	 * Get the color to use.
-	 * 
+	 *
 	 * @param model
 	 *            The model object to manage.
 	 * @return The color to use, or null.
@@ -127,11 +127,6 @@ public class ColumnHeaderEditPart extends AbstractGraphicalEditPart {
 		return result;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * 
-	 * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#activate()
-	 */
 	@Override
 	public void activate() {
 		super.activate();
@@ -145,11 +140,6 @@ public class ColumnHeaderEditPart extends AbstractGraphicalEditPart {
 				f.setFolded(true);
 			}
 			foldingChangeListener = new ChangeListener() {
-				/**
-				 * {@inheritDoc}
-				 * 
-				 * @see org.eclipse.draw2d.ChangeListener#handleStateChanged(org.eclipse.draw2d.ChangeEvent)
-				 */
 				@Override
 				public void handleStateChanged(ChangeEvent event) {
 					ColumnModel column = (ColumnModel)getModel();
@@ -163,16 +153,11 @@ public class ColumnHeaderEditPart extends AbstractGraphicalEditPart {
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * 
-	 * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#deactivate()
-	 */
 	@Override
 	public void deactivate() {
 		// Deregister listener for cell folding checkbox
 		Object model = getModel();
-		if (model instanceof ColumnModel) {
+		if (model instanceof ColumnModel && foldingChangeListener != null) {
 			FoldableColumnHeaderFigure f = (FoldableColumnHeaderFigure)getFigure();
 			f.removeFoldingListener(foldingChangeListener);
 		}
