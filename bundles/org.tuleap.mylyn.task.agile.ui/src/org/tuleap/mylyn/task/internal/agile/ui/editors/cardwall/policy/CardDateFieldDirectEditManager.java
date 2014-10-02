@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Obeo - initial API and implementation
  *******************************************************************************/
@@ -20,7 +20,7 @@ import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 
 /**
  * {@link DirectEditManager} for date direct editing.
- * 
+ *
  * @author <a href="mailto:firas.bacha@obeo.fr">Firas Bacha</a>
  */
 public class CardDateFieldDirectEditManager extends DirectEditManager {
@@ -32,7 +32,7 @@ public class CardDateFieldDirectEditManager extends DirectEditManager {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param source
 	 *            The source
 	 * @param editorType
@@ -50,7 +50,7 @@ public class CardDateFieldDirectEditManager extends DirectEditManager {
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see org.eclipse.gef.tools.DirectEditManager#initCellEditor()
 	 */
 	@Override
@@ -58,8 +58,13 @@ public class CardDateFieldDirectEditManager extends DirectEditManager {
 		CellEditor editor = getCellEditor();
 		String selectedValue = attribute.getValue();
 
-		Long longDate = Long.valueOf(selectedValue);
-		Date date = new Date(longDate.longValue());
-		editor.setValue(date);
+		try {
+			Long longDate = Long.valueOf(selectedValue);
+			Date date = new Date(longDate.longValue());
+			editor.setValue(date);
+		} catch (NumberFormatException nfe) {
+			// This happens for example if the field is not set!
+			editor.setValue(""); //$NON-NLS-1$
+		}
 	}
 }

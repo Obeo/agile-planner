@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Obeo - initial API and implementation
  *******************************************************************************/
@@ -23,7 +23,7 @@ import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.figure.DateWidge
 
 /**
  * The card cell editor that correctly notifies to allow direct editing dates on cards.
- * 
+ *
  * @author <a href="mailto:firas.bacha@obeo.fr">Firas Bacha</a>
  */
 public class CardDateTimeCellEditor extends CellEditor {
@@ -35,7 +35,7 @@ public class CardDateTimeCellEditor extends CellEditor {
 
 	/**
 	 * The constructor.
-	 * 
+	 *
 	 * @param parent
 	 *            The parent
 	 */
@@ -45,7 +45,7 @@ public class CardDateTimeCellEditor extends CellEditor {
 
 	/**
 	 * The constructor.
-	 * 
+	 *
 	 * @param parent
 	 *            The parent
 	 * @param style
@@ -85,10 +85,10 @@ public class CardDateTimeCellEditor extends CellEditor {
 
 	@Override
 	protected Object doGetValue() {
-		if (dateTime.getDate() != null) {
+		if (dateTime != null && dateTime.getDate() != null) {
 			return dateTime.getDate().getTime();
 		}
-		return new Date();
+		return null;
 	}
 
 	@Override
@@ -104,7 +104,7 @@ public class CardDateTimeCellEditor extends CellEditor {
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see org.eclipse.jface.viewers.CellEditor#doSetFocus()
 	 */
 	@Override

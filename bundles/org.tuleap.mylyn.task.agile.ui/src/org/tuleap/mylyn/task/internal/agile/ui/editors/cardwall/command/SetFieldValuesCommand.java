@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Obeo - initial API and implementation
  *******************************************************************************/
@@ -20,7 +20,7 @@ import org.tuleap.mylyn.task.agile.core.data.cardwall.CardWrapper;
 
 /**
  * Command to set the value of a configurable field.
- * 
+ *
  * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
  */
 public class SetFieldValuesCommand extends Command {
@@ -47,7 +47,7 @@ public class SetFieldValuesCommand extends Command {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param wrapper
 	 *            The card wrapper.
 	 * @param attribute
@@ -64,21 +64,25 @@ public class SetFieldValuesCommand extends Command {
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see org.eclipse.gef.commands.Command#execute()
 	 */
 	@Override
 	public void execute() {
-		wrapper.setFieldValues(wrapper.getFieldId(attribute), newValues);
+		if (!oldValues.equals(newValues)) {
+			wrapper.setFieldValues(wrapper.getFieldId(attribute), newValues);
+		}
 	}
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see org.eclipse.gef.commands.Command#undo()
 	 */
 	@Override
 	public void undo() {
-		wrapper.setFieldValues(wrapper.getFieldId(attribute), oldValues);
+		if (!oldValues.equals(newValues)) {
+			wrapper.setFieldValues(wrapper.getFieldId(attribute), oldValues);
+		}
 	}
 }

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Obeo - initial API and implementation
  *******************************************************************************/
@@ -25,39 +25,35 @@ import org.tuleap.mylyn.task.internal.agile.ui.editors.cardwall.part.CardFieldEd
 
 /**
  * Edit policy for direct edit on String fields.
- * 
+ *
  * @author <a href="mailto:firas.bacha@obeo.fr">Firas Bacha</a>
  */
 public class CardDateFieldEditPolicy extends DirectEditPolicy {
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see org.eclipse.gef.editpolicies.DirectEditPolicy#getDirectEditCommand(org.eclipse.gef.requests.DirectEditRequest)
 	 */
 	@Override
 	protected Command getDirectEditCommand(DirectEditRequest request) {
-
 		Date date = (Date)request.getCellEditor().getValue();
-
-		// for CellEditor, null is always returned for invalid values
-		if (date == null) {
-			return null;
-		}
-
 		CardFieldEditPart compartment = (CardFieldEditPart)getHost();
 		TaskAttribute attribute = (TaskAttribute)compartment.getModel();
-
 		CardEditPart cardPart = (CardEditPart)compartment.getParent();
 		CardWrapper cardWrapper = ((CardModel)cardPart.getModel()).getWrapper();
 
+		// for CellEditor, null is always returned for invalid values
+		if (date == null) {
+			return new SetFieldValuesCommand(cardWrapper, attribute, Collections.singletonList("")); //$NON-NLS-1$
+		}
 		return new SetFieldValuesCommand(cardWrapper, attribute, Collections.singletonList(String
 				.valueOf(date.getTime())));
 	}
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see org.eclipse.gef.editpolicies.DirectEditPolicy#showCurrentEditValue(org.eclipse.gef.requests.DirectEditRequest)
 	 */
 	@Override

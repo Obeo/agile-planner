@@ -16,6 +16,8 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.MouseEvent;
@@ -69,11 +71,6 @@ import org.tuleap.mylyn.task.internal.agile.ui.util.MylynAgileUIMessages;
  * @author <a href="mailto:laurent.delaigue@obeo.fr">Laurent Delaigue</a>
  */
 public class CardFieldEditPart extends AbstractGraphicalEditPart {
-
-	/**
-	 * The time length string.
-	 */
-	private static final int TIME_LENGTH = 8;
 
 	/**
 	 * The task attribute listener.
@@ -327,19 +324,45 @@ public class CardFieldEditPart extends AbstractGraphicalEditPart {
 
 		} else if (TaskAttribute.TYPE_DATETIME.equals(type)) {
 			List<String> values = Lists.newArrayList();
-			long longDate = Long.parseLong(attribute.getValue());
-			Date date = new Date(longDate);
-			DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);
-			values.add(dateFormat.format(date));
+			String attValue = attribute.getValue();
+			if (attValue.isEmpty()) {
+				values.add("-"); //$NON-NLS-1$
+			} else {
+				try {
+					long longDate = Long.parseLong(attribute.getValue());
+					Date date = new Date(longDate);
+					DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.MEDIUM,
+							DateFormat.MEDIUM);
+					values.add(dateFormat.format(date));
+				} catch (NumberFormatException nfe) {
+					// Null or invalid dates are ignored
+					MylynAgileUIActivator.log(new Status(IStatus.WARNING, MylynAgileUIActivator.PLUGIN_ID,
+							MylynAgileUIMessages.getString("CardFieldEditPart.InvalidDate", attribute //$NON-NLS-1$
+									.getMetaData().getLabel()), nfe));
+					values.add("???"); //$NON-NLS-1$
+				}
+			}
 			f.setField(attribute.getMetaData().getLabel(), values);
 
 		} else if (TaskAttribute.TYPE_DATE.equals(type)) {
 			List<String> values = Lists.newArrayList();
-			Long longDate = Long.valueOf(attribute.getValue());
-			Date date = new Date(longDate.longValue());
-
-			DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);
-			values.add(dateFormat.format(date).substring(0, dateFormat.format(date).length() - TIME_LENGTH));
+			String attValue = attribute.getValue();
+			if (attValue.isEmpty()) {
+				values.add("-"); //$NON-NLS-1$
+			} else {
+				try {
+					Long longDate = Long.valueOf(attribute.getValue());
+					Date date = new Date(longDate.longValue());
+					DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
+					values.add(dateFormat.format(date));
+				} catch (NumberFormatException nfe) {
+					// Null or invalid dates are ignored
+					MylynAgileUIActivator.log(new Status(IStatus.WARNING, MylynAgileUIActivator.PLUGIN_ID,
+							MylynAgileUIMessages.getString("CardFieldEditPart.InvalidDate", attribute //$NON-NLS-1$
+									.getMetaData().getLabel()), nfe));
+					values.add("???"); //$NON-NLS-1$
+				}
+			}
 			f.setField(attribute.getMetaData().getLabel(), values);
 
 		} else if (TaskAttribute.TYPE_TASK_DEPENDENCY.equals(type)) {
